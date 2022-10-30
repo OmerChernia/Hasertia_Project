@@ -4,6 +4,8 @@
 
 package il.cshaifasweng.OCSFMediatorExample.client.ocsf;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Message;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -174,6 +176,8 @@ public abstract class AbstractClient implements Runnable
     output.reset();
     output.writeObject(msg);
   }
+
+
 
   /**
    * Closes the connection to the server.
