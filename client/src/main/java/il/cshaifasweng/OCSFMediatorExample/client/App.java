@@ -10,6 +10,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,19 +50,24 @@ public class App extends Application {
     	EventBus.getDefault().unregister(this);
 		super.stop();
 	}
-    
+
+
     @Subscribe
-    public void onWarningEvent(WarningEvent event) {
-    	Platform.runLater(() -> {
-    		Alert alert = new Alert(AlertType.WARNING,
-        			String.format("Message: %s\nTimestamp: %s\n",
-        					event.getWarning().getMessage(),
-        					event.getWarning().getTime().toString())
-        	);
-        	alert.show();
-    	});
-    	
+    public void onMessageEvent(MessageEvent message) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        Platform.runLater(() -> {
+            Alert alert = new Alert(AlertType.INFORMATION,
+                    String.format("Message:\nId: %d\nData: %s\nTimestamp: %s\n",
+                            message.getMessage().getId(),
+                            message.getMessage().getMessage(),
+                            message.getMessage().getTimeStamp().format(dtf))
+            );
+            alert.setTitle("new message");
+            alert.setHeaderText("New Message:");
+            alert.show();
+        });
     }
+
 
 	public static void main(String[] args) {
         launch();
