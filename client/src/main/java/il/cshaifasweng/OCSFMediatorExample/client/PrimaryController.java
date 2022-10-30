@@ -45,6 +45,7 @@ public class PrimaryController {
 	void sendMessage(ActionEvent event) {
 		try {
 			Message message = new Message(msgId++, MessageTF.getText());
+			MessageTF.clear();
 			SimpleClient.getClient().sendToServer(message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -60,7 +61,7 @@ public class PrimaryController {
 	@Subscribe
 	public void setSubmittersTF(UpdateMessageEvent event) {
 		submitterID1.setText(event.getMessage().getData().substring(0,9));
-		submitterID2.setText(event.getMessage().getData().substring(11));
+		submitterID2.setText(event.getMessage().getData().substring(11,20));
 	}
 
 	@Subscribe

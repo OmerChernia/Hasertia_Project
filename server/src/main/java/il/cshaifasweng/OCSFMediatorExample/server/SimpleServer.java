@@ -33,9 +33,7 @@ public class SimpleServer extends AbstractServer {
 			else if(request.startsWith("change submitters IDs:")){
 				message.setData(request.substring(23));
 				message.setMessage("update submitters IDs");
-				for(SubscribedClient SubscribedClient:SubscribersList){
-					SubscribedClient.getClient().sendToClient(message);
-				}
+				sendToAllClients(message);
 			}
 			//we got a request to add a new client as a subscriber.
 			else if (request.equals("add client")){
@@ -69,6 +67,16 @@ public class SimpleServer extends AbstractServer {
 					// message received: "Good morning"
 					// message sent: "Good morning"
 				//see code for changing submitters IDs for help
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public void sendToAllClients(Message message) {
+		try {
+			for (SubscribedClient SubscribedClient : SubscribersList) {
+				SubscribedClient.getClient().sendToClient(message);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
