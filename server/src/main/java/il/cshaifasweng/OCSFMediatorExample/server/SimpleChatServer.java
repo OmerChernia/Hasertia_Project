@@ -2,11 +2,8 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 
 import java.io.IOException;
 
-/**
- * Hello world!
- *
- */
-public class App 
+
+public class SimpleChatServer
 {
 	
 	private static SimpleServer server;
