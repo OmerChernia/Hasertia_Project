@@ -9,8 +9,10 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
@@ -64,12 +66,28 @@ public class PrimaryController {
 	@Subscribe
 	public void getStarterData(NewSubscriberEvent event) {
 		try {
-			Message message = new Message(msgId++, "send Submitters IDs");
+			Message message = new Message(msgId, "send Submitters IDs");
 			SimpleClient.getClient().sendToServer(message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Subscribe
+	public void errorEvent(ErrorEvent event){
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+		Platform.runLater(() -> {
+			Alert alert = new Alert(Alert.AlertType.ERROR,
+					String.format("Message:\nId: %d\nData: %s\nTimestamp: %s\n",
+							event.getMessage().getId(),
+							event.getMessage().getMessage(),
+							event.getMessage().getTimeStamp().format(dtf))
+			);
+			alert.setTitle("Error!");
+			alert.setHeaderText("Error:");
+			alert.show();
+		});
 	}
 
 	@FXML
@@ -88,7 +106,7 @@ public class PrimaryController {
 		clock.setCycleCount(Animation.INDEFINITE);
 		clock.play();
 		try {
-			Message message = new Message(msgId++, "add client");
+			Message message = new Message(msgId, "add client");
 			SimpleClient.getClient().sendToServer(message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
