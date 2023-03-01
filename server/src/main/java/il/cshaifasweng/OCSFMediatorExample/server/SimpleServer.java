@@ -53,13 +53,13 @@ public class SimpleServer extends AbstractServer {
 			else if (request.startsWith("send Submitters")){
 				//add code here to send submitters names to client
 			}
-			else if (request.equals("what day it is?")) {
-				//add code here to send the date to client
+			else if (request.equals("what’s the time?")) {
+				//add code here to send the time to client
 			}
-			else if (request.startsWith("add")){
-				//add code here to sum 2 numbers received in the message and send result back to client
+			else if (request.startsWith("multiply")){
+				//add code here to multiply 2 numbers received in the message and send result back to client
 				//(use substring method as shown above)
-				//message format: "add n+m"
+				//message format: "multiply n*m"
 			}else{
 				//add code here to send received message to all clients.
 				//The string we received in the message is the message we will send back to all clients subscribed.
