@@ -1,4 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-public abstract class Employee {
+public abstract class Purchase
+{
+
 }
