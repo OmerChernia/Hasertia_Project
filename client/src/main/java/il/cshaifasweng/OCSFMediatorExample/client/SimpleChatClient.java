@@ -51,7 +51,7 @@ public class SimpleChatClient extends Application {
 		super.stop();
 	}
 
-
+/*
     @Subscribe
     public void onMessageEvent(MessageEvent message) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -67,7 +67,7 @@ public class SimpleChatClient extends Application {
             alert.show();
         });
     }
-
+*/
 
 	public static void main(String[] args) {
         launch();
