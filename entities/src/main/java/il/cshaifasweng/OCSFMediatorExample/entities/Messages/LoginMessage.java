@@ -9,6 +9,7 @@ public class LoginMessage extends Message
     public LoginMessage(){}
     public LoginMessage(String id, MessageType type, RequestType requestType)
     {
+        //LOGIN , LOGOUT
         super(type);
         this.id = id;
         this.requestType = requestType;
