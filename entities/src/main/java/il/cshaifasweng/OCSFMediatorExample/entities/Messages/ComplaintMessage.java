@@ -7,10 +7,40 @@ import java.util.ArrayList;
 
 public class ComplaintMessage extends Message
 {
-    ArrayList<Compliant> compliants;
-    String customerId;
-    Theater theater;
-    String response;
+    public ArrayList<Compliant> compliants;
+    public String customerId;
+    public Theater theater;
+    public ResponseType responseType;
+    public RequestType requestType;
+
+    public ComplaintMessage(MessageType messageType, RequestType requestType)
+    {
+        //GET_ALL_COMPLIANTS
+        super(messageType);
+        this.requestType = requestType;
+    }
+    public ComplaintMessage(MessageType messageType, RequestType requestType, String customerId)
+    {
+        //GET_COMPLIANT_BY_CUSTOMER_ID
+        super(messageType);
+        this.requestType = requestType;
+        this.customerId = customerId;
+    }
+    public ComplaintMessage(MessageType messageType, RequestType requestType , Theater theater)
+    {
+        //GET_COMPLIANT_BY_THEATER
+        super(messageType);
+        this.requestType = requestType;
+        this.theater = theater;
+    }
+    public ComplaintMessage(MessageType messageType, RequestType requestType, Compliant compliant)
+    {
+        // ADD_COMPLIANT, ANSWER_COMPLIANT
+        super(messageType);
+        this.requestType = requestType;
+        this.compliants = new ArrayList<>();
+        this.compliants.add(compliant);
+    }
 
     public enum ResponseType
     {
