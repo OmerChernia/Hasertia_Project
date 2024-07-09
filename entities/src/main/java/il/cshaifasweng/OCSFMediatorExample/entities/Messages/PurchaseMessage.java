@@ -9,8 +9,8 @@ public class PurchaseMessage extends Message
     ArrayList<Purchase> purchases;
     String customerId;
     String theater_name;
-    RequestType requestType;
-    ResponseType responseType;
+    public RequestType requestType;
+    public ResponseType responseType;
 
     public PurchaseMessage(MessageType messageType, String customerId, RequestType requestType)
     {

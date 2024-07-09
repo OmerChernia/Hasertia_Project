@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class PriceRequestMessage extends Message
 {
     ArrayList<PriceRequest> requests;
-    ResponseType responseType;
-    RequestType requestType;
+    public ResponseType responseType;
+    public RequestType requestType;
 
     public PriceRequestMessage(MessageType type,RequestType requestType)
     {

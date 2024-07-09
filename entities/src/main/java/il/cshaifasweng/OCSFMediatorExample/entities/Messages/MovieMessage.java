@@ -10,8 +10,8 @@ public class MovieMessage extends Message
     ArrayList<Movie> movies;
     int id;
     Movie new_movie;
-    RequestType requestType;
-    ResponseType responseType;
+    public RequestType requestType;
+    public ResponseType responseType;
 
     public MovieMessage(MessageType messageType,Movie movie,RequestType requestType)
     {

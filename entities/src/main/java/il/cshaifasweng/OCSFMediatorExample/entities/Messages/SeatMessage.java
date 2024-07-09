@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class SeatMessage extends Message
 {
     public ArrayList<Seat> hallSeats;
-    RequestType requestType;
-    ResponseType responseType;
+    public RequestType requestType;
+    public ResponseType responseType;
     MovieInstance movieInstance;
     String hall;
 
