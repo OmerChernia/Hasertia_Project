@@ -24,7 +24,7 @@ public class RegisteredUser extends ABS_Person {
     public RegisteredUser() {
     }
 
-    public RegisteredUser(int id, String name, boolean isOnline, String email,int ticket_counter List<Complaint> complaints, List<ABS_Purchase> purchases) {
+    public RegisteredUser(int id, String name, boolean isOnline, String email,int ticket_counter ,List<Complaint> complaints, List<ABS_Purchase> purchases) {
         super(id, name, isOnline);
         this.email = email;
         this.ticket_counter = ticket_counter;
