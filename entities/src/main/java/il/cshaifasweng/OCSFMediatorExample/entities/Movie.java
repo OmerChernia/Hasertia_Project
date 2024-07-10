@@ -1,16 +1,41 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "movies")
 public class Movie {
-    String hebrewName;
-    String info;
-    String producer;
-    String englishName;
-    List<String> mainActors;
-    String image;
-    String streamingType;
-    int duration;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
+    private String hebrewName;
+
+    @Column(nullable = false)
+    private String info;
+
+    @Column(nullable = false)
+    private String producer;
+
+    @Column(nullable = false)
+    private String englishName;
+
+    @ElementCollection
+    private List<String> mainActors;
+
+    @Column(nullable = false)
+    private String image;
+
+    @Column(nullable = false)
+    private String streamingType;
+
+    @Column(nullable = false)
+    private int duration;
+
+    public Movie() {
+    }
 
     public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, String streamingType, int duration) {
         this.hebrewName = hebrewName;
@@ -22,6 +47,8 @@ public class Movie {
         this.streamingType = streamingType;
         this.duration = duration;
     }
+
+    // Getters and setters
 
     public String getHebrewName() {
         return hebrewName;
