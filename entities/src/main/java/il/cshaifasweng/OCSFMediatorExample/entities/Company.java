@@ -10,9 +10,6 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    private String name;
-
     @OneToMany(mappedBy = "company")
     private List<Theater> theaters;
 
@@ -22,7 +19,7 @@ public class Company {
     @OneToOne
     private ContentManager contentManager;
 
-    @OneToMany(mappedBy = "company")
+    @OneToOne(mappedBy = "company")
     private List<CustomerService> customerServices;
 
     @OneToMany(mappedBy = "company")
@@ -30,7 +27,6 @@ public class Company {
 
     public Company(int id, String name, List<Theater> theaters, CompanyManager companyManager, ContentManager contentManager, List<CustomerService> customerServices, List<Movie> movies) {
         this.id = id;
-        this.name = name;
         this.theaters = theaters;
         this.companyManager = companyManager;
         this.contentManager = contentManager;
@@ -50,14 +46,6 @@ public class Company {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<Theater> getTheaters() {
