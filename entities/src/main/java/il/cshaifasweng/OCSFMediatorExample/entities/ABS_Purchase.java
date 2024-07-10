@@ -1,10 +1,34 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
+
+@Entity
+@Table(name = "purchases")
 public class ABS_Purchase {
-    Date purchaseDate;
-    RegisteredUser owner;
-    String purchaseValidation;
-    String attribute;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Temporal(TemporalType.DATE)
+    private Date purchaseDate;
+
+    @ManyToOne
+    private RegisteredUser owner;
+
+    @Column
+    private String purchaseValidation;
+
+    @Column
+    private String attribute;
 
     public ABS_Purchase(Date purchaseDate, RegisteredUser owner, String purchaseValidation, String attribute) {
         this.purchaseDate = purchaseDate;
@@ -12,6 +36,11 @@ public class ABS_Purchase {
         this.purchaseValidation = purchaseValidation;
         this.attribute = attribute;
     }
+
+    public ABS_Purchase() {
+    }
+
+    // Getters and setters
 
     public Date getPurchaseDate() {
         return purchaseDate;
