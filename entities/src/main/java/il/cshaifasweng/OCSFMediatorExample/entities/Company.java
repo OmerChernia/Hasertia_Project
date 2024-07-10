@@ -1,15 +1,32 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "companies")
 public class Company {
-    int id;
-    String name;
-    List<Theater> theaters;
-    CompanyManager companyManager;
-    ContentManager contentManager;
-    List<CustomerService> customerServices;
-    List<Movie> movies;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @OneToMany(mappedBy = "company")
+    private List<Theater> theaters;
+
+    @OneToOne
+    private CompanyManager companyManager;
+
+    @OneToOne
+    private ContentManager contentManager;
+
+    @OneToMany(mappedBy = "company")
+    private List<CustomerService> customerServices;
+
+    @OneToMany(mappedBy = "company")
+    private List<Movie> movies;
 
     public Company(int id, String name, List<Theater> theaters, CompanyManager companyManager, ContentManager contentManager, List<CustomerService> customerServices, List<Movie> movies) {
         this.id = id;
@@ -20,6 +37,12 @@ public class Company {
         this.customerServices = customerServices;
         this.movies = movies;
     }
+
+    public Company() {
+
+    }
+
+    // Constructors, getters, and setters
 
     public int getId() {
         return id;
