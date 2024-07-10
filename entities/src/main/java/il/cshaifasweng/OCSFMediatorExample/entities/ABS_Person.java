@@ -11,6 +11,10 @@ public abstract class ABS_Person {
         this.isOnline = isOnline;
     }
 
+    public ABS_Person() {
+
+    }
+
     public int getId() {
         return id;
     }
