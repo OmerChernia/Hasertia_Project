@@ -1,21 +1,39 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "halls")
 public class Hall {
-    int id;
-    int seats;
-    int capacity;
-    Theater theater;
-    List<MovieInstance> movieInstances;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    public Hall(int id, int seats, int capacity, Theater theater, List<MovieInstance> movieInstances) {
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats;
+
+    @Column(nullable = false)
+    private int capacity;
+
+    @ManyToOne
+    private Theater theater;
+
+    @OneToMany(mappedBy = "hall")
+    private List<MovieInstance> movieInstances;
+
+    public Hall() {
+    }
+
+    public Hall(int id, List<Seat> seats, int capacity, Theater theater, List<MovieInstance> movieInstances) {
         this.id = id;
         this.seats = seats;
         this.capacity = capacity;
         this.theater = theater;
         this.movieInstances = movieInstances;
     }
+
+    // Getters and setters
 
     public int getId() {
         return id;
@@ -25,11 +43,11 @@ public class Hall {
         this.id = id;
     }
 
-    public int getSeats() {
+    public List<Seat> getSeats() {
         return seats;
     }
 
-    public void setSeats(int seats) {
+    public void setSeats(List<Seat> seats) {
         this.seats = seats;
     }
 
