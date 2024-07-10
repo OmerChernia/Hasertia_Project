@@ -31,6 +31,8 @@ public class MovieInstance {
         this.price = price;
     }
 
+    // Getters and setters
+
     public Movie getMovie() {
         return movie;
     }
