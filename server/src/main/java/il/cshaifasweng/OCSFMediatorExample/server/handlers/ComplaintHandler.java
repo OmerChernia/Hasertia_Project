@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class ComplaintHandler extends MessageHandler
 {
-    ComplaintMessage message;
+    private ComplaintMessage message;
 
     public ComplaintHandler(ComplaintMessage message,ConnectionToClient client)
     {

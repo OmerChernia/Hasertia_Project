@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class LoginHandler extends MessageHandler{
 
-    LoginMessage message;
+    private LoginMessage message;
 
     public LoginHandler(LoginMessage message, ConnectionToClient client)
     {
@@ -15,34 +15,18 @@ public class LoginHandler extends MessageHandler{
     public void handleMessage()
     {
         // if(user.isonline==1){no}
-        switch (message.responseType)
+        switch (message.requestType)
         {
-            case LOGIN_SUCCESFUL -> login_s();
-            case LOGIN_FAILED -> login_f();
-            case LOGOUT_SUCCESFUL -> logout_s();
-            case LOGOUT_FAILED -> logout_f();
-            case ALREADY_LOGGED -> already_logged();
-
+            case LOGIN -> login();
+            case LOGOUT -> logout();
         }
     }
 
-    private void login_s()
+    protected void login()
     {
 
     }
-    private void login_f()
-    {
-
-    }
-    private void logout_s()
-    {
-
-    }
-    private void logout_f()
-    {
-
-    }
-    private void already_logged()
+    protected void logout()
     {
 
     }

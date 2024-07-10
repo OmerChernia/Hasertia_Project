@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class PriceRequestHandler extends MessageHandler
 {
-    PriceRequestMessage message;
+    private PriceRequestMessage message;
 
     public PriceRequestHandler(PriceRequestMessage message, ConnectionToClient client)
     {

@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class MovieHandler extends MessageHandler
 {
-    MovieMessage message;
+    private MovieMessage message;
 
     public MovieHandler(MovieMessage message, ConnectionToClient client)
     {

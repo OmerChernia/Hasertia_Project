@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class PurchaseHandler extends MessageHandler
 {
-    PurchaseMessage message;
+    private PurchaseMessage message;
 
     public PurchaseHandler(PurchaseMessage message, ConnectionToClient client)
     {

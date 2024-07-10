@@ -31,7 +31,7 @@ public class SimpleServer extends AbstractServer
 			} else if (message instanceof EmployeeLoginMessage) {
 				messageHandler = new EmployeeLoginHandler((EmployeeLoginMessage) message, client);
 			} else if (message instanceof LoginMessage) {
-
+				messageHandler = new LoginHandler((LoginMessage) message, client);
 			} else if (message instanceof MovieMessage) {
 				messageHandler = new MovieHandler((MovieMessage) message, client);
 			} else if (message instanceof MovieInstanceMessage) {
@@ -53,7 +53,23 @@ public class SimpleServer extends AbstractServer
 		}
 
 	}
+/*
+	private static SessionFactory getSessionFactory(String password) throws HibernateException {
+		Configuration configuration = new Configuration();
+		configuration.setProperty("hibernate.connection.password", password);
 
+		// Add ALL of your entities here. You can also try adding a whole package.
+		configuration.addAnnotatedClass(Car.class);
+		configuration.addAnnotatedClass(Person.class);
+		configuration.addAnnotatedClass(Image.class);
+		configuration.addAnnotatedClass(CarShop.class);
+
+		ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+				.applySettings(configuration.getProperties())
+				.build();
+
+		return configuration.buildSessionFactory(serviceRegistry);
+*/
 	public void sendToAllClients(Message message) {
 		try {
 			for (SubscribedClient SubscribedClient : clients) {

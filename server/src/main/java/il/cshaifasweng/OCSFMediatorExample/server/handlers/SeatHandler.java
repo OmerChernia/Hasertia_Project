@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class SeatHandler extends MessageHandler
 {
-    SeatMessage message;
+    private SeatMessage message;
 
     public SeatHandler(SeatMessage message, ConnectionToClient client)
     {

@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 public class TheaterHandler extends MessageHandler
 {
-    TheaterMessage message;
+    private TheaterMessage message;
 
     public TheaterHandler(TheaterMessage message, ConnectionToClient client)
     {
