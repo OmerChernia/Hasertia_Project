@@ -1,15 +1,34 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
+import java.util.Date;
+
+@Entity
+@Table(name = "home_viewing_package_instances")
 public class HomeViewingPackageInstance {
-    Movie movie;
-    Date viewingDate;
-    int price;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @OneToOne
+    private Movie movie;
+
+    @Temporal(TemporalType.DATE)
+    private Date activationDate;
+
+    @Column(nullable = false)
+    private int price;
+
+    public HomeViewingPackageInstance() {
+    }
 
     public HomeViewingPackageInstance(Movie movie, Date viewingDate, int price) {
         this.movie = movie;
-        this.viewingDate = viewingDate;
+        this.activationDate = viewingDate;
         this.price = price;
     }
+
+    // Getters and setters
 
     public Movie getMovie() {
         return movie;
@@ -20,11 +39,11 @@ public class HomeViewingPackageInstance {
     }
 
     public Date getViewingDate() {
-        return viewingDate;
+        return activationDate;
     }
 
     public void setViewingDate(Date viewingDate) {
-        this.viewingDate = viewingDate;
+        this.activationDate = viewingDate;
     }
 
     public int getPrice() {
