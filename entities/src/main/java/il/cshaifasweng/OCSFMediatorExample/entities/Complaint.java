@@ -1,23 +1,47 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "complaints")
 public class Complaint {
-    String info;
-    Date creationDate;
-    ABS_Purchase purchase;
-    boolean isClosed;
-    int id;
-    CustomerService customerService;
+    @Id
+    private int id;
 
-    public Complaint(String info, Date creationDate, ABS_Purchase purchase, boolean isClosed, int id, CustomerService customerService) {
+    @Column(nullable = false)
+    private String info;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationDate;
+
+    @ManyToOne
+    private ABS_Purchase purchase;
+
+    @Column(nullable = false)
+    private boolean isClosed;
+
+    @ManyToOne
+    private CustomerService customerService;
+
+    @ManyToOne
+    @MapsId
+    private RegisteredUser registeredUser;
+
+    public Complaint(String info, Date creationDate, ABS_Purchase purchase, boolean isClosed, CustomerService customerService, RegisteredUser registeredUser) {
         this.info = info;
         this.creationDate = creationDate;
         this.purchase = purchase;
         this.isClosed = isClosed;
-        this.id = id;
         this.customerService = customerService;
+        this.registeredUser = registeredUser;
     }
+
+    public Complaint() {
+    }
+
+    // Getters and setters
 
     public String getInfo() {
         return info;
