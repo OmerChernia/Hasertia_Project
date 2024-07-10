@@ -1,19 +1,41 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-public class Theater {
-    int id;
-    String location;
-    List<Hall> halls;
-    List<MovieInstance> movieInstances;
-    TheaterManager manager;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Map;
 
-    public Theater(int id, String location, List<Hall> halls, List<MovieInstance> movieInstances, TheaterManager manager) {
+@Entity
+@Table(name = "theaters")
+public class Theater {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(nullable = false)
+    private String location;
+
+    @OneToMany(mappedBy = "theater")
+    private List<Hall> halls;
+
+    // needs to be fixed!!!!!!!
+    @OneToMany(mappedBy = "theater")
+    private Map<Movie, MovieInstance[]> movies;
+
+    @OneToOne
+    private TheaterManager manager;
+
+    public Theater() {
+    }
+
+    public Theater(int id, String location, List<Hall> halls, TheaterManager manager) {
         this.id = id;
         this.location = location;
         this.halls = halls;
-        this.movieInstances = movieInstances;
         this.manager = manager;
     }
+
+    // Getters and Setters
+
 
     public int getId() {
         return id;
@@ -37,14 +59,6 @@ public class Theater {
 
     public void setHalls(List<Hall> halls) {
         this.halls = halls;
-    }
-
-    public List<MovieInstance> getMovieInstances() {
-        return movieInstances;
-    }
-
-    public void setMovieInstances(List<MovieInstance> movieInstances) {
-        this.movieInstances = movieInstances;
     }
 
     public TheaterManager getManager() {
