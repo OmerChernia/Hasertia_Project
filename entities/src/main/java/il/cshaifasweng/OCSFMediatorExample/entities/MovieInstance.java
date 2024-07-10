@@ -1,16 +1,32 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "movie_instances")
 public class MovieInstance {
-    Movie movie;
-    Date date;
-    Hall hall;
-    int price;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    public MovieInstance(Movie movie, Date date, Hall hall, int price) {
+    @OneToOne
+    private Movie movie;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date time;
+
+    @ManyToOne
+    private Hall hall;
+
+    private int price;
+
+    public MovieInstance() {
+    }
+
+    public MovieInstance(Movie movie, Date time, Hall hall, int price) {
         this.movie = movie;
-        this.date = date;
+        this.time = time;
         this.hall = hall;
         this.price = price;
     }
@@ -23,12 +39,12 @@ public class MovieInstance {
         this.movie = movie;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getTime() {
+        return time;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     public Hall getHall() {
