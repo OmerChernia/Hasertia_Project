@@ -1,14 +1,37 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "company_manager")
 public class CompanyManager {
-    Company company;
-    List<PriceRequest> priceRequests;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    private Company company;
+
+    @OneToMany(mappedBy = "companyManager")
+    private List<PriceRequest> priceRequests;
 
     public CompanyManager(Company company, List<PriceRequest> priceRequests) {
         this.company = company;
         this.priceRequests = priceRequests;
+    }
+
+    public CompanyManager() {
+    }
+
+    // Getters and setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Company getCompany() {
