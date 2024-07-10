@@ -10,7 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "abs_employee")
 @Inheritance(strategy = InheritanceType.JOINED) // Use JOINED strategy for inheritance
 public abstract class ABS_Employee extends ABS_Person {
     @Id
