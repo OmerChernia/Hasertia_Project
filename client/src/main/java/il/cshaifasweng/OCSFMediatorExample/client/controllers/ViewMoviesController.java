@@ -190,6 +190,41 @@ public class ViewMoviesController implements Initializable {
         pnItems.getChildren().add(originalGridPane);
     }
 
+    @FXML
+    public void showTicketsPane() {
+        try {
+            VBox ticketsPane = new VBox();
+            ticketsPane.setSpacing(10);
+            ticketsPane.setPadding(new Insets(10));
+            ticketsPane.setAlignment(Pos.CENTER); // Align items in the center of VBox
+
+            int numTickets = 5; // Number of tickets to display
+
+            for (int i = 0; i < numTickets; i++) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("ticket.fxml"));
+                Node ticketItem = loader.load();
+
+                TicketController controller = loader.getController();
+//                if (controller != null) {
+//                    controller.setTicketInfo("/images/ticket.png", "Ticket Info " + (i + 1));
+//                }
+
+                ticketsPane.getChildren().add(ticketItem);
+            }
+
+            // Wrap VBox in a StackPane to center it within pnItems
+            StackPane centeredPane = new StackPane();
+            centeredPane.setAlignment(Pos.CENTER);
+            centeredPane.getChildren().add(ticketsPane);
+
+            pnItems.getChildren().clear();
+            pnItems.getChildren().add(centeredPane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void handleClicks(ActionEvent actionEvent) {
         if (actionEvent.getSource() == btnCustomers) {
             pnlCustomer.setStyle("-fx-background-color : #1620A1");
@@ -205,9 +240,8 @@ public class ViewMoviesController implements Initializable {
             pnlOverview.toFront();
         }
         if (actionEvent.getSource() == btnOrders) {
-            pnlOrders.setStyle("-fx-background-color : #464F67");
-            pnlOrders.toFront();
-        }
+             showTicketsPane(); // Call the method to show tickets
+         }
         if (actionEvent.getSource() == btnLogin) {
             showLoginScreen();
         }
