@@ -2,14 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.hibernate.Session;
 
 public class PriceRequestHandler extends MessageHandler
 {
     private PriceRequestMessage message;
 
-    public PriceRequestHandler(PriceRequestMessage message, ConnectionToClient client)
+    public PriceRequestHandler(PriceRequestMessage message, ConnectionToClient client, Session session)
     {
-        super(client);
+        super(client,session);
         this.message = message;
     }
 

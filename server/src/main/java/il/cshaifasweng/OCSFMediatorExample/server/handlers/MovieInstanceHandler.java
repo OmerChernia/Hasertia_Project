@@ -2,14 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.hibernate.Session;
 
 public class MovieInstanceHandler extends MessageHandler
 {
     private MovieInstanceMessage message;
 
-    public MovieInstanceHandler(MovieInstanceMessage message, ConnectionToClient client)
+    public MovieInstanceHandler(MovieInstanceMessage message, ConnectionToClient client, Session session)
     {
-        super(client);
+        super(client,session);
         this.message = message;
     }
 

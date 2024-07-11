@@ -2,14 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.hibernate.Session;
 
 public class PurchaseHandler extends MessageHandler
 {
     private PurchaseMessage message;
 
-    public PurchaseHandler(PurchaseMessage message, ConnectionToClient client)
+    public PurchaseHandler(PurchaseMessage message, ConnectionToClient client, Session session)
     {
-        super(client);
+        super(client,session);
         this.message = message;
     }
 

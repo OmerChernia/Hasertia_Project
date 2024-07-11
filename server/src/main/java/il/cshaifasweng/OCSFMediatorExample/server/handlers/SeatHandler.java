@@ -2,14 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.hibernate.Session;
 
 public class SeatHandler extends MessageHandler
 {
     private SeatMessage message;
 
-    public SeatHandler(SeatMessage message, ConnectionToClient client)
+    public SeatHandler(SeatMessage message, ConnectionToClient client, Session session)
     {
-        super(client);
+        super(client,session);
         this.message = message;
     }
 

@@ -2,14 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.hibernate.Session;
 
 public class ComplaintHandler extends MessageHandler
 {
     private ComplaintMessage message;
 
-    public ComplaintHandler(ComplaintMessage message,ConnectionToClient client)
+    public ComplaintHandler(ComplaintMessage message,ConnectionToClient client, Session session)
     {
-        super(client);
+        super(client,session);
         this.message = message;
     }
 
