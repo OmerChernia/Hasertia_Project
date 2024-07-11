@@ -1,13 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Compliant;
+import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 
 import java.util.ArrayList;
 
 public class ComplaintMessage extends Message
 {
-    public ArrayList<Compliant> compliants;
+    public ArrayList<Complaint> compliants;
     public String customerId;
     public Theater theater;
     public ResponseType responseType;
@@ -33,7 +33,7 @@ public class ComplaintMessage extends Message
         this.requestType = requestType;
         this.theater = theater;
     }
-    public ComplaintMessage(MessageType messageType, RequestType requestType, Compliant compliant)
+    public ComplaintMessage(MessageType messageType, RequestType requestType, Complaint compliant)
     {
         // ADD_COMPLIANT, ANSWER_COMPLIANT
         super(messageType);
