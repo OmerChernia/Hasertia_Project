@@ -2,19 +2,14 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="350.0" prefWidth="487.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="350.0" prefWidth="487.0" style="-fx-background-color: #02030a;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.TicketController">
    <children>
       <Pane layoutY="1.0" prefHeight="359.0" prefWidth="484.0" style="-fx-background-color: #fff;">
          <children>
-            <ImageView fitHeight="70.0" fitWidth="76.0" layoutX="41.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="" />
-               </image>
-            </ImageView>
+
             <Separator layoutX="25.0" layoutY="80.0" prefHeight="17.0" prefWidth="415.0" />
             <Label layoutX="41.0" layoutY="19.0" text="Movie Name" textFill="#3a1c9d">
                <font>
@@ -71,7 +66,7 @@
                   <Font size="13.0" />
                </font>
             </Label>
-            <Pane layoutY="284.0" prefHeight="77.0" prefWidth="487.0" style="-fx-background-color: #F0F0F0;">
+            <Pane layoutY="285.0" prefHeight="73.0" prefWidth="484.0" style="-fx-background-color: #F0F0F0;">
                <children>
                   <Label layoutX="61.0" layoutY="26.0" text="Enjoy Your Movie!" textFill="#504df2">
                      <font>

@@ -24,16 +24,8 @@
                   </Label>
                   <HBox alignment="CENTER_LEFT" layoutX="312.0" layoutY="29.0" prefHeight="81.0" prefWidth="494.0" spacing="50.0">
                      <children>
-                        <VBox alignment="CENTER" prefHeight="88.0" prefWidth="202.0">
-                           <children>
-                              <ComboBox fx:id="cmxCinema" onAction="#handleCinemaSelection" prefHeight="40.0" prefWidth="194.0" promptText="Choose Cinema" />
-                           </children>
-                        </VBox>
-                        <VBox alignment="CENTER" prefHeight="127.0" prefWidth="266.0">
-                           <children>
-                              <ComboBox fx:id="cmxMovie" onAction="#handleMovieSelection" prefHeight="42.0" prefWidth="188.0" promptText="Choose Movie" />
-                           </children>
-                        </VBox>
+                        <ComboBox fx:id="cmxCinema" onAction="#handleCinemaSelection" prefHeight="40.0" prefWidth="194.0" promptText="Choose Cinema" />
+                        <ComboBox fx:id="cmxMovie" cache="true" onAction="#handleMovieSelection" prefHeight="42.0" prefWidth="188.0" promptText="Choose Movie" />
                      </children>
                   </HBox>
                   <ScrollPane layoutX="13.0" layoutY="117.0" prefHeight="664.0" prefWidth="1242.0" stylesheets="@../css/style.css">
@@ -153,12 +145,12 @@
                                     <Insets left="50.0" />
                                  </padding>
                               </Button>
-                              <Button fx:id="btnExit" alignment="BASELINE_LEFT" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleClicks" prefHeight="35.0" prefWidth="187.0" stylesheets="@../css/style.css" text="Exit">
+                              <Button fx:id="btnExit" alignment="BASELINE_LEFT" graphicTextGap="0.0" mnemonicParsing="false" onAction="#handleClicks" prefHeight="35.0" prefWidth="208.0" stylesheets="@../css/style.css" text="Exit">
                                  <padding>
                                     <Insets left="50.0" />
                                  </padding>
                                  <graphic>
-                                    <ImageView fitHeight="23.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="23.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/icons8-close-50.png" />
                                        </image>
