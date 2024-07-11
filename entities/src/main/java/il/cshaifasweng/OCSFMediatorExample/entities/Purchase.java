@@ -20,7 +20,6 @@ public abstract class Purchase
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.DATE)
     private LocalDateTime purchaseDate;
 
     @ManyToOne

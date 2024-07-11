@@ -7,8 +7,7 @@ import java.util.List;
 @Table(name = "movies")
 public class Movie {
 
-    private enum StreamingType
-    {
+    public enum StreamingType {
         HOME_VIEWING,
         THEATER_VIEWING,
         BOTH
@@ -120,5 +119,9 @@ public class Movie {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public int getId() {
+        return id;
     }
 }

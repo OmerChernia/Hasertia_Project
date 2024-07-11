@@ -78,4 +78,8 @@ public class Hall {
     public void setMovieInstances(List<MovieInstance> movieInstances) {
         this.movieInstances = movieInstances;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

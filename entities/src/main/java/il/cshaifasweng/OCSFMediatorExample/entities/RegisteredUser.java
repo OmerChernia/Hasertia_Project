@@ -21,8 +21,8 @@ public class RegisteredUser extends Person {
     public RegisteredUser() {
     }
 
-    public RegisteredUser(int id, String name, boolean isOnline, String email,int ticket_counter , List<Purchase> purchases) {
-        super(id, name, isOnline);
+    public RegisteredUser(String name, boolean isOnline, String email,int ticket_counter , List<Purchase> purchases) {
+        super(name, isOnline);
         this.email = email;
         this.ticket_counter = ticket_counter;
         this.purchases = purchases;

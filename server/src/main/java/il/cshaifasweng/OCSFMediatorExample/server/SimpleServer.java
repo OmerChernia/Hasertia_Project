@@ -23,15 +23,16 @@ import java.util.ArrayList;
 public class SimpleServer extends AbstractServer
 {
 	private static ArrayList<SubscribedClient> clients = new ArrayList<>();
-	private static Session session;
+	static Session session;
 
 
 	public SimpleServer(int port,String password)
 	{
 		super(port);
 		session = getSessionFactory(password).openSession();
-		session.beginTransaction();
-		//load db
+		GenerateDB db = new GenerateDB(session);
+		db.initializeDatabase();
+		session.close(); // Ensure the session is closed after initialization
 	}
 
 	@Override

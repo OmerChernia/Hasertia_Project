@@ -1,23 +1,19 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
-@Entity
+@MappedSuperclass //means we don't need a table for it, but we want its fields in employee
 public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected int id;
-
+    @Column
     protected String name;
-
+    @Column
     protected boolean isOnline;
 
-    public Person(int id, String name, boolean isOnline) {
-        this.id = id;
+    public Person( String name, boolean isOnline) {
         this.name = name;
         this.isOnline = isOnline;
     }

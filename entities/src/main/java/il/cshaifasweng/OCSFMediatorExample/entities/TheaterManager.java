@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "theater_managers")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class TheaterManager extends Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +19,8 @@ public class TheaterManager extends Employee {
 
     // Getters and Setters
 
-    public TheaterManager(int id, String name, boolean isOnline, String password, EmployeeType employeeType, Theater theater) {
-        super(id, name, isOnline, password, employeeType);
+    public TheaterManager(String name, boolean isOnline, String password, EmployeeType employeeType, Theater theater) {
+        super(name, isOnline, password, employeeType);
         this.theater = theater;
     }
 

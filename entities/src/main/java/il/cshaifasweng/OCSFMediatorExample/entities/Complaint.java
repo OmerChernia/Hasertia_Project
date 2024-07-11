@@ -14,7 +14,6 @@ public class Complaint {
     private String info;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime creationDate;
 
     @ManyToOne

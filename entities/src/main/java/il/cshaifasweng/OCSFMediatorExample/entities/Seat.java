@@ -1,12 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
-
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "seats")
@@ -15,8 +11,8 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false)
-    int row;
+    @Column(name = "row_number", nullable = false) // Avoid reserved keyword
+    int rowNumber;
 
     @Column(nullable = false)
     int col;
@@ -24,15 +20,19 @@ public class Seat {
     @ManyToOne
     Hall hall;
 
-    // needs to be fixed!!!!!!!
     @OneToMany
+    @JoinTable(
+            name = "seats_movie_instances",
+            joinColumns = @JoinColumn(name = "seat_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_instance_id")
+    )
     List<MovieInstance> taken;
 
     public Seat() {
     }
 
     public Seat(int row, int col) {
-        this.row = row;
+        this.rowNumber = row;
         this.col = col;
         taken = new ArrayList<>();
     }
@@ -47,12 +47,12 @@ public class Seat {
         this.id = id;
     }
 
-    public int getRow() {
-        return row;
+    public int getRowNumber() {
+        return rowNumber;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
     }
 
     public int getCol() {
@@ -69,5 +69,13 @@ public class Seat {
 
     public void setMovies(List<MovieInstance> movies) {
         this.taken = movies;
+    }
+
+    public void setHall(Hall hall) {
+        this.hall = hall;
+    }
+
+    public Hall getHall() {
+        return hall;
     }
 }

@@ -14,12 +14,12 @@ import javax.persistence.Table;
 @Inheritance(strategy = InheritanceType.JOINED) // Use JOINED strategy for inheritance
 public class Employee extends Person
 {
-    protected enum EmployeeType
+    public enum EmployeeType
     {
         THEATER_MANAGER,
         COMPANY_MANAGER,
         CUSTOMER_SERVICE,
-        CONTENT_MANAGER
+        CONTENT_MANAGER,
     }
 
     @Column
@@ -32,8 +32,8 @@ public class Employee extends Person
     @Column(name = "password", nullable = false)
     private String password;
 
-    public Employee(int id, String name, boolean isOnline, String password, EmployeeType employeeType) {
-        super(id, name, isOnline);
+    public Employee(String name, boolean isOnline, String password, EmployeeType employeeType) {
+        super(name, isOnline);
         this.password = password;
         this.employeeType = employeeType;
     }
@@ -52,4 +52,8 @@ public class Employee extends Person
         this.password = password;
     }
 
+    public EmployeeType getEmployeeType()
+    {
+        return employeeType;
+    }
 }

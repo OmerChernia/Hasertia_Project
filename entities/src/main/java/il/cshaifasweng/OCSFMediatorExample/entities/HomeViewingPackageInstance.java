@@ -11,7 +11,6 @@ public class HomeViewingPackageInstance extends Purchase{
     @OneToOne
     private Movie movie;
 
-    @Temporal(TemporalType.DATE)
     private LocalDateTime activationDate;
 
     @Column(nullable = false)
