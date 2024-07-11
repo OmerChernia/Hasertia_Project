@@ -1,9 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MainGui;
+
 public class Main {
 
 	public static void main(String[] args) {
-		SimpleChatClient.main(args);
+		MainGui.main(args);
 	}
 
 }
