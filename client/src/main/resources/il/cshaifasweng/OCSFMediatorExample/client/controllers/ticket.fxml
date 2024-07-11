@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="350.0" prefWidth="487.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutY="1.0" prefHeight="359.0" prefWidth="484.0" style="-fx-background-color: #fff;">
+         <children>
+            <ImageView fitHeight="70.0" fitWidth="76.0" layoutX="41.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="" />
+               </image>
+            </ImageView>
+            <Separator layoutX="25.0" layoutY="80.0" prefHeight="17.0" prefWidth="415.0" />
+            <Label layoutX="41.0" layoutY="19.0" text="Movie Name" textFill="#3a1c9d">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="51.0" layoutY="113.0" text="CLIENT" textFill="#aeacac">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="51.0" layoutY="186.0" text="Cinema" textFill="#aeacac">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="160.0" layoutY="113.0" text="Price" textFill="#aeacac">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="160.0" layoutY="186.0" text="Hall" textFill="#aeacac">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="58.0" layoutY="139.0" text="Brad Pitt" textFill="#4d4c4c">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="163.0" layoutY="139.0" text="\$1000" textFill="#4d4c4c">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="233.0" layoutY="185.0" text="Seat" textFill="#aeacac">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="235.0" layoutY="210.0" prefHeight="20.0" prefWidth="22.0" style="-fx-background-color: #aeacac;" text="12" textFill="#fffefe">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="166.0" layoutY="211.0" prefHeight="19.0" prefWidth="11.0" style="-fx-background-color: #aeacac;" text="A" textFill="#fffefe">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="50.0" layoutY="210.0" prefHeight="20.0" prefWidth="49.0" style="-fx-background-color: #aeacac;" text="Tel Aviv" textFill="#fffefe">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Pane layoutY="284.0" prefHeight="77.0" prefWidth="487.0" style="-fx-background-color: #F0F0F0;">
+               <children>
+                  <Label layoutX="61.0" layoutY="26.0" text="Enjoy Your Movie!" textFill="#504df2">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Label layoutX="346.0" layoutY="14.0" text="Date Created" textFill="#3a1c9d">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="346.0" layoutY="36.0" text="16" textFill="#aeacac">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="395.0" layoutY="44.0" text="APR" textFill="#3a1c9d" />
+            <Label layoutX="395.0" layoutY="62.0" text="2018" textFill="#aeacac" />
+            <Label layoutX="347.0" layoutY="97.0" text="Desired Start" textFill="#3a1c9d">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="347.0" layoutY="117.0" text="25" textFill="#aeacac">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="396.0" layoutY="125.0" text="AUG" textFill="#3a1c9d" />
+            <Label layoutX="396.0" layoutY="143.0" text="2018" textFill="#aeacac" />
+            <Label layoutX="41.0" layoutY="52.0" text="Ref: 20178" textFill="#b2b0b0">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow color="#d7d2d2" height="50.0" radius="24.5" width="50.0" />
+         </effect>
+      </Pane>
+   </children>
+</AnchorPane>
