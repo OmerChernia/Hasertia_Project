@@ -7,7 +7,7 @@ import org.hibernate.Session;
 public abstract class MessageHandler
 {
     public ConnectionToClient client;
-    private Session session;
+    protected Session session;
 
     public MessageHandler(ConnectionToClient client, Session session)
     {
@@ -17,4 +17,6 @@ public abstract class MessageHandler
     public MessageHandler(){}
 
     public abstract void handleMessage();
+
+    public abstract void setMessageTypeToResponse();
 }

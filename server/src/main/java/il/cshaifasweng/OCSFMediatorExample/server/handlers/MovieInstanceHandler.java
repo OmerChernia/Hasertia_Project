@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
@@ -12,6 +13,11 @@ public class MovieInstanceHandler extends MessageHandler
     {
         super(client,session);
         this.message = message;
+    }
+    @Override
+    public void setMessageTypeToResponse()
+    {
+        message.messageType= Message.MessageType.RESPONSE;
     }
 
     public void handleMessage()

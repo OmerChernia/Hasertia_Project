@@ -13,7 +13,7 @@ public class SimpleChatServer
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter the password: ");
         String password = scanner.nextLine();
-        server = new SimpleServer(3151,password);
+        server = new SimpleServer(3000,password);
         System.out.println("server is listening");
         server.listen();
     }

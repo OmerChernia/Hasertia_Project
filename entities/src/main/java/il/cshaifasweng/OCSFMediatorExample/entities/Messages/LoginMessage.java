@@ -2,7 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 
 public class LoginMessage extends Message
 {
-    String id;
+    public String id;
     public RequestType requestType;
     public ResponseType responseType;
 

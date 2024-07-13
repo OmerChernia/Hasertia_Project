@@ -9,6 +9,7 @@ public class PriceRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column
     private int newPrice; // Changed from String to int for better representation
 
     @ManyToOne

@@ -1,7 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
-import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 @Entity

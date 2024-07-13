@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,13 +22,18 @@ public class RegisteredUser extends Person {
     public RegisteredUser() {
     }
 
-    public RegisteredUser(String name, boolean isOnline, String email,int ticket_counter , List<Purchase> purchases) {
-        super(name, isOnline);
+    public RegisteredUser(String id_number ,String name, boolean isOnline, String email,int ticket_counter , List<Purchase> purchases) {
+        super(id_number,name, isOnline);
         this.email = email;
         this.ticket_counter = ticket_counter;
         this.purchases = purchases;
     }
-
+    public RegisteredUser(String id_number ,String name, boolean isOnline, String email,int ticket_counter) {
+        super(id_number ,name, isOnline);
+        this.email = email;
+        this.ticket_counter = ticket_counter;
+        this.purchases = new ArrayList<>();
+    }
     // Getters and setters
 
     public String getEmail() {

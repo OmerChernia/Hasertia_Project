@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 
@@ -24,6 +25,12 @@ public class ComplaintHandler extends MessageHandler
             case GET_COMPLIANT_BY_THEATER -> get_complaint_by_theater();
             case GET_COMPLIANT_BY_CUSTOMER_ID -> get_complaint_by_customer_id();
         }
+    }
+
+    @Override
+    public void setMessageTypeToResponse()
+    {
+        message.messageType= Message.MessageType.RESPONSE;
     }
 
     private void add_complaint()

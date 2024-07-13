@@ -25,6 +25,7 @@
       <version>5.6.1.Final</version>
     </dependency>
 
+
     <!-- JPA API -->
     <dependency>
       <groupId>jakarta.persistence</groupId>
@@ -38,5 +39,7 @@
       <artifactId>hibernate-entitymanager</artifactId>
       <version>5.6.1.Final</version>
     </dependency>
+
+
   </dependencies>
 </project>
