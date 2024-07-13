@@ -43,24 +43,24 @@ public class SimpleServer extends AbstractServer
 			session.beginTransaction();
 
 			if (message.messageType == Message.MessageType.REQUEST) {
-				if (message instanceof ComplaintMessage) {
-					messageHandler = new ComplaintHandler((ComplaintMessage) message, client, session);
-				} else if (message instanceof EmployeeLoginMessage) {
-					messageHandler = new EmployeeLoginHandler((EmployeeLoginMessage) message, client, session);
-				} else if (message instanceof LoginMessage) {
-					messageHandler = new LoginHandler((LoginMessage) message, client, session);
-				} else if (message instanceof MovieMessage) {
-					messageHandler = new MovieHandler((MovieMessage) message, client, session);
-				} else if (message instanceof MovieInstanceMessage) {
-					messageHandler = new MovieInstanceHandler((MovieInstanceMessage) message, client, session);
-				} else if (message instanceof PriceRequestMessage) {
-					messageHandler = new PriceRequestHandler((PriceRequestMessage) message, client, session);
-				} else if (message instanceof PurchaseMessage) {
-					messageHandler = new PurchaseHandler((PurchaseMessage) message, client, session);
-				} else if (message instanceof SeatMessage) {
-					messageHandler = new SeatHandler((SeatMessage) message, client, session);
-				} else if (message instanceof TheaterMessage) {
-					messageHandler = new TheaterHandler((TheaterMessage) message, client, session);
+				if (msg instanceof ComplaintMessage) {
+					messageHandler = new ComplaintHandler((ComplaintMessage) msg, client, session);
+				} else if (msg instanceof EmployeeLoginMessage) {
+					messageHandler = new EmployeeLoginHandler((EmployeeLoginMessage) msg, client, session);
+				} else if (msg instanceof LoginMessage) {
+					messageHandler = new LoginHandler((LoginMessage) msg, client, session);
+				} else if (msg instanceof MovieMessage) {
+					messageHandler = new MovieHandler((MovieMessage) msg, client, session);
+				} else if (msg instanceof MovieInstanceMessage) {
+					messageHandler = new MovieInstanceHandler((MovieInstanceMessage) msg, client, session);
+				} else if (msg instanceof PriceRequestMessage) {
+					messageHandler = new PriceRequestHandler((PriceRequestMessage) msg, client, session);
+				} else if (msg instanceof PurchaseMessage) {
+					messageHandler = new PurchaseHandler((PurchaseMessage) msg, client, session);
+				} else if (msg instanceof SeatMessage) {
+					messageHandler = new SeatHandler((SeatMessage) msg, client, session);
+				} else if (msg instanceof TheaterMessage) {
+					messageHandler = new TheaterHandler((TheaterMessage) msg, client, session);
 
 				}
 
