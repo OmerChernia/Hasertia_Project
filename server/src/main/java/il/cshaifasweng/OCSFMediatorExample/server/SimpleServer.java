@@ -32,7 +32,6 @@ public class SimpleServer extends AbstractServer
 		session = getSessionFactory(password).openSession();
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
-		session.close(); // Ensure the session is closed after initialization
 	}
 
 	@Override
