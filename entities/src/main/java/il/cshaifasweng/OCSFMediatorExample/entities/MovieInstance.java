@@ -18,17 +18,13 @@ public class MovieInstance {
     @ManyToOne
     private Hall hall;
 
-    private int price;
-
     public MovieInstance() {
     }
 
-    public MovieInstance(Movie movie, LocalDateTime time, Hall hall, int price) {
+    public MovieInstance(Movie movie, LocalDateTime time, Hall hall) {
         this.movie = movie;
         this.time = time;
-        this.hall = hall;
-        this.price = price;
-    }
+        this.hall = hall;}
 
     // Getters and setters
 
@@ -54,14 +50,6 @@ public class MovieInstance {
 
     public void setHall(Hall hall) {
         this.hall = hall;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public int getId() {

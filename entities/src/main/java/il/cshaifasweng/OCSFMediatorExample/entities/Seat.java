@@ -11,8 +11,8 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "row_number", nullable = false) // Avoid reserved keyword
-    int rowNumber;
+    @Column(name = "row_num", nullable = false) // Avoid reserved keyword
+    int row;
 
     @Column(nullable = false)
     int col;
@@ -32,7 +32,7 @@ public class Seat {
     }
 
     public Seat(int row, int col) {
-        this.rowNumber = row;
+        this.row = row;
         this.col = col;
         taken = new ArrayList<>();
     }
@@ -47,12 +47,12 @@ public class Seat {
         this.id = id;
     }
 
-    public int getRowNumber() {
-        return rowNumber;
+    public int getRow() {
+        return row;
     }
 
-    public void setRowNumber(int rowNumber) {
-        this.rowNumber = rowNumber;
+    public void setRow(int rowNumber) {
+        this.row = rowNumber;
     }
 
     public int getCol() {
@@ -67,8 +67,8 @@ public class Seat {
         return taken;
     }
 
-    public void setMovies(List<MovieInstance> movies) {
-        this.taken = movies;
+    public void addMovieInstance(MovieInstance movie) {
+        this.taken.add(movie);
     }
 
     public void setHall(Hall hall) {

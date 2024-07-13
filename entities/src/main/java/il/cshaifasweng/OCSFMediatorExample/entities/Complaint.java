@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "complaints")
 public class Complaint {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false)
@@ -23,7 +24,6 @@ public class Complaint {
 
 
     @ManyToOne
-    @MapsId
     private RegisteredUser registeredUser;
 
     public Complaint(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, RegisteredUser registeredUser) {

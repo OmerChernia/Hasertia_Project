@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "movie_tickets")
+@DiscriminatorValue("movie_ticket")
 public class MovieTicket extends Purchase{
 
     @OneToOne
@@ -16,8 +16,8 @@ public class MovieTicket extends Purchase{
     public MovieTicket() {
     }
 
-    public MovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, String attribute, MovieInstance movieInstance, Seat seat) {
-        super(purchaseDate, owner, purchaseValidation, attribute);
+    public MovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat) {
+        super(purchaseDate, owner, purchaseValidation);
         this.movieInstance = movieInstance;
         this.seat = seat;
     }

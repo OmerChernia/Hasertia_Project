@@ -41,10 +41,17 @@ public class Movie {
     @Column(nullable = false)
     private int duration;
 
+    @Column(nullable = false)
+    private int homeViewingPrice;
+
+    @Column(nullable = false)
+    private int theaterPrice;
+
+
     public Movie() {
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration) {
+    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -53,6 +60,8 @@ public class Movie {
         this.image = image;
         this.streamingType = streamingType;
         this.duration = duration;
+        this.homeViewingPrice = homeViewingPrice;
+        this.theaterPrice = theaterPrice;
     }
 
     // Getters and setters
@@ -123,5 +132,21 @@ public class Movie {
 
     public long getId() {
         return id;
+    }
+
+    public int getHomeViewingPrice() {
+        return homeViewingPrice;
+    }
+
+    public void setHomeViewingPrice(int homeViewingPrice) {
+        this.homeViewingPrice = homeViewingPrice;
+    }
+
+    public int getTheaterPrice() {
+        return theaterPrice;
+    }
+
+    public void setTheaterPrice(int theaterPrice) {
+        this.theaterPrice = theaterPrice;
     }
 }

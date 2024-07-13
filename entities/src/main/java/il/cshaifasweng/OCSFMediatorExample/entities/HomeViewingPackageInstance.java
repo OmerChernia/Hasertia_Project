@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "home_viewing_package_instances")
+@DiscriminatorValue("Home_Viewing_Package")
 public class HomeViewingPackageInstance extends Purchase{
 
     @OneToOne
@@ -12,17 +12,14 @@ public class HomeViewingPackageInstance extends Purchase{
 
     private LocalDateTime activationDate;
 
-    @Column(nullable = false)
-    private int price;
 
     public HomeViewingPackageInstance() {
     }
 
-    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, String attribute,Movie movie, LocalDateTime viewingDate, int price) {
-        super(purchaseDate, owner, purchaseValidation, attribute);
+    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, int price) {
+        super(purchaseDate, owner, purchaseValidation);
         this.movie = movie;
         this.activationDate = viewingDate;
-        this.price = price;
     }
 
     // Getters and setters
@@ -41,13 +38,5 @@ public class HomeViewingPackageInstance extends Purchase{
 
     public void setViewingDate(LocalDateTime viewingDate) {
         this.activationDate = viewingDate;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 }

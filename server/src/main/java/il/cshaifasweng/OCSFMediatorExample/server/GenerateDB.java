@@ -36,7 +36,8 @@ public class GenerateDB {
             generatePriceRequests();
             generateHallsAndSeats();
             generateMovieInstances();
-
+            generatePurchases();
+            generateComplaints();
         }
         catch (Exception e)
         {
@@ -161,16 +162,16 @@ public class GenerateDB {
         List<Movie> movies = session.createQuery("from Movie", Movie.class).list();
         if (movies.isEmpty()) {
             movies = List.of(
-                    new Movie("הסנדק", "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.", "Albert S. Ruddy", "The Godfather", List.of("Marlon Brando", "Al Pacino", "James Caan"), "godfather.jpg", Movie.StreamingType.BOTH, 175),
-                    new Movie("חומות של תקווה", "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", "Niki Marvin", "The Shawshank Redemption", List.of("Tim Robbins", "Morgan Freeman", "Bob Gunton"), "shawshank.jpg", Movie.StreamingType.BOTH, 142),
-                    new Movie("האביר האפל", "When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.", "Christopher Nolan", "The Dark Knight", List.of("Christian Bale", "Heath Ledger", "Aaron Eckhart"), "dark_knight.jpg", Movie.StreamingType.THEATER_VIEWING, 152),
-                    new Movie("להציל את טוראי ריאן", "Following the Normandy Landings, a group of U.S. soldiers go behind enemy lines to retrieve a paratrooper whose brothers have been killed in action.", "Steven Spielberg", "Saving Private Ryan", List.of("Tom Hanks", "Matt Damon", "Tom Sizemore"), "saving_private_ryan.jpg", Movie.StreamingType.THEATER_VIEWING, 169),
-                    new Movie("מועדון קרב", "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.", "Art Linson", "Fight Club", List.of("Brad Pitt", "Edward Norton", "Meat Loaf"), "fight_club.jpg", Movie.StreamingType.BOTH, 139),
-                    new Movie("פורסט גאמפ", "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.", "Wendy Finerman", "Forrest Gump", List.of("Tom Hanks", "Robin Wright", "Gary Sinise"), "forrest_gump.jpg", Movie.StreamingType.BOTH, 142),
-                    new Movie("הסנדק חלק ב'", "The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on his crime syndicate.", "Francis Ford Coppola", "The Godfather Part II", List.of("Al Pacino", "Robert De Niro", "Robert Duvall"), "godfather_2.jpg", Movie.StreamingType.BOTH, 202),
-                    new Movie("הטוב, הרע והמכוער", "A bounty hunting scam joins two men in an uneasy alliance against a third in a race to find a fortune in gold buried in a remote cemetery.", "Sergio Leone", "The Good, the Bad and the Ugly", List.of("Clint Eastwood", "Eli Wallach", "Lee Van Cleef"), "good_bad_ugly.jpg", Movie.StreamingType.THEATER_VIEWING, 161),
-                    new Movie("מלחמת הכוכבים: פרק 4 - תקווה חדשה", "Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy from the Empire's world-destroying battle station.", "Gary Kurtz", "Star Wars: Episode IV - A New Hope", List.of("Mark Hamill", "Harrison Ford", "Carrie Fisher"), "star_wars_iv.jpg", Movie.StreamingType.BOTH, 121),
-                    new Movie("שר הטבעות: אחוות הטבעת", "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.", "Peter Jackson", "The Lord of the Rings: The Fellowship of the Ring", List.of("Elijah Wood", "Ian McKellen", "Orlando Bloom"), "lord_of_the_rings.jpg", Movie.StreamingType.THEATER_VIEWING, 178)
+                    new Movie("הסנדק", "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.", "Albert S. Ruddy", "The Godfather", List.of("Marlon Brando", "Al Pacino", "James Caan"), "godfather.jpg", Movie.StreamingType.BOTH, 175, 50,60),
+                    new Movie("חומות של תקווה", "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", "Niki Marvin", "The Shawshank Redemption", List.of("Tim Robbins", "Morgan Freeman", "Bob Gunton"), "shawshank.jpg", Movie.StreamingType.BOTH, 142, 50, 60),
+                    new Movie("האביר האפל", "When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.", "Christopher Nolan", "The Dark Knight", List.of("Christian Bale", "Heath Ledger", "Aaron Eckhart"), "dark_knight.jpg", Movie.StreamingType.THEATER_VIEWING, 152,50 , 0),
+                    new Movie("להציל את טוראי ריאן", "Following the Normandy Landings, a group of U.S. soldiers go behind enemy lines to retrieve a paratrooper whose brothers have been killed in action.", "Steven Spielberg", "Saving Private Ryan", List.of("Tom Hanks", "Matt Damon", "Tom Sizemore"), "saving_private_ryan.jpg", Movie.StreamingType.THEATER_VIEWING, 169, 50, 0),
+                    new Movie("מועדון קרב", "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.", "Art Linson", "Fight Club", List.of("Brad Pitt", "Edward Norton", "Meat Loaf"), "fight_club.jpg", Movie.StreamingType.BOTH, 139, 50, 60),
+                    new Movie("פורסט גאמפ", "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75.", "Wendy Finerman", "Forrest Gump", List.of("Tom Hanks", "Robin Wright", "Gary Sinise"), "forrest_gump.jpg", Movie.StreamingType.BOTH, 142, 50, 60),
+                    new Movie("הסנדק חלק ב'", "The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on his crime syndicate.", "Francis Ford Coppola", "The Godfather Part II", List.of("Al Pacino", "Robert De Niro", "Robert Duvall"), "godfather_2.jpg", Movie.StreamingType.BOTH, 202, 50, 60),
+                    new Movie("הטוב, הרע והמכוער", "A bounty hunting scam joins two men in an uneasy alliance against a third in a race to find a fortune in gold buried in a remote cemetery.", "Sergio Leone", "The Good, the Bad and the Ugly", List.of("Clint Eastwood", "Eli Wallach", "Lee Van Cleef"), "good_bad_ugly.jpg", Movie.StreamingType.THEATER_VIEWING, 161, 50, 60),
+                    new Movie("מלחמת הכוכבים: פרק 4 - תקווה חדשה", "Luke Skywalker joins forces with a Jedi Knight, a cocky pilot, a Wookiee and two droids to save the galaxy from the Empire's world-destroying battle station.", "Gary Kurtz", "Star Wars: Episode IV - A New Hope", List.of("Mark Hamill", "Harrison Ford", "Carrie Fisher"), "star_wars_iv.jpg", Movie.StreamingType.HOME_VIEWING, 121, 0, 60),
+                    new Movie("שר הטבעות: אחוות הטבעת", "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.", "Peter Jackson", "The Lord of the Rings: The Fellowship of the Ring", List.of("Elijah Wood", "Ian McKellen", "Orlando Bloom"), "lord_of_the_rings.jpg", Movie.StreamingType.THEATER_VIEWING, 178, 50 , 60)
             );
 
             Transaction transaction = session.beginTransaction();
@@ -243,8 +244,8 @@ public class GenerateDB {
 
     private void generateSeats(Hall hall) {
         List<Seat> seats = new ArrayList<>();
-        for (int row = 1; row <= 10; row++) {
-            for (int col = 1; col <= 10; col++) {
+        for (int row = 1; row <= 5; row++) {
+            for (int col = 1; col <= 5; col++) {
                 Seat seat = new Seat(row, col);
                 seat.setHall(hall);
                 seats.add(seat);
@@ -269,16 +270,16 @@ public class GenerateDB {
             }
 
             movieInstances = List.of(
-                    new MovieInstance(movies.get(0), LocalDateTime.now().plusDays(1), halls.get(0), 50),
-                    new MovieInstance(movies.get(1), LocalDateTime.now().plusDays(2), halls.get(1), 55),
-                    new MovieInstance(movies.get(2), LocalDateTime.now().plusDays(3), halls.get(2), 60),
-                    new MovieInstance(movies.get(3), LocalDateTime.now().plusDays(4), halls.get(3), 65),
-                    new MovieInstance(movies.get(4), LocalDateTime.now().plusDays(5), halls.get(4), 70),
-                    new MovieInstance(movies.get(5), LocalDateTime.now().plusDays(6), halls.get(5), 75),
-                    new MovieInstance(movies.get(6), LocalDateTime.now().plusDays(7), halls.get(6), 80),
-                    new MovieInstance(movies.get(7), LocalDateTime.now().plusDays(8), halls.get(7), 85),
-                    new MovieInstance(movies.get(8), LocalDateTime.now().plusDays(9), halls.get(8), 90),
-                    new MovieInstance(movies.get(9), LocalDateTime.now().plusDays(10), halls.get(9), 95)
+                    new MovieInstance(movies.get(0), LocalDateTime.now().plusDays(1), halls.get(0)),
+                    new MovieInstance(movies.get(1), LocalDateTime.now().plusDays(2), halls.get(1)),
+                    new MovieInstance(movies.get(2), LocalDateTime.now().plusDays(3), halls.get(2)),
+                    new MovieInstance(movies.get(3), LocalDateTime.now().plusDays(4), halls.get(3)),
+                    new MovieInstance(movies.get(4), LocalDateTime.now().plusDays(5), halls.get(4)),
+                    new MovieInstance(movies.get(5), LocalDateTime.now().plusDays(6), halls.get(5)),
+                    new MovieInstance(movies.get(6), LocalDateTime.now().plusDays(7), halls.get(6)),
+                    new MovieInstance(movies.get(7), LocalDateTime.now().plusDays(8), halls.get(7)),
+                    new MovieInstance(movies.get(8), LocalDateTime.now().plusDays(9), halls.get(8)),
+                    new MovieInstance(movies.get(9), LocalDateTime.now().plusDays(10), halls.get(9))
             );
 
             Transaction transaction = session.beginTransaction();
@@ -292,6 +293,132 @@ public class GenerateDB {
             System.out.println("Movie Instances table is already populated.");
         }
     }
+
+    private void generatePurchases() {
+        List<Purchase> existingPurchases = session.createQuery("from Purchase", Purchase.class).list();
+        if (!existingPurchases.isEmpty()) {
+            System.out.println("Purchases table is already populated.");
+            return;
+        }
+        List<RegisteredUser> users = session.createQuery("from RegisteredUser", RegisteredUser.class).list();
+        if (users.isEmpty()) {
+            System.out.println("No registered users found.");
+            return;
+        }
+
+        List<Movie> movies = session.createQuery("from Movie", Movie.class).list();
+        List<MovieInstance> movieInstances = session.createQuery("from MovieInstance", MovieInstance.class).list();
+        List<Seat> seats = session.createQuery("from Seat", Seat.class).list();
+
+        if (movies.isEmpty() || movieInstances.isEmpty() || seats.isEmpty()) {
+            System.out.println("No movies, movie instances, or seats found.");
+            return;
+        }
+
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            for (int i = 0; i < 5; i++) {
+                RegisteredUser user = users.get(i % users.size());
+
+                HomeViewingPackageInstance homePackage = new HomeViewingPackageInstance(
+                        LocalDateTime.now(),
+                        user,
+                        "validation" + i,
+                        movies.get(i % movies.size()),
+                        LocalDateTime.now().plusDays(1),
+                        100 + i
+                );
+                user.getPurchases().add(homePackage);
+                session.save(homePackage);
+
+                MovieTicket movieTicket = new MovieTicket(
+                        LocalDateTime.now(),
+                        user,
+                        "validation" + (i + 5),
+                        movieInstances.get(i % movieInstances.size()),
+                        seats.get(i % seats.size())
+                );
+                user.getPurchases().add(movieTicket);
+                session.save(movieTicket);
+
+                // Add the movie instance to the taken list of the seat
+                Seat seat = movieTicket.getSeat();
+                seat.addMovieInstance(movieTicket.getMovieInstance());
+                session.update(seat);
+
+
+                MultiEntryTicket multiEntryTicket = new MultiEntryTicket(
+                        LocalDateTime.now(),
+                        user,
+                        "validation" + (i + 10)
+                );
+                user.getPurchases().add(multiEntryTicket);
+                session.save(multiEntryTicket);
+
+                session.flush();
+            }
+
+            transaction.commit();
+            System.out.println("15 purchases (5 of each kind) have been created and associated with registered users.");
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.err.println("An error occurred while generating purchases, changes have been rolled back.");
+            e.printStackTrace();
+        }
+    }
+
+    private void generateComplaints() {
+        List<Complaint> existingComplaints = session.createQuery("from Complaint ", Complaint.class).list();
+        if (!existingComplaints.isEmpty()) {
+            System.out.println("Complaints table is already populated.");
+            return;
+        }
+        List<RegisteredUser> users = session.createQuery("from RegisteredUser", RegisteredUser.class).list();
+        if (users.isEmpty()) {
+            System.out.println("No registered users found.");
+            return;
+        }
+
+        List<Purchase> purchases = session.createQuery("from Purchase", Purchase.class).list();
+        if (purchases.isEmpty()) {
+            System.out.println("No purchases found.");
+            return;
+        }
+
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            for (int i = 0; i < 10; i++) {
+                Purchase purchase = purchases.get(i % purchases.size());
+                RegisteredUser user = purchase.getOwner();  // Get the user who made the purchase
+
+                Complaint complaint = new Complaint(
+                        "Complaint info " + i,
+                        LocalDateTime.now(),
+                        purchase,
+                        false,
+                        user
+                );
+
+                session.save(complaint);
+                session.flush();
+                System.out.println("Saved complaint: " + complaint.getId());
+            }
+
+            transaction.commit();
+            System.out.println("10 complaints have been created and associated with registered users and purchases.");
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.err.println("An error occurred while generating complaints, changes have been rolled back.");
+            e.printStackTrace();
+        }
+    }
+
 
 
 }

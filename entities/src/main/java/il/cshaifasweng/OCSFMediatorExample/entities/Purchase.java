@@ -1,17 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
 @Entity
 @Table(name = "purchases")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+
 public abstract class Purchase
 {
     @Id
@@ -26,14 +22,11 @@ public abstract class Purchase
     @Column
     private String purchaseValidation;
 
-    @Column
-    private String attribute;
 
-    public Purchase(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, String attribute) {
+    public Purchase(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation) {
         this.purchaseDate = purchaseDate;
         this.owner = owner;
         this.purchaseValidation = purchaseValidation;
-        this.attribute = attribute;
     }
 
     public Purchase() {
@@ -63,14 +56,6 @@ public abstract class Purchase
 
     public void setPurchaseValidation(String purchaseValidation) {
         this.purchaseValidation = purchaseValidation;
-    }
-
-    public String getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
     }
 
     public long getId(){return this.id;}

@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Multi_Entry_Tickets")
+@DiscriminatorValue("Multi_Entry_Ticket")
 public class MultiEntryTicket extends Purchase
 {
     public MultiEntryTicket(){}
 
-    public MultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, String attribute) {
-        super(purchaseDate, owner, purchaseValidation, attribute);
+    public MultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation) {
+        super(purchaseDate, owner, purchaseValidation);
     }
 }
