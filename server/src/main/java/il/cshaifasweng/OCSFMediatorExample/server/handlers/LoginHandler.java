@@ -1,6 +1,4 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
-import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
@@ -50,10 +48,7 @@ public class LoginHandler extends MessageHandler{
                     // Set the user as online
                     user.setOnline(true);
                     session.update(user);
-
-                    // Commit the transaction
-                    session.getTransaction().commit();
-
+                    session.flush();
                     message.responseType = LoginMessage.ResponseType.LOGIN_SUCCESFUL;
                 }
             } else {
@@ -85,11 +80,9 @@ public class LoginHandler extends MessageHandler{
                     // Set the user as offline
                     user.setOnline(false);
                     session.update(user);
-
-                    // Commit the transaction
-                    session.getTransaction().commit();
-
+                    session.flush();
                     message.responseType = LoginMessage.ResponseType.LOGOUT_SUCCESFUL;
+
                 } else {
                     message.responseType = LoginMessage.ResponseType.LOGOUT_FAILED;
                 }
