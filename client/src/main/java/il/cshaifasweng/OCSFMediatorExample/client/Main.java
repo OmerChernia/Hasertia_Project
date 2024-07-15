@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import com.laynezcoder.estfx.MainEmploee;
+import il.cshaifasweng.OCSFMediatorExample.client.MainEmploee;
 
 public class Main {
 
