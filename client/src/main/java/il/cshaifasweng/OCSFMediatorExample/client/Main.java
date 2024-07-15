@@ -1,11 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.MainGui;
+import com.laynezcoder.estfx.MainEmploee;
 
 public class Main {
 
 	public static void main(String[] args) {
-		MainGui.main(args);
+		MainEmploee.main(args);
 	}
 
 }
