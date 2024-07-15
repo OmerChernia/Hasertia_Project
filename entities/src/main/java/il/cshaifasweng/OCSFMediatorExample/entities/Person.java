@@ -1,14 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 @MappedSuperclass //means we don't need a table for it, but we want its fields in employee
-public abstract class Person {
+public abstract class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    protected int id;
 
     @Column
     protected String id_number;

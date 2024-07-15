@@ -17,18 +17,21 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleServer extends AbstractServer
 {
 	private static ArrayList<SubscribedClient> clients = new ArrayList<>();
 	static Session session;
+	private final String password;
 
 
 	public SimpleServer(int port,String password)
 	{
 		super(port);
-
+		this.password = password;
 		session = getSessionFactory(password).openSession();
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
@@ -64,15 +67,20 @@ public class SimpleServer extends AbstractServer
 
 				}
 
-				if (messageHandler != null)
-				{
-					messageHandler.handleMessage();       		// handle the message ,and change DB if needed
-					session.getTransaction().commit();			// save changes in DB
+				if (messageHandler != null) {
+					messageHandler.handleMessage();            	// handle the message ,and change DB if needed
+					session.getTransaction().commit();          // save changes in DB
 					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
 
-					client.sendToClient(msg);
+					System.out.println("Message handled1");
+					List<Complaint> users = session.createQuery("from Complaint", Complaint.class).list();
+					System.out.println("Fetched users: " + users);  // Logging the fetched data
+					client.sendToClient(users.getClass());
+					System.out.println("Message handled2");
+
 				}
 			}
+
 		}
 		catch (Exception exception) {
 			if (session != null)

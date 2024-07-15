@@ -25,9 +25,10 @@ public abstract class Purchase
 
     public Purchase(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation) {
         this.purchaseDate = purchaseDate;
-        this.owner = owner;
         this.purchaseValidation = purchaseValidation;
+        this.owner = owner;
     }
+
 
     public Purchase() {
     }

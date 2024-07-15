@@ -329,7 +329,6 @@ public class GenerateDB {
                         LocalDateTime.now().plusDays(1),
                         100 + i
                 );
-                user.getPurchases().add(homePackage);
                 session.save(homePackage);
 
                 MovieTicket movieTicket = new MovieTicket(
@@ -339,7 +338,6 @@ public class GenerateDB {
                         movieInstances.get(i % movieInstances.size()),
                         seats.get(i % seats.size())
                 );
-                user.getPurchases().add(movieTicket);
                 session.save(movieTicket);
 
                 // Add the movie instance to the taken list of the seat
@@ -353,7 +351,6 @@ public class GenerateDB {
                         user,
                         "validation" + (i + 10)
                 );
-                user.getPurchases().add(multiEntryTicket);
                 session.save(multiEntryTicket);
 
                 session.flush();
@@ -402,7 +399,7 @@ public class GenerateDB {
                         false,
                         user
                 );
-
+                System.out.println(complaint);
                 session.save(complaint);
                 session.flush();
                 System.out.println("Saved complaint: " + complaint.getId());

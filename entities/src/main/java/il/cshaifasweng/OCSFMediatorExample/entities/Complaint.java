@@ -1,11 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "complaints")
-public class Complaint {
+public class Complaint implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -21,7 +22,6 @@ public class Complaint {
 
     @Column(nullable = false)
     private boolean isClosed;
-
 
     @ManyToOne
     private RegisteredUser registeredUser;

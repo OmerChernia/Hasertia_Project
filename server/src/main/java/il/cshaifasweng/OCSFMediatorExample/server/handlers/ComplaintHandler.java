@@ -1,9 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -57,16 +56,35 @@ public class ComplaintHandler extends MessageHandler
         session.flush();
         message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WES_ANSWERED;
     }
-    private void get_all_complaints()
-    {
-        // Create an HQL query to fetch all complaints
-        Query<Complaint> query = session.createQuery("FROM Complaint", Complaint.class);
-        // Execute the query and get the result list
+    private void get_all_complaints() {
+
+        try {
+            System.out.println("Executing get_all_complaints");
+            // Create an HQL query to fetch all complaints
+            System.out.println("Creating query to fetch all complaints");
+            Query<Complaint> query = session.createQuery("FROM Complaint", Complaint.class);
+
+            // Execute the query and get the result list
+            System.out.println("Executing query to fetch all complaints");
+            List<Complaint> complaints = query.getResultList();
+            List<Complaint> res = new ArrayList<Complaint>();
 
 
-        message.compliants = query.getResultList();
-        message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+            message.compliants = complaints;
+            // Set the response type
+            message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+
+            System.out.println("get_all_complaints executed successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_ADDED_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        }
     }
+
     private void get_complaint_by_theater()
     {
         //need field of theater/theater_name in compliant

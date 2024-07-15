@@ -3,6 +3,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Temp {
 
@@ -30,7 +31,7 @@ public class Temp {
     {
         for(Complaint comp :  message.compliants)
         {
-            System.out.println(comp.getId());
+            System.out.println(comp.getInfo());
         }
     }
 }

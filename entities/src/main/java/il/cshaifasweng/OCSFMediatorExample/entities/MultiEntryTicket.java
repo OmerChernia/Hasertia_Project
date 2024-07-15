@@ -9,6 +9,7 @@ public class MultiEntryTicket extends Purchase
 {
     public MultiEntryTicket(){}
 
+
     public MultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation) {
         super(purchaseDate, owner, purchaseValidation);
     }

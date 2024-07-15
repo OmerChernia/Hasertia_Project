@@ -16,23 +16,14 @@ public class RegisteredUser extends Person {
     @Column(nullable = false)
     private int ticket_counter;
 
-    @OneToMany(mappedBy = "owner")
-    List<Purchase> purchases;
-
     public RegisteredUser() {
     }
 
-    public RegisteredUser(String id_number ,String name, boolean isOnline, String email,int ticket_counter , List<Purchase> purchases) {
-        super(id_number,name, isOnline);
-        this.email = email;
-        this.ticket_counter = ticket_counter;
-        this.purchases = purchases;
-    }
+
     public RegisteredUser(String id_number ,String name, boolean isOnline, String email,int ticket_counter) {
         super(id_number ,name, isOnline);
         this.email = email;
         this.ticket_counter = ticket_counter;
-        this.purchases = new ArrayList<>();
     }
     // Getters and setters
 
@@ -52,12 +43,4 @@ public class RegisteredUser extends Person {
         this.ticket_counter = ticket_counter;
     }
 
-
-    public List<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(List<Purchase> purchases) {
-        this.purchases = purchases;
-    }
 }
