@@ -1,7 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MoviesInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
+import org.greenrobot.eventbus.EventBus;
 
 
 public class SimpleClient extends AbstractClient {
@@ -14,7 +19,7 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
-		Message message = (Message) msg;
+		EventBus.getDefault().post(msg);
 	}
 	
 	public static SimpleClient getClient() {
