@@ -1,27 +1,9 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Customers;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
@@ -31,10 +13,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -65,10 +49,10 @@ public class CustomersController implements Initializable {
     private AnchorPane containerAddCustomer;
 
     @FXML
-    private JFXButton btnUpdateCustomer;
+    private Button btnUpdateCustomer;
 
     @FXML
-    private JFXButton btnSaveCustomer;
+    private Button btnSaveCustomer;
 
     @FXML
     private TableView<Customers> tblCustomers;
@@ -89,7 +73,7 @@ public class CustomersController implements Initializable {
     private TableColumn<Customers, String> colNitCliente;
 
     @FXML
-    private JFXButton btnAddCustomer;
+    private Button btnAddCustomer;
 
     @FXML
     private HBox rootSearchCustomers;
@@ -101,16 +85,16 @@ public class CustomersController implements Initializable {
     private TextField txtSearchCustomer;
 
     @FXML
-    private JFXTextField txtCustomerName;
+    private TextField txtCustomerName;
 
     @FXML
-    private JFXTextField txtCustomerNumber;
+    private TextField txtCustomerNumber;
 
     @FXML
-    private JFXTextField txtEmail;
+    private TextField txtEmail;
 
     @FXML
-    private JFXTextField txtIt;
+    private TextField txtIt;
 
     @FXML
     private Text titleAddCustomer;
@@ -122,8 +106,6 @@ public class CustomersController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         listCustomers = FXCollections.observableArrayList();
         filterCustomers = FXCollections.observableArrayList();
-        characterLimiter();
-        setValidations();
         selectText();
         animateNodes();
         closeDialogWithTextFields();
@@ -137,30 +119,12 @@ public class CustomersController implements Initializable {
     }
 
     private void selectText() {
-        TextFieldMask.selectText(txtCustomerNumber);
-        TextFieldMask.selectText(txtCustomerName);
-        TextFieldMask.selectText(txtEmail);
-        TextFieldMask.selectText(txtIt);
-        TextFieldMask.selectText(txtSearchCustomer);
-        TextFieldMask.selectText(txtSearchNumber);
-    }
-
-    private void setValidations() {
-        RequieredFieldsValidators.toJFXTextField(txtCustomerNumber);
-        RequieredFieldsValidators.toJFXTextField(txtCustomerName);
-    }
-
-    private void characterLimiter() {
-        TextFieldMask.characterLimit(txtCustomerNumber, 25);
-        TextFieldMask.characterLimit(txtEmail, 150);
-        TextFieldMask.characterLimit(txtIt, 50);
-    }
-
-    private void setMask() {
-        TextFieldMask.onlyNumbers(txtSearchNumber);
-        TextFieldMask.onlyNumbers(txtCustomerNumber);
-        TextFieldMask.onlyLetters(txtCustomerName, 150);
-        TextFieldMask.onlyLetters(txtSearchCustomer, 150);
+        txtCustomerNumber.setOnMouseClicked(event -> txtCustomerNumber.selectAll());
+        txtCustomerName.setOnMouseClicked(event -> txtCustomerName.selectAll());
+        txtEmail.setOnMouseClicked(event -> txtEmail.selectAll());
+        txtIt.setOnMouseClicked(event -> txtIt.selectAll());
+        txtSearchCustomer.setOnMouseClicked(event -> txtSearchCustomer.selectAll());
+        txtSearchNumber.setOnMouseClicked(event -> txtSearchNumber.selectAll());
     }
 
     @FXML
@@ -170,8 +134,8 @@ public class CustomersController implements Initializable {
         rootCustomers.setEffect(Constants.BOX_BLUR_EFFECT);
 
         titleAddCustomer.setText("Add customer");
-        btnUpdateCustomer.setVisible(true);
-        btnSaveCustomer.setDisable(false);
+        btnUpdateCustomer.setVisible(false);
+        btnSaveCustomer.setVisible(true);
         containerAddCustomer.setVisible(true);
         btnSaveCustomer.toFront();
 
@@ -392,10 +356,7 @@ public class CustomersController implements Initializable {
     }
 
     private void resetValidation() {
-        txtCustomerNumber.resetValidation();
-        txtCustomerName.resetValidation();
-        txtEmail.resetValidation();
-        txtIt.resetValidation();
+        // Add any reset validation logic here if needed
     }
 
     private boolean validateEmailAddress(String email) {
@@ -478,4 +439,6 @@ public class CustomersController implements Initializable {
             tblCustomers.setItems(filterCustomers);
         }
     }
+
+
 }

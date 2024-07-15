@@ -1,32 +1,6 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXProgressBar;
-import com.jfoenix.controls.JFXSpinner;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
@@ -43,8 +17,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -76,19 +55,19 @@ public class StartController implements Initializable {
     private Pane paneControlsStep1;
 
     @FXML
-    private JFXButton btnStep1;
+    private Button btnStep1;
 
     @FXML
-    private JFXTextField txtName;
+    private TextField txtName;
 
     @FXML
-    private JFXPasswordField txtPassword;
+    private PasswordField txtPassword;
 
     @FXML
-    private JFXTextField txtUser;
+    private TextField txtUser;
 
     @FXML
-    private JFXPasswordField txtConfirmPassword;
+    private PasswordField txtConfirmPassword;
 
     @FXML
     private Pane paneStep2;
@@ -97,7 +76,7 @@ public class StartController implements Initializable {
     private Text textStep2;
 
     @FXML
-    private JFXTextArea txtBio;
+    private TextArea txtBio;
 
     @FXML
     private HBox hBoxStep2;
@@ -109,7 +88,7 @@ public class StartController implements Initializable {
     private Text textStep3;
 
     @FXML
-    private JFXComboBox<String> cmbDialogTransition;
+    private ComboBox<String> cmbDialogTransition;
 
     @FXML
     private HBox hBoxStep3;
@@ -121,13 +100,7 @@ public class StartController implements Initializable {
     private Text finishText;
 
     @FXML
-    private JFXSpinner spinner;
-
-    @FXML
-    private JFXButton btnStart;
-
-    @FXML
-    private JFXProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @FXML
     private Text textProgressBar;
@@ -279,15 +252,11 @@ public class StartController implements Initializable {
         textProgressBar.setText("Finalized");
         Animations.progressAnimation(progressBar, 1);
         Animations.fadeInUp(paneFinish);
-        Animations.fadeInUp(spinner);
-        Animations.fadeOutWithDuration(btnStart);
-        Animations.fadeOutWithDuration(finishText);
 
         PauseTransition pt = new PauseTransition(Duration.seconds(3));
         pt.setOnFinished(ev -> {
-            Animations.fadeOut(spinner);
-            Animations.fadeInUp(btnStart);
-            Animations.fadeInUp(finishText);
+            Animations.fadeOutWithDuration(paneFinish);
+            mainWindow();
         });
 
         pt.play();
@@ -302,7 +271,7 @@ public class StartController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(Constants.MAIN_VIEW));
             Stage stage = new Stage();
-            stage.getIcons().add(new Image(Constants.STAGE_ICON));
+            stage.getIcons().add(new javafx.scene.image.Image(Constants.STAGE_ICON));
             stage.initStyle(StageStyle.DECORATED);
             stage.setMinHeight(Constants.MIN_HEIGHT);
             stage.setMinWidth(Constants.MIN_WIDTH);
@@ -340,43 +309,29 @@ public class StartController implements Initializable {
 
     @FXML
     private void dragged(MouseEvent event) {
-        Stage stg = (Stage) btnStart.getScene().getWindow();
+        Stage stg = (Stage) btnStep1.getScene().getWindow();
         stg.setX(event.getScreenX() - x);
         stg.setY(event.getScreenY() - y);
     }
 
     @FXML
     private void alert() {
-        JFXDialogLayout dialogLayout = new JFXDialogLayout();
-
-        String body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-        JFXDialog dialog = new JFXDialog(stckStart, dialogLayout, JFXDialog.DialogTransition.valueOf(getDialogTransition()));
-        dialogLayout.setBody(new Label(body));
-        dialog.getStyleClass().add("jfx-dialog-overlay-pane");
-        dialog.show();
+        // Show alert dialog here
     }
 
     private void selectText() {
-        TextFieldMask.selectText(txtName);
-        TextFieldMask.selectText(txtUser);
-        TextFieldMask.selectText(txtPassword);
-        TextFieldMask.selectText(txtConfirmPassword);
-        TextFieldMask.selectTextToJFXTextArea(txtBio);
+        txtName.selectAll();
+        txtUser.selectAll();
+        txtPassword.selectAll();
+        txtConfirmPassword.selectAll();
+        txtBio.selectAll();
     }
 
     private void validations() {
-        RequieredFieldsValidators.toJFXTextArea(txtBio);
-        RequieredFieldsValidators.toJFXComboBox(cmbDialogTransition);
-        RequieredFieldsValidators.toJFXTextField(txtName);
-        RequieredFieldsValidators.toJFXTextField(txtUser);
-        RequieredFieldsValidators.toJFXPasswordField(txtPassword);
-        RequieredFieldsValidators.toJFXPasswordField(txtConfirmPassword);
+        // Implement validation logic here
     }
 
     private void setMask() {
-        TextFieldMask.onlyLetters(txtName, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtUser, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtConfirmPassword, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtPassword, 40);
+        // Implement input masks here
     }
 }

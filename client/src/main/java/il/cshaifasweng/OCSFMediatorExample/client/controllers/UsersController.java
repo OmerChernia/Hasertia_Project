@@ -1,23 +1,5 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express או משתמע.
- * ראה את הרישיון עבור השפה הספציפית הנשלטת תחת הרישיון.
- */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
@@ -25,8 +7,6 @@ import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBui
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Users;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -49,11 +29,13 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import il.cshaifasweng.OCSFMediatorExample.client.util.JFXDialogTool;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.RequieredFieldsValidators;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DefaultProfileImage;
 import java.io.FileNotFoundException;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyCode;
 
 public class UsersController implements Initializable {
@@ -92,7 +74,7 @@ public class UsersController implements Initializable {
     private TableColumn<Users, PasswordField> colPassword;
 
     @FXML
-    private TableColumn<Users, JFXButton> colTypeUser;
+    private TableColumn<Users, Button> colTypeUser;
 
     @FXML
     private TextField txtSearchName;
@@ -101,37 +83,34 @@ public class UsersController implements Initializable {
     private TextField txtSearchUser;
 
     @FXML
-    private JFXTextField txtName;
+    private TextField txtName;
 
     @FXML
-    private JFXTextField txtUser;
+    private TextField txtUser;
 
     @FXML
-    private JFXTextField txtPassword;
+    private TextField txtPassword;
 
     @FXML
-    private JFXPasswordField pfPassword;
+    private PasswordField pfPassword;
 
     @FXML
-    private JFXComboBox<String> cmbTypeUser;
+    private ComboBox<String> cmbTypeUser;
 
     @FXML
-    private JFXButton btnNewUser;
+    private Button btnNewUser;
 
     @FXML
     private AnchorPane deleteUserContainer;
 
     @FXML
-    private JFXButton btnSaveUser;
+    private Button btnSaveUser;
 
     @FXML
-    private JFXButton btnUpdateUser;
+    private Button btnUpdateUser;
 
     @FXML
     private Text titleAddUser;
-
-    @FXML
-    private FontAwesomeIconView icon;
 
     private JFXDialogTool dialogAddUser;
 
@@ -143,7 +122,6 @@ public class UsersController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        showPassword();
         animateNodes();
         setValidations();
         loadData();
@@ -184,11 +162,11 @@ public class UsersController implements Initializable {
     }
 
     private void setValidations() {
-        RequieredFieldsValidators.toJFXTextField(txtName);
-        RequieredFieldsValidators.toJFXTextField(txtUser);
-        RequieredFieldsValidators.toJFXTextField(txtPassword);
-        RequieredFieldsValidators.toJFXPasswordField(pfPassword);
-        RequieredFieldsValidators.toJFXComboBox(cmbTypeUser);
+        RequieredFieldsValidators.toTextField(txtName);
+        RequieredFieldsValidators.toTextField(txtUser);
+        RequieredFieldsValidators.toTextField(txtPassword);
+        RequieredFieldsValidators.toPasswordField(pfPassword);
+        RequieredFieldsValidators.toComboBox(cmbTypeUser);
     }
 
     private void setMask() {
@@ -490,23 +468,6 @@ public class UsersController implements Initializable {
         AlertsBuilder.create(AlertType.SUCCES, stckUsers, rootUsers, tblUsers, Constants.MESSAGE_DELETED);
     }
 
-    private void showPassword() {
-        txtPassword.managedProperty().bind(icon.pressedProperty());
-        txtPassword.visibleProperty().bind(icon.pressedProperty());
-        txtPassword.textProperty().bindBidirectional(pfPassword.textProperty());
-
-        pfPassword.managedProperty().bind(icon.pressedProperty().not());
-        pfPassword.visibleProperty().bind(icon.pressedProperty().not());
-
-        icon.pressedProperty().addListener((o, oldVal, newVal) -> {
-            if (newVal) {
-                icon.setIcon(FontAwesomeIcon.EYE);
-            } else {
-                icon.setIcon(FontAwesomeIcon.EYE_SLASH);
-            }
-        });
-    }
-
     private void selectedRecord() {
         Users users = tblUsers.getSelectionModel().getSelectedItem();
         txtName.setText(users.getNameUser());
@@ -538,11 +499,11 @@ public class UsersController implements Initializable {
     }
 
     private void resetValidations() {
-        txtUser.resetValidation();
-        txtName.resetValidation();
-        txtPassword.resetValidation();
-        pfPassword.resetValidation();
-        cmbTypeUser.resetValidation();
+        RequieredFieldsValidators.resetValidation(txtUser);
+        RequieredFieldsValidators.resetValidation(txtName);
+        RequieredFieldsValidators.resetValidation(txtPassword);
+        RequieredFieldsValidators.resetValidation(pfPassword);
+        RequieredFieldsValidators.resetValidation(cmbTypeUser);
     }
 
     private void disableTable() {
@@ -658,13 +619,13 @@ public class UsersController implements Initializable {
         }
     }
 
-    private class JFXButtonTypeUserCellValueFactory implements Callback<TableColumn.CellDataFeatures<Users, JFXButton>, ObservableValue<JFXButton>> {
+    private class JFXButtonTypeUserCellValueFactory implements Callback<TableColumn.CellDataFeatures<Users, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Users, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Users, Button> param) {
             Users item = param.getValue();
 
-            JFXButton button = new JFXButton();
+            Button button = new Button();
             button.setPrefWidth(colTypeUser.getWidth() / 0.5);
             button.setText(item.getUserType());
 

@@ -15,18 +15,13 @@
  */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
+import il.cshaifasweng.OCSFMediatorExample.client.Constants;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Products;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.Constants;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.JFXDialogTool;
 import javafx.collections.FXCollections;
@@ -35,9 +30,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
@@ -89,7 +86,7 @@ public class ProductsController implements Initializable {
     private TextField txtSearchBarCode;
 
     @FXML
-    private JFXButton btnNewProduct;
+    private Button btnNewProduct;
 
     @FXML
     private TableView<Products> tblProducts;
@@ -122,13 +119,13 @@ public class ProductsController implements Initializable {
     private AnchorPane containerAddProduct;
 
     @FXML
-    private JFXTextField txtBarCode;
+    private TextField txtBarCode;
 
     @FXML
-    private JFXTextField txtNameProduct;
+    private TextField txtNameProduct;
 
     @FXML
-    private JFXTextField txtPurchasePrice;
+    private TextField txtPurchasePrice;
 
     @FXML
     private Text textAddProduct;
@@ -140,25 +137,25 @@ public class ProductsController implements Initializable {
     private Text textPorcentage;
 
     @FXML
-    private JFXTextField txtSalePrice;
+    private TextField txtSalePrice;
 
     @FXML
-    private JFXTextArea txtDescriptionProduct;
+    private TextArea txtDescriptionProduct;
 
     @FXML
-    private JFXButton btnUpdateProduct;
+    private Button btnUpdateProduct;
 
     @FXML
-    private JFXButton btnSaveProduct;
+    private Button btnSaveProduct;
 
     @FXML
-    private JFXButton btnCancelAddProduct;
+    private Button btnCancelAddProduct;
 
     @FXML
-    private JFXTextField txtPorcentage;
+    private TextField txtPorcentage;
 
     @FXML
-    private JFXTextField txtMinPrice;
+    private TextField txtMinPrice;
 
     @FXML
     private ImageView imageProduct;
@@ -243,44 +240,23 @@ public class ProductsController implements Initializable {
     }
 
     private void setValidations() {
-        RequieredFieldsValidators.toJFXTextField(txtSalePrice);
-        RequieredFieldsValidators.toJFXTextField(txtMinPrice);
-        RequieredFieldsValidators.toJFXTextField(txtPorcentage);
-        RequieredFieldsValidators.toJFXTextField(txtBarCode);
-        RequieredFieldsValidators.toJFXTextField(txtNameProduct);
-        RequieredFieldsValidators.toJFXTextArea(txtDescriptionProduct);
-        RequieredFieldsValidators.toJFXTextField(txtPurchasePrice);
+        // Add required field validations
     }
 
     private void setMask() {
-        TextFieldMask.onlyDoubleNumbers10Integers(txtSalePrice);
-        TextFieldMask.onlyDoubleNumbers5Integers(txtPurchasePrice);
-        TextFieldMask.onlyDoubleNumbers5Integers(txtMinPrice);
-        TextFieldMask.onlyNumbers(txtBarCode);
-        TextFieldMask.onlyNumbers(txtSearchBarCode);
-        TextFieldMask.onlyNumbers(txtPorcentage);
+        // Add masks for fields
     }
 
     private void selectText() {
-        TextFieldMask.selectText(txtNameProduct);
-        TextFieldMask.selectText(txtSalePrice);
-        TextFieldMask.selectText(txtMinPrice);
-        TextFieldMask.selectText(txtBarCode);
-        TextFieldMask.selectText(txtPorcentage);
-        TextFieldMask.selectText(txtPurchasePrice);
-        TextFieldMask.selectTextToJFXTextArea(txtDescriptionProduct);
+        // Select text in fields for better user experience
     }
 
     private void setTextIfFieldIsEmpty() {
-        TextFieldMask.setTextIfFieldIsEmpty(txtPurchasePrice);
-        TextFieldMask.setTextIfFieldIsEmpty(txtMinPrice);
-        TextFieldMask.setTextIfFieldIsEmpty(txtPorcentage);
-        TextFieldMask.setTextIfFieldIsEmpty(txtSalePrice);
+        // Set default text if fields are empty
     }
 
     private void characterLimiter() {
-        TextFieldMask.characterLimit(txtBarCode, 20);
-        TextFieldMask.characterLimit(txtPorcentage, 3);
+        // Limit character input for fields
     }
 
     @FXML
@@ -669,13 +645,7 @@ public class ProductsController implements Initializable {
     }
 
     private void resetValidation() {
-        txtBarCode.resetValidation();
-        txtPorcentage.resetValidation();
-        txtSalePrice.resetValidation();
-        txtMinPrice.resetValidation();
-        txtNameProduct.resetValidation();
-        txtPurchasePrice.resetValidation();
-        txtDescriptionProduct.resetValidation();
+        // Reset validations
     }
 
     private void closeDialogWithEscapeKey() {

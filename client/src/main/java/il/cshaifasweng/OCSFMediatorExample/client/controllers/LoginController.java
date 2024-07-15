@@ -15,23 +15,20 @@
  */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
@@ -54,22 +51,22 @@ public class LoginController implements Initializable {
     private final String INCORRECT_CREDENTIALS = "Incorrect user or password";
 
     @FXML
-    private JFXButton btnLogin;
+    private Button btnLogin;
 
     @FXML
     private Pane paneIcon;
 
     @FXML
-    private JFXTextField txtUser;
+    private TextField txtUser;
 
     @FXML
-    private JFXTextField txtPassword;
+    private TextField txtPassword;
 
     @FXML
-    private JFXPasswordField pfPassword;
+    private PasswordField pfPassword;
 
     @FXML
-    private FontAwesomeIconView icon;
+    private ImageView icon;
 
     @FXML
     private Text title;
@@ -85,9 +82,7 @@ public class LoginController implements Initializable {
         userData.put("user@example.com", "password123");
 
         showPassword();
-        setValidations();
         selectText();
-        setMask();
         animations();
     }
 
@@ -99,22 +94,10 @@ public class LoginController implements Initializable {
         Animations.fadeInUp(btnLogin);
     }
 
-    private void setValidations() {
-        RequieredFieldsValidators.toJFXPasswordField(pfPassword);
-        RequieredFieldsValidators.toJFXTextField(txtUser);
-        RequieredFieldsValidators.toJFXTextField(txtPassword);
-    }
-
-    private void setMask() {
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtUser, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtPassword, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(pfPassword, 40);
-    }
-
     private void selectText() {
-        TextFieldMask.selectText(txtUser);
-        TextFieldMask.selectText(txtPassword);
-        TextFieldMask.selectText(pfPassword);
+        txtUser.setOnMouseClicked(event -> txtUser.selectAll());
+        txtPassword.setOnMouseClicked(event -> txtPassword.selectAll());
+        pfPassword.setOnMouseClicked(event -> pfPassword.selectAll());
     }
 
     @FXML
@@ -208,12 +191,12 @@ public class LoginController implements Initializable {
         pfPassword.managedProperty().bind(icon.pressedProperty().not());
         pfPassword.visibleProperty().bind(icon.pressedProperty().not());
 
-        icon.pressedProperty().addListener((o, oldVal, newVal) -> {
-            if (newVal) {
-                icon.setIcon(FontAwesomeIcon.EYE);
-            } else {
-                icon.setIcon(FontAwesomeIcon.EYE_SLASH);
-            }
+        icon.setOnMousePressed(event -> {
+            icon.setImage(new Image(getClass().getResourceAsStream("/images/eye.png")));
+        });
+
+        icon.setOnMouseReleased(event -> {
+            icon.setImage(new Image(getClass().getResourceAsStream("/images/eye-slash.png")));
         });
     }
 

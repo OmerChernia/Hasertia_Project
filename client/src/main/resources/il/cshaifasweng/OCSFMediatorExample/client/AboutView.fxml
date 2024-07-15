@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.AboutController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.AboutController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" styleClass="glyph-icon-login">
          <children>
@@ -65,10 +59,6 @@
                      </image>
                   </ImageView>
                   <Separator fx:id="separator" orientation="VERTICAL" prefHeight="50.0" prefWidth="5.0" visible="false" />
-                  <MaterialDesignIconView fx:id="facebook" glyphName="FACEBOOK" layoutX="342.0" layoutY="41.0" size="25" visible="false" />
-                  <MaterialDesignIconView fx:id="youtube" glyphName="YOUTUBE_PLAY" layoutX="324.0" layoutY="41.0" size="25" visible="false" />
-                  <MaterialDesignIconView fx:id="github" glyphName="GITHUB_CIRCLE" layoutX="307.0" layoutY="41.0" size="25" visible="false" />
-                  <MaterialDesignIconView fx:id="google" glyphName="GOOGLE_PLUS" layoutX="367.0" layoutY="41.0" size="25" visible="false" />
                </children>
             </HBox>
             <VBox layoutX="307.0" layoutY="502.0" prefHeight="20.0" prefWidth="336.0" AnchorPane.bottomAnchor="43.0" AnchorPane.leftAnchor="307.0" AnchorPane.rightAnchor="287.0">

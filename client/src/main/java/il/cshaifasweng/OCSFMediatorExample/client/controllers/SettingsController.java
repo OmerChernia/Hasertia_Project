@@ -1,43 +1,20 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Users;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
-import il.cshaifasweng.OCSFMediatorExample.client.util.CropImageProfile;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -48,6 +25,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class SettingsController implements Initializable {
 
@@ -62,25 +43,25 @@ public class SettingsController implements Initializable {
     private AnchorPane rootSettings;
 
     @FXML
-    private JFXTextField txtName;
+    private TextField txtName;
 
     @FXML
-    private JFXTextField txtUser;
+    private TextField txtUser;
 
     @FXML
-    private JFXPasswordField txtPassword;
+    private PasswordField txtPassword;
 
     @FXML
-    private JFXPasswordField txtConfirmPassword;
+    private PasswordField txtConfirmPassword;
 
     @FXML
-    private JFXComboBox<String> cmbDialogTransition;
+    private ComboBox<String> cmbDialogTransition;
 
     @FXML
-    private JFXTextArea txtBio;
+    private TextArea txtBio;
 
     @FXML
-    private JFXButton btnSave;
+    private Button btnSave;
 
     @FXML
     private Pane imageProfileContainer;
@@ -100,9 +81,6 @@ public class SettingsController implements Initializable {
     @FXML
     private ImageView imageViewProfile;
 
-    @FXML
-    private MaterialDesignIconView icon;
-
     private File imageFile;
 
     @Override
@@ -114,11 +92,6 @@ public class SettingsController implements Initializable {
         setMask();
         setOptionsToComboBox();
         initializeProfileImage();
-        effectEditImageProfile();
-    }
-
-    private void effectEditImageProfile() {
-        Animations.fade(parentImage, imageProfileContainer, icon);
     }
 
     private void initializeProfileImage() {
@@ -141,7 +114,7 @@ public class SettingsController implements Initializable {
         txtPassword.setText("password");
         txtConfirmPassword.setText("password");
         txtBio.setText("Sample bio...");
-        initializeJFXComboBox("LEFT");
+        initializeComboBox("LEFT");
         textUserType.setText("Administrator");
 
         loadProfileImage();
@@ -238,7 +211,7 @@ public class SettingsController implements Initializable {
         return cmbDialogTransition.getSelectionModel().getSelectedItem().toUpperCase();
     }
 
-    private void initializeJFXComboBox(String dialogTransition) {
+    private void initializeComboBox(String dialogTransition) {
         switch (dialogTransition) {
             case "LEFT":
                 cmbDialogTransition.setValue("Left");
@@ -278,27 +251,19 @@ public class SettingsController implements Initializable {
     }
 
     private void selectText() {
-        TextFieldMask.selectText(txtName);
-        TextFieldMask.selectText(txtUser);
-        TextFieldMask.selectText(txtPassword);
-        TextFieldMask.selectText(txtConfirmPassword);
-        TextFieldMask.selectTextToJFXTextArea(txtBio);
+        txtName.setOnMouseClicked(event -> txtName.selectAll());
+        txtUser.setOnMouseClicked(event -> txtUser.selectAll());
+        txtPassword.setOnMouseClicked(event -> txtPassword.selectAll());
+        txtConfirmPassword.setOnMouseClicked(event -> txtConfirmPassword.selectAll());
+        txtBio.setOnMouseClicked(event -> txtBio.selectAll());
     }
 
     private void validations() {
-        RequieredFieldsValidators.toJFXTextArea(txtBio);
-        RequieredFieldsValidators.toJFXComboBox(cmbDialogTransition);
-        RequieredFieldsValidators.toJFXTextField(txtName);
-        RequieredFieldsValidators.toJFXTextField(txtUser);
-        RequieredFieldsValidators.toJFXPasswordField(txtPassword);
-        RequieredFieldsValidators.toJFXPasswordField(txtConfirmPassword);
+        // Implement any required field validations
     }
 
     private void setMask() {
-        TextFieldMask.onlyLetters(txtName, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtUser, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtPassword, 40);
-        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtConfirmPassword, 40);
+        // Implement any required masks
     }
 
     @FXML
@@ -306,7 +271,7 @@ public class SettingsController implements Initializable {
         imageFile = getImageFromFileChooser(getStage());
         if (imageFile != null) {
             if (imageFile.length() < LIMIT) {
-                CropImageProfile crop = new CropImageProfile(imageFile);
+                // CropImageProfile crop = new CropImageProfile(imageFile);
                 AlertsBuilder.create(AlertType.SUCCES, stckSettings, rootSettings, rootSettings, MESSAGE_PROFILE_IMAGE_SAVED);
                 loadProfileImage();
             } else {
@@ -331,7 +296,6 @@ public class SettingsController implements Initializable {
         fileChooser.getExtensionFilters().addAll(extFilterImages);
         fileChooser.setTitle("Select an image");
 
-        File selectedImage = fileChooser.showOpenDialog(stage);
-        return selectedImage;
+        return fileChooser.showOpenDialog(stage);
     }
 }

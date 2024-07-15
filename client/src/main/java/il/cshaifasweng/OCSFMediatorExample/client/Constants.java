@@ -1,21 +1,8 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import javafx.scene.effect.BoxBlur;
+
+import java.util.Objects;
 
 public class Constants {
 
@@ -25,7 +12,7 @@ public class Constants {
 
     public static final String SOURCE_PACKAGES = "/il/cshaifasweng/OCSFMediatorExample/client";
     public static final String MEDIA_PACKAGE = "/il/cshaifasweng/OCSFMediatorExample/client/media/";
-    public static final String VIEWS_PACKAGE = SOURCE_PACKAGES;
+    public static final String VIEWS_PACKAGE = SOURCE_PACKAGES+"/";
     public static final String PROFILE_PICTURES_PACKAGE = MEDIA_PACKAGE + "profiles/";
 
     public static final String LOGIN_VIEW = VIEWS_PACKAGE + "/LoginView.fxml";
@@ -38,8 +25,8 @@ public class Constants {
     public static final String ERROR_IMAGE = MEDIA_PACKAGE + "error.png";
     public static final String SUCCESS_IMAGE = MEDIA_PACKAGE + "success.png";
 
-    public static final String CSS_LIGHT_THEME = "/il/cshaifasweng/OCSFMediatorExample/client/css/LightTheme.css";
-    public static final String LIGHT_THEME = Constants.class.getResource(CSS_LIGHT_THEME).toExternalForm();
+    public static final String CSS_LIGHT_THEME = "/il/cshaifasweng/OCSFMediatorExample/client/LightTheme.css";
+    public static final String LIGHT_THEME = Objects.requireNonNull(Constants.class.getResource(CSS_LIGHT_THEME)).toExternalForm();
 
     public static final String MESSAGE_IMAGE_LARGE = "Please upload a picture smaller than 1 MB.";
     public static final String MESSAGE_IMAGE_NOT_FOUND = "Image not found. The record will be saved.";
