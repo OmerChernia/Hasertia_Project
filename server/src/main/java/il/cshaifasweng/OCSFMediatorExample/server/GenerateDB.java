@@ -107,7 +107,7 @@ public class GenerateDB {
                     new TheaterManager("847365912","Josh Bee", true, "password1", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("512089637","Mili Tik", false, "password12", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("396824571","Bob Back", true, "password123", Employee.EmployeeType.THEATER_MANAGER, null),
-                    new TheaterManager("705182943","Emily Davis", false, "password1234", Employee.EmployeeType.THEATER_MANAGER, null),
+                    new TheaterManager("483944123","Emily Davis", false, "password1234", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("591736842","Daniel Brown", true, "password1235", Employee.EmployeeType.THEATER_MANAGER, null)
             );
 

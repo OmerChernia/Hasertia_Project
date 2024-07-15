@@ -59,9 +59,9 @@ public class EmployeeLoginHandler extends LoginHandler {
     {
         try {
             // Create a query to find the user by ID
-            Query<Employee> query = session.createQuery("FROM Employee WHERE id_number = :id AND password = :password", Employee.class);
+            Query<Employee> query = session.createQuery("FROM Employee WHERE id_number = :id", Employee.class);
             query.setParameter("id", message.id);
-            query.setParameter("password", message.password);
+           // query.setParameter("password", message.password);
 
             // Execute the query and get the result
             Employee employee = query.uniqueResult();

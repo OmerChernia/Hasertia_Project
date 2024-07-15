@@ -70,7 +70,7 @@ public class SimpleServer extends AbstractServer
 					session.getTransaction().commit();			// save changes in DB
 					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
 
-					client.sendToClient(message);
+					client.sendToClient(msg);
 				}
 			}
 		}

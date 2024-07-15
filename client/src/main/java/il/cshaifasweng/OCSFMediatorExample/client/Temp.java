@@ -1,9 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
-import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 
 import java.io.IOException;
 
@@ -16,8 +13,9 @@ public class Temp {
         client = SimpleClient.getClient();
         client.openConnection();
         LoginMessage loginMessage = new LoginMessage("318111222", Message.MessageType.REQUEST,LoginMessage.RequestType.LOGIN);
-        EmployeeLoginMessage employeeLoginMessage = new EmployeeLoginMessage("705182943", Message.MessageType.REQUEST, LoginMessage.RequestType.LOGIN,"password10");
-        SimpleClient.getClient().sendToServer(employeeLoginMessage);
+        EmployeeLoginMessage employeeLoginMessage = new EmployeeLoginMessage("238947615", Message.MessageType.REQUEST, LoginMessage.RequestType.LOGOUT,"password120");
+        ComplaintMessage complaintMessage = new ComplaintMessage(Message.MessageType.REQUEST,ComplaintMessage.RequestType.GET_ALL_COMPLIANTS);
+        SimpleClient.getClient().sendToServer(complaintMessage);
 
     }
     public static void func1(LoginMessage message)
@@ -27,5 +25,12 @@ public class Temp {
     public static void func2(EmployeeLoginMessage message)
     {
         System.out.println(message.responseType);
+    }
+    public static void func3(ComplaintMessage message)
+    {
+        for(Complaint comp :  message.compliants)
+        {
+            System.out.println(comp.getId());
+        }
     }
 }
