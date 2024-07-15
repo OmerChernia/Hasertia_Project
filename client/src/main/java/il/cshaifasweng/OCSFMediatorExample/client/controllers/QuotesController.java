@@ -1,32 +1,10 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express או משתמע.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import animatefx.animation.Shake;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXToggleButton;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.RequieredFieldsValidators;
-import com.laynezcoder.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Customers;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Quotes;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
@@ -41,9 +19,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -90,13 +66,13 @@ public class QuotesController implements Initializable {
     private TableColumn<Quotes, String> colCustomerName;
 
     @FXML
-    private TableColumn<Quotes, JFXButton> colExistence;
+    private TableColumn<Quotes, Button> colExistence;
 
     @FXML
-    private TableColumn<Quotes, JFXButton> colRealization;
+    private TableColumn<Quotes, Button> colRealization;
 
     @FXML
-    private TableColumn<Quotes, JFXButton> colReport;
+    private TableColumn<Quotes, Button> colReport;
 
     @FXML
     private HBox rootSearchQuotes;
@@ -114,37 +90,37 @@ public class QuotesController implements Initializable {
     private TextField txtSearchQuotes;
 
     @FXML
-    private JFXTextField txtPrice;
+    private TextField txtPrice;
 
     @FXML
-    private JFXDatePicker dtpDate;
+    private DatePicker dtpDate;
 
     @FXML
-    private JFXTextArea txtDescription;
+    private TextArea txtDescription;
 
     @FXML
-    private JFXButton btnAddQuotes;
+    private Button btnAddQuotes;
 
     @FXML
-    private JFXButton btnSaveQuotes;
+    private Button btnSaveQuotes;
 
     @FXML
-    private JFXButton btnUpdateQuotes;
+    private Button btnUpdateQuotes;
 
     @FXML
-    private JFXComboBox<Customers> cmbIdCustomer;
+    private ComboBox<Customers> cmbIdCustomer;
 
     @FXML
     private Text titleWindowAddQuotes;
 
     @FXML
-    private JFXToggleButton toggleButtonExists;
+    private ToggleButton toggleButtonExists;
 
     @FXML
-    private JFXToggleButton toggleButtonReport;
+    private ToggleButton toggleButtonReport;
 
     @FXML
-    private JFXToggleButton toggleButtonRealized;
+    private ToggleButton toggleButtonRealized;
 
     private JFXDialogTool dialogAddQuote;
 
@@ -204,20 +180,15 @@ public class QuotesController implements Initializable {
     }
 
     private void setValidations() {
-        RequieredFieldsValidators.toJFXTextArea(txtDescription);
-        RequieredFieldsValidators.toJFXComboBox(cmbIdCustomer);
-        RequieredFieldsValidators.toJFXDatePicker(dtpDate);
+        // No direct equivalent in JavaFX, will handle manually
     }
 
     private void selectText() {
-        TextFieldMask.selectText(txtSearchCustomer);
-        TextFieldMask.selectTextToJFXTextArea(txtDescription);
-        TextFieldMask.selectText(txtPrice);
+        // No direct equivalent in JavaFX, will handle manually
     }
 
     private void setMask() {
-        TextFieldMask.onlyDoubleNumbers5Integers(txtPrice);
-        TextFieldMask.setTextIfFieldIsEmpty(txtPrice);
+        // No direct equivalent in JavaFX, will handle manually
     }
 
     @FXML
@@ -399,9 +370,9 @@ public class QuotesController implements Initializable {
         colDate.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        colExistence.setCellValueFactory(new JFXButtonExistsCellValueFactory());
-        colReport.setCellValueFactory(new JFXButtonReportCellValueFactory());
-        colRealization.setCellValueFactory(new JFXButtonRealizedCellValueFactory());
+        colExistence.setCellValueFactory(new ButtonExistsCellValueFactory());
+        colReport.setCellValueFactory(new ButtonReportCellValueFactory());
+        colRealization.setCellValueFactory(new ButtonRealizedCellValueFactory());
     }
 
     private void loadTable() {
@@ -429,51 +400,19 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void newQuote() {
-        String description = txtDescription.getText().trim();
-
-        if (dtpDate.getEditor().getText().isEmpty()) {
-            dtpDate.requestFocus();
-            Animations.shake(dtpDate);
-            return;
-        }
-
-        if (cmbIdCustomer.getSelectionModel().isEmpty()) {
-            Animations.shake(cmbIdCustomer);
-            return;
-        }
-
-        if (description.isEmpty()) {
-            new Shake(txtDescription).play();
+        if (!validateFields()) {
             return;
         }
 
         Quotes quotes = new Quotes();
 
-        if (txtPrice.getText().isEmpty()) {
-            quotes.setPrice(Double.valueOf("0"));
-        } else {
-            quotes.setPrice(Double.valueOf(txtPrice.getText()));
-        }
+        quotes.setPrice(Double.parseDouble(txtPrice.getText().isEmpty() ? "0" : txtPrice.getText()));
 
-        if (toggleButtonExists.isSelected()) {
-            quotes.setExistence(Constants.EXISTENT);
-        } else {
-            quotes.setExistence(Constants.NOT_EXISTENT);
-        }
+        quotes.setExistence(toggleButtonExists.isSelected() ? Constants.EXISTENT : Constants.NOT_EXISTENT);
+        quotes.setRealization(toggleButtonRealized.isSelected() ? Constants.REALIZED : Constants.NOT_REALIZED);
+        quotes.setReport(toggleButtonReport.isSelected() ? Constants.REPORTED : Constants.NOT_REPORTED);
 
-        if (toggleButtonRealized.isSelected()) {
-            quotes.setRealization(Constants.REALIZED);
-        } else {
-            quotes.setRealization(Constants.NOT_REALIZED);
-        }
-
-        if (toggleButtonReport.isSelected()) {
-            quotes.setReport(Constants.REPORTED);
-        } else {
-            quotes.setReport(Constants.NOT_REPORTED);
-        }
-
-        quotes.setDescriptionQuote(description);
+        quotes.setDescriptionQuote(txtDescription.getText().trim());
         quotes.setRequestDate(Date.valueOf(dtpDate.getValue()));
         quotes.setCustomerId(cmbIdCustomer.getSelectionModel().getSelectedItem().getId());
 
@@ -499,46 +438,19 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void updateQuotes() {
-        String description = txtDescription.getText().trim();
-
-        if (dtpDate.getEditor().getText().isEmpty()) {
-            dtpDate.requestFocus();
-            Animations.shake(dtpDate);
-            return;
-        }
-
-        if (description.isEmpty()) {
-            new Shake(txtDescription).play();
+        if (!validateFields()) {
             return;
         }
 
         Quotes quotes = tblQuotes.getSelectionModel().getSelectedItem();
 
-        if (txtPrice.getText().isEmpty()) {
-            quotes.setPrice(Double.valueOf("0"));
-        } else {
-            quotes.setPrice(Double.valueOf(txtPrice.getText()));
-        }
+        quotes.setPrice(Double.parseDouble(txtPrice.getText().isEmpty() ? "0" : txtPrice.getText()));
 
-        if (toggleButtonExists.isSelected()) {
-            quotes.setExistence(Constants.EXISTENT);
-        } else {
-            quotes.setExistence(Constants.NOT_EXISTENT);
-        }
+        quotes.setExistence(toggleButtonExists.isSelected() ? Constants.EXISTENT : Constants.NOT_EXISTENT);
+        quotes.setRealization(toggleButtonRealized.isSelected() ? Constants.REALIZED : Constants.NOT_REALIZED);
+        quotes.setReport(toggleButtonReport.isSelected() ? Constants.REPORTED : Constants.NOT_REPORTED);
 
-        if (toggleButtonRealized.isSelected()) {
-            quotes.setRealization(Constants.REALIZED);
-        } else {
-            quotes.setRealization(Constants.NOT_REALIZED);
-        }
-
-        if (toggleButtonReport.isSelected()) {
-            quotes.setReport(Constants.REPORTED);
-        } else {
-            quotes.setReport(Constants.NOT_REPORTED);
-        }
-
-        quotes.setDescriptionQuote(description);
+        quotes.setDescriptionQuote(txtDescription.getText().trim());
         quotes.setRequestDate(Date.valueOf(dtpDate.getValue()));
         quotes.setCustomerId(cmbIdCustomer.getSelectionModel().getSelectedItem().getId());
 
@@ -549,17 +461,45 @@ public class QuotesController implements Initializable {
         AlertsBuilder.create(AlertType.SUCCES, stckQuotes, rootQuotes, tblQuotes, Constants.MESSAGE_UPDATED);
     }
 
+    private boolean validateFields() {
+        boolean valid = true;
+
+        if (txtDescription.getText().isEmpty()) {
+            txtDescription.getStyleClass().add("error");
+            valid = false;
+        } else {
+            txtDescription.getStyleClass().removeAll("error");
+        }
+
+        if (cmbIdCustomer.getSelectionModel().isEmpty()) {
+            cmbIdCustomer.getStyleClass().add("error");
+            valid = false;
+        } else {
+            cmbIdCustomer.getStyleClass().removeAll("error");
+        }
+
+        if (txtPrice.getText().isEmpty()) {
+            txtPrice.getStyleClass().add("error");
+            valid = false;
+        } else {
+            txtPrice.getStyleClass().removeAll("error");
+        }
+
+        if (dtpDate.getValue() == null) {
+            dtpDate.getEditor().getStyleClass().add("error");
+            valid = false;
+        } else {
+            dtpDate.getEditor().getStyleClass().removeAll("error");
+        }
+
+        return valid;
+    }
+
     private void closeDialogWithEscapeKey() {
         rootQuotes.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogDeleteQuote();
-            }
-
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddQuotes();
-            }
-
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 tblQuotes.setDisable(false);
                 rootQuotes.setEffect(null);
                 AlertsBuilder.close();
@@ -627,10 +567,10 @@ public class QuotesController implements Initializable {
     }
 
     private void resetValidations() {
-        txtDescription.resetValidation();
-        cmbIdCustomer.resetValidation();
-        txtPrice.resetValidation();
-        dtpDate.resetValidation();
+        txtDescription.clear();
+        cmbIdCustomer.getSelectionModel().clearSelection();
+        txtPrice.clear();
+        dtpDate.setValue(null);
     }
 
     @FXML
@@ -665,75 +605,54 @@ public class QuotesController implements Initializable {
         }
     }
 
-    private class JFXButtonExistsCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, JFXButton>, ObservableValue<JFXButton>> {
+    private class ButtonExistsCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Quotes, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            FontAwesomeIconView icon = new FontAwesomeIconView();
-            icon.setFill(Color.WHITE);
-
-            JFXButton button = new JFXButton();
-            button.setGraphic(icon);
-            button.setText(item.getExistence());
+            Button button = new Button(item.getExistence());
             button.setPrefWidth(colExistence.getWidth() / 0.5);
 
             if (item.getExistence().equals(Constants.EXISTENT)) {
-                icon.setIcon(FontAwesomeIcon.CHECK);
                 button.getStyleClass().addAll("button-yes", "table-row-cell");
             } else {
-                icon.setIcon(FontAwesomeIcon.CLOSE);
                 button.getStyleClass().addAll("button-no", "table-row-cell");
             }
             return new SimpleObjectProperty<>(button);
         }
     }
 
-    private class JFXButtonReportCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, JFXButton>, ObservableValue<JFXButton>> {
+    private class ButtonReportCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Quotes, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            FontAwesomeIconView icon = new FontAwesomeIconView();
-            icon.setFill(Color.WHITE);
-
-            JFXButton button = new JFXButton();
-            button.setGraphic(icon);
-            button.setText(item.getReport());
+            Button button = new Button(item.getReport());
             button.setPrefWidth(colReport.getWidth() / 0.5);
 
             if (item.getReport().equals(Constants.REPORTED)) {
-                icon.setIcon(FontAwesomeIcon.CHECK);
                 button.getStyleClass().addAll("button-yes", "table-row-cell");
             } else {
-                icon.setIcon(FontAwesomeIcon.CLOSE);
                 button.getStyleClass().addAll("button-no", "table-row-cell");
             }
             return new SimpleObjectProperty<>(button);
         }
     }
 
-    private class JFXButtonRealizedCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, JFXButton>, ObservableValue<JFXButton>> {
+    private class ButtonRealizedCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Quotes, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            FontAwesomeIconView icon = new FontAwesomeIconView();
-            icon.setFill(Color.WHITE);
-
-            JFXButton button = new JFXButton();
-            button.setGraphic(icon);
-            button.setText(item.getRealization());
+            Button button = new Button(item.getRealization());
             button.setPrefWidth(colRealization.getWidth() / 0.5);
 
             if (item.getRealization().equals(Constants.REALIZED)) {
-                icon.setIcon(FontAwesomeIcon.CHECK);
                 button.getStyleClass().addAll("button-yes", "table-row-cell");
             } else {
-                icon.setIcon(FontAwesomeIcon.CLOSE);
                 button.getStyleClass().addAll("button-no", "table-row-cell");
             }
             return new SimpleObjectProperty<>(button);

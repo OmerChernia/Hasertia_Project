@@ -1,22 +1,6 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import animatefx.animation.FadeIn;
-import com.jfoenix.controls.JFXPopup;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -57,7 +43,7 @@ public class StatisticsController implements Initializable {
 
     private final DatePicker datepicker = new DatePicker();
 
-    private final JFXPopup popup = new JFXPopup();
+    private final ContextMenu contextMenu = new ContextMenu();
 
     private final ObservableList<PieChart.Data> data = FXCollections.observableArrayList();
 
@@ -65,7 +51,7 @@ public class StatisticsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setGraphics();
         setDatePicker();
-        setPopup();
+        setContextMenu();
         setNodeStartupConfiguration();
         setAnimations();
     }
@@ -85,38 +71,43 @@ public class StatisticsController implements Initializable {
         rootDate.getChildren().add(datepicker);
     }
 
-    private void setPopup() {
-        popup.setPopupContent(rootDate);
+    private void setContextMenu() {
+        MenuItem menuItem = new MenuItem("Select Date");
+        menuItem.setOnAction(ev -> {
+            contextMenu.hide();
+            rootDate.setVisible(true);
+        });
+
+        contextMenu.getItems().add(menuItem);
 
         pieChart.setOnMouseClicked(ev -> {
             if (ev.getButton().equals(MouseButton.SECONDARY)) {
-                popup.show(pieChart, ev.getScreenX(), ev.getScreenY());
+                contextMenu.show(pieChart, ev.getScreenX(), ev.getScreenY());
             }
         });
 
         hboxImage.setOnMouseClicked(ev -> {
             if (ev.getButton().equals(MouseButton.SECONDARY)) {
-                popup.show(hboxImage, ev.getScreenX(), ev.getScreenY());
+                contextMenu.show(hboxImage, ev.getScreenX(), ev.getScreenY());
             }
         });
 
         emptyImage.setOnMouseClicked(ev -> {
             if (ev.getButton().equals(MouseButton.SECONDARY)) {
-                popup.show(emptyImage, ev.getScreenX(), ev.getScreenY());
+                contextMenu.show(emptyImage, ev.getScreenX(), ev.getScreenY());
             }
         });
 
         rootStatistics.setOnMouseClicked(ev -> {
             if (ev.getButton().equals(MouseButton.SECONDARY)) {
-                popup.show(rootStatistics, ev.getScreenX(), ev.getScreenY());
+                contextMenu.show(rootStatistics, ev.getScreenX(), ev.getScreenY());
             }
         });
     }
 
     private void setGraphics() {
         datepicker.setOnAction(ev -> {
-
-            popup.hide();
+            rootDate.setVisible(false);
 
             pieChart.getData().clear();
 

@@ -15,24 +15,23 @@
  */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import com.laynezcoder.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Quotes;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -113,13 +112,13 @@ public class HomeController implements Initializable {
     private TableColumn<Quotes, String> colCustomerName;
 
     @FXML
-    private TableColumn<Quotes, JFXButton> colExistence;
+    private TableColumn<Quotes, Button> colExistence;
 
     @FXML
-    private TableColumn<Quotes, JFXButton> colRealization;
+    private TableColumn<Quotes, Button> colRealization;
 
     @FXML
-    private TableColumn<Quotes, JFXButton> colReport;
+    private TableColumn<Quotes, Button> colReport;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -129,11 +128,6 @@ public class HomeController implements Initializable {
         setWelcomeText();
         counterRecords();
         loadData();
-        selectText();
-    }
-
-    private void selectText() {
-        TextFieldMask.selectText(txtSearchRecentCustomer);
     }
 
     private void animationsNodes() {
@@ -200,9 +194,9 @@ public class HomeController implements Initializable {
         colDate.setCellValueFactory(new PropertyValueFactory<>("requestDate"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         colCustomerName.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        colExistence.setCellValueFactory(new JFXButtonExistsCellValueFactory());
-        colRealization.setCellValueFactory(new JFXButtonRealizedCellValueFactory());
-        colReport.setCellValueFactory(new JFXButtonReportCellValueFactory());
+        colExistence.setCellValueFactory(new ButtonExistsCellValueFactory());
+        colRealization.setCellValueFactory(new ButtonRealizedCellValueFactory());
+        colReport.setCellValueFactory(new ButtonReportCellValueFactory());
     }
 
     private void loadTable() {
@@ -232,75 +226,78 @@ public class HomeController implements Initializable {
         }
     }
 
-    private class JFXButtonExistsCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, JFXButton>, ObservableValue<JFXButton>> {
+    private class ButtonExistsCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Quotes, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            FontAwesomeIconView icon = new FontAwesomeIconView();
-            icon.setFill(Color.WHITE);
+            ImageView icon = new ImageView();
+            icon.setFitHeight(15);
+            icon.setFitWidth(15);
 
-            JFXButton button = new JFXButton();
+            Button button = new Button();
             button.setGraphic(icon);
             button.setText(item.getExistence());
             button.setPrefWidth(colExistence.getWidth() / 0.5);
 
             if (item.getExistence().equals(Constants.EXISTENT)) {
-                icon.setIcon(FontAwesomeIcon.CHECK);
+                icon.setImage(new Image("/il/cshaifasweng/OCSFMediatorExample/client/images/chart.png"));
                 button.getStyleClass().addAll("button-yes", "table-row-cell");
             } else {
-                icon.setIcon(FontAwesomeIcon.CLOSE);
+                icon.setImage(new Image("/il/cshaifasweng/OCSFMediatorExample/client/images/chart.png"));
                 button.getStyleClass().addAll("button-no", "table-row-cell");
             }
             return new SimpleObjectProperty<>(button);
         }
     }
 
-    private class JFXButtonReportCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, JFXButton>, ObservableValue<JFXButton>> {
+    private class ButtonReportCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Quotes, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            FontAwesomeIconView icon = new FontAwesomeIconView();
-            icon.setFill(Color.WHITE);
+            ImageView icon = new ImageView();
+            icon.setFitHeight(15);
+            icon.setFitWidth(15);
 
-            JFXButton button = new JFXButton();
+            Button button = new Button();
             button.setGraphic(icon);
             button.setText(item.getReport());
             button.setPrefWidth(colReport.getWidth() / 0.5);
 
             if (item.getReport().equals(Constants.REPORTED)) {
-                icon.setIcon(FontAwesomeIcon.CHECK);
+                icon.setImage(new Image("/il/cshaifasweng/OCSFMediatorExample/client/images/chart.png"));
                 button.getStyleClass().addAll("button-yes", "table-row-cell");
             } else {
-                icon.setIcon(FontAwesomeIcon.CLOSE);
+                icon.setImage(new Image("/il/cshaifasweng/OCSFMediatorExample/client/images/chart.png"));
                 button.getStyleClass().addAll("button-no", "table-row-cell");
             }
             return new SimpleObjectProperty<>(button);
         }
     }
 
-    private class JFXButtonRealizedCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, JFXButton>, ObservableValue<JFXButton>> {
+    private class ButtonRealizedCellValueFactory implements Callback<TableColumn.CellDataFeatures<Quotes, Button>, ObservableValue<Button>> {
 
         @Override
-        public ObservableValue<JFXButton> call(TableColumn.CellDataFeatures<Quotes, JFXButton> param) {
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            FontAwesomeIconView icon = new FontAwesomeIconView();
-            icon.setFill(Color.WHITE);
+            ImageView icon = new ImageView();
+            icon.setFitHeight(15);
+            icon.setFitWidth(15);
 
-            JFXButton button = new JFXButton();
+            Button button = new Button();
             button.setGraphic(icon);
             button.setText(item.getRealization());
             button.setPrefWidth(colRealization.getWidth() / 0.5);
 
             if (item.getRealization().equals(Constants.REALIZED)) {
-                icon.setIcon(FontAwesomeIcon.CHECK);
+                icon.setImage(new Image("/il/cshaifasweng/OCSFMediatorExample/client/images/chart.png"));
                 button.getStyleClass().addAll("button-yes", "table-row-cell");
             } else {
-                icon.setIcon(FontAwesomeIcon.CLOSE);
+                icon.setImage(new Image("/il/cshaifasweng/OCSFMediatorExample/client/images/chart.png"));
                 button.getStyleClass().addAll("button-no", "table-row-cell");
             }
             return new SimpleObjectProperty<>(button);

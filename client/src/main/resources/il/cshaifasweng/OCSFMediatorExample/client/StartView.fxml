@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXPasswordField?>
-<?import com.jfoenix.controls.JFXProgressBar?>
-<?import com.jfoenix.controls.JFXSpinner?>
-<?import com.jfoenix.controls.JFXTextArea?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
-<?import java.lang.String?>
 <?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -20,6 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import java.lang.String?>
 <StackPane fx:id="stckStart" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.StartController">
    <children>
       <AnchorPane fx:id="rootStart" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseDragged="#dragged" onMousePressed="#pressed" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: white;">
@@ -33,35 +31,35 @@
                <children>
                   <Pane fx:id="paneControlsStep1" layoutX="121.0" layoutY="146.0" prefHeight="188.0" prefWidth="508.0">
                      <children>
-                        <JFXTextField fx:id="txtName" focusColor="#2d3037" labelFloat="true" layoutY="22.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="Name" styleClass="jfx-text-field-start" unFocusColor="#2d3037">
+                        <TextField fx:id="txtName" layoutY="22.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="Name">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXTextField>
-                        <JFXTextField fx:id="txtUser" focusColor="#2d3037" labelFloat="true" layoutX="276.0" layoutY="22.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="User" styleClass="jfx-text-field-start" unFocusColor="#2d3037">
+                        </TextField>
+                        <TextField fx:id="txtUser" layoutX="276.0" layoutY="22.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="User">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXTextField>
-                        <JFXPasswordField fx:id="txtPassword" focusColor="#2d3037" labelFloat="true" layoutY="117.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="Password" styleClass="jfx-text-field-start" unFocusColor="#2d3037">
+                        </TextField>
+                        <PasswordField fx:id="txtPassword" layoutY="117.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="Password">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXPasswordField>
-                        <JFXPasswordField fx:id="txtConfirmPassword" focusColor="#2d3037" labelFloat="true" layoutX="276.0" layoutY="117.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="Confirm your password" styleClass="jfx-text-field-start" unFocusColor="#2d3037">
+                        </PasswordField>
+                        <PasswordField fx:id="txtConfirmPassword" layoutX="276.0" layoutY="117.0" onAction="#stepOneToStepTwo" prefHeight="30.0" prefWidth="232.0" promptText="Confirm your password">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXPasswordField>
+                        </PasswordField>
                      </children>
                   </Pane>
                   <HBox alignment="CENTER" layoutX="288.0" layoutY="399.0" prefHeight="30.0" prefWidth="174.0">
                      <children>
-                        <JFXButton fx:id="btnStep1" onMouseClicked="#stepOneToStepTwo" prefHeight="36.0" prefWidth="150.0" ripplerFill="#2d3037" styleClass="button-start" text="Next" textFill="WHITE">
+                        <Button fx:id="btnStep1" onMouseClicked="#stepOneToStepTwo" prefHeight="36.0" prefWidth="150.0" styleClass="button-start" text="Next" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
+                        </Button>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="750.0">
@@ -75,23 +73,23 @@
                <children>
                   <HBox fx:id="hBoxStep2" alignment="CENTER" layoutX="230.0" layoutY="370.0" prefHeight="30.0" prefWidth="300.0" spacing="20.0">
                      <children>
-                        <JFXButton fx:id="btnBackStep2" onMouseClicked="#StartStepOne" prefHeight="36.0" prefWidth="150.0" ripplerFill="WHITE" styleClass="button-start-back" text="Back" textFill="#2d3037">
+                        <Button fx:id="btnBackStep2" onMouseClicked="#StartStepOne" prefHeight="36.0" prefWidth="150.0" styleClass="button-start-back" text="Back" textFill="#2d3037">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
-                        <JFXButton fx:id="btnStep2" layoutX="75.0" layoutY="10.0" onMouseClicked="#stepTwoToStepThree" prefHeight="36.0" prefWidth="150.0" ripplerFill="#2d3037" styleClass="button-start" text="Next" textFill="WHITE">
+                        </Button>
+                        <Button fx:id="btnStep2" layoutX="75.0" layoutY="10.0" onMouseClicked="#stepTwoToStepThree" prefHeight="36.0" prefWidth="150.0" styleClass="button-start" text="Next" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
+                        </Button>
                      </children>
                   </HBox>
-                  <JFXTextArea fx:id="txtBio" focusColor="#2d3037" labelFloat="true" layoutX="101.0" layoutY="117.0" prefHeight="224.0" prefWidth="559.0" promptText="Biography" styleClass="jfx-text-field-start" unFocusColor="#2d3037">
+                  <TextArea fx:id="txtBio" layoutX="101.0" layoutY="117.0" prefHeight="224.0" prefWidth="559.0" promptText="Biography">
                      <font>
                         <Font size="14.0" />
                      </font>
-                  </JFXTextArea>
+                  </TextArea>
                   <HBox alignment="CENTER" layoutX="1.0" prefHeight="60.0" prefWidth="750.0">
                      <children>
                         <Text fx:id="textStep2" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h3" text="Enter your biography" />
@@ -101,28 +99,29 @@
             </Pane>
             <Pane fx:id="paneStep3" layoutX="248.0" layoutY="60.0" onMouseDragged="#dragged" onMousePressed="#pressed" prefHeight="480.0" prefWidth="750.0" visible="false">
                <children>
-                  <JFXComboBox fx:id="cmbDialogTransition" focusColor="#2d3037" labelFloat="true" layoutX="121.0" layoutY="183.0" prefHeight="30.0" prefWidth="508.0" promptText="Select an animation type" unFocusColor="#2d3037">
+                  <ComboBox fx:id="cmbDialogTransition" layoutX="121.0" layoutY="183.0" prefHeight="30.0" prefWidth="508.0" promptText="Select an animation type">
                      <styleClass>
                         <String fx:value="combo-box-start" />
                         <String fx:value="combo-box-popup-start" />
-                     </styleClass></JFXComboBox>
+                     </styleClass>
+                  </ComboBox>
                   <HBox fx:id="hBoxStep3" alignment="CENTER" layoutX="151.0" layoutY="301.0" prefHeight="34.0" prefWidth="449.0" spacing="20.0">
                      <children>
-                        <JFXButton fx:id="btnBackStep3" onMouseClicked="#startStepTwo" prefHeight="36.0" prefWidth="150.0" ripplerFill="#2d3037" styleClass="button-start-back" text="Back" textFill="#2d3037">
+                        <Button fx:id="btnBackStep3" onMouseClicked="#startStepTwo" prefHeight="36.0" prefWidth="150.0" styleClass="button-start-back" text="Back" textFill="#2d3037">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
-                        <JFXButton fx:id="btnDialogStep3" onMouseClicked="#alert" prefHeight="36.0" prefWidth="150.0" ripplerFill="#2d3037" styleClass="button-start" text="¡I want to try it!" textFill="WHITE">
+                        </Button>
+                        <Button fx:id="btnDialogStep3" onMouseClicked="#alert" prefHeight="36.0" prefWidth="150.0" styleClass="button-start" text="¡I want to try it!" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
-                        <JFXButton fx:id="btnStep3" layoutX="75.0" layoutY="10.0" onMouseClicked="#finish" prefHeight="36.0" prefWidth="150.0" ripplerFill="#2d3037" styleClass="button-start" text="Next" textFill="WHITE">
+                        </Button>
+                        <Button fx:id="btnStep3" layoutX="75.0" layoutY="10.0" onMouseClicked="#finish" prefHeight="36.0" prefWidth="150.0" styleClass="button-start" text="Next" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
+                        </Button>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="750.0">
@@ -134,14 +133,14 @@
             </Pane>
             <Pane fx:id="paneFinish" layoutX="250.0" layoutY="60.0" onMouseDragged="#dragged" onMousePressed="#pressed" prefHeight="480.0" prefWidth="750.0" visible="false">
                <children>
-                  <JFXSpinner fx:id="spinner" layoutX="350.0" layoutY="215.0" />
+                  <ProgressBar fx:id="progressBar" layoutX="350.0" layoutY="215.0" />
                   <HBox alignment="CENTER" layoutX="288.0" layoutY="392.0" prefHeight="30.0" prefWidth="174.0">
                      <children>
-                        <JFXButton fx:id="btnStart" buttonType="RAISED" onMouseClicked="#mainWindow" prefHeight="36.0" prefWidth="150.0" ripplerFill="#2d3037" styleClass="button-start" text="Start" textFill="WHITE">
+                        <Button fx:id="btnStart" onMouseClicked="#mainWindow" prefHeight="36.0" prefWidth="150.0" styleClass="button-start" text="Start" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
-                        </JFXButton>
+                        </Button>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="60.0" prefWidth="750.0">
@@ -165,15 +164,12 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <JFXButton contentDisplay="CENTER" layoutX="964.0" onMouseClicked="#closeWindow" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
-               <graphic>
-                  <MaterialDesignIconView fill="#989cab" glyphName="CLOSE" size="20" />
-               </graphic>
-            </JFXButton>
+            <Button contentDisplay="CENTER" layoutX="964.0" onMouseClicked="#closeWindow" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
+            </Button>
             <VBox alignment="CENTER" layoutX="250.0" layoutY="540.0" prefHeight="60.0" prefWidth="750.0" spacing="10.0">
                <children>
                   <Text fx:id="textProgressBar" fill="#bebec2" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h5" text="1 of 3" />
-                  <JFXProgressBar fx:id="progressBar" prefHeight="8.0" prefWidth="243.0" progress="0.43" styleClass="jfx-progress-bar" />
+                  <ProgressBar fx:id="progressBar" prefHeight="8.0" prefWidth="243.0" progress="0.43" />
                </children>
             </VBox>
          </children>

@@ -15,7 +15,6 @@
  */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import com.jfoenix.controls.JFXButton;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
 import java.io.IOException;
@@ -28,6 +27,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,31 +37,31 @@ import javafx.stage.StageStyle;
 public class MainController implements Initializable {
 
     @FXML
-    private JFXButton btnHome;
+    private Button btnHome;
 
     @FXML
-    private JFXButton btnCustomers;
+    private Button btnCustomers;
 
     @FXML
-    private JFXButton btnQuotes;
+    private Button btnQuotes;
 
     @FXML
-    private JFXButton btnExit;
+    private Button btnExit;
 
     @FXML
-    private JFXButton btnAbout;
+    private Button btnAbout;
 
     @FXML
-    private JFXButton btnStatistics;
+    private Button btnStatistics;
 
     @FXML
-    private JFXButton btnAddUser;
+    private Button btnAddUser;
 
     @FXML
-    private JFXButton btnSettings;
+    private Button btnSettings;
 
     @FXML
-    private JFXButton btnProducts;
+    private Button btnProducts;
 
     @FXML
     private AnchorPane rootContainer;
@@ -155,7 +155,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void productsWindows(MouseEvent event) { 
+    private void productsWindows(MouseEvent event) {
         showFXMLWindows("ProductsView");
         setDisableButtons(event);
     }
@@ -185,7 +185,7 @@ public class MainController implements Initializable {
         ((Stage) btnHome.getScene().getWindow()).close();
     }
 
-    private void setDisableButtons(MouseEvent event, JFXButton button) {
+    private void setDisableButtons(MouseEvent event, Button button) {
         if (event.getSource().equals(button)) {
             button.setDisable(true);
         } else {
@@ -220,15 +220,15 @@ public class MainController implements Initializable {
         }
     }
 
-    public JFXButton getBtnStatistics() {
+    public Button getBtnStatistics() {
         return btnStatistics;
     }
 
-    public JFXButton getBtnAddUser() {
+    public Button getBtnAddUser() {
         return btnAddUser;
     }
 
-    public JFXButton getBtnAbout() {
+    public Button getBtnAbout() {
         return btnAbout;
     }
 }

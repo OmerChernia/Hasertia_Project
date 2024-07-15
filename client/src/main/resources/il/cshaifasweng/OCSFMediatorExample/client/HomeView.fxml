@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stckHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.HomeController">
+<StackPane fx:id="stckHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.HomeController">
    <children>
       <AnchorPane fx:id="rootHome" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #f5f5f7;">
          <children>
@@ -25,7 +16,6 @@
                      <font>
                         <Font size="13.0" />
                      </font></TextField>
-                  <FontAwesomeIconView fill="#76787c" glyphName="SEARCH" layoutX="14.0" layoutY="27.0" size="20" />
                </children>
             </AnchorPane>
             <AnchorPane fx:id="rootWelcome" layoutX="16.0" layoutY="72.0" prefHeight="0.0" prefWidth="900.0" style="-fx-background-color: #e2faff; -fx-background-radius: 5;" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="14.0">
