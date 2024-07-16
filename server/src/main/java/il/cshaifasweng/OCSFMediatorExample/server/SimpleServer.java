@@ -8,10 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
-import org.hibernate.FetchMode;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -70,18 +67,10 @@ public class SimpleServer extends AbstractServer
 				}
 
 				if (messageHandler != null) {
-
 					messageHandler.handleMessage();            	// handle the message ,and change DB if needed
 					session.getTransaction().commit();          // save changes in DB
 					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
-
-
-					System.out.println("Message handled1");
-
-					//List<Complaint> complaints = new ArrayList<>();
 					client.sendToClient(msg);
-					System.out.println("Message handled2");
-
 				}
 			}
 

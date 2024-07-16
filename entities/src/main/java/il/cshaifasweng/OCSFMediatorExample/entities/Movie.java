@@ -1,11 +1,17 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "movies")
-public class Movie {
+public class Movie implements Serializable {
 
     public enum StreamingType {
         HOME_VIEWING,
@@ -152,6 +158,52 @@ public class Movie {
 
     public void setTheaterPrice(int theaterPrice) {
         this.theaterPrice = theaterPrice;
+    }
+
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("hebrewName", hebrewName);
+        jsonObject.put("info", info);
+        jsonObject.put("producer", producer);
+        jsonObject.put("englishName", englishName);
+        jsonObject.put("image", image);
+        jsonObject.put("streamingType", streamingType.name());
+        jsonObject.put("duration", duration);
+        jsonObject.put("homeViewingPrice", homeViewingPrice);
+        jsonObject.put("theaterPrice", theaterPrice);
+
+        JSONArray mainActorsArray = new JSONArray();
+        for (String actor : mainActors) {
+            mainActorsArray.put(actor);
+        }
+        jsonObject.put("mainActors", mainActorsArray);
+
+        return jsonObject.toString();
+    }
+
+    public static Movie fromJson(String jsonString) {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        Movie movie = new Movie();
+        movie.setId(jsonObject.getLong("id"));
+        movie.setHebrewName(jsonObject.getString("hebrewName"));
+        movie.setInfo(jsonObject.getString("info"));
+        movie.setProducer(jsonObject.getString("producer"));
+        movie.setEnglishName(jsonObject.getString("englishName"));
+        movie.setImage(jsonObject.getString("image"));
+        movie.setStreamingType(StreamingType.valueOf(jsonObject.getString("streamingType")));
+        movie.setDuration(jsonObject.getInt("duration"));
+        movie.setHomeViewingPrice(jsonObject.getInt("homeViewingPrice"));
+        movie.setTheaterPrice(jsonObject.getInt("theaterPrice"));
+
+        JSONArray mainActorsArray = jsonObject.getJSONArray("mainActors");
+        List<String> mainActorsList = new ArrayList<>();
+        for (int i = 0; i < mainActorsArray.length(); i++) {
+            mainActorsList.add(mainActorsArray.getString(i));
+        }
+        movie.setMainActors(mainActorsList);
+
+        return movie;
     }
 
 }

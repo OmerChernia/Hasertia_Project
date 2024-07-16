@@ -1,5 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import com.google.gson.Gson;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 
 @Entity
@@ -47,9 +50,16 @@ public class Employee extends Person
         return employeeType;
     }
 
-    @Override
+    public void setEmployeeType(EmployeeType employeeType) {
+        this.employeeType = employeeType;
+    }
+
     public String toJson() {
-        JSONObject jsonObject = new JSONObject(super.toJson());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", getId());
+        jsonObject.put("id_number", getId_number());
+        jsonObject.put("name", getName());
+        jsonObject.put("isOnline", isOnline());
         jsonObject.put("password", password);
         jsonObject.put("employeeType", employeeType.name());
         return jsonObject.toString();
@@ -57,13 +67,12 @@ public class Employee extends Person
 
     public static Employee fromJson(String jsonString) {
         JSONObject jsonObject = new JSONObject(jsonString);
-        Person person = Person.fromJson(jsonString);
         Employee employee = new Employee();
-        employee.id = person.getId();
-        employee.id_number = person.getId_number();
-        employee.name = person.getName();
-        employee.isOnline = person.isOnline();
-        employee.password = jsonObject.getString("password");
+        employee.setId(jsonObject.getInt("id"));
+        employee.setId_number(jsonObject.getString("id_number"));
+        employee.setName(jsonObject.getString("name"));
+        employee.setOnline(jsonObject.getBoolean("isOnline"));
+        employee.setPassword(jsonObject.getString("password"));
         employee.employeeType = EmployeeType.valueOf(jsonObject.getString("employeeType"));
         return employee;
     }

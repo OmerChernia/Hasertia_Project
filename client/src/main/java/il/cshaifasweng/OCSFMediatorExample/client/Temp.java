@@ -35,7 +35,7 @@ public class Temp {
     {
         for(Complaint comp :  message.compliants)
         {
-            System.out.println(comp.getInfo());
+            System.out.println(comp.toString());
         }
     }
 }

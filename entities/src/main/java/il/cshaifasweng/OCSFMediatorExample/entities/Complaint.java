@@ -1,5 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import com.google.gson.Gson;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -79,5 +82,50 @@ public class Complaint implements Serializable {
         this.id = id;
     }
 
+    public RegisteredUser getRegisteredUser() {
+        return registeredUser;
+    }
+
+    public void setRegisteredUser(RegisteredUser registeredUser) {
+        this.registeredUser = registeredUser;
+    }
+
+    public String toJson() {
+        System.out.println("enter");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("info", info);
+        jsonObject.put("creationDate", creationDate.toString());
+        jsonObject.put("purchase", purchase.toJson());
+        System.out.println("passed purchase");
+        jsonObject.put("isClosed", isClosed);
+        jsonObject.put("registeredUser", registeredUser.toJson());
+        System.out.println("passes user");
+        return jsonObject.toString();
+    }
+
+    public static Complaint fromJson(String jsonString) {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        Complaint complaint = new Complaint();
+        complaint.id = jsonObject.getInt("id");
+        complaint.info = jsonObject.getString("info");
+        complaint.creationDate = LocalDateTime.parse(jsonObject.getString("creationDate"));
+        complaint.purchase = Purchase.fromJson(jsonObject.getString("purchase"));
+        complaint.isClosed = jsonObject.getBoolean("isClosed");
+        complaint.registeredUser = RegisteredUser.fromJson(jsonObject.getString("registeredUser"));
+        return complaint;
+    }
+
+    @Override
+    public String toString() {
+        return "Complaint{" +
+                "id=" + id +
+                ", info='" + info + '\'' +
+                ", creationDate=" + creationDate +
+                ", purchase=" + (purchase != null ? purchase.toString() : "null") +
+                ", isClosed=" + isClosed +
+                ", registeredUser=" + (registeredUser != null ? registeredUser.toString() : "null") +
+                '}';
+    }
 
 }

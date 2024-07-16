@@ -66,4 +66,17 @@ public class RegisteredUser extends Person {
         registeredUser.ticket_counter = jsonObject.getInt("ticket_counter");
         return registeredUser;
     }
+
+    @Override
+    public String toString() {
+        return "RegisteredUser{" +
+                "id=" + getId() +
+                ", id_number='" + getId_number() + '\'' +
+                ", name='" + getName() + '\'' +
+                ", isOnline=" + isOnline() +
+                ", email='" + email + '\'' +
+                ", ticket_counter=" + ticket_counter +
+                '}';
+    }
+
 }

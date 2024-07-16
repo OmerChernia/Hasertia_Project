@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -55,24 +56,8 @@ public abstract class Person implements Serializable {
 
     public int getId(){return  id;}
 
-    public String toJson()
-    {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", id);
-        jsonObject.put("id_number", id_number);
-        jsonObject.put("name", name);
-        jsonObject.put("isOnline", isOnline);
-        return jsonObject.toString();
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public static Person fromJson(String jsonString)
-    {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        Person person = new Person() {}; // Creating an anonymous subclass of Person
-        person.id = jsonObject.getInt("id");
-        person.id_number = jsonObject.getString("id_number");
-        person.name = jsonObject.getString("name");
-        person.isOnline = jsonObject.getBoolean("isOnline");
-        return person;
-    }
 }

@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -87,5 +88,53 @@ public class Hall implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("capacity", capacity);
+        jsonObject.put("name", name);
+        jsonObject.put("theater", theater != null ? theater.toJson() : JSONObject.NULL);
+
+        JSONArray seatsArray = new JSONArray();
+        for (Seat seat : seats) {
+            seatsArray.put(seat.toJson());
+        }
+        jsonObject.put("seats", seatsArray);
+
+        JSONArray movieInstancesArray = new JSONArray();
+        for (MovieInstance movieInstance : movieInstances) {
+            movieInstancesArray.put(movieInstance.toJson());
+        }
+        jsonObject.put("movieInstances", movieInstancesArray);
+
+        return jsonObject.toString();
+    }
+
+    public static Hall fromJson(String jsonString) {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        Hall hall = new Hall();
+        hall.id = jsonObject.getInt("id");
+        hall.capacity = jsonObject.getInt("capacity");
+        hall.name = jsonObject.getString("name");
+        hall.theater = jsonObject.isNull("theater") ? null : Theater.fromJson(jsonObject.getString("theater"));
+
+        JSONArray seatsArray = jsonObject.getJSONArray("seats");
+        List<Seat> seatsList = new ArrayList<>();
+        for (int i = 0; i < seatsArray.length(); i++) {
+            seatsList.add(Seat.fromJson(seatsArray.getString(i)));
+        }
+        hall.setSeats(seatsList);
+
+        JSONArray movieInstancesArray = jsonObject.getJSONArray("movieInstances");
+        List<MovieInstance> movieInstancesList = new ArrayList<>();
+        for (int i = 0; i < movieInstancesArray.length(); i++) {
+            movieInstancesList.add(MovieInstance.fromJson(movieInstancesArray.getString(i)));
+        }
+        hall.setMovieInstances(movieInstancesList);
+
+        return hall;
+    }
+
 
 }
