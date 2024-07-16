@@ -1,6 +1,52 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-public class PriceRequest {
+import javax.persistence.*;
+import java.io.Serializable;
 
+@Entity
+@Table(name = "price_requests")
+public class PriceRequest implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
+    @Column
+    private int newPrice; // Changed from String to int for better representation
+
+    @ManyToOne
+    private Movie movie;
+
+    public PriceRequest() {
+    }
+
+    public PriceRequest(int newPrice, Movie movie) {
+        this.newPrice = newPrice;
+        this.movie = movie;
+    }
+
+    // Getters and setters
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getNewPrice() {
+        return newPrice;
+    }
+
+    public void setNewPrice(int newPrice) {
+        this.newPrice = newPrice;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
 }
