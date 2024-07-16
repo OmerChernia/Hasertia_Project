@@ -9,8 +9,8 @@ public class PurchaseMessage extends Message
     ArrayList<Purchase> purchases;
     String customerId;
     String theater_name;
-    RequestType requestType;
-    ResponseType responseType;
+    public RequestType requestType;
+    public ResponseType responseType;
 
     public PurchaseMessage(MessageType messageType, String customerId, RequestType requestType)
     {
@@ -37,7 +37,7 @@ public class PurchaseMessage extends Message
     }
     public PurchaseMessage(MessageType messageType, RequestType requestType)
     {
-        // GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH
+        // GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH , GET_ALL_PURCHASES
         super(messageType);
         this.requestType = requestType;
     }
@@ -57,7 +57,8 @@ public class PurchaseMessage extends Message
         REMOVE_PURCHASE,
         GET_PURCHASES_BY_CUSTOMER_ID,
         GET_PURCHASES_BY_THEATER_NAME,
-        GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH
+        GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH,
+        GET_ALL_PURCHASES
     }
 
 

@@ -3,8 +3,6 @@ package il.cshaifasweng.OCSFMediatorExample.entities.Controllers;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MoviesInstanceMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 
 import java.io.IOException;
 

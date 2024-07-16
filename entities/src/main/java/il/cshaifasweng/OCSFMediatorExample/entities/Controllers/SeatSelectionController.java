@@ -1,83 +1,39 @@
-package il.cshaifasweng.OCSFMediatorExample.entities;
+package il.cshaifasweng.OCSFMediatorExample.entities.Controllers;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Seat;
 
-@Entity
-@Table(name = "complaints")
-public class Complaint implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+import java.io.IOException;
+import java.util.ArrayList;
 
-    @Column(nullable = false)
-    private String info;
+public class SeatSelectionController {
+    private static SimpleClient client;
+    private ArrayList<Seat> selectedSeats;
 
-    @Column(nullable = false)
-    private LocalDateTime creationDate;
-
-    @ManyToOne
-    private Purchase purchase;
-
-    @Column(nullable = false)
-    private boolean isClosed;
-
-    @ManyToOne
-    private RegisteredUser registeredUser;
-
-    public Complaint(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, RegisteredUser registeredUser) {
-        this.info = info;
-        this.creationDate = creationDate;
-        this.purchase = purchase;
-        this.isClosed = isClosed;
-        this.registeredUser = registeredUser;
+    public SeatSelectionController() {
+        selectedSeats = new ArrayList<>();
     }
 
-    public Complaint() {
+    public Seat[] getSelectedSeats() {
+        return selectedSeats.toArray(new Seat[0]);
     }
 
-    // Getters and setters
-
-    public String getInfo() {
-        return info;
+    public void apply_selection() {
+        SeatMessage seatSelectionMessage = new SeatMessage(Message.MessageType.REQUEST, SeatMessage.RequestType.APPLY_SELECTION, selectedSeats);
+        try {
+            SimpleClient.getClient().sendToServer(seatSelectionMessage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public static void main(String[] args) throws IOException {
+        client = SimpleClient.getClient();
+        client.openConnection();
+
+        SeatSelectionController controller = new SeatSelectionController();
+        controller.apply_selection();
     }
-
-    public LocalDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Purchase getPurchase() {
-        return purchase;
-    }
-
-    public void setPurchase(Purchase purchase) {
-        this.purchase = purchase;
-    }
-
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    public void setClosed(boolean closed) {
-        isClosed = closed;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
 }
