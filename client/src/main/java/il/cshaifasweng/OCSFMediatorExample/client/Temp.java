@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class Temp {
 
@@ -13,9 +14,12 @@ public class Temp {
     public static void main(String[] args) throws IOException {
         client = SimpleClient.getClient();
         client.openConnection();
+
         LoginMessage loginMessage = new LoginMessage("318111222", Message.MessageType.REQUEST,LoginMessage.RequestType.LOGIN);
         EmployeeLoginMessage employeeLoginMessage = new EmployeeLoginMessage("238947615", Message.MessageType.REQUEST, LoginMessage.RequestType.LOGOUT,"password120");
         ComplaintMessage complaintMessage = new ComplaintMessage(Message.MessageType.REQUEST,ComplaintMessage.RequestType.GET_ALL_COMPLIANTS);
+
+
         SimpleClient.getClient().sendToServer(complaintMessage);
 
     }

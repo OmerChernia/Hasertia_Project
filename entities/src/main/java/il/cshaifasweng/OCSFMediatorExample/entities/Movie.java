@@ -134,6 +134,10 @@ public class Movie {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public int getHomeViewingPrice() {
         return homeViewingPrice;
     }
@@ -149,4 +153,5 @@ public class Movie {
     public void setTheaterPrice(int theaterPrice) {
         this.theaterPrice = theaterPrice;
     }
+
 }

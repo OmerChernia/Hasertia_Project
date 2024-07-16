@@ -3,18 +3,20 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.SubscribedClient;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -68,14 +70,16 @@ public class SimpleServer extends AbstractServer
 				}
 
 				if (messageHandler != null) {
+
 					messageHandler.handleMessage();            	// handle the message ,and change DB if needed
 					session.getTransaction().commit();          // save changes in DB
 					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
 
+
 					System.out.println("Message handled1");
-					List<Complaint> users = session.createQuery("from Complaint", Complaint.class).list();
-					System.out.println("Fetched users: " + users);  // Logging the fetched data
-					client.sendToClient(users.getClass());
+
+					//List<Complaint> complaints = new ArrayList<>();
+					client.sendToClient(msg);
 					System.out.println("Message handled2");
 
 				}

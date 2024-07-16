@@ -1,5 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import org.json.JSONObject;
+
 import javax.persistence.*;
 
 @Entity
@@ -28,4 +30,5 @@ public class TheaterManager extends Employee {
     public void setTheater(Theater theater) {
         this.theater = theater;
     }
+
 }

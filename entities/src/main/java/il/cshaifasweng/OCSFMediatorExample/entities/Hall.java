@@ -1,7 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -83,4 +87,5 @@ public class Hall implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
 }

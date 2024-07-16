@@ -17,10 +17,10 @@ public class Employee extends Person
     }
 
     @Column
-    private EmployeeType employeeType;
+    protected EmployeeType employeeType;
 
     @Column(name = "password", nullable = false)
-    private String password;
+    protected String password;
 
     public Employee(String id_number ,String name, boolean isOnline, String password, EmployeeType employeeType) {
         super(id_number,name, isOnline);
@@ -47,5 +47,25 @@ public class Employee extends Person
         return employeeType;
     }
 
+    @Override
+    public String toJson() {
+        JSONObject jsonObject = new JSONObject(super.toJson());
+        jsonObject.put("password", password);
+        jsonObject.put("employeeType", employeeType.name());
+        return jsonObject.toString();
+    }
+
+    public static Employee fromJson(String jsonString) {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        Person person = Person.fromJson(jsonString);
+        Employee employee = new Employee();
+        employee.id = person.getId();
+        employee.id_number = person.getId_number();
+        employee.name = person.getName();
+        employee.isOnline = person.isOnline();
+        employee.password = jsonObject.getString("password");
+        employee.employeeType = EmployeeType.valueOf(jsonObject.getString("employeeType"));
+        return employee;
+    }
 
 }

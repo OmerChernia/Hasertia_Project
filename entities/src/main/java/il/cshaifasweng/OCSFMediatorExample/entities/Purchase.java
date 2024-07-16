@@ -60,4 +60,6 @@ public abstract class Purchase
     }
 
     public long getId(){return this.id;}
+
+
 }

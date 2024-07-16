@@ -399,7 +399,6 @@ public class GenerateDB {
                         false,
                         user
                 );
-                System.out.println(complaint);
                 session.save(complaint);
                 session.flush();
                 System.out.println("Saved complaint: " + complaint.getId());

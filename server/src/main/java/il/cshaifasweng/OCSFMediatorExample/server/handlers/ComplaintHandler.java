@@ -67,7 +67,7 @@ public class ComplaintHandler extends MessageHandler
             // Execute the query and get the result list
             System.out.println("Executing query to fetch all complaints");
             List<Complaint> complaints = query.getResultList();
-            List<Complaint> res = new ArrayList<Complaint>();
+            //List<Complaint> res = new ArrayList<Complaint>();
 
 
             message.compliants = complaints;

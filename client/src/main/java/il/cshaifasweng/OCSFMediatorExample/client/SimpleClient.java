@@ -1,10 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
+
+import java.util.List;
 
 
 public class SimpleClient extends AbstractClient {

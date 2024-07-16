@@ -64,4 +64,5 @@ public class Theater {
     public void setManager(TheaterManager manager) {
         this.manager = manager;
     }
+
 }
