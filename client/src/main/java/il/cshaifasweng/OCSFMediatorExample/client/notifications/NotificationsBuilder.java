@@ -48,7 +48,7 @@ public class NotificationsBuilder {
 
         notificationStage.show();
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(6));
+        PauseTransition delay = new PauseTransition(Duration.seconds(1));
         delay.setOnFinished(event -> notificationStage.close());
         delay.play();
     }

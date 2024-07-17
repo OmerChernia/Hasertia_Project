@@ -8,7 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.models.Customers;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
-import il.cshaifasweng.OCSFMediatorExample.client.util.JFXDialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -99,8 +99,8 @@ public class CustomersController implements Initializable {
     @FXML
     private Text titleAddCustomer;
 
-    private JFXDialogTool dialogAddCustomer;
-    private JFXDialogTool dialogDeleteCustomer;
+    private DialogTool dialogAddCustomer;
+    private DialogTool dialogDeleteCustomer;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -139,7 +139,7 @@ public class CustomersController implements Initializable {
         containerAddCustomer.setVisible(true);
         btnSaveCustomer.toFront();
 
-        dialogAddCustomer = new JFXDialogTool(containerAddCustomer, stckCustomers);
+        dialogAddCustomer = new DialogTool(containerAddCustomer, stckCustomers);
         dialogAddCustomer.show();
 
         dialogAddCustomer.setOnDialogOpened(ev -> {
@@ -170,7 +170,7 @@ public class CustomersController implements Initializable {
         containerDeleteCustomer.setVisible(true);
         rootCustomers.setEffect(Constants.BOX_BLUR_EFFECT);
 
-        dialogDeleteCustomer = new JFXDialogTool(containerDeleteCustomer, stckCustomers);
+        dialogDeleteCustomer = new DialogTool(containerDeleteCustomer, stckCustomers);
         dialogDeleteCustomer.show();
 
         dialogDeleteCustomer.setOnDialogClosed(ev -> {

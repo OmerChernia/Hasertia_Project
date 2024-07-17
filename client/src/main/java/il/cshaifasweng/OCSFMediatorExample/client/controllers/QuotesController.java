@@ -1,7 +1,5 @@
-
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import animatefx.animation.Shake;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
@@ -9,10 +7,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.models.Customers;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Quotes;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
 import il.cshaifasweng.OCSFMediatorExample.client.util.AutocompleteComboBox;
-import il.cshaifasweng.OCSFMediatorExample.client.util.ContextMenu;
-import il.cshaifasweng.OCSFMediatorExample.client.util.JFXDialogTool;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -25,7 +21,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -122,9 +117,9 @@ public class QuotesController implements Initializable {
     @FXML
     private ToggleButton toggleButtonRealized;
 
-    private JFXDialogTool dialogAddQuote;
+    private DialogTool dialogAddQuote;
 
-    private JFXDialogTool dialogDeleteQuote;
+    private DialogTool dialogDeleteQuote;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -143,7 +138,7 @@ public class QuotesController implements Initializable {
     }
 
     private void setContextMenu() {
-        ContextMenu contextMenu = new ContextMenu(tblQuotes);
+        CustomContextMenu contextMenu = new CustomContextMenu(tblQuotes);
 
         contextMenu.setActionEdit(ev -> {
             showDialogEditQuote();
@@ -208,7 +203,7 @@ public class QuotesController implements Initializable {
         btnSaveQuotes.toFront();
         titleWindowAddQuotes.setText("Add Quote");
 
-        dialogAddQuote = new JFXDialogTool(containerAddQuotes, stckQuotes);
+        dialogAddQuote = new DialogTool(containerAddQuotes, stckQuotes);
         dialogAddQuote.show();
 
         dialogAddQuote.setOnDialogOpened(ev -> {
@@ -255,7 +250,7 @@ public class QuotesController implements Initializable {
         rootQuotes.setEffect(Constants.BOX_BLUR_EFFECT);
         disableTable();
 
-        dialogDeleteQuote = new JFXDialogTool(containerDeleteQuotes, stckQuotes);
+        dialogDeleteQuote = new DialogTool(containerDeleteQuotes, stckQuotes);
         dialogDeleteQuote.show();
 
         dialogDeleteQuote.setOnDialogClosed(ev -> {

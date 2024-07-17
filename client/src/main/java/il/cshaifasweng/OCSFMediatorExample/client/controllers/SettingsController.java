@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.models.Users;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
+import il.cshaifasweng.OCSFMediatorExample.client.util.CropImageProfile;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
@@ -27,8 +28,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SettingsController implements Initializable {
 
@@ -271,7 +275,7 @@ public class SettingsController implements Initializable {
         imageFile = getImageFromFileChooser(getStage());
         if (imageFile != null) {
             if (imageFile.length() < LIMIT) {
-                // CropImageProfile crop = new CropImageProfile(imageFile);
+                CropImageProfile crop = new CropImageProfile(imageFile);
                 AlertsBuilder.create(AlertType.SUCCES, stckSettings, rootSettings, rootSettings, MESSAGE_PROFILE_IMAGE_SAVED);
                 loadProfileImage();
             } else {
@@ -282,8 +286,13 @@ public class SettingsController implements Initializable {
 
     private void loadProfileImage() {
         // Load dummy image
-        Image image = new Image(getClass().getResourceAsStream("/path/to/dummy/image.png"), 100, 100, true, true);
-        imageViewProfile.setImage(image);
+        InputStream imageStream = getClass().getResourceAsStream("/media/icon.png");
+        if (imageStream == null) {
+            Logger.getLogger(SettingsController.class.getName()).log(Level.SEVERE, "Image not found: /media/icon.png");
+        } else {
+            Image image = new Image(imageStream, 100, 100, true, true);
+            imageViewProfile.setImage(image);
+        }
     }
 
     private Stage getStage() {

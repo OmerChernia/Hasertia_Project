@@ -28,10 +28,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import il.cshaifasweng.OCSFMediatorExample.client.util.JFXDialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.mask.RequieredFieldsValidators;
 import il.cshaifasweng.OCSFMediatorExample.client.mask.TextFieldMask;
-import il.cshaifasweng.OCSFMediatorExample.client.util.ContextMenu;
+import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DefaultProfileImage;
 import java.io.FileNotFoundException;
 import javafx.scene.control.Button;
@@ -112,9 +112,9 @@ public class UsersController implements Initializable {
     @FXML
     private Text titleAddUser;
 
-    private JFXDialogTool dialogAddUser;
+    private DialogTool dialogAddUser;
 
-    private JFXDialogTool dialogDeleteUser;
+    private DialogTool dialogDeleteUser;
 
     private ObservableList<Users> listUsers;
 
@@ -136,7 +136,7 @@ public class UsersController implements Initializable {
     }
 
     private void setContextMenu() {
-        ContextMenu contextMenu = new ContextMenu(tblUsers);
+        CustomContextMenu contextMenu = new CustomContextMenu(tblUsers);
 
         contextMenu.setActionEdit(ev -> {
             showDialogEditUser();
@@ -210,7 +210,7 @@ public class UsersController implements Initializable {
         addUserContainer.setVisible(true);
         titleAddUser.setText("Add user");
 
-        dialogAddUser = new JFXDialogTool(addUserContainer, stckUsers);
+        dialogAddUser = new DialogTool(addUserContainer, stckUsers);
         dialogAddUser.show();
 
         dialogAddUser.setOnDialogOpened(ev -> {
@@ -243,7 +243,7 @@ public class UsersController implements Initializable {
         rootUsers.setEffect(Constants.BOX_BLUR_EFFECT);
         disableTable();
 
-        dialogDeleteUser = new JFXDialogTool(deleteUserContainer, stckUsers);
+        dialogDeleteUser = new DialogTool(deleteUserContainer, stckUsers);
         dialogDeleteUser.show();
 
         dialogDeleteUser.setOnDialogClosed(ev -> {

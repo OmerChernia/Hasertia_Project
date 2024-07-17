@@ -1,8 +1,6 @@
-
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -18,6 +16,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -25,11 +24,8 @@ import javafx.util.Duration;
 public class AboutController implements Initializable {
 
     private final String GITHUB = "https://github.com/LaynezCode";
-    
     private final String FACEBOOK = "https://www.facebook.com/LaynezCode-106644811127683";
-    
     private final String GMAIL = "https://www.google.com/";
-    
     private final String YOUTUBE = "https://www.youtube.com/c/LaynezCode/";
 
     @FXML
@@ -42,16 +38,16 @@ public class AboutController implements Initializable {
     private ImageView laynezcode;
 
     @FXML
-    private MaterialDesignIconView facebook;
+    private ImageView facebook;
 
     @FXML
-    private MaterialDesignIconView youtube;
+    private ImageView youtube;
 
     @FXML
-    private MaterialDesignIconView github;
+    private ImageView github;
 
     @FXML
-    private MaterialDesignIconView google;
+    private ImageView google;
 
     @FXML
     private Text mark;
@@ -64,8 +60,24 @@ public class AboutController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setIcons();
         setAnimations();
         setURL();
+    }
+
+    private void setIcons() {
+        setImage(facebook, "/media/information.png");
+        setImage(youtube, "/media/information.png");
+        setImage(github, "/media/information.png");
+        setImage(google, "/media/information.png");
+    }
+
+    private void setImage(ImageView imageView, String path) {
+        try {
+            imageView.setImage(new Image(getClass().getResourceAsStream(path)));
+        } catch (Exception e) {
+            Logger.getLogger(AboutController.class.getName()).log(Level.SEVERE, "Could not load image: " + path, e);
+        }
     }
 
     private void setURL() {
@@ -89,6 +101,10 @@ public class AboutController implements Initializable {
     }
 
     private void transition(Node node, int duration) {
+        if (node == null) {
+            return;
+        }
+
         ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(100), node);
         scaleTransition.setFromX(1.0);
         scaleTransition.setFromY(1.0);
@@ -99,11 +115,9 @@ public class AboutController implements Initializable {
         fadeTransition.setFromValue(2);
         fadeTransition.setToValue(0.5);
 
-        PauseTransition pauseTransition = new PauseTransition();
-        pauseTransition.setDuration(Duration.seconds(duration));
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(duration));
         pauseTransition.setOnFinished(ev -> {
-            PauseTransition pauseTransition2 = new PauseTransition();
-            pauseTransition2.setDuration(Duration.seconds(0.1));
+            PauseTransition pauseTransition2 = new PauseTransition(Duration.seconds(0.1));
             pauseTransition2.setOnFinished(ev2 -> {
                 node.setVisible(true);
             });
@@ -134,6 +148,10 @@ public class AboutController implements Initializable {
     }
 
     private void url(String url, Node node) {
+        if (node == null) {
+            return;
+        }
+
         node.setOnMouseClicked(ev -> {
             Desktop desktop = Desktop.getDesktop();
             try {
