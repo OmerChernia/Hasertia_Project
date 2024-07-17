@@ -1,18 +1,3 @@
-/*
- * Copyright 2020-2021 LaynezCode
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
@@ -22,8 +7,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.Constants;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Products;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.ContextMenu;
-import il.cshaifasweng.OCSFMediatorExample.client.util.JFXDialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -166,15 +151,15 @@ public class ProductsController implements Initializable {
     @FXML
     private HBox imageContainer;
 
-    private JFXDialogTool dialogAddProduct;
+    private DialogTool dialogAddProduct;
 
-    private JFXDialogTool dialogDeleteProduct;
+    private DialogTool dialogDeleteProduct;
 
     private static final Stage stage = new Stage();
 
     private File imageFile;
 
-    private ContextMenu contextMenu;
+    private CustomContextMenu contextMenu;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -193,7 +178,7 @@ public class ProductsController implements Initializable {
     }
 
     private void setContextMenu() {
-        contextMenu = new ContextMenu(tblProducts);
+        contextMenu = new CustomContextMenu(tblProducts);
 
         contextMenu.setActionEdit(ev -> {
             showDialogEditProduct();
@@ -274,7 +259,7 @@ public class ProductsController implements Initializable {
         btnUpdateProduct.setVisible(true);
         btnSaveProduct.toFront();
 
-        dialogAddProduct = new JFXDialogTool(containerAddProduct, stckProducts);
+        dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
         dialogAddProduct.show();
 
         dialogAddProduct.setOnDialogOpened(ev -> {
@@ -308,7 +293,7 @@ public class ProductsController implements Initializable {
         containerDeleteProducts.setVisible(true);
         disableTable();
 
-        dialogDeleteProduct = new JFXDialogTool(containerDeleteProducts, stckProducts);
+        dialogDeleteProduct = new DialogTool(containerDeleteProducts, stckProducts);
         dialogDeleteProduct.show();
 
         dialogDeleteProduct.setOnDialogClosed(ev -> {

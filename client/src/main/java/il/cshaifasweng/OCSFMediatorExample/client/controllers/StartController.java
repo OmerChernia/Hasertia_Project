@@ -103,6 +103,9 @@ public class StartController implements Initializable {
     private ProgressBar progressBar;
 
     @FXML
+    private ProgressBar progressBarSteps;
+
+    @FXML
     private Text textProgressBar;
 
     private double x, y;
@@ -130,7 +133,7 @@ public class StartController implements Initializable {
 
         Animations.fadeInUp(title);
         Animations.fadeInUp(textProgressBar);
-        Animations.fadeInUp(progressBar);
+        Animations.fadeInUp(progressBarSteps);
     }
 
     @FXML
@@ -139,7 +142,7 @@ public class StartController implements Initializable {
         paneStep2.setVisible(false);
 
         textProgressBar.setText("1 of 3");
-        Animations.progressAnimation(progressBar, 0.00);
+        Animations.progressAnimation(progressBarSteps, 0.00);
         Animations.fadeInUp(paneStep1);
         Animations.fadeInUp(paneControlsStep1);
         Animations.fadeInUp(textStep1);
@@ -212,7 +215,7 @@ public class StartController implements Initializable {
         paneStep3.setVisible(false);
 
         textProgressBar.setText("2 of 3");
-        Animations.progressAnimation(progressBar, 0.33);
+        Animations.progressAnimation(progressBarSteps, 0.33);
         Animations.fadeInUp(paneStep2);
         Animations.fadeInUp(textStep2);
         Animations.fadeInUp(txtBio);
@@ -237,7 +240,7 @@ public class StartController implements Initializable {
         paneStep3.setVisible(true);
 
         textProgressBar.setText("3 of 3");
-        Animations.progressAnimation(progressBar, 0.66);
+        Animations.progressAnimation(progressBarSteps, 0.66);
         Animations.fadeInUp(paneStep3);
         Animations.fadeInUp(textStep3);
         Animations.fadeInUp(cmbDialogTransition);
@@ -250,7 +253,7 @@ public class StartController implements Initializable {
         paneFinish.setVisible(true);
 
         textProgressBar.setText("Finalized");
-        Animations.progressAnimation(progressBar, 1);
+        Animations.progressAnimation(progressBarSteps, 1);
         Animations.fadeInUp(paneFinish);
 
         PauseTransition pt = new PauseTransition(Duration.seconds(3));
