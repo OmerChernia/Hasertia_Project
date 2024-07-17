@@ -19,13 +19,17 @@ public class PriceRequest implements Serializable {
     @ManyToOne
     private Movie movie;
 
+    private Movie.StreamingType type; //what price to change
+
     public PriceRequest() {
     }
 
-    public PriceRequest(int newPrice, Movie movie) {
+    public PriceRequest(int newPrice, Movie movie, Movie.StreamingType type) {
         this.newPrice = newPrice;
         this.movie = movie;
+        this.type = type;
     }
+
 
     // Getters and setters
 
@@ -53,20 +57,7 @@ public class PriceRequest implements Serializable {
         this.movie = movie;
     }
 
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", id);
-        jsonObject.put("newPrice", newPrice);
-        jsonObject.put("movie", movie != null ? movie.toJson() : JSONObject.NULL);
-        return jsonObject.toString();
-    }
+    public Movie.StreamingType getType() {return type;}
 
-    public static PriceRequest fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        PriceRequest priceRequest = new PriceRequest();
-        priceRequest.id = jsonObject.getInt("id");
-        priceRequest.newPrice = jsonObject.getInt("newPrice");
-        priceRequest.movie = jsonObject.isNull("movie") ? null : Movie.fromJson(jsonObject.getString("movie"));
-        return priceRequest;
-    }
+    public void setType(Movie.StreamingType type) {this.type = type;}
 }

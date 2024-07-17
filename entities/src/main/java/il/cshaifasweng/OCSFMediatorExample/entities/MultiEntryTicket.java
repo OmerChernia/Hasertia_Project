@@ -22,19 +22,4 @@ public class MultiEntryTicket extends Purchase
         return "MultiEntryTicket";
     }
 
-    @Override
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject(super.toJson());
-        return jsonObject.toString();
-    }
-
-    public static MultiEntryTicket fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        MultiEntryTicket multiEntryTicket = new MultiEntryTicket();
-        multiEntryTicket.setId(jsonObject.getInt("id"));
-        multiEntryTicket.setPurchaseDate(LocalDateTime.parse(jsonObject.getString("purchaseDate")));
-        multiEntryTicket.setOwner(jsonObject.isNull("owner") ? null : RegisteredUser.fromJson(jsonObject.getString("owner")));
-        multiEntryTicket.setPurchaseValidation(jsonObject.getString("purchaseValidation"));
-        return multiEntryTicket;
-    }
 }

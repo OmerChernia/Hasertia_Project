@@ -3,10 +3,11 @@ package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 import il.cshaifasweng.OCSFMediatorExample.entities.PriceRequest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PriceRequestMessage extends Message
 {
-    ArrayList<PriceRequest> requests;
+    public List<PriceRequest> requests;
     public ResponseType responseType;
     public RequestType requestType;
 
@@ -29,7 +30,8 @@ public class PriceRequestMessage extends Message
     {
         REQUEST_CREATED,
         REQUESTS_LIST,
-        PRICE_REQUEST_DECIDE
+        PRICE_REQUEST_DECIDE,
+        PRICE_REQUEST_MESSAGE_FAILED
     }
     public enum RequestType
     {

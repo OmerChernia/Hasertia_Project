@@ -48,23 +48,4 @@ public class MovieTicket extends Purchase{
         return "MovieTicket";
     }
 
-    @Override
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject(super.toJson());
-        jsonObject.put("movieInstance", movieInstance != null ? movieInstance.toJson() : JSONObject.NULL);
-        jsonObject.put("seat", seat != null ? seat.toJson() : JSONObject.NULL);
-        return jsonObject.toString();
-    }
-
-    public static MovieTicket fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        MovieTicket movieTicket = new MovieTicket();
-        movieTicket.setId(jsonObject.getInt("id"));
-        movieTicket.movieInstance = jsonObject.isNull("movieInstance") ? null : MovieInstance.fromJson(jsonObject.getString("movieInstance"));
-        movieTicket.seat = jsonObject.isNull("seat") ? null : Seat.fromJson(jsonObject.getString("seat"));
-        movieTicket.setPurchaseDate(LocalDateTime.parse(jsonObject.getString("purchaseDate")));
-        movieTicket.setOwner(jsonObject.isNull("owner") ? null : RegisteredUser.fromJson(jsonObject.getString("owner")));
-        movieTicket.setPurchaseValidation(jsonObject.getString("purchaseValidation"));
-        return movieTicket;
-    }
 }

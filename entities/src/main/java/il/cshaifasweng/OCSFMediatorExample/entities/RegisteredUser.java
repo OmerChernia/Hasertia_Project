@@ -45,27 +45,6 @@ public class RegisteredUser extends Person {
         this.ticket_counter = ticket_counter;
     }
 
-    @Override
-    public String toJson()
-    {
-        JSONObject jsonObject = new JSONObject(super.toJson());
-        jsonObject.put("email", email);
-        jsonObject.put("ticket_counter", ticket_counter);
-        return jsonObject.toString();
-    }
-
-    public static RegisteredUser fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        Person person = Person.fromJson(jsonString);
-        RegisteredUser registeredUser = new RegisteredUser();
-        registeredUser.id = person.getId();
-        registeredUser.id_number = person.getId_number();
-        registeredUser.name = person.getName();
-        registeredUser.isOnline = person.isOnline();
-        registeredUser.email = jsonObject.getString("email");
-        registeredUser.ticket_counter = jsonObject.getInt("ticket_counter");
-        return registeredUser;
-    }
 
     @Override
     public String toString() {

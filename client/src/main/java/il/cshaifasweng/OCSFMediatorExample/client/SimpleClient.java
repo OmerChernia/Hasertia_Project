@@ -26,6 +26,10 @@ public class SimpleClient extends AbstractClient {
 			Temp.func1((LoginMessage) msg);
 		else if(msg instanceof ComplaintMessage)
 			Temp.func3((ComplaintMessage) msg);
+		else if(msg instanceof MovieMessage)
+			Temp.func4((MovieMessage) msg);
+		else if(msg instanceof MovieInstanceMessage)
+			Temp.func5((MovieInstanceMessage) msg);
 
 	}
 	

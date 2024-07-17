@@ -57,7 +57,7 @@ public class ComplaintMessage extends Message
      * Ctor that support GET_COMPLIANT_BY_CUSTOMER_ID.
      * @param messageType is the MessageType
      * @param requestType is what request we want
-     * @param compliant is a complaint, if we want to answer a complaint it will be NULL
+     * @param compliant is a complaint
      */
     public ComplaintMessage(MessageType messageType, RequestType requestType, Complaint compliant)
     {
@@ -72,14 +72,14 @@ public class ComplaintMessage extends Message
     {
         FILLTERD_COMPLIANTS_LIST,
         COMPLIANT_ADDED,
-        COMPLIANT_ADDED_FAILED,//???
+        COMPLIANT_MESSAGE_FAILED,
         COMPLIANT_WES_ANSWERED,
     }
     public enum RequestType
     {
         GET_ALL_COMPLIANTS,
-        GET_COMPLIANT_BY_CUSTOMER_ID,
-        GET_COMPLIANT_BY_THEATER,
+        GET_COMPLIANTS_BY_CUSTOMER_ID,
+        GET_COMPLIANTS_BY_THEATER,
         ADD_COMPLIANT,
         ANSWER_COMPLIANT,
     }

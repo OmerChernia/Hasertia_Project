@@ -26,8 +26,8 @@ public class ComplaintHandler extends MessageHandler
             case ADD_COMPLIANT -> add_complaint();
             case ANSWER_COMPLIANT -> answer_compliant();
             case GET_ALL_COMPLIANTS -> get_all_complaints();
-            case GET_COMPLIANT_BY_THEATER -> get_complaint_by_theater();
-            case GET_COMPLIANT_BY_CUSTOMER_ID -> get_complaint_by_customer_id();
+            case GET_COMPLIANTS_BY_THEATER -> get_complaint_by_theater();
+            case GET_COMPLIANTS_BY_CUSTOMER_ID -> get_complaint_by_customer_id();
         }
     }
 
@@ -40,45 +40,49 @@ public class ComplaintHandler extends MessageHandler
 
     private void add_complaint()
     {
-        session.save(message.compliants.getFirst());
-        session.flush();
-        message.responseType = ComplaintMessage.ResponseType.COMPLIANT_ADDED;
+        if(message.compliants.getFirst() != null)
+        {
+            session.save(message.compliants.getFirst());
+            session.flush();
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_ADDED;
+        }
+        else
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
     }
     private void answer_compliant()
     {
+
         // Create an HQL query to fetch all complaints
         Query<Complaint> query = session.createQuery("FROM Complaint WHERE id = :id_compliant", Complaint.class);
         query.setParameter("id_compliant", message.compliants.getFirst().getId());
 
+
         Complaint complaint = query.uniqueResult();
-        complaint.setInfo(message.compliants.getFirst().getInfo());
-        session.update(complaint);
-        session.flush();
-        message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WES_ANSWERED;
+
+        if(complaint != null)
+        {
+            complaint.setInfo(message.compliants.getFirst().getInfo());
+            session.update(complaint);
+            session.flush();
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WES_ANSWERED;
+        }
+        else
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
     }
     private void get_all_complaints() {
 
         try {
-            System.out.println("Executing get_all_complaints");
             // Create an HQL query to fetch all complaints
-            System.out.println("Creating query to fetch all complaints");
             Query<Complaint> query = session.createQuery("FROM Complaint", Complaint.class);
 
             // Execute the query and get the result list
-            System.out.println("Executing query to fetch all complaints");
-            List<Complaint> complaints = query.getResultList();
-            //List<Complaint> res = new ArrayList<Complaint>();
-
-
-            message.compliants = complaints;
+            message.compliants = query.getResultList();
             // Set the response type
             message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
 
-            System.out.println("get_all_complaints executed successfully");
-
         } catch (Exception e) {
             e.printStackTrace();
-            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_ADDED_FAILED;
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
             if (session.getTransaction().isActive()) {
                 session.getTransaction().rollback();
             }
@@ -97,12 +101,17 @@ public class ComplaintHandler extends MessageHandler
 
         RegisteredUser registeredUser = query_user.getSingleResult();
 
-        // Create an HQL query to fetch complaints by customer ID
-        Query<Complaint> query_compliants = session.createQuery("FROM Complaint WHERE registeredUser.id = :customerId", Complaint.class);
-        query_compliants.setParameter("customerId", registeredUser.getId());
+        if(registeredUser != null) {
 
-        // Execute the query and get the result list
-        message.compliants = query_compliants.getResultList();
-        message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+            // Create an HQL query to fetch complaints by customer ID
+            Query<Complaint> query_compliants = session.createQuery("FROM Complaint WHERE registeredUser.id = :customerId", Complaint.class);
+            query_compliants.setParameter("customerId", registeredUser.getId());
+
+            // Execute the query and get the result list
+            message.compliants = query_compliants.getResultList();
+            message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+        }
+        else
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
     }
 }

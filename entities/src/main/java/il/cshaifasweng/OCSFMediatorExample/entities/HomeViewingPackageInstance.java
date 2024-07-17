@@ -49,23 +49,4 @@ public class HomeViewingPackageInstance extends Purchase{
         return "HomeViewingPackageInstance";
     }
 
-    @Override
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject(super.toJson());
-        jsonObject.put("movie", movie != null ? movie.toJson() : JSONObject.NULL);
-        jsonObject.put("activationDate", activationDate.toString());
-        return jsonObject.toString();
-    }
-
-    public static HomeViewingPackageInstance fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        HomeViewingPackageInstance instance = new HomeViewingPackageInstance();
-        instance.setId(jsonObject.getInt("id"));
-        instance.setPurchaseDate(LocalDateTime.parse(jsonObject.getString("purchaseDate")));
-        instance.setOwner(jsonObject.isNull("owner") ? null : RegisteredUser.fromJson(jsonObject.getString("owner")));
-        instance.setPurchaseValidation(jsonObject.getString("purchaseValidation"));
-        instance.setMovie(jsonObject.isNull("movie") ? null : Movie.fromJson(jsonObject.getString("movie")));
-        instance.activationDate=(LocalDateTime.parse(jsonObject.getString("activationDate")));
-        return instance;
-    }
 }

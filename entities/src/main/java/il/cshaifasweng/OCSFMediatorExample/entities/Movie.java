@@ -21,7 +21,7 @@ public class Movie implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Column(nullable = false)
     private String hebrewName;
@@ -53,11 +53,14 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private int theaterPrice;
 
+    @Column(nullable = false)
+    private String genre;
+
 
     public Movie() {
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice) {
+    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -68,6 +71,7 @@ public class Movie implements Serializable {
         this.duration = duration;
         this.homeViewingPrice = homeViewingPrice;
         this.theaterPrice = theaterPrice;
+        this.genre = genre;
     }
 
     // Getters and setters
@@ -136,11 +140,11 @@ public class Movie implements Serializable {
         this.duration = duration;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -160,50 +164,28 @@ public class Movie implements Serializable {
         this.theaterPrice = theaterPrice;
     }
 
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", id);
-        jsonObject.put("hebrewName", hebrewName);
-        jsonObject.put("info", info);
-        jsonObject.put("producer", producer);
-        jsonObject.put("englishName", englishName);
-        jsonObject.put("image", image);
-        jsonObject.put("streamingType", streamingType.name());
-        jsonObject.put("duration", duration);
-        jsonObject.put("homeViewingPrice", homeViewingPrice);
-        jsonObject.put("theaterPrice", theaterPrice);
-
-        JSONArray mainActorsArray = new JSONArray();
-        for (String actor : mainActors) {
-            mainActorsArray.put(actor);
-        }
-        jsonObject.put("mainActors", mainActorsArray);
-
-        return jsonObject.toString();
+    public String getGenre() {
+        return genre;
     }
 
-    public static Movie fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        Movie movie = new Movie();
-        movie.setId(jsonObject.getLong("id"));
-        movie.setHebrewName(jsonObject.getString("hebrewName"));
-        movie.setInfo(jsonObject.getString("info"));
-        movie.setProducer(jsonObject.getString("producer"));
-        movie.setEnglishName(jsonObject.getString("englishName"));
-        movie.setImage(jsonObject.getString("image"));
-        movie.setStreamingType(StreamingType.valueOf(jsonObject.getString("streamingType")));
-        movie.setDuration(jsonObject.getInt("duration"));
-        movie.setHomeViewingPrice(jsonObject.getInt("homeViewingPrice"));
-        movie.setTheaterPrice(jsonObject.getInt("theaterPrice"));
+    public void setGenre(String genre) {}
 
-        JSONArray mainActorsArray = jsonObject.getJSONArray("mainActors");
-        List<String> mainActorsList = new ArrayList<>();
-        for (int i = 0; i < mainActorsArray.length(); i++) {
-            mainActorsList.add(mainActorsArray.getString(i));
-        }
-        movie.setMainActors(mainActorsList);
-
-        return movie;
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id=" + id +
+                ", hebrewName='" + hebrewName + '\'' +
+                ", info='" + info + '\'' +
+                ", producer='" + producer + '\'' +
+                ", englishName='" + englishName + '\'' +
+                ", mainActors=" + mainActors +
+                ", image='" + image + '\'' +
+                ", streamingType=" + streamingType +
+                ", duration=" + duration +
+                ", homeViewingPrice=" + homeViewingPrice +
+                ", theaterPrice=" + theaterPrice +
+                ", genre=" + genre +
+                '}';
     }
 
 }

@@ -54,27 +54,5 @@ public class Employee extends Person
         this.employeeType = employeeType;
     }
 
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", getId());
-        jsonObject.put("id_number", getId_number());
-        jsonObject.put("name", getName());
-        jsonObject.put("isOnline", isOnline());
-        jsonObject.put("password", password);
-        jsonObject.put("employeeType", employeeType.name());
-        return jsonObject.toString();
-    }
-
-    public static Employee fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        Employee employee = new Employee();
-        employee.setId(jsonObject.getInt("id"));
-        employee.setId_number(jsonObject.getString("id_number"));
-        employee.setName(jsonObject.getString("name"));
-        employee.setOnline(jsonObject.getBoolean("isOnline"));
-        employee.setPassword(jsonObject.getString("password"));
-        employee.employeeType = EmployeeType.valueOf(jsonObject.getString("employeeType"));
-        return employee;
-    }
 
 }

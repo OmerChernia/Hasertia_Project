@@ -61,23 +61,4 @@ public class MovieInstance implements Serializable {
     }
 
 
-    public String toJson() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", id);
-        jsonObject.put("movie", movie != null ? movie.toJson() : JSONObject.NULL);
-        jsonObject.put("time", time.toString());
-        jsonObject.put("hall", hall != null ? hall.toJson() : JSONObject.NULL);
-        return jsonObject.toString();
-    }
-
-    public static MovieInstance fromJson(String jsonString) {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        MovieInstance movieInstance = new MovieInstance();
-        movieInstance.id = jsonObject.getInt("id");
-        movieInstance.movie = jsonObject.isNull("movie") ? null : Movie.fromJson(jsonObject.getString("movie"));
-        movieInstance.time = LocalDateTime.parse(jsonObject.getString("time"));
-        movieInstance.hall = jsonObject.isNull("hall") ? null : Hall.fromJson(jsonObject.getString("hall"));
-        return movieInstance;
-    }
-
 }

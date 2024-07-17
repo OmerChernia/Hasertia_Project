@@ -7,23 +7,15 @@ import java.util.ArrayList;
 public class PurchaseMessage extends Message
 {
     ArrayList<Purchase> purchases;
-    String customerId;
-    String theater_name;
+    String key;
     public RequestType requestType;
     public ResponseType responseType;
 
-    public PurchaseMessage(MessageType messageType, String customerId, RequestType requestType)
+    public PurchaseMessage(MessageType messageType, RequestType requestType , String key)
     {
-        //GET_PURCHASE ??? , GET_PURCHASES_BY_CUSTOMER_ID
+        //GET_PURCHASES_BY_THEATER_NAME , GET_PURCHASES_BY_CUSTOMER_ID ,
         super(messageType);
-        this.customerId = customerId;
-        this.requestType = requestType;
-    }
-    public PurchaseMessage(MessageType messageType, RequestType requestType , String theater_name)
-    {
-        //GET_PURCHASES_BY_THEATER_NAME
-        super(messageType);
-        this.theater_name = theater_name;
+        this.key = key;
         this.requestType = requestType;
     }
     public PurchaseMessage(MessageType messageType, RequestType requestType , Purchase purchase , String customerId)
@@ -33,7 +25,7 @@ public class PurchaseMessage extends Message
         this.requestType = requestType;
         this.purchases = new ArrayList<>();
         purchases.add(purchase);
-        this.customerId = customerId;
+        this.key = customerId;
     }
     public PurchaseMessage(MessageType messageType, RequestType requestType)
     {
@@ -58,7 +50,8 @@ public class PurchaseMessage extends Message
         GET_PURCHASES_BY_CUSTOMER_ID,
         GET_PURCHASES_BY_THEATER_NAME,
         GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH,
-        GET_ALL_PURCHASES
+        GET_ALL_PURCHASES,
+        GET_ALL_MOVIE_PACKAGES_BY_CUSTOMER_ID,
     }
 
 
