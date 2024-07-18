@@ -1,33 +1,35 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.Constants;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import il.cshaifasweng.OCSFMediatorExample.client.Constants;
+import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.RequieredFieldsValidators;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.TextFieldMask;
+import il.cshaifasweng.OCSFMediatorExample.client.models.Users;
+import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DefaultProfileImage;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -38,7 +40,6 @@ import javafx.util.Duration;
 
 public class StartController implements Initializable {
 
-    public AnchorPane rootStart;
     @FXML
     private StackPane stckStart;
 
@@ -100,10 +101,13 @@ public class StartController implements Initializable {
     private Text finishText;
 
     @FXML
-    private ProgressBar progressBar;
+    private Spinner spinner;
 
     @FXML
-    private ProgressBar progressBarSteps;
+    private Button btnStart;
+
+    @FXML
+    private ProgressBar progressBar;
 
     @FXML
     private Text textProgressBar;
@@ -133,7 +137,7 @@ public class StartController implements Initializable {
 
         Animations.fadeInUp(title);
         Animations.fadeInUp(textProgressBar);
-        Animations.fadeInUp(progressBarSteps);
+        Animations.fadeInUp(progressBar);
     }
 
     @FXML
@@ -142,7 +146,7 @@ public class StartController implements Initializable {
         paneStep2.setVisible(false);
 
         textProgressBar.setText("1 of 3");
-        Animations.progressAnimation(progressBarSteps, 0.00);
+        Animations.progressAnimation(progressBar, 0.00);
         Animations.fadeInUp(paneStep1);
         Animations.fadeInUp(paneControlsStep1);
         Animations.fadeInUp(textStep1);
@@ -215,7 +219,7 @@ public class StartController implements Initializable {
         paneStep3.setVisible(false);
 
         textProgressBar.setText("2 of 3");
-        Animations.progressAnimation(progressBarSteps, 0.33);
+        Animations.progressAnimation(progressBar, 0.33);
         Animations.fadeInUp(paneStep2);
         Animations.fadeInUp(textStep2);
         Animations.fadeInUp(txtBio);
@@ -240,7 +244,7 @@ public class StartController implements Initializable {
         paneStep3.setVisible(true);
 
         textProgressBar.setText("3 of 3");
-        Animations.progressAnimation(progressBarSteps, 0.66);
+        Animations.progressAnimation(progressBar, 0.66);
         Animations.fadeInUp(paneStep3);
         Animations.fadeInUp(textStep3);
         Animations.fadeInUp(cmbDialogTransition);
@@ -249,20 +253,51 @@ public class StartController implements Initializable {
 
     @FXML
     private void finish() {
+        insertUserInDB();
+
+
         paneStep3.setVisible(false);
         paneFinish.setVisible(true);
 
         textProgressBar.setText("Finalized");
-        Animations.progressAnimation(progressBarSteps, 1);
+        Animations.progressAnimation(progressBar, 1);
         Animations.fadeInUp(paneFinish);
+        Animations.fadeInUp(spinner);
+        Animations.fadeOutWithDuration(btnStart);
+        Animations.fadeOutWithDuration(finishText);
 
         PauseTransition pt = new PauseTransition(Duration.seconds(3));
         pt.setOnFinished(ev -> {
-            Animations.fadeOutWithDuration(paneFinish);
-            mainWindow();
+            Animations.fadeOut(spinner);
+            Animations.fadeInUp(btnStart);
+            Animations.fadeInUp(finishText);
         });
 
         pt.play();
+    }
+
+    private void insertUserInDB() {
+        Users users = new Users();
+        users.setNameUser(name);
+        users.setEmail(user);
+        users.setPass(password);
+        users.setBiography(bio);
+        users.setDialogTransition(getDialogTransition());
+        users.setUserType("Administrator");
+
+        try {
+            users.setProfileImage(DefaultProfileImage.getImage(name));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(StartController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+            updateUserInDB(users);
+
+    }
+
+    private void updateUserInDB(Users users) {
+
     }
 
     private String getDialogTransition() {
@@ -274,7 +309,7 @@ public class StartController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(Constants.MAIN_VIEW));
             Stage stage = new Stage();
-            stage.getIcons().add(new javafx.scene.image.Image(Constants.STAGE_ICON));
+            stage.getIcons().add(new Image(Constants.STAGE_ICON));
             stage.initStyle(StageStyle.DECORATED);
             stage.setMinHeight(Constants.MIN_HEIGHT);
             stage.setMinWidth(Constants.MIN_WIDTH);
@@ -312,29 +347,43 @@ public class StartController implements Initializable {
 
     @FXML
     private void dragged(MouseEvent event) {
-        Stage stg = (Stage) btnStep1.getScene().getWindow();
+        Stage stg = (Stage) btnStart.getScene().getWindow();
         stg.setX(event.getScreenX() - x);
         stg.setY(event.getScreenY() - y);
     }
 
     @FXML
     private void alert() {
-        // Show alert dialog here
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText(null);
+        alert.setContentText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+        alert.initOwner(stckStart.getScene().getWindow());
+        alert.showAndWait();
     }
 
+
     private void selectText() {
-        txtName.selectAll();
-        txtUser.selectAll();
-        txtPassword.selectAll();
-        txtConfirmPassword.selectAll();
-        txtBio.selectAll();
+        TextFieldMask.selectText(txtName);
+        TextFieldMask.selectText(txtUser);
+        TextFieldMask.selectText(txtPassword);
+        TextFieldMask.selectText(txtConfirmPassword);
+        TextFieldMask.selectTextToJFXTextArea(txtBio);
     }
 
     private void validations() {
-        // Implement validation logic here
+        RequieredFieldsValidators.toTextArea(txtBio);
+        RequieredFieldsValidators.toComboBox(cmbDialogTransition);
+        RequieredFieldsValidators.toTextField(txtName);
+        RequieredFieldsValidators.toTextField(txtUser);
+        RequieredFieldsValidators.toPasswordField(txtPassword);
+        RequieredFieldsValidators.toPasswordField(txtConfirmPassword);
     }
 
     private void setMask() {
-        // Implement input masks here
+        TextFieldMask.onlyLetters(txtName, 40);
+        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtUser, 40);
+        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtConfirmPassword, 40);
+        TextFieldMask.onlyNumbersAndLettersNotSpaces(txtPassword, 40);
     }
 }

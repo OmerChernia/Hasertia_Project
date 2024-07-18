@@ -25,7 +25,6 @@ public class CustomContextMenu {
 
     private MenuItem details;
 
-    private MenuItem refresh;
 
     public CustomContextMenu(Node node) {
         this.node = node;
@@ -51,9 +50,6 @@ public class CustomContextMenu {
         details.setOnAction(action);
     }
 
-    public void setActionRefresh(EventHandler<ActionEvent> action) {
-        refresh.setOnAction(action);
-    }
 
     public void show() {
         node.addEventHandler(MouseEvent.MOUSE_CLICKED, ev -> {
@@ -85,10 +81,8 @@ public class CustomContextMenu {
         details = new MenuItem("Details");
         style(details);
 
-        refresh = new MenuItem("Refresh");
-        style(refresh);
 
-        return new MenuItem[]{edit, delete, details, refresh};
+        return new MenuItem[]{edit, delete, details};
     }
 
     private void style(MenuItem menuItem) {

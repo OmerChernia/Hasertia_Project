@@ -10,7 +10,8 @@ public class Message implements Serializable {
 
     public Message(){}
 
-    public Message(MessageType message_type) {
+    public Message(MessageType message_type)
+    {
         this.messageType = message_type;
     }
 

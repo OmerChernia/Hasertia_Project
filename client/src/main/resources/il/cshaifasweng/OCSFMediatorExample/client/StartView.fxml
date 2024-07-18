@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -133,7 +134,7 @@
             </Pane>
             <Pane fx:id="paneFinish" layoutX="250.0" layoutY="60.0" onMouseDragged="#dragged" onMousePressed="#pressed" prefHeight="480.0" prefWidth="750.0" visible="false">
                <children>
-                  <ProgressBar fx:id="progressBar" layoutX="350.0" layoutY="215.0" />
+                  <Spinner fx:id="spinner" layoutX="308.0" layoutY="233.0" prefHeight="32.0" prefWidth="140.0" />
                   <HBox alignment="CENTER" layoutX="288.0" layoutY="392.0" prefHeight="30.0" prefWidth="174.0">
                      <children>
                         <Button fx:id="btnStart" onMouseClicked="#mainWindow" prefHeight="36.0" prefWidth="150.0" styleClass="button-start" text="Start" textFill="WHITE">
@@ -175,7 +176,7 @@
             <VBox alignment="CENTER" layoutX="250.0" layoutY="540.0" prefHeight="60.0" prefWidth="750.0" spacing="10.0">
                <children>
                   <Text fx:id="textProgressBar" fill="#bebec2" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h5" text="1 of 3" />
-                  <ProgressBar fx:id="progressBarSteps" prefHeight="8.0" prefWidth="243.0" progress="0.43" />
+                  <ProgressBar fx:id="progressBar" prefHeight="8.0" prefWidth="243.0" progress="0.43" />
                </children>
             </VBox>
          </children>

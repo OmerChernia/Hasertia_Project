@@ -4,14 +4,14 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieMessage extends Message
 {
-    ArrayList<Movie> movies;
-    int id;
-    Movie new_movie;
-    RequestType requestType;
-    ResponseType responseType;
+    public List<Movie> movies;
+    public int id;
+    public RequestType requestType;
+    public ResponseType responseType;
 
     public MovieMessage(MessageType messageType,Movie movie,RequestType requestType)
     {
@@ -30,7 +30,7 @@ public class MovieMessage extends Message
     }
     public MovieMessage(MessageType messageType,RequestType requestType, int id)
     {
-        // GET_ALL_MOVIES
+        // DELETE_MOVIE
         super(messageType);
         this.requestType = requestType;
         this.id = id;
@@ -44,12 +44,14 @@ public class MovieMessage extends Message
         MOVIE_NOT_ADDED,
         MOVIE_NOT_UPDATED,
         MOVIE_NOT_DELETED,
-        RETURN_MOVIES
+        RETURN_MOVIES,
+        MOVIE_MESSAGE_FAILED
+
     }
     public enum RequestType
     {
         ADD_MOVIE,
-        DELETE_MOVIE,
+        DEACTIVATE_MOVIE,
         GET_ALL_MOVIES,
         UPDATE_MOVIE,
     }

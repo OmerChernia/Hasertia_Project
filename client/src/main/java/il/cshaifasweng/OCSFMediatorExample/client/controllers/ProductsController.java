@@ -1,26 +1,24 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
+import il.cshaifasweng.OCSFMediatorExample.client.Constants;
+import il.cshaifasweng.OCSFMediatorExample.client.GenerateDB;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.Constants;
-import il.cshaifasweng.OCSFMediatorExample.client.models.Products;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.RequieredFieldsValidators;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -32,7 +30,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -41,16 +38,27 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductsController implements Initializable {
+    private final GenerateDB db = new GenerateDB();
 
     private final ColorAdjust colorAdjust = new ColorAdjust();
+
     private final long LIMIT = 1000000;
+
     private final String ALREADY_EXISTS = "There is already a product with this barcode";
+
     private final String IS_GREATER = "Minimum price cannot be higher than sale price";
 
-    private ObservableList<Products> listProducts;
-    private ObservableList<Products> filterProducts;
+
+    @FXML
+    private TextArea txtAddProduct;
+
+    private ObservableList<Movie> listProducts;
+
+    private ObservableList<Movie> filterProducts;
 
     @FXML
     private StackPane stckProducts;
@@ -74,58 +82,67 @@ public class ProductsController implements Initializable {
     private Button btnNewProduct;
 
     @FXML
-    private TableView<Products> tblProducts;
+    private TableView<Movie> tblProducts;
 
     @FXML
-    private TableColumn<Products, Integer> colId;
+    private TableColumn<Movie, Integer> colId;
 
     @FXML
-    private TableColumn<Products, Integer> colBarcode;
+    private TableColumn<Movie, String> colEnglish;
 
     @FXML
-    private TableColumn<Products, String> colName;
+    private TableColumn<Movie, String> colHebrew;
 
     @FXML
-    private TableColumn<Products, String> colDescription;
+    private TableColumn<Movie, String> colStreamingType;
 
     @FXML
-    private TableColumn<Products, Double> colPurchasePrice;
+    private TableColumn<Movie, Integer> colDuration;
 
     @FXML
-    private TableColumn<Products, Double> colSalePrice;
+    private TableColumn<Movie, String> colDirector;
 
     @FXML
-    private TableColumn<Products, Integer> colPorcentage;
+    private TableColumn<Movie, Double> colTheaterPrice;
 
     @FXML
-    private TableColumn<Products, Double> colMinimalPrice;
+    private TableColumn<Movie, Double> colHVPrice;
+
+    @FXML
+    private TableColumn<Movie, String> colGenre;
 
     @FXML
     private AnchorPane containerAddProduct;
 
-    @FXML
-    private TextField txtBarCode;
+
 
     @FXML
-    private TextField txtNameProduct;
+    private TextField txtID;
 
     @FXML
-    private TextField txtPurchasePrice;
+    private TextField txtEnglishName;
 
     @FXML
-    private Text textAddProduct;
+    private TextField txtHebrewName;
+
 
     @FXML
-    private Text textPurchase;
+    private TextField txtProducer;
 
     @FXML
-    private Text textPorcentage;
+    private TextField txtDuration;
 
     @FXML
-    private TextField txtSalePrice;
+    private TextField txtTheaterPrice;
 
     @FXML
-    private TextArea txtDescriptionProduct;
+    private TextField txtHVPrice;
+
+    @FXML
+    private TextField txtGenre;
+
+    @FXML
+    private TextArea txtDescription;
 
     @FXML
     private Button btnUpdateProduct;
@@ -135,12 +152,6 @@ public class ProductsController implements Initializable {
 
     @FXML
     private Button btnCancelAddProduct;
-
-    @FXML
-    private TextField txtPorcentage;
-
-    @FXML
-    private TextField txtMinPrice;
 
     @FXML
     private ImageView imageProduct;
@@ -170,6 +181,7 @@ public class ProductsController implements Initializable {
         animateNodes();
         selectText();
         setValidations();
+        validateUser();
         characterLimiter();
         initializeImage();
         setTextIfFieldIsEmpty();
@@ -195,10 +207,6 @@ public class ProductsController implements Initializable {
             contextMenu.hide();
         });
 
-        contextMenu.setActionRefresh(ev -> {
-            loadData();
-            contextMenu.hide();
-        });
 
         contextMenu.show();
     }
@@ -214,6 +222,7 @@ public class ProductsController implements Initializable {
         });
 
         imageContainer.setPadding(new Insets(5));
+        filterProducts = FXCollections.observableArrayList();
         imageProduct.setFitHeight(imageContainer.getPrefHeight() - 10);
         imageProduct.setFitWidth(imageContainer.getPrefWidth() - 10);
     }
@@ -225,34 +234,51 @@ public class ProductsController implements Initializable {
     }
 
     private void setValidations() {
-        // Add required field validations
+        RequieredFieldsValidators.toTextField(txtEnglishName);
+        RequieredFieldsValidators.toTextField(txtHebrewName);
+        RequieredFieldsValidators.toTextField(txtProducer);
+        RequieredFieldsValidators.toTextField(txtDuration);
+        RequieredFieldsValidators.toTextField(txtTheaterPrice);
+        RequieredFieldsValidators.toTextField(txtHVPrice);
+        RequieredFieldsValidators.toTextField(txtGenre);
+        RequieredFieldsValidators.toTextArea(txtDescription);
+        RequieredFieldsValidators.toTextField(txtID);
     }
 
     private void setMask() {
-        // Add masks for fields
+        TextFieldMask.onlyNumbers(txtDuration);
+        TextFieldMask.onlyNumbers(txtTheaterPrice);
+        TextFieldMask.onlyNumbers(txtHVPrice);
     }
 
     private void selectText() {
-        // Select text in fields for better user experience
+        TextFieldMask.selectText(txtEnglishName);
+        TextFieldMask.selectText(txtHebrewName);
+        TextFieldMask.selectText(txtProducer);
+        TextFieldMask.selectText(txtDuration);
+        TextFieldMask.selectText(txtTheaterPrice);
+        TextFieldMask.selectText(txtHVPrice);
+        TextFieldMask.selectText(txtGenre);
+        TextFieldMask.selectTextToJFXTextArea(txtDescription);
     }
 
     private void setTextIfFieldIsEmpty() {
-        // Set default text if fields are empty
+        TextFieldMask.setTextIfFieldIsEmpty(txtTheaterPrice);
+        TextFieldMask.setTextIfFieldIsEmpty(txtHVPrice);
     }
 
     private void characterLimiter() {
-        // Limit character input for fields
+        TextFieldMask.characterLimit(txtID, 20);
     }
 
     @FXML
     private void showDialogAddProduct() {
         resetValidation();
-        calculateSalePrice();
         enableEditControls();
         disableTable();
         rootProducts.setEffect(Constants.BOX_BLUR_EFFECT);
 
-        textAddProduct.setText("Add Product");
+        txtAddProduct.setText("Add Movie");
         imageContainer.toFront();
         containerAddProduct.setVisible(true);
         btnSaveProduct.setDisable(false);
@@ -263,7 +289,7 @@ public class ProductsController implements Initializable {
         dialogAddProduct.show();
 
         dialogAddProduct.setOnDialogOpened(ev -> {
-            txtBarCode.requestFocus();
+            txtEnglishName.requestFocus();
         });
 
         dialogAddProduct.setOnDialogClosed(ev -> {
@@ -302,7 +328,6 @@ public class ProductsController implements Initializable {
             containerDeleteProducts.setVisible(false);
             cleanControls();
         });
-
     }
 
     @FXML
@@ -321,9 +346,8 @@ public class ProductsController implements Initializable {
 
         showDialogAddProduct();
         btnUpdateProduct.toFront();
-        textAddProduct.setText("Update product");
+        txtAddProduct.setText("Update Movie");
         selectedRecord();
-
     }
 
     @FXML
@@ -334,7 +358,7 @@ public class ProductsController implements Initializable {
         }
 
         showDialogAddProduct();
-        textAddProduct.setText("Product details");
+        txtAddProduct.setText("Movie Details");
         selectedRecord();
         paneContainer.toFront();
         btnUpdateProduct.setVisible(false);
@@ -347,103 +371,107 @@ public class ProductsController implements Initializable {
     private void loadData() {
         loadTable();
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colBarcode.setCellValueFactory(new PropertyValueFactory<>("barcode"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("productName"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("descriptionProduct"));
-        colPurchasePrice.setCellValueFactory(new PropertyValueFactory<>("purchasePrice"));
-        colPorcentage.setCellValueFactory(new PropertyValueFactory<>("porcentage"));
-        colSalePrice.setCellValueFactory(new PropertyValueFactory<>("salePrice"));
-        colMinimalPrice.setCellValueFactory(new PropertyValueFactory<>("minimalPrice"));
+        colEnglish.setCellValueFactory(new PropertyValueFactory<>("englishName"));
+        colHebrew.setCellValueFactory(new PropertyValueFactory<>("hebrewName"));
+        colStreamingType.setCellValueFactory(new PropertyValueFactory<>("streamingType"));
+        colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        colGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
+        colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
+        colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
     }
 
     private void loadTable() {
-        // Add some dummy data for testing
-        listProducts.add(new Products(1, "123456", "Product 1", 10.0, 20, 12.0, 11.0, "Description 1"));
-        listProducts.add(new Products(2, "789012", "Product 2", 15.0, 25, 18.75, 16.0, "Description 2"));
-        listProducts.add(new Products(3, "345678", "Product 3", 20.0, 30, 26.0, 21.0, "Description 3"));
-        listProducts.add(new Products(4, "901234", "Product 4", 25.0, 35, 33.75, 27.5, "Description 4"));
-
+        listProducts.setAll(db.getMovies());
         tblProducts.setItems(listProducts);
         tblProducts.setFixedCellSize(30);
     }
 
     private void selectedRecord() {
-        Products products = tblProducts.getSelectionModel().getSelectedItem();
-        txtBarCode.setText(String.valueOf(products.getBarcode()));
-        txtNameProduct.setText(products.getProductName());
-        txtPurchasePrice.setText(String.valueOf(products.getPurchasePrice()));
-        txtPorcentage.setText(String.valueOf(products.getPorcentage()));
-        txtSalePrice.setText(String.valueOf(products.getSalePrice()));
-        txtDescriptionProduct.setText(products.getDescriptionProduct());
-        txtMinPrice.setText(String.valueOf(products.getMinimalPrice()));
-        imageProduct.setImage(getImage(products.getId()));
-        expandImage(products.getId(), products.getProductName());
+        Movie movie = tblProducts.getSelectionModel().getSelectedItem();
+        txtEnglishName.setText(movie.getEnglishName());
+        txtHebrewName.setText(movie.getHebrewName());
+        txtProducer.setText(movie.getProducer());
+        txtDuration.setText(String.valueOf(movie.getDuration()));
+        txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
+        txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
+        txtGenre.setText(movie.getGenre());
+        txtDescription.setText(movie.getInfo());
+        imageProduct.setImage(getImage(movie.getId()));
+        expandImage(movie.getId(), movie.getEnglishName());
     }
 
     @FXML
     private void newProduct() {
-        String barcode = txtBarCode.getText().trim();
-        String productName = txtNameProduct.getText().trim();
-        String purchasePrice = txtPurchasePrice.getText().trim();
-        String porcentage = txtPorcentage.getText().trim();
-        String salePrice = txtSalePrice.getText().trim();
-        String minPrice = txtMinPrice.getText().trim();
-        String description = txtDescriptionProduct.getText().trim();
+        String barcode = txtID.getText().trim();
+        String englishName = txtEnglishName.getText().trim();
+        String hebrewName = txtHebrewName.getText().trim();
+        String producer = txtProducer.getText().trim();
+        String duration = txtDuration.getText().trim();
+        String theaterPrice = txtTheaterPrice.getText().trim();
+        String hvPrice = txtHVPrice.getText().trim();
+        String genre = txtGenre.getText().trim();
+        String description = txtDescription.getText().trim();
 
         if (barcode.isEmpty()) {
-            txtBarCode.requestFocus();
-            Animations.shake(txtBarCode);
+            txtID.requestFocus();
+            Animations.shake(txtID);
             return;
         }
 
-        for (Products p : listProducts) {
-            if (p.getBarcode().equals(barcode)) {
-                txtBarCode.requestFocus();
+        for (Movie p : listProducts) {
+            if (p.getId() == Integer.parseInt(barcode)) {
+                txtID.requestFocus();
                 NotificationsBuilder.create(NotificationType.ERROR, ALREADY_EXISTS);
                 return;
             }
         }
 
-        if (productName.isEmpty()) {
-            txtNameProduct.requestFocus();
-            Animations.shake(txtNameProduct);
+        if (englishName.isEmpty()) {
+            txtEnglishName.requestFocus();
+            Animations.shake(txtEnglishName);
             return;
         }
 
-        if (purchasePrice.isEmpty()) {
-            txtPurchasePrice.requestFocus();
-            Animations.shake(txtPurchasePrice);
+        if (hebrewName.isEmpty()) {
+            txtHebrewName.requestFocus();
+            Animations.shake(txtHebrewName);
             return;
         }
 
-        if (porcentage.isEmpty()) {
-            txtPorcentage.requestFocus();
-            Animations.shake(txtPorcentage);
+
+        if (producer.isEmpty()) {
+            txtProducer.requestFocus();
+            Animations.shake(txtProducer);
             return;
         }
 
-        if (salePrice.isEmpty()) {
-            txtSalePrice.requestFocus();
-            Animations.shake(txtSalePrice);
+        if (duration.isEmpty()) {
+            txtDuration.requestFocus();
+            Animations.shake(txtDuration);
             return;
         }
 
-        if (minPrice.isEmpty()) {
-            txtMinPrice.requestFocus();
-            Animations.shake(txtMinPrice);
+        if (theaterPrice.isEmpty()) {
+            txtTheaterPrice.requestFocus();
+            Animations.shake(txtTheaterPrice);
             return;
         }
 
-        if (Double.parseDouble(minPrice) > Double.parseDouble(salePrice)) {
-            txtMinPrice.requestFocus();
-            Animations.shake(txtMinPrice);
-            NotificationsBuilder.create(NotificationType.ERROR, IS_GREATER);
+        if (hvPrice.isEmpty()) {
+            txtHVPrice.requestFocus();
+            Animations.shake(txtHVPrice);
+            return;
+        }
+
+        if (genre.isEmpty()) {
+            txtGenre.requestFocus();
+            Animations.shake(txtGenre);
             return;
         }
 
         if (description.isEmpty()) {
-            txtDescriptionProduct.requestFocus();
-            Animations.shake(txtDescriptionProduct);
+            txtDescription.requestFocus();
+            Animations.shake(txtDescription);
             return;
         }
 
@@ -453,24 +481,25 @@ public class ProductsController implements Initializable {
             return;
         }
 
-        Products products = new Products();
-        products.setBarcode(barcode);
-        products.setProductName(productName);
-        products.setDescriptionProduct(description);
-        products.setPurchasePrice(Double.parseDouble(purchasePrice));
-        products.setPorcentage(Integer.valueOf(porcentage));
-        products.setSalePrice(Double.parseDouble(salePrice));
-        products.setMinimalPrice(Double.parseDouble(minPrice));
-        products.setProductImage(getInputStream());
+        Movie movie = new Movie();
+        movie.setEnglishName(englishName);
+        movie.setHebrewName(hebrewName);
+        movie.setProducer(producer);
+        movie.setDuration(Integer.parseInt(duration));
+        movie.setTheaterPrice((int) Double.parseDouble(theaterPrice));
+        movie.setHomeViewingPrice((int) Double.parseDouble(hvPrice));
+        movie.setGenre(genre);
+        movie.setInfo(description);
+        movie.setImage(getInputStream());
 
-        listProducts.add(products);
+        listProducts.add(movie);
         loadData();
         cleanControls();
         closeDialogAddProduct();
         AlertsBuilder.create(AlertType.SUCCES, stckProducts, rootProducts, tblProducts, Constants.MESSAGE_ADDED);
     }
 
-    private InputStream getInputStream() {
+    private String getInputStream() {
         InputStream is;
         try {
             if (imageFile != null) {
@@ -479,82 +508,91 @@ public class ProductsController implements Initializable {
                 is = ProductsController.class.getResourceAsStream(Constants.NO_IMAGE_AVAILABLE);
             }
         } catch (FileNotFoundException ex) {
+            Logger.getLogger(ProductsController.class.getName()).log(Level.SEVERE, null, ex);
+            NotificationsBuilder.create(NotificationType.INFORMATION, Constants.MESSAGE_IMAGE_NOT_FOUND);
             is = ProductsController.class.getResourceAsStream(Constants.NO_IMAGE_AVAILABLE);
         }
-        return is;
+        return is.toString();
     }
 
     private Image getImage(int id) {
-        // Placeholder for image fetching logic
         return new Image(Constants.NO_IMAGE_AVAILABLE, 200, 200, true, true);
     }
 
     @FXML
     private void updateProduct() {
-        String barcode = txtBarCode.getText().trim();
-        String productName = txtNameProduct.getText().trim();
-        String purchasePrice = txtPurchasePrice.getText().trim();
-        String porcentage = txtPorcentage.getText().trim();
-        String salePrice = txtSalePrice.getText().trim();
-        String minPrice = txtMinPrice.getText().trim();
-        String description = txtDescriptionProduct.getText().trim();
-        Products selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
+        String barcode = txtID.getText().trim();
+        String englishName = txtEnglishName.getText().trim();
+        String hebrewName = txtHebrewName.getText().trim();
+        String producer = txtProducer.getText().trim();
+        String duration = txtDuration.getText().trim();
+        String theaterPrice = txtTheaterPrice.getText().trim();
+        String hvPrice = txtHVPrice.getText().trim();
+        String genre = txtGenre.getText().trim();
+        String description = txtDescription.getText().trim();
+        Movie selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
 
         if (barcode.isEmpty()) {
-            txtBarCode.requestFocus();
-            Animations.shake(txtBarCode);
+            txtID.requestFocus();
+            Animations.shake(txtID);
             return;
         }
 
-        for (Products p : listProducts) {
-            if (p.getBarcode().equals(barcode) && p != selectedProduct) {
-                txtBarCode.requestFocus();
-                Animations.shake(txtBarCode);
+        for (Movie p : listProducts) {
+            if (p.getId() == Integer.parseInt(barcode) && p != selectedProduct) {
+                txtID.requestFocus();
+                Animations.shake(txtID);
                 NotificationsBuilder.create(NotificationType.ERROR, ALREADY_EXISTS);
                 return;
             }
         }
 
-        if (productName.isEmpty()) {
-            txtNameProduct.requestFocus();
-            Animations.shake(txtNameProduct);
+        if (englishName.isEmpty()) {
+            txtEnglishName.requestFocus();
+            Animations.shake(txtEnglishName);
             return;
         }
 
-        if (purchasePrice.isEmpty()) {
-            txtPurchasePrice.requestFocus();
-            Animations.shake(txtPurchasePrice);
+        if (hebrewName.isEmpty()) {
+            txtHebrewName.requestFocus();
+            Animations.shake(txtHebrewName);
             return;
         }
 
-        if (porcentage.isEmpty()) {
-            txtPorcentage.requestFocus();
-            Animations.shake(txtPorcentage);
+
+        if (producer.isEmpty()) {
+            txtProducer.requestFocus();
+            Animations.shake(txtProducer);
             return;
         }
 
-        if (salePrice.isEmpty()) {
-            txtSalePrice.requestFocus();
-            Animations.shake(txtSalePrice);
+        if (duration.isEmpty()) {
+            txtDuration.requestFocus();
+            Animations.shake(txtDuration);
             return;
         }
 
-        if (minPrice.isEmpty()) {
-            txtMinPrice.requestFocus();
-            Animations.shake(txtMinPrice);
+        if (theaterPrice.isEmpty()) {
+            txtTheaterPrice.requestFocus();
+            Animations.shake(txtTheaterPrice);
             return;
         }
 
-        if (Double.parseDouble(minPrice) > Double.parseDouble(salePrice)) {
-            txtMinPrice.requestFocus();
-            Animations.shake(txtMinPrice);
-            NotificationsBuilder.create(NotificationType.ERROR, IS_GREATER);
+        if (hvPrice.isEmpty()) {
+            txtHVPrice.requestFocus();
+            Animations.shake(txtHVPrice);
+            return;
+        }
+
+        if (genre.isEmpty()) {
+            txtGenre.requestFocus();
+            Animations.shake(txtGenre);
             return;
         }
 
         if (description.isEmpty()) {
-            txtDescriptionProduct.requestFocus();
-            Animations.shake(txtDescriptionProduct);
+            txtDescription.requestFocus();
+            Animations.shake(txtDescription);
             return;
         }
 
@@ -564,65 +602,73 @@ public class ProductsController implements Initializable {
             return;
         }
 
-        selectedProduct.setBarcode(barcode);
-        selectedProduct.setProductName(productName);
-        selectedProduct.setDescriptionProduct(description);
-        selectedProduct.setPurchasePrice(Double.parseDouble(purchasePrice));
-        selectedProduct.setPorcentage(Integer.valueOf(porcentage));
-        selectedProduct.setSalePrice(Double.parseDouble(salePrice));
-        selectedProduct.setMinimalPrice(Double.parseDouble(minPrice));
-        selectedProduct.setProductImage(getInputStream());
+        Movie movie = tblProducts.getSelectionModel().getSelectedItem();
+        movie.setEnglishName(englishName);
+        movie.setHebrewName(hebrewName);
+        movie.setProducer(producer);
+        movie.setDuration(Integer.parseInt(duration));
+        movie.setTheaterPrice((int) Double.parseDouble(theaterPrice));
+        movie.setHomeViewingPrice((int) Double.parseDouble(hvPrice));
+        movie.setGenre(genre);
+        movie.setInfo(description);
+        movie.setImage(getInputStream());
 
-        tblProducts.refresh();
-        closeDialogAddProduct();
         loadData();
         cleanControls();
+        closeDialogAddProduct();
         AlertsBuilder.create(AlertType.SUCCES, stckProducts, rootProducts, tblProducts, Constants.MESSAGE_UPDATED);
     }
 
     @FXML
     private void deleteProducts() {
-        Products selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
-        if (selectedProduct != null) {
-            listProducts.remove(selectedProduct);
-            tblProducts.refresh();
-            loadData();
-            cleanControls();
-            hideDialogDeleteProduct();
-            AlertsBuilder.create(AlertType.SUCCES, stckProducts, rootProducts, tblProducts, Constants.MESSAGE_DELETED);
+        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
+            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, Constants.MESSAGE_NO_RECORD_SELECTED);
+            return;
         }
+
+        listProducts.remove(tblProducts.getSelectionModel().getSelectedItem());
+        loadData();
+        cleanControls();
+        hideDialogDeleteProduct();
+        AlertsBuilder.create(AlertType.SUCCES, stckProducts, rootProducts, tblProducts, Constants.MESSAGE_DELETED);
     }
 
     private void cleanControls() {
         imageFile = null;
-        txtPurchasePrice.clear();
-        txtMinPrice.clear();
-        txtBarCode.clear();
-        txtNameProduct.clear();
-        txtPorcentage.clear();
-        txtSalePrice.clear();
-        txtDescriptionProduct.clear();
+        txtID.clear();
+        txtEnglishName.clear();
+        txtHebrewName.clear();
+        txtProducer.clear();
+        txtDuration.clear();
+        txtTheaterPrice.clear();
+        txtHVPrice.clear();
+        txtGenre.clear();
+        txtDescription.clear();
         imageProduct.setImage(new Image(Constants.NO_IMAGE_AVAILABLE));
     }
 
     private void disableEditControls() {
-        txtBarCode.setEditable(false);
-        txtDescriptionProduct.setEditable(false);
-        txtNameProduct.setEditable(false);
-        txtPurchasePrice.setEditable(false);
-        txtSalePrice.setEditable(false);
-        txtPorcentage.setEditable(false);
-        txtMinPrice.setEditable(false);
+        txtID.setEditable(false);
+        txtEnglishName.setEditable(false);
+        txtHebrewName.setEditable(false);
+        txtProducer.setEditable(false);
+        txtDuration.setEditable(false);
+        txtTheaterPrice.setEditable(false);
+        txtHVPrice.setEditable(false);
+        txtGenre.setEditable(false);
+        txtDescription.setEditable(false);
     }
 
     private void enableEditControls() {
-        txtBarCode.setEditable(true);
-        txtNameProduct.setEditable(true);
-        txtSalePrice.setEditable(true);
-        txtMinPrice.setEditable(true);
-        txtPorcentage.setEditable(true);
-        txtPurchasePrice.setEditable(true);
-        txtDescriptionProduct.setEditable(true);
+        txtID.setEditable(true);
+        txtEnglishName.setEditable(true);
+        txtHebrewName.setEditable(true);
+        txtProducer.setEditable(true);
+        txtDuration.setEditable(true);
+        txtTheaterPrice.setEditable(true);
+        txtHVPrice.setEditable(true);
+        txtGenre.setEditable(true);
+        txtDescription.setEditable(true);
     }
 
     private void disableTable() {
@@ -630,7 +676,36 @@ public class ProductsController implements Initializable {
     }
 
     private void resetValidation() {
-        // Reset validations
+        txtID.clear();
+        txtEnglishName.clear();
+        txtHebrewName.clear();
+        txtProducer.clear();
+        txtDuration.clear();
+        txtTheaterPrice.clear();
+        txtHVPrice.clear();
+        txtGenre.clear();
+        txtDescription.clear();
+    }
+
+    private void validateUser() {
+        setContextMenu();
+        deleteUserDeleteKey();
+
+        colTheaterPrice.setVisible(true);
+        colHVPrice.setVisible(true);
+        btnNewProduct.setDisable(false);
+        txtTheaterPrice.setVisible(true);
+        txtHVPrice.setVisible(true);
+    }
+
+    private void setDisableMenuItem() {
+        contextMenu.getEditButton().setDisable(true);
+        contextMenu.getDeleteButton().setDisable(true);
+    }
+
+    private void setEnableMenuItem() {
+        contextMenu.getEditButton().setDisable(false);
+        contextMenu.getDeleteButton().setDisable(false);
     }
 
     private void closeDialogWithEscapeKey() {
@@ -648,52 +723,62 @@ public class ProductsController implements Initializable {
                 rootProducts.setEffect(null);
                 AlertsBuilder.close();
             }
-
         });
     }
 
     private void closeDialogWithTextFields() {
-        txtBarCode.setOnKeyReleased(ev -> {
+        txtID.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
             }
         });
 
-        txtNameProduct.setOnKeyReleased(ev -> {
+        txtEnglishName.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
             }
         });
 
-        txtPurchasePrice.setOnKeyReleased(ev -> {
+        txtHebrewName.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
             }
         });
 
-        txtSalePrice.setOnKeyReleased(ev -> {
+
+        txtProducer.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
             }
         });
 
-        txtDescriptionProduct.setOnKeyReleased(ev -> {
+        txtDuration.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
             }
         });
 
-        txtPorcentage.setOnKeyReleased(ev -> {
+        txtTheaterPrice.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
-                tblProducts.setDisable(false);
             }
         });
 
-        txtMinPrice.setOnKeyReleased(ev -> {
+        txtHVPrice.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddProduct();
-                tblProducts.setDisable(false);
+            }
+        });
+
+        txtGenre.setOnKeyReleased(ev -> {
+            if (ev.getCode().equals(KeyCode.ESCAPE)) {
+                closeDialogAddProduct();
+            }
+        });
+
+        txtDescription.setOnKeyReleased(ev -> {
+            if (ev.getCode().equals(KeyCode.ESCAPE)) {
+                closeDialogAddProduct();
             }
         });
     }
@@ -704,6 +789,23 @@ public class ProductsController implements Initializable {
         }
     }
 
+    private void deleteUserDeleteKey() {
+        rootProducts.setOnKeyPressed(ev -> {
+            if (ev.getCode().equals(KeyCode.DELETE)) {
+                if (tblProducts.isDisable()) {
+                    return;
+                }
+
+                if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
+                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, Constants.MESSAGE_NO_RECORD_SELECTED);
+                    return;
+                }
+
+                deleteProducts();
+            }
+        });
+    }
+
     @FXML
     private void filterNameProduct() {
         String filterName = txtSearchProduct.getText().trim();
@@ -711,8 +813,8 @@ public class ProductsController implements Initializable {
             tblProducts.setItems(listProducts);
         } else {
             filterProducts.clear();
-            for (Products p : listProducts) {
-                if (p.getProductName().toLowerCase().contains(filterName.toLowerCase())) {
+            for (Movie p : listProducts) {
+                if (p.getEnglishName().toLowerCase().contains(filterName.toLowerCase())) {
                     filterProducts.add(p);
                 }
             }
@@ -727,75 +829,13 @@ public class ProductsController implements Initializable {
             tblProducts.setItems(listProducts);
         } else {
             filterProducts.clear();
-            for (Products p : listProducts) {
-                if (p.getBarcode().toLowerCase().contains(filterCodeBar.toLowerCase())) {
+            for (Movie p : listProducts) {
+                if (p.getEnglishName().toLowerCase().contains(filterCodeBar.toLowerCase())) {
                     filterProducts.add(p);
                 }
             }
             tblProducts.setItems(filterProducts);
         }
-    }
-
-    private void calculateSalePrice() {
-        txtPurchasePrice.setOnKeyReleased(ev -> {
-            if (txtPurchasePrice.getText().isEmpty()) {
-                txtPurchasePrice.setText("0");
-            }
-
-            if (txtPurchasePrice.isFocused() && txtPurchasePrice.getText().equals("0")) {
-                txtPurchasePrice.selectAll();
-            }
-
-            if (txtPorcentage.getText().isEmpty()) {
-                txtPorcentage.setText("0");
-            }
-
-            double purchasePrice = Double.valueOf(txtPurchasePrice.getText());
-            int porcentage = Integer.parseInt(txtPorcentage.getText());
-            double salePrice = ((purchasePrice * porcentage) / 100) + purchasePrice;
-            txtSalePrice.setText(String.valueOf(salePrice));
-        });
-
-        txtPorcentage.setOnKeyReleased(ev -> {
-            if (txtPorcentage.isFocused() && txtPorcentage.getText().isEmpty()) {
-                txtPorcentage.setText("0");
-            }
-
-            if (txtPorcentage.isFocused() && txtPorcentage.getText().equals("0")) {
-                txtPorcentage.selectAll();
-            }
-
-            if (txtPurchasePrice.getText().isEmpty()) {
-                txtPurchasePrice.setText("0");
-            }
-
-            double purchasePrice = Double.valueOf(txtPurchasePrice.getText());
-            int porcentage = Integer.parseInt(txtPorcentage.getText());
-            double salePrice = ((purchasePrice * porcentage) / 100) + purchasePrice;
-            txtSalePrice.setText(String.valueOf(salePrice));
-        });
-    }
-
-    @FXML
-    private void showFileChooser() {
-        imageFile = getImageFromFileChooser(getStage());
-        if (imageFile != null) {
-            Image image = new Image(imageFile.toURI().toString(), 200, 200, true, true);
-            imageProduct.setImage(image);
-        }
-    }
-
-    private Stage getStage() {
-        return (Stage) btnCancelAddProduct.getScene().getWindow();
-    }
-
-    private File getImageFromFileChooser(Stage stage) {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilterImages = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg");
-        fileChooser.getExtensionFilters().addAll(extFilterImages);
-        fileChooser.setTitle("Select an image");
-
-        return fileChooser.showOpenDialog(stage);
     }
 
     private void expandImage(int id, String title) {

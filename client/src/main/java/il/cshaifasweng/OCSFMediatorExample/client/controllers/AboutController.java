@@ -37,17 +37,6 @@ public class AboutController implements Initializable {
     @FXML
     private ImageView laynezcode;
 
-    @FXML
-    private ImageView facebook;
-
-    @FXML
-    private ImageView youtube;
-
-    @FXML
-    private ImageView github;
-
-    @FXML
-    private ImageView google;
 
     @FXML
     private Text mark;
@@ -60,17 +49,11 @@ public class AboutController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        setIcons();
-        setAnimations();
-        setURL();
+         setAnimations();
+
     }
 
-    private void setIcons() {
-        setImage(facebook, "/media/information.png");
-        setImage(youtube, "/media/information.png");
-        setImage(github, "/media/information.png");
-        setImage(google, "/media/information.png");
-    }
+
 
     private void setImage(ImageView imageView, String path) {
         try {
@@ -80,22 +63,13 @@ public class AboutController implements Initializable {
         }
     }
 
-    private void setURL() {
-        url(GITHUB, github);
-        url(FACEBOOK, facebook);
-        url(GMAIL, google);
-        url(YOUTUBE, youtube);
-    }
+
 
     private void setAnimations() {
         transition(estfx, 0);
         transition(developer, 2);
         transition(laynezcode, 3);
         transition(separator, 4);
-        transition(facebook, 5);
-        transition(youtube, 6);
-        transition(github, 7);
-        transition(google, 8);
         transition(mark, 9);
         transition(laynezcorporation, 10);
     }

@@ -17,20 +17,20 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane fx:id="stckProducts" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.ProductsController">
+<StackPane fx:id="stckProducts" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.ProductsController">
    <children>
       <AnchorPane fx:id="rootProducts" prefHeight="200.0" prefWidth="200.0">
          <children>
             <TableView fx:id="tblProducts" layoutX="11.0" layoutY="74.0" prefHeight="477.0" prefWidth="909.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="74.0">
                <columns>
                   <TableColumn fx:id="colId" maxWidth="1200.0" minWidth="0.0" prefWidth="62.0" text="Id" />
-                  <TableColumn fx:id="colBarcode" prefWidth="198.0" text="Barcode" />
-                  <TableColumn fx:id="colName" prefWidth="158.0" text="Name" />
-                  <TableColumn fx:id="colDescription" prefWidth="172.0" text="Description" />
-                  <TableColumn fx:id="colPurchasePrice" prefWidth="131.0" text="Purchase price" />
-                  <TableColumn fx:id="colPorcentage" prefWidth="96.0" text="Porcentage" />
-                  <TableColumn fx:id="colSalePrice" prefWidth="96.0" text="Sale price" />
-                  <TableColumn fx:id="colMinimalPrice" prefWidth="180.0" text="Minimal price" />
+                  <TableColumn fx:id="colEnglish" prefWidth="198.0" text="English Name" />
+                  <TableColumn fx:id="colHebrew" prefWidth="158.0" text="Hebrew Name" />
+                  <TableColumn fx:id="colStreamingType" prefWidth="172.0" text="Streaming Type" />
+                  <TableColumn fx:id="colDuration" prefWidth="92.0" text="Duration" />
+                  <TableColumn fx:id="colTheaterPrice" prefWidth="159.0" text="Theater Price" />
+                  <TableColumn fx:id="colHVPrice" prefWidth="166.0" text="Home Viewing Price" />
+                  <TableColumn fx:id="colGenre" prefWidth="180.0" text="Genre" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -57,37 +57,52 @@
             </HBox>
             <AnchorPane fx:id="containerAddProduct" layoutX="96.0" layoutY="98.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="429.0" prefWidth="740.0" style="-fx-background-radius: 10;" visible="false">
                <children>
-                  <TextField fx:id="txtBarCode" layoutX="40.0" layoutY="78.0" prefHeight="30.0" prefWidth="195.0" promptText="Barcode" styleClass="text-field">
+                  <TextArea fx:id="txtAddProduct" layoutX="38.0" layoutY="36.0" prefHeight="25.0" prefWidth="86.0" promptText="Add Movie" styleClass="text-area">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextArea>
+                  <TextField fx:id="txtID" layoutX="40.0" layoutY="78.0" prefHeight="30.0" prefWidth="195.0" promptText="ID" styleClass="text-field">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="txtNameProduct" layoutX="266.0" layoutY="78.0" prefHeight="30.0" prefWidth="195.0" promptText="Product name" styleClass="text-field">
+                  <TextField fx:id="txtEnglishName" layoutX="266.0" layoutY="78.0" prefHeight="30.0" prefWidth="195.0" promptText="English Name" styleClass="text-field">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="txtPurchasePrice" layoutX="508.0" layoutY="78.0" prefHeight="30.0" prefWidth="195.0" promptText="Purchase price" styleClass="text-field">
+                  <TextField fx:id="txtHebrewName" layoutX="508.0" layoutY="78.0" prefHeight="30.0" prefWidth="195.0" promptText="Hebrew Name" styleClass="text-field">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="txtPorcentage" layoutX="41.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Porcentage" styleClass="text-field">
+                  <TextField fx:id="txtProducer" layoutX="41.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Producer" styleClass="text-field">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="txtSalePrice" layoutX="267.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Sale price" styleClass="text-field">
+                  <TextField fx:id="txtDuration" layoutX="267.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Duration" styleClass="text-field">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <TextField fx:id="txtMinPrice" layoutX="509.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Minimal price" styleClass="text-field">
+                  <TextField fx:id="txtTheaterPrice" layoutX="509.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Theater Price" styleClass="text-field">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <TextArea fx:id="txtDescriptionProduct" layoutX="278.0" layoutY="216.0" prefHeight="146.0" prefWidth="425.0" promptText="Description" styleClass="text-area">
+                  <TextField fx:id="txtHVPrice" layoutX="41.0" layoutY="216.0" prefHeight="30.0" prefWidth="195.0" promptText="Home Viewing Price" styleClass="text-field">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="txtGenre" layoutX="267.0" layoutY="216.0" prefHeight="30.0" prefWidth="195.0" promptText="Genre" styleClass="text-field">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+                  <TextArea fx:id="txtDescription" layoutX="508.0" layoutY="216.0" prefHeight="146.0" prefWidth="195.0" promptText="Description" styleClass="text-area">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -107,17 +122,6 @@
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
-                  <Text fx:id="textPurchase" fill="#bebec2" layoutX="508.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h5" text="Purchase price not available" />
-                  <Text fx:id="textPorcentage" fill="#bebec2" layoutX="40.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h5" text="Percentage not available" wrappingWidth="168.28710977733135" />
-                  <HBox alignment="CENTER" layoutX="-308.0" layoutY="14.0" prefHeight="45.0" prefWidth="873.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                     <children>
-                        <Text fx:id="textAddProduct" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h2" text="Add product">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </HBox>
                   <Button contentDisplay="CENTER" layoutX="704.0" onMouseClicked="#closeDialogAddProduct" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -127,7 +131,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <HBox fx:id="imageContainer" alignment="CENTER" layoutX="40.0" layoutY="216.0" maxWidth="200.0" onMouseClicked="#showFileChooser" prefHeight="146.0" prefWidth="197.0">
+                  <HBox fx:id="imageContainer" alignment="CENTER" layoutX="40.0" layoutY="286.0" maxWidth="200.0" prefHeight="146.0" prefWidth="195.0">
                      <children>
                         <ImageView fx:id="imageProduct" fitHeight="146.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -139,7 +143,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <Pane fx:id="paneContainer" layoutX="40.0" layoutY="216.0" prefHeight="146.0" prefWidth="197.0">
+                  <Pane fx:id="paneContainer" layoutX="40.0" layoutY="286.0" prefHeight="146.0" prefWidth="195.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

@@ -153,10 +153,7 @@ public class UsersController implements Initializable {
             contextMenu.hide();
         });
 
-        contextMenu.setActionRefresh(ev -> {
-            loadData();
-            contextMenu.hide();
-        });
+
 
         contextMenu.show();
     }
