@@ -1,29 +1,28 @@
 package il.cshaifasweng.OCSFMediatorExample.client.alerts;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle;
 
 public class AlertsBuilder {
 
     private static String title;
-    
     private static String buttonStyle;
-    
     private static String titleStyle;
-    
     private static String bodyStyle;
-    
-    private static JFXDialog dialog;
+    private static Dialog<Boolean> dialog;
 
     public static void create(AlertType type, StackPane dialogContainer, Node nodeToBlur, Node nodeToDisable, String body) {
         setFunction(type);
@@ -31,8 +30,7 @@ public class AlertsBuilder {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(390, 230);
 
-        JFXButton button = new JFXButton("Okey");
-        button.getStyleClass().add(buttonStyle);
+        Button button = new Button("Okey");
 
         HBox buttonContainer = new HBox();
         buttonContainer.setLayoutY(115);
@@ -41,10 +39,8 @@ public class AlertsBuilder {
         buttonContainer.getChildren().addAll(button);
 
         Text textTitle = new Text(title);
-        textTitle.getStyleClass().add(titleStyle);
 
         Text textBody = new Text(body);
-        textBody.getStyleClass().add(bodyStyle);
 
         VBox textContainer = new VBox();
         textContainer.setSpacing(5);
@@ -57,31 +53,44 @@ public class AlertsBuilder {
         nodeToDisable.setDisable(true);
         nodeToBlur.setEffect(Constants.BOX_BLUR_EFFECT);
 
-        dialog = new JFXDialog();
-        dialog.setContent(root);
-        dialog.setDialogContainer(dialogContainer);
-        dialog.setBackground(Background.EMPTY);
-        dialog.getStyleClass().add("jfx-dialog-overlay-pane");
-        dialog.show();
+        dialog = new Dialog<Boolean>();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initStyle(StageStyle.TRANSPARENT);
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setContent(root);
+        dialogPane.setBackground(null);
 
         button.setOnMouseClicked(e -> {
-            dialog.close();
+            System.out.println("Button clicked, closing dialog");
+            Platform.runLater(() -> {
+                dialog.setResult(Boolean.TRUE);
+                dialog.close();
+            });
         });
 
-        dialog.setOnDialogOpened(e -> {
+        dialog.setOnShown(e -> {
+            System.out.println("Dialog shown");
             nodeToDisable.setDisable(true);
             nodeToBlur.setEffect(Constants.BOX_BLUR_EFFECT);
         });
 
-        dialog.setOnDialogClosed(e -> {
+        dialog.setOnHidden(e -> {
+            System.out.println("Dialog hidden");
             nodeToDisable.setDisable(false);
             nodeToBlur.setEffect(null);
         });
+
+        dialog.showAndWait();
     }
-    
+
     public static void close() {
         if (dialog != null) {
-            dialog.close();
+            System.out.println("Dialog closed programmatically");
+            Platform.runLater(() -> {
+                dialog.setResult(Boolean.TRUE);
+                dialog.close();
+            });
         }
     }
 
@@ -92,14 +101,15 @@ public class AlertsBuilder {
                 buttonStyle = "alert-success-button";
                 titleStyle = "alert-success-title";
                 bodyStyle = "alert-success-body";
-            break;
-            
+                break;
+
             case ERROR:
                 title = "Oops!";
                 buttonStyle = "alert-error-button";
                 titleStyle = "alert-error-title";
                 bodyStyle = "alert-error-body";
-            break;
+                break;
+
         }
     }
 }

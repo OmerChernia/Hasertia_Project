@@ -1,11 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
+import animatefx.animation.Shake;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.RequieredFieldsValidators;
+import il.cshaifasweng.OCSFMediatorExample.client.mask.TextFieldMask;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Customers;
 import il.cshaifasweng.OCSFMediatorExample.client.models.Quotes;
 import il.cshaifasweng.OCSFMediatorExample.client.Constants;
+import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.AutocompleteComboBox;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
@@ -21,6 +26,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
@@ -28,6 +34,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class QuotesController implements Initializable {
@@ -175,19 +182,25 @@ public class QuotesController implements Initializable {
     }
 
     private void setValidations() {
-        // No direct equivalent in JavaFX, will handle manually
+        RequieredFieldsValidators.toTextArea(txtDescription);
+        RequieredFieldsValidators.toComboBox(cmbIdCustomer);
+        RequieredFieldsValidators.toDatePicker(dtpDate);
     }
 
     private void selectText() {
-        // No direct equivalent in JavaFX, will handle manually
+        TextFieldMask.selectText(txtSearchCustomer);
+        TextFieldMask.selectTextToJFXTextArea(txtDescription);
+        TextFieldMask.selectText(txtPrice);
     }
 
     private void setMask() {
-        // No direct equivalent in JavaFX, will handle manually
+        TextFieldMask.onlyDoubleNumbers5Integers(txtPrice);
+        TextFieldMask.setTextIfFieldIsEmpty(txtPrice);
     }
 
     @FXML
     private void showDialogAddQuotes() {
+        System.out.println("showDialogAddQuotes called");
         cmbIdCustomer.setPromptText("Select a customer");
         cmbIdCustomer.setEditable(true);
         cmbIdCustomer.setDisable(false);
@@ -208,6 +221,7 @@ public class QuotesController implements Initializable {
 
         dialogAddQuote.setOnDialogOpened(ev -> {
             txtPrice.requestFocus();
+            System.out.println("Dialog Add Quote opened");
         });
 
         dialogAddQuote.setOnDialogClosed(ev -> {
@@ -215,6 +229,7 @@ public class QuotesController implements Initializable {
             tblQuotes.setDisable(false);
             rootQuotes.setEffect(null);
             cleanControls();
+            System.out.println("Dialog Add Quote closed");
         });
 
         dtpDate.focusedProperty().addListener((o, oldV, newV) -> {
@@ -234,6 +249,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void closeDialogAddQuotes() {
+        System.out.println("closeDialogAddQuotes called");
         if (dialogAddQuote != null) {
             dialogAddQuote.close();
         }
@@ -241,6 +257,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void showDialogDeleteQuotes() {
+        System.out.println("showDialogDeleteQuotes called");
         if (tblQuotes.getSelectionModel().getSelectedItems().isEmpty()) {
             AlertsBuilder.create(AlertType.ERROR, stckQuotes, rootQuotes, tblQuotes, Constants.MESSAGE_NO_RECORD_SELECTED);
             return;
@@ -258,11 +275,13 @@ public class QuotesController implements Initializable {
             tblQuotes.setDisable(false);
             rootQuotes.setEffect(null);
             cleanControls();
+            System.out.println("Dialog Delete Quote closed");
         });
     }
 
     @FXML
     private void closeDialogDeleteQuote() {
+        System.out.println("closeDialogDeleteQuote called");
         if (dialogDeleteQuote != null) {
             dialogDeleteQuote.close();
         }
@@ -270,6 +289,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void showDialogEditQuote() {
+        System.out.println("showDialogEditQuote called");
         if (tblQuotes.getSelectionModel().getSelectedItems().isEmpty()) {
             AlertsBuilder.create(AlertType.ERROR, stckQuotes, rootQuotes, tblQuotes, Constants.MESSAGE_NO_RECORD_SELECTED);
             return;
@@ -288,6 +308,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void showDialogDetailsQuote() {
+        System.out.println("showDialogDetailsQuote called");
         if (tblQuotes.getSelectionModel().isEmpty()) {
             AlertsBuilder.create(AlertType.ERROR, stckQuotes, rootQuotes, tblQuotes, Constants.MESSAGE_NO_RECORD_SELECTED);
             return;
@@ -308,11 +329,23 @@ public class QuotesController implements Initializable {
     }
 
     private void selectedRecord() {
+        System.out.println("selectedRecord called");
         Quotes quotes = tblQuotes.getSelectionModel().getSelectedItem();
+        if (quotes == null) {
+            System.out.println("No quote selected");
+            return;
+        }
+
+        Integer customerId = quotes.getCustomerId();
+        if (customerId == null) {
+            System.out.println("Customer ID is null");
+            customerId=0;
+        }
+
         txtPrice.setText(String.valueOf(quotes.getPrice()));
         dtpDate.setValue(LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd").format(quotes.getRequestDate())));
         txtDescription.setText(quotes.getDescriptionQuote());
-        cmbIdCustomer.getSelectionModel().select(quotes.getCustomerId());
+        cmbIdCustomer.getSelectionModel().select(customerId);
         toggleButtonExists.setText(quotes.getExistence());
         toggleButtonRealized.setText(quotes.getRealization());
         toggleButtonReport.setText(quotes.getReport());
@@ -338,6 +371,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void setActionToggleButton() {
+        System.out.println("setActionToggleButton called");
         if (toggleButtonExists.isSelected()) {
             toggleButtonExists.setText(Constants.EXISTENT);
         } else {
@@ -359,6 +393,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void loadData() {
+        System.out.println("loadData called");
         loadTable();
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("descriptionQuote"));
@@ -371,6 +406,8 @@ public class QuotesController implements Initializable {
     }
 
     private void loadTable() {
+        System.out.println("loadTable called");
+        ArrayList<Quotes> list = new ArrayList<>();
         listQuotes = FXCollections.observableArrayList();
         // Add some dummy data for testing
         listQuotes.add(new Quotes(1, "Quote 1", Date.valueOf(LocalDate.now()), 100.0, Constants.EXISTENT, Constants.REALIZED, Constants.REPORTED, "Customer 1"));
@@ -380,9 +417,12 @@ public class QuotesController implements Initializable {
 
         tblQuotes.setItems(listQuotes);
         tblQuotes.setFixedCellSize(30);
+
     }
 
     private void loadComboBox() {
+        System.out.println("loadComboBox called");
+        ArrayList<Customers> list = new ArrayList<>();
         listCustomers = FXCollections.observableArrayList();
         // Add some dummy data for testing
         listCustomers.add(new Customers(1, "Customer 1"));
@@ -391,25 +431,59 @@ public class QuotesController implements Initializable {
         listCustomers.add(new Customers(4, "Customer 4"));
 
         cmbIdCustomer.setItems(listCustomers);
+
     }
 
     @FXML
     private void newQuote() {
-        if (!validateFields()) {
+        System.out.println("newQuote called");
+        String description = txtDescription.getText().trim();
+
+        if (dtpDate.getEditor().getText().isEmpty()) {
+            dtpDate.requestFocus();
+            Animations.shake(dtpDate);
+            return;
+        }
+
+        if (cmbIdCustomer.getSelectionModel().isEmpty()) {
+            Animations.shake(cmbIdCustomer);
+            return;
+        }
+
+        if (description.isEmpty()) {
+            new Shake(txtDescription).play();
             return;
         }
 
         Quotes quotes = new Quotes();
 
-        quotes.setPrice(Double.parseDouble(txtPrice.getText().isEmpty() ? "0" : txtPrice.getText()));
+        if (txtPrice.getText().isEmpty()) {
+            quotes.setPrice(Double.valueOf("0"));
+        } else {
+            quotes.setPrice(Double.valueOf(txtPrice.getText()));
+        }
 
-        quotes.setExistence(toggleButtonExists.isSelected() ? Constants.EXISTENT : Constants.NOT_EXISTENT);
-        quotes.setRealization(toggleButtonRealized.isSelected() ? Constants.REALIZED : Constants.NOT_REALIZED);
-        quotes.setReport(toggleButtonReport.isSelected() ? Constants.REPORTED : Constants.NOT_REPORTED);
+        if (toggleButtonExists.isSelected()) {
+            quotes.setExistence(Constants.EXISTENT);
+        } else {
+            quotes.setExistence(Constants.NOT_EXISTENT);
+        }
 
-        quotes.setDescriptionQuote(txtDescription.getText().trim());
-        quotes.setRequestDate(Date.valueOf(dtpDate.getValue()));
-        quotes.setCustomerId(cmbIdCustomer.getSelectionModel().getSelectedItem().getId());
+        if (toggleButtonRealized.isSelected()) {
+            quotes.setRealization(Constants.REALIZED);
+        } else {
+            quotes.setRealization(Constants.NOT_REALIZED);
+        }
+
+        if (toggleButtonReport.isSelected()) {
+            quotes.setReport(Constants.REPORTED);
+        } else {
+            quotes.setReport(Constants.NOT_REPORTED);
+        }
+
+        quotes.setDescriptionQuote(description);
+        quotes.setRequestDate(java.sql.Date.valueOf(dtpDate.getValue()));
+        quotes.setCustomerId(AutocompleteComboBox.getComboBoxValue(cmbIdCustomer).getId());
 
         listQuotes.add(quotes);
         loadData();
@@ -420,6 +494,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void deleteQuotes() {
+        System.out.println("deleteQuotes called");
         Quotes selectedQuote = tblQuotes.getSelectionModel().getSelectedItem();
         if (selectedQuote != null) {
             listQuotes.remove(selectedQuote);
@@ -433,68 +508,68 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void updateQuotes() {
-        if (!validateFields()) {
+        System.out.println("updateQuotes called");
+        String description = txtDescription.getText().trim();
+
+        if (dtpDate.getEditor().getText().isEmpty()) {
+            dtpDate.requestFocus();
+            Animations.shake(dtpDate);
+            return;
+        }
+
+        if (description.isEmpty()) {
+            new Shake(txtDescription).play();
             return;
         }
 
         Quotes quotes = tblQuotes.getSelectionModel().getSelectedItem();
 
-        quotes.setPrice(Double.parseDouble(txtPrice.getText().isEmpty() ? "0" : txtPrice.getText()));
+        if (txtPrice.getText().isEmpty()) {
+            quotes.setPrice(Double.valueOf("0"));
+        } else {
+            quotes.setPrice(Double.valueOf(txtPrice.getText()));
+        }
 
-        quotes.setExistence(toggleButtonExists.isSelected() ? Constants.EXISTENT : Constants.NOT_EXISTENT);
-        quotes.setRealization(toggleButtonRealized.isSelected() ? Constants.REALIZED : Constants.NOT_REALIZED);
-        quotes.setReport(toggleButtonReport.isSelected() ? Constants.REPORTED : Constants.NOT_REPORTED);
+        if (toggleButtonExists.isSelected()) {
+            quotes.setExistence(Constants.EXISTENT);
+        } else {
+            quotes.setExistence(Constants.NOT_EXISTENT);
+        }
 
-        quotes.setDescriptionQuote(txtDescription.getText().trim());
-        quotes.setRequestDate(Date.valueOf(dtpDate.getValue()));
-        quotes.setCustomerId(cmbIdCustomer.getSelectionModel().getSelectedItem().getId());
+        if (toggleButtonRealized.isSelected()) {
+            quotes.setRealization(Constants.REALIZED);
+        } else {
+            quotes.setRealization(Constants.NOT_REALIZED);
+        }
 
-        tblQuotes.refresh();
+        if (toggleButtonReport.isSelected()) {
+            quotes.setReport(Constants.REPORTED);
+        } else {
+            quotes.setReport(Constants.NOT_REPORTED);
+        }
+
+        quotes.setDescriptionQuote(description);
+        quotes.setRequestDate(java.sql.Date.valueOf(dtpDate.getValue()));
+        quotes.setId(quotes.getId());
+
         loadData();
         cleanControls();
         closeDialogAddQuotes();
         AlertsBuilder.create(AlertType.SUCCES, stckQuotes, rootQuotes, tblQuotes, Constants.MESSAGE_UPDATED);
     }
 
-    private boolean validateFields() {
-        boolean valid = true;
-
-        if (txtDescription.getText().isEmpty()) {
-            txtDescription.getStyleClass().add("error");
-            valid = false;
-        } else {
-            txtDescription.getStyleClass().removeAll("error");
-        }
-
-        if (cmbIdCustomer.getSelectionModel().isEmpty()) {
-            cmbIdCustomer.getStyleClass().add("error");
-            valid = false;
-        } else {
-            cmbIdCustomer.getStyleClass().removeAll("error");
-        }
-
-        if (txtPrice.getText().isEmpty()) {
-            txtPrice.getStyleClass().add("error");
-            valid = false;
-        } else {
-            txtPrice.getStyleClass().removeAll("error");
-        }
-
-        if (dtpDate.getValue() == null) {
-            dtpDate.getEditor().getStyleClass().add("error");
-            valid = false;
-        } else {
-            dtpDate.getEditor().getStyleClass().removeAll("error");
-        }
-
-        return valid;
-    }
-
     private void closeDialogWithEscapeKey() {
+        System.out.println("closeDialogWithEscapeKey called");
         rootQuotes.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogDeleteQuote();
+            }
+
+            if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddQuotes();
+            }
+
+            if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 tblQuotes.setDisable(false);
                 rootQuotes.setEffect(null);
                 AlertsBuilder.close();
@@ -503,6 +578,7 @@ public class QuotesController implements Initializable {
     }
 
     private void closeDialogWithTextFields() {
+        System.out.println("closeDialogWithTextFields called");
         txtPrice.setOnKeyReleased(ev -> {
             if (ev.getCode().equals(KeyCode.ESCAPE)) {
                 closeDialogAddQuotes();
@@ -523,6 +599,7 @@ public class QuotesController implements Initializable {
     }
 
     private void deleteUserDeleteKey() {
+        System.out.println("deleteUserDeleteKey called");
         rootQuotes.setOnKeyPressed(ev -> {
             if (ev.getCode().equals(KeyCode.DELETE)) {
                 if (tblQuotes.isDisable()) {
@@ -539,10 +616,12 @@ public class QuotesController implements Initializable {
     }
 
     private void disableTable() {
+        System.out.println("disableTable called");
         tblQuotes.setDisable(true);
     }
 
     private void cleanControls() {
+        System.out.println("cleanControls called");
         cmbIdCustomer.getSelectionModel().clearSelection();
         txtDescription.clear();
         dtpDate.setValue(null);
@@ -550,18 +629,21 @@ public class QuotesController implements Initializable {
     }
 
     private void disableEditControls() {
+        System.out.println("disableEditControls called");
         txtDescription.setEditable(false);
         txtPrice.setEditable(false);
         dtpDate.setEditable(false);
     }
 
     private void enableEditControls() {
+        System.out.println("enableEditControls called");
         txtDescription.setEditable(true);
         txtPrice.setEditable(true);
         dtpDate.setEditable(true);
     }
 
     private void resetValidations() {
+        System.out.println("resetValidations called");
         txtDescription.clear();
         cmbIdCustomer.getSelectionModel().clearSelection();
         txtPrice.clear();
@@ -570,6 +652,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void filterQuotes() {
+        System.out.println("filterQuotes called");
         String filterCustomers = txtSearchCustomer.getText().trim();
         if (filterCustomers.isEmpty()) {
             tblQuotes.setItems(listQuotes);
@@ -586,6 +669,7 @@ public class QuotesController implements Initializable {
 
     @FXML
     private void filterDescriptionQuotes() {
+        System.out.println("filterDescriptionQuotes called");
         String filter = txtSearchQuotes.getText().trim();
         if (filter.isEmpty()) {
             tblQuotes.setItems(listQuotes);
@@ -606,7 +690,8 @@ public class QuotesController implements Initializable {
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            Button button = new Button(item.getExistence());
+            Button button = new Button();
+            button.setText(item.getExistence());
             button.setPrefWidth(colExistence.getWidth() / 0.5);
 
             if (item.getExistence().equals(Constants.EXISTENT)) {
@@ -624,7 +709,8 @@ public class QuotesController implements Initializable {
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            Button button = new Button(item.getReport());
+            Button button = new Button();
+            button.setText(item.getReport());
             button.setPrefWidth(colReport.getWidth() / 0.5);
 
             if (item.getReport().equals(Constants.REPORTED)) {
@@ -642,7 +728,8 @@ public class QuotesController implements Initializable {
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Quotes, Button> param) {
             Quotes item = param.getValue();
 
-            Button button = new Button(item.getRealization());
+            Button button = new Button();
+            button.setText(item.getRealization());
             button.setPrefWidth(colRealization.getWidth() / 0.5);
 
             if (item.getRealization().equals(Constants.REALIZED)) {
