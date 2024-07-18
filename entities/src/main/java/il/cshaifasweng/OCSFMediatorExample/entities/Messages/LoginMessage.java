@@ -2,11 +2,20 @@ package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 
 public class LoginMessage extends Message
 {
-    String id;
+    public String id;
     public RequestType requestType;
     public ResponseType responseType;
 
     public LoginMessage(){}
+
+    /**
+     * Ctor that support LOGIN and LOGOUT.
+     *
+     * @param id is the id of user
+     * @param type is the MessageType
+     * @param requestType is what request we want
+     *
+     */
     public LoginMessage(String id, MessageType type, RequestType requestType)
     {
         //LOGIN , LOGOUT

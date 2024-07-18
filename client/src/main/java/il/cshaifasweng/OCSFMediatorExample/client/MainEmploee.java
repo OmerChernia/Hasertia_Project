@@ -49,7 +49,7 @@ public class MainEmploee extends Application {
 
     private void startWindow(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(((getClass().getResource(Constants.START_VIEW))));
+            Parent root = FXMLLoader.load(((getClass().getResource(Constants.MAIN_VIEW))));
             stage.getIcons().add(new Image(Constants.STAGE_ICON));
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));

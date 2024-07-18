@@ -102,7 +102,7 @@ public class Animations {
         Timeline timeline = new Timeline();
 
         KeyValue keyValue = new KeyValue(progressBar.progressProperty(), value);
-        KeyFrame keyFrame = new KeyFrame(new Duration(600), keyValue);
+        KeyFrame keyFrame = new KeyFrame(new Duration(300), keyValue);
         timeline.getKeyFrames().add(keyFrame);
 
         timeline.play();
