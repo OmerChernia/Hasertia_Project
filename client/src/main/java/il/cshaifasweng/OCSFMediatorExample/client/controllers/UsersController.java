@@ -499,11 +499,11 @@ public class UsersController implements Initializable {
     }
 
     private void resetValidations() {
-        RequieredFieldsValidators.resetValidation(txtUser);
-        RequieredFieldsValidators.resetValidation(txtName);
-        RequieredFieldsValidators.resetValidation(txtPassword);
-        RequieredFieldsValidators.resetValidation(pfPassword);
-        RequieredFieldsValidators.resetValidation(cmbTypeUser);
+//        RequieredFieldsValidators.resetValidation(txtUser);
+//        RequieredFieldsValidators.resetValidation(txtName);
+//        RequieredFieldsValidators.resetValidation(txtPassword);
+//        RequieredFieldsValidators.resetValidation(pfPassword);
+//        RequieredFieldsValidators.resetValidation(cmbTypeUser);
     }
 
     private void disableTable() {
