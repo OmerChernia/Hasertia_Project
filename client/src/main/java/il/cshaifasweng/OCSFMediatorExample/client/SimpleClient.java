@@ -30,9 +30,15 @@ public class SimpleClient extends AbstractClient {
 			Temp.func4((MovieMessage) msg);
 		else if(msg instanceof MovieInstanceMessage)
 			Temp.func5((MovieInstanceMessage) msg);
+		else if (msg instanceof SeatMessage)
+			Temp.func6((SeatMessage) msg);
+		else if (msg instanceof PurchaseMessage)
+			Temp.func7((PurchaseMessage) msg);
+		else if (msg instanceof TheaterMessage)
+			Temp.func8((TheaterMessage) msg);
 
-	}
-	
+		}
+
 	public static SimpleClient getClient() {
 		if (client == null) {
 			client = new SimpleClient("localhost", 3000);

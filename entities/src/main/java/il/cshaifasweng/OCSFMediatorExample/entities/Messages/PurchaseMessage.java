@@ -6,19 +6,19 @@ import java.util.ArrayList;
 
 public class PurchaseMessage extends Message
 {
-    ArrayList<Purchase> purchases;
-    String key;
+    public ArrayList<Purchase> purchases;
+    public int key;
     public RequestType requestType;
     public ResponseType responseType;
 
-    public PurchaseMessage(MessageType messageType, RequestType requestType , String key)
+    public PurchaseMessage(MessageType messageType, RequestType requestType , int key)
     {
-        //GET_PURCHASES_BY_THEATER_NAME , GET_PURCHASES_BY_CUSTOMER_ID ,
+        //GET_PURCHASES_BY_THEATER_ID , GET_PURCHASES_BY_CUSTOMER_ID ,
         super(messageType);
         this.key = key;
         this.requestType = requestType;
     }
-    public PurchaseMessage(MessageType messageType, RequestType requestType , Purchase purchase , String customerId)
+    public PurchaseMessage(MessageType messageType, RequestType requestType , Purchase purchase , int customerId)
     {
         // ADD_PURCHASE , REMOVE_PURCHASE
         super(messageType);
@@ -40,6 +40,10 @@ public class PurchaseMessage extends Message
         PURCHASE_REMOVED_SUCCESSFULLY,
         PURCHASE_REMOVED_UNSUCCESSFULLY,
         PURCHASES_LIST,
+        PURCHASE_FOUND,
+        PURCHASE_FAILED,
+        PURCHASE_REMOVED,
+        PURCHASE_NOT_FOUND,
 
     }
     public enum RequestType
@@ -48,7 +52,7 @@ public class PurchaseMessage extends Message
         GET_PURCHASE,//????
         REMOVE_PURCHASE,
         GET_PURCHASES_BY_CUSTOMER_ID,
-        GET_PURCHASES_BY_THEATER_NAME,
+        GET_PURCHASES_BY_THEATER_ID,
         GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH,
         GET_ALL_PURCHASES,
         GET_ALL_MOVIE_PACKAGES_BY_CUSTOMER_ID,

@@ -10,8 +10,8 @@ public class SeatMessage extends Message
     public ArrayList<Seat> hallSeats;
     public RequestType requestType;
     public ResponseType responseType;
-    MovieInstance movieInstance;
-    String hall;
+    public MovieInstance movieInstance;
+    public int hallId;
 
     public SeatMessage(MovieInstance movieInstance, MessageType messageType, RequestType requestType)
     {
@@ -21,11 +21,11 @@ public class SeatMessage extends Message
         this.movieInstance = movieInstance;
         this.requestType = requestType;
     }
-    public SeatMessage(String hall,MessageType messageType, RequestType requestType)
+    public SeatMessage(int hall,MessageType messageType, RequestType requestType)
     {
         //GET_ALL_SEAT_BY_HALL
         super(messageType);
-        this.hall = hall;
+        this.hallId = hall;
         this.requestType = requestType;
     }
 
