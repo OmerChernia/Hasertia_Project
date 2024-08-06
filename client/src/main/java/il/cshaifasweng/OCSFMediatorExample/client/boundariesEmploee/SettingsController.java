@@ -3,8 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.models.Users;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
+ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CropImageProfile;
@@ -199,13 +198,7 @@ public class SettingsController implements Initializable {
             return;
         }
 
-        Users users = new Users();
-        users.setId(1); // Dummy ID for testing
-        users.setNameUser(name);
-        users.setEmail(user);
-        users.setPass(password);
-        users.setBiography(bio);
-        users.setDialogTransition(getDialogTransition());
+
 
         loadData();
         AlertsBuilder.create(AlertType.SUCCESS, stckSettings, rootSettings, rootSettings, ConstantsPath.MESSAGE_ADDED);

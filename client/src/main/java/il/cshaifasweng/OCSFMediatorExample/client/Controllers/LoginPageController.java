@@ -1,10 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessage;
+import il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 
 import java.io.IOException;
 

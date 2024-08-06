@@ -1,9 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
+import il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleClient;
 
 import java.io.IOException;
 

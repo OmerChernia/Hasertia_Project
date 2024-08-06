@@ -1,16 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<StackPane fx:id="stckMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style=": ;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainController">
+<StackPane fx:id="stckMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style=": ;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainController">
    <children>
       <AnchorPane prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: f5f5f7;">
          <children>
-            <AnchorPane fx:id="rootContainer" layoutX="70.0" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #f5f5f7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <AnchorPane fx:id="rootContainer" layoutX="70.0" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #f5f5f7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+
+            <!-- Existing side toolbar -->
+            <AnchorPane fx:id="rootSideMenu" prefHeight="600.0" prefWidth="70.0" style="-fx-background-color: #1d1d48;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <VBox prefHeight="600.0" prefWidth="70.0">
+                     <children>
+                        <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icon.jpeg" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#settingsWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-more-info.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnComplaints" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#CustomerServiceWindows" prefHeight="61.0" prefWidth="71.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text="  " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-customer-support-50.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnEditScreenings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#EditMovieScreeningsWindows" prefHeight="56.0" prefWidth="73.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-schedule-50.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnEditMovieList" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#productsWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text="  " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-action-85.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnReports" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#statisticsWindows" prefHeight="57.0" prefWidth="72.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/chart.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+
+            <!-- New top toolbar -->
+            <AnchorPane fx:id="rootTopMenu" prefHeight="50.0" prefWidth="1000.0" style="-fx-background-color: #1d1d48;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="1000.0">
+                     <children>
+                        <Button fx:id="btnTopHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="top-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons8-home-24.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <!-- Additional buttons for top toolbar -->
+                        <Button fx:id="btnTopProfile" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="top-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons8-home-24.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnTopSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="top-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons8-home-24.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <!-- Additional buttons for side toolbar -->
+                        <Button fx:id="btnHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#homeWindows" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons8-home-24.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnME" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#MEWindows" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="33.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8_Shopping_Cart_50px_2.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#addUserWindows" prefHeight="53.0" prefWidth="77.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-tickets-64.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnAbout" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#aboutWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-monkey-48.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnExit" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#loginWindow" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-close-50.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+
+            <!-- Tooltip and other UI elements -->
             <AnchorPane fx:id="tooltipSettings" layoutX="71.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="137.0" visible="false" AnchorPane.bottomAnchor="348.0">
                <children>
                   <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="113.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
@@ -154,151 +312,13 @@
                   <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="rootSideMenu" prefHeight="600.0" prefWidth="0.0" style="-fx-background-color: #1d1d48;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <VBox prefHeight="600.0" prefWidth="70.0">
-                     <children>
-                        <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" prefHeight="50.0" prefWidth="73.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icon.jpeg" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#homeWindows" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons8-home-24.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnME" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#MEWindows" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="33.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8_Shopping_Cart_50px_2.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#addUserWindows" prefHeight="53.0" prefWidth="77.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-tickets-64.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#settingsWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-more-info.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnComplaints" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#CustomerServiceWindows" prefHeight="61.0" prefWidth="71.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text="  " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-customer-support-50.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnEditScreenings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#EditMovieScreeningsWindows" prefHeight="56.0" prefWidth="73.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-schedule-50.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnEditMovieList" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#productsWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text="  " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-action-85.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnReports" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#statisticsWindows" prefHeight="57.0" prefWidth="72.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/chart.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnAbout" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#aboutWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-monkey-48.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button fx:id="btnExit" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#loginWindow" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../media/icons/icons8-close-50.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
+
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="pnLogIn" style="-fx-background-color: transperant;" visible="false" StackPane.alignment="TOP_CENTER">
+      <!-- Existing login pane -->
+      <AnchorPane fx:id="pnLogIn" prefHeight="448.0" prefWidth="816.0" style="-fx-background-color: transparent;" visible="false" StackPane.alignment="CENTER">
          <children>
-            <VBox alignment="CENTER" layoutX="254.0" layoutY="180.0" prefHeight="128.0" prefWidth="452.0" style="-fx-background-color: transperant;">
+            <VBox alignment="CENTER" layoutX="254.0" layoutY="180.0" prefHeight="128.0" prefWidth="452.0" style="-fx-background-color: transparent;">
                <children>
                   <Label prefHeight="47.0" prefWidth="462.0" style="-fx-background-color: #e72141; -fx-text-fill: white; -fx-padding: 10; -fx-font-size: 18;" text="Login to Personal Area">
                      <graphic>
