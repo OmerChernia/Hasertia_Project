@@ -2,35 +2,27 @@ package il.cshaifasweng.OCSFMediatorExample.client.util;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 
 import java.util.Objects;
 
 public class CustomContextMenu {
 
     private final ContextMenu contextMenu;
-
     private final Node node;
-
     private MenuItem edit;
-
     private MenuItem delete;
-
     private MenuItem details;
-
 
     public CustomContextMenu(Node node) {
         this.node = node;
-
         contextMenu = new ContextMenu();
         contextMenu.getItems().addAll(getContent());
+
         // Load the CSS file
         contextMenu.getStyleClass().add("context-menu");
         contextMenu.getStyleClass().add(
@@ -49,7 +41,6 @@ public class CustomContextMenu {
     public void setActionDetails(EventHandler<ActionEvent> action) {
         details.setOnAction(action);
     }
-
 
     public void show() {
         node.addEventHandler(MouseEvent.MOUSE_CLICKED, ev -> {
@@ -71,6 +62,22 @@ public class CustomContextMenu {
         return delete;
     }
 
+    public MenuItem getDetailsButton() {
+        return details;
+    }
+
+    public void setEditText(String text) {
+        edit.setText(text);
+    }
+
+    public void setDeleteText(String text) {
+        delete.setText(text);
+    }
+
+    public void setDetailsText(String text) {
+        details.setText(text);
+    }
+
     private MenuItem[] getContent() {
         edit = new MenuItem("Edit");
         style(edit);
@@ -80,7 +87,6 @@ public class CustomContextMenu {
 
         details = new MenuItem("Details");
         style(details);
-
 
         return new MenuItem[]{edit, delete, details};
     }

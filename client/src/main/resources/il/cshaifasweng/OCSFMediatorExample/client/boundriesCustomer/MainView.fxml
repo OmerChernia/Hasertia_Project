@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane fx:id="stckMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style=": ;" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainController">
+   <children>
+      <AnchorPane prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: f5f5f7;">
+         <children>
+            <AnchorPane fx:id="rootContainer" layoutX="70.0" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #f5f5f7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <AnchorPane fx:id="tooltipSettings" layoutX="71.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="137.0" visible="false" AnchorPane.bottomAnchor="348.0">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="113.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="12.0" layoutY="5.0" text="Personal Info" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipAbout" layoutX="75.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="59.0" prefWidth="94.0" visible="false" AnchorPane.bottomAnchor="60.0">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="70.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="12.0" layoutY="5.0" text="About" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipReports" layoutX="79.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="121.0" visible="false" AnchorPane.bottomAnchor="120.0">
+               <children>
+                  <AnchorPane layoutX="35.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="83.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="12.0" layoutY="5.0" prefHeight="21.0" prefWidth="70.0" text="Reports" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipOrders" layoutX="70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="121.0" visible="false" AnchorPane.bottomAnchor="401.0">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="99.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="11.0" layoutY="5.0" prefHeight="21.0" prefWidth="83.0" text="My Orders" textFill="WHITE" translateX="-1.0">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipEditMovieList" layoutX="74.0" layoutY="367.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="137.0" visible="false" AnchorPane.leftAnchor="74.0">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="121.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="11.0" layoutY="5.0" text="Edit Movie List" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipMe" layoutX="73.0" layoutY="92.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="121.0" visible="false">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="73.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="11.0" layoutY="5.0" text="Buy ME" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipEditScreenings" layoutX="72.0" layoutY="313.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="55.0" prefWidth="188.0" visible="false">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="163.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="8.0" layoutY="4.0" text="Edit Screenings &amp; HV" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipHome" layoutX="72.0" layoutY="46.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="99.0" visible="false">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="70.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="4.0" text="Home" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipComplaints" layoutX="72.0" layoutY="255.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="51.0" prefWidth="128.0" visible="false">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="99.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label fx:id="Complaints" layoutX="12.0" layoutY="4.0" text="Complaints" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="tooltipExit" layoutX="72.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="59.0" prefWidth="105.0" visible="false" AnchorPane.bottomAnchor="0.0">
+               <children>
+                  <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="83.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="5.0" text="Sign off" textFill="WHITE" translateX="-2.0">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="rootSideMenu" prefHeight="600.0" prefWidth="0.0" style="-fx-background-color: #1d1d48;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <VBox prefHeight="600.0" prefWidth="70.0">
+                     <children>
+                        <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" prefHeight="50.0" prefWidth="73.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icon.jpeg" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#homeWindows" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons8-home-24.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnME" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#MEWindows" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="33.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8_Shopping_Cart_50px_2.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#addUserWindows" prefHeight="53.0" prefWidth="77.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-tickets-64.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#settingsWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-more-info.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnComplaints" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#CustomerServiceWindows" prefHeight="61.0" prefWidth="71.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text="  " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-customer-support-50.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnEditScreenings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#EditMovieScreeningsWindows" prefHeight="56.0" prefWidth="73.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-schedule-50.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnEditMovieList" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#productsWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text="  " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-action-85.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnReports" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#statisticsWindows" prefHeight="57.0" prefWidth="72.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/chart.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnAbout" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#aboutWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-monkey-48.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="btnExit" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#loginWindow" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transperant;" styleClass="main-view-button" text=" " textFill="WHITE">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../media/icons/icons8-close-50.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="pnLogIn" style="-fx-background-color: transperant;" visible="false" StackPane.alignment="TOP_CENTER">
+         <children>
+            <VBox alignment="CENTER" layoutX="254.0" layoutY="180.0" prefHeight="128.0" prefWidth="452.0" style="-fx-background-color: transperant;">
+               <children>
+                  <Label prefHeight="47.0" prefWidth="462.0" style="-fx-background-color: #e72141; -fx-text-fill: white; -fx-padding: 10; -fx-font-size: 18;" text="Login to Personal Area">
+                     <graphic>
+                        <Button mnemonicParsing="false" onAction="#closeLoginDialog" styleClass="button-close" text="x" />
+                     </graphic>
+                  </Label>
+                  <VBox alignment="CENTER" prefHeight="97.0" prefWidth="424.0" spacing="10.0" style="-fx-background-color: #262262; -fx-padding: 20;">
+                     <children>
+                        <HBox alignment="CENTER" spacing="10.0">
+                           <children>
+                              <RadioButton fx:id="customerRadioButton" onAction="#handleRadioButtonAction" selected="true" text="Customer" textFill="WHITE" />
+                              <RadioButton fx:id="employeeRadioButton" onAction="#handleRadioButtonAction" text="Employee" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <VBox fx:id="customerLogin" alignment="CENTER" spacing="10.0">
+                           <children>
+                              <HBox alignment="CENTER" spacing="10.0">
+                                 <children>
+                                    <Button style="-fx-background-color: #f3bc00; -fx-font-size: 16;" text="✓" />
+                                    <TextField promptText="ID Number" style="-fx-pref-width: 200; -fx-font-size: 16;" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox fx:id="employeeLogin" alignment="CENTER" managed="false" spacing="10.0" visible="false">
+                           <children>
+                              <HBox alignment="CENTER" spacing="10.0">
+                                 <children>
+                                    <TextField promptText="Username" style="-fx-pref-width: 100; -fx-font-size: 16;" />
+                                    <PasswordField promptText="Password" style="-fx-pref-width: 100; -fx-font-size: 16;" />
+                                    <Button style="-fx-background-color: #f3bc00; -fx-font-size: 16;" text="✓" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

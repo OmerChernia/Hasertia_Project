@@ -1,0 +1,235 @@
+/* כפתורים עם אפקט צל */
+.button {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-font-family: "Rimouski Sb";
+    -fx-font-size: 16;
+    -fx-padding: 1px 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.25), 5, 0, 0, 5);
+
+}
+
+.button:hover {
+    -fx-background-color: -hover;
+}
+
+.button:pressed {
+    -fx-background-color: #4A86FF;
+}
+
+/* כפתור סגירה */
+.button-close {
+    -fx-background-color: none;
+    -fx-fill: -secondary;
+}
+
+/* כפתור סגירה */
+.button-book {
+    -fx-font-family: "Rimouski Sb";
+    -fx-background-color: -delete;
+    -fx-text-fill: white;
+}
+
+/* כפתור סגירה */
+.button-info {
+    -fx-font-family: "Rimouski Sb";
+    -fx-background-color: #4A86FF;
+    -fx-text-fill: white;
+}
+
+.button-close .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+
+.button-close:hover .glyph-icon {
+    -fx-fill: black;
+}
+
+/* כפתור מנהל */
+.button-administrador {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+}
+
+.button-administrador .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+
+/* כפתור משתמש */
+.button-user {
+    -fx-background-color: #4A86FF;
+    -fx-text-fill: white;
+}
+
+.button-user .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+
+/* כפתור לא */
+.button-no {
+    -fx-pref-height: 15px;
+    -fx-background-color: -delete;
+    -fx-text-fill: white;
+}
+
+.button-no .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+
+/* כפתור כן */
+.button-yes {
+    -fx-pref-height: 15px;
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+}
+
+.button-yes .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+
+/* כפתור ביטול */
+.button-cancel {
+    -fx-font-family: "Rimouski Sb";
+    -fx-font-size: 12;
+    -fx-background-color: white;
+    -fx-border-color: -secondary;
+    -fx-text-fill: -secondary;
+}
+
+.button-cancel .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+
+/* כפתור מחיקה */
+.button-delete {
+    -fx-font-family: "Rimouski Sb";
+    -fx-background-color: -delete;
+    -fx-text-fill: white;
+}
+
+.button-delete .jfx-rippler {
+    -jfx-rippler-fill: none;
+}
+/* כפתורים לפי ז'אנרים שונים */
+.button-blue {
+    -fx-background-color: #1E90FF;
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-green {
+    -fx-background-color: #32CD32;
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-purple {
+    -fx-background-color: #6A5ACD; /* צבע רקע כחול בינוני לדרמה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-red {
+    -fx-background-color: #DC143C; /* צבע רקע אדום קרמי לאימה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-pink {
+    -fx-background-color: #FF69B4; /* צבע רקע ורוד בהיר לרומנטיקה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-blue {
+    -fx-background-color: #00CED1; /* צבע רקע כחול-ירוק לסיי-פיי */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-tomato{
+    -fx-background-color: #FF6347; /* צבע רקע עגבנייה למותחן */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-orange {
+    -fx-background-color: #FFA500; /* צבע רקע כתום בהיר לאנימציה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-light-green {
+    -fx-background-color: #32CD32; /* צבע רקע ירוק בהיר לדוקומנטרי */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-light-purple {
+    -fx-background-color: #9370DB; /* צבע רקע סגול בהיר לפנטזיה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-hot-pink {
+    -fx-background-color: #FF1493; /* צבע רקע ורוד עז למיוזיקל */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-deep-purple {
+    -fx-background-color: #8A2BE2; /* צבע רקע סגול עמוק למסתורין */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+/* תוספת גוונים של ירוק וכחול */
+.button-adventure {
+    -fx-background-color: #3CB371; /* צבע רקע ירוק בינוני להרפתקה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-family {
+    -fx-background-color: #1E90FF; /* צבע רקע כחול בהיר למשפחה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-fantasy {
+    -fx-background-color: #7B68EE; /* צבע רקע כחול סגול לפנטזיה */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+.button-sports {
+    -fx-background-color: #228B22; /* צבע רקע ירוק כהה לספורט */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
+
+/* ברירת מחדל אם אין ז'אנר מוכר */
+.button-default {
+    -fx-background-color: #D3D3D3; /* צבע רקע אפור בהיר לברירת מחדל */
+    -fx-text-fill: white;
+    -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
+
+}
