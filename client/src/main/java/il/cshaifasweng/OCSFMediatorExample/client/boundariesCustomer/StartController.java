@@ -52,12 +52,7 @@ public class StartController  {
     private Button btnAutoConnect;
 
 
-    @FXML
-    private void autoConnect() {
-        ipField.setText("localhost");
-        portField.setText("3000");
-        connect();
-    }
+
     @FXML
     private void connect() {
         try {
@@ -78,6 +73,8 @@ public class StartController  {
 
             stage.setScene(scene);
             stage.show();
+            ipField.clear();
+            portField.clear();
         } catch (NumberFormatException e) {
             messageField.setText("Invalid port number: " + portField.getText());
             System.err.println("Invalid port number: " + portField.getText());
@@ -96,6 +93,7 @@ public class StartController  {
         ipField.setText("localhost");
         portField.setText("3000");
         connect();
+
     }
 
 
