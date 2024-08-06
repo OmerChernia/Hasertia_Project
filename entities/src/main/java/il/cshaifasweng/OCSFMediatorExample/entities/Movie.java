@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,6 @@ public class Movie implements Serializable {
         THEATER_VIEWING,
         BOTH
     }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
