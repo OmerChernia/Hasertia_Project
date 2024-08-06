@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -7,13 +8,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javafx.stage.StageStyle;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import static il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath.EMPLOEE_PACKAGE;
 
 /**
  * JavaFX App
@@ -21,17 +29,38 @@ import org.greenrobot.eventbus.Subscribe;
 public class SimpleChatClient extends Application {
 
     private static Scene scene;
-    private SimpleClient client;
+    public static SimpleClient client;
 
     @Override
     public void start(Stage stage) throws IOException {
-    	EventBus.getDefault().register(this);
-    	client = SimpleClient.getClient();
-    	client.openConnection();
-        scene = new Scene(loadFXML("primary"), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+        startWindow(stage);
+        EventBus.getDefault().register(this);
+
     }
+
+    private void startWindow(Stage stage) {
+        try {
+            System.out.println("!!!!!!! Loading FXML");
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/il/cshaifasweng/OCSFMediatorExample/client/boundriesCustomer/StartView.fxml")));
+            System.out.println("Loaded FXML successfully");
+
+            stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setScene(new Scene(root));
+            stage.setTitle(ConstantsPath.TITLE);
+            stage.show();
+            System.out.println("Window shown successfully ######");
+        } catch (IOException ex) {
+            Logger.getLogger(SimpleChatClient.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        } catch (NullPointerException ex) {
+            System.err.println("Could not load the FXML file. Check the resource path.");
+            ex.printStackTrace();
+        }
+    }
+
+
+
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
@@ -51,23 +80,7 @@ public class SimpleChatClient extends Application {
 		super.stop();
 	}
 
-/*
-    @Subscribe
-    public void onMessageEvent(MessageEvent message) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        Platform.runLater(() -> {
-            Alert alert = new Alert(AlertType.INFORMATION,
-                    String.format("Message:\nId: %d\nData: %s\nTimestamp: %s\n",
-                            message.getMessage().getId(),
-                            message.getMessage().getMessage(),
-                            message.getMessage().getTimeStamp().format(dtf))
-            );
-            alert.setTitle("new message");
-            alert.setHeaderText("New Message:");
-            alert.show();
-        });
-    }
-*/
+
 
 	public static void main(String[] args) {
         launch();

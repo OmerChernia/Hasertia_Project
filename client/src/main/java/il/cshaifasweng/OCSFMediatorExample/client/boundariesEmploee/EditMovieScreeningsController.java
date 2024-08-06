@@ -379,7 +379,7 @@ public class EditMovieScreeningsController implements Initializable {
         colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().toLocalDate().toString()));
         colHour.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
         colTheater.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getTheater().getLocation()));
-        colHall.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getName()));
+      //  colHall.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getName()));
 
     }
 

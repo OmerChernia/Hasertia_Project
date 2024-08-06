@@ -140,7 +140,7 @@ public class DialogTicketController {
         lblMin.setText(String.format("%02d", activeDate.getMinute()));
         lblPrice.setText(String.valueOf(movieTicket.getMovieInstance().getMovie().getTheaterPrice())+"₪");
         lblTheater.setText(movieTicket.getSeat().getHall().getTheater().getLocation());
-        lblHall.setText(movieTicket.getSeat().getHall().getName().replace("Hall", ""));
+      //  lblHall.setText(movieTicket.getSeat().getHall().getName().replace("Hall", ""));
         String seat = "row: " + movieTicket.getSeat().getRow() + ", seat: " + movieTicket.getSeat().getCol();
         lblSeat.setText(seat);
 
