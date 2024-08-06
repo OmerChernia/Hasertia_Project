@@ -1,63 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.image.Image?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="349.0" prefWidth="430.0" stylesheets="@LightTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginController">
-   <children>
-      <AnchorPane layoutX="-1.0" onMouseDragged="#dragged" onMousePressed="#pressed" prefHeight="349.0" prefWidth="432.0" style="-fx-background-color: white;">
-         <children>
-            <TextField fx:id="txtUser" layoutX="77.0" layoutY="87.0" onAction="#login" prefHeight="25.0" prefWidth="279.0" promptText="User" styleClass="text-field-login">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </TextField>
-            <PasswordField fx:id="pfPassword" layoutX="77.0" layoutY="169.0" onAction="#login" prefHeight="25.0" prefWidth="279.0" promptText="Password" styleClass="text-field-login">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </PasswordField>
-            <Button fx:id="btnLogin" alignment="CENTER" contentDisplay="CENTER" layoutX="77.0" layoutY="246.0" onAction="#login" prefHeight="57.0" prefWidth="279.0" styleClass="button-general" text="Login" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Button>
-            <Pane fx:id="paneIcon" layoutX="320.0" layoutY="170.0" prefHeight="29.0" prefWidth="43.0" style="-fx-background-color: white;">
-               <children>
-                  <ImageView fx:id="icon" fitHeight="15.0" fitWidth="15.0" layoutX="11.0" layoutY="6.0" opacity="0.5" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/icons8-close-50.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <HBox alignment="CENTER" layoutX="1.0" layoutY="20.0" prefHeight="50.0" prefWidth="432.0">
-               <children>
-                  <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h1" text="Welcome">
-                     <font>
-                        <Font size="22.0" />
-                     </font>
-                  </Text>
-               </children>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"  >
+   <top>
+      <HBox alignment="TOP_RIGHT" BorderPane.alignment="TOP_RIGHT">
+         <Label style="-fx-font-size: 18; -fx-text-fill: red;" text="Order Check/Cancel" />
+         <padding>
+            <Insets right="20" top="10" />
+         </padding>
+      </HBox>
+   </top>
+   <center>
+      <VBox alignment="CENTER" spacing="20.0">
+         <ImageView fitHeight="100.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <!-- Replace with your image path -->
+               <Image url="@media/icons/logo.png" />
+            </image>
+         </ImageView>
+         <StackPane alignment="CENTER" />
+         <Label prefHeight="36.0" prefWidth="302.0" style="-fx-background-color: red; -fx-text-fill: white; -fx-padding: 10; -fx-font-size: 18;" text="Personal Area" />
+         <VBox alignment="CENTER" prefHeight="87.0" prefWidth="302.0" spacing="10.0" style="-fx-background-color: navy; -fx-padding: 20;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 16;" text="Login to Personal Area" />
+            <HBox alignment="CENTER" spacing="10.0">
+               <RadioButton fx:id="customerRadioButton" text="Customer" selected="true" onAction="#handleRadioButtonAction"/>
+               <RadioButton fx:id="employeeRadioButton" text="Employee" onAction="#handleRadioButtonAction"/>
             </HBox>
-            <Button contentDisplay="CENTER" layoutX="396.0" onMouseClicked="#closeStage" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
-               <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/icons8-close-50.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-      </AnchorPane>
-   </children>
-</AnchorPane>
+            <VBox fx:id="customerLogin" alignment="CENTER" spacing="10.0">
+               <HBox alignment="CENTER" spacing="10.0">
+                  <Button style="-fx-background-color: yellow; -fx-font-size: 16;" text="✓" />
+                  <TextField promptText="ID Number" style="-fx-pref-width: 200; -fx-font-size: 16;" />
+               </HBox>
+            </VBox>
+            <VBox fx:id="employeeLogin" alignment="CENTER" spacing="10.0" visible="false" managed="false">
+               <HBox alignment="CENTER" spacing="10.0">
+                  <TextField promptText="Username" style="-fx-pref-width: 100; -fx-font-size: 16;" />
+                  <PasswordField promptText="Password" style="-fx-pref-width: 100; -fx-font-size: 16;" />
+                  <Button style="-fx-background-color: yellow; -fx-font-size: 16;" text="✓" />
+               </HBox>
+            </VBox>
+         </VBox>
+      </VBox>
+   </center>
+   <padding>
+      <Insets bottom="50" left="50" right="50" top="50" />
+   </padding>
+</BorderPane>

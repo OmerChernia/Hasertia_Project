@@ -1,0 +1,78 @@
+.root {
+    -fx-background-color: -root;
+}
+
+.h1 {
+    -fx-font-size: 25;
+    -fx-font-family: "Lato";
+}
+
+.h2 {
+    -fx-font-size: 20;
+    -fx-font-family: "Lato";
+}
+
+.h3 {
+    -fx-font-size: 15;
+    -fx-font-family: "Lato";
+}
+
+.h4 {
+    -fx-font-size: 14;
+    -fx-font-family: "Lato";
+}
+
+.h5 {
+    -fx-font-size: 12;
+    -fx-font-family: "Lato";
+}
+
+
+/* שדות טקסט */
+.jfx-text-field, .text-field {
+    -fx-font-size: 14;
+    -fx-accent: -primary;
+    -jfx-focus-color: -primary;
+    -jfx-unfocus-color: -secondary;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent transparent #CCCCCC transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 3 0;
+    -fx-wrap-text: true; /* הוספת עטיפת טקסט */
+}
+
+.text-field:focused {
+    -fx-border-color: transparent transparent #00A000 transparent;
+}
+
+/* אזורי טקסט */
+.jfx-text-area, .text-area {
+    -fx-font-size: 14;
+    -fx-accent: -primary;
+    -jfx-focus-color: -primary;
+    -jfx-unfocus-color: -secondary;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent transparent #CCCCCC transparent;
+    -fx-border-width: 0 0 2 0;
+    -fx-padding: 0 0 3 0;
+    -fx-wrap-text: true; /* הוספת עטיפת טקסט */
+}
+
+.text-area:focused {
+    -fx-border-color: transparent transparent #00A000 transparent;
+}
+
+
+/* תוויות צפות */
+.floating-label {
+    -fx-font-size: 14px;
+    -fx-fill: grey;
+    -fx-background-color: white;
+    -fx-padding: 0 5;
+    -fx-translate-y: -10; /* Adjust to cut the text field slightly */
+    -fx-opacity: 0.8;
+}

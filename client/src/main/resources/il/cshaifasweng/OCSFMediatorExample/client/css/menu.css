@@ -1,0 +1,21 @@
+/* תפריט */
+.menu-item .label {
+    -fx-text-fill: grey;
+    -fx-fill: black;
+    -fx-font-size: 15;
+}
+
+.menu-item:hover,
+.menu-item:focused,
+.menu-item:focused .label {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-fill: black;
+}
+
+.menu-item:hover .glyph-icon,
+.menu-item:focused .glyph-icon {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-fill: white;
+}

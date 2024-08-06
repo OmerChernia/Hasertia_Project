@@ -1,0 +1,57 @@
+/* טבלה */
+.table-view {
+    -fx-background-color: white;
+}
+
+.table-cell {
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-cell-size : 20;
+    -fx-background-color: white;
+}
+
+.table-view .column-header .label {
+    -fx-font-size: 16;
+    -fx-text-fill: -secondary;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-view .cell {
+    -fx-cell-size: 30;
+    -fx-text-fill: #000000;
+    -fx-font-size: 15;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -secondary;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: white;
+}
+
+.action-button {
+    -fx-font-size: 12;
+    -fx-font-family: "Rimouski Sb";
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+}
+
+
+
+/* תא סיסמא */
+.password-field-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-highlight-fill: null;
+    -fx-highlight-text-fill: null;
+}
+
+.table-row-cell:selected .password-field-cell {
+    -fx-background-color: -secondary;
+    -fx-text-fill: white;
+}

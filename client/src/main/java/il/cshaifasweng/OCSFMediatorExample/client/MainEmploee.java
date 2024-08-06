@@ -18,6 +18,8 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,10 +38,10 @@ public class MainEmploee extends Application {
 
     private void loginWindow(Stage stage) {
         try {
-             Parent root = FXMLLoader.load(getClass().getResource(Constants.LOGIN_VIEW));
-            stage.getIcons().add(new Image(Constants.STAGE_ICON));
+             Parent root = FXMLLoader.load(getClass().getResource(ConstantsPath.LOGIN_VIEW));
+            stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle(Constants.TITLE);
+            stage.setTitle(ConstantsPath.TITLE);
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException ex) {
@@ -49,11 +51,11 @@ public class MainEmploee extends Application {
 
     private void startWindow(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(((getClass().getResource(Constants.MAIN_VIEW))));
-            stage.getIcons().add(new Image(Constants.STAGE_ICON));
+            Parent root = FXMLLoader.load(((getClass().getResource(ConstantsPath.START_VIEW))));
+            stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
             stage.initStyle(StageStyle.UNDECORATED);
             stage.setScene(new Scene(root));
-            stage.setTitle(Constants.TITLE);
+            stage.setTitle(ConstantsPath.TITLE);
             stage.show();
         } catch (IOException ex) {
             Logger.getLogger(MainEmploee.class.getName()).log(Level.SEVERE, null, ex);
