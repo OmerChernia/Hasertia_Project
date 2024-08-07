@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee;
 
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.PDFGenerator;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.animation.ScaleTransition;
@@ -78,11 +78,11 @@ public class ReportsBoundary implements Initializable {
     @FXML
     private ToggleButton toggleComplaintStatusChartType;
 
-    private DBGenerate dbGenerate;
+    private dbDeleteLaterGenerate dbGenerate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        dbGenerate = new DBGenerate();
+        dbGenerate = new dbDeleteLaterGenerate();
         setChartData();
     }
 

@@ -7,7 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -31,7 +31,7 @@ public class CustomerServiceBoundary implements Initializable {
     private ObservableList<Complaint> listComplaints;
     private ObservableList<RegisteredUser> listCustomers;
 
-    private final DBGenerate db = new DBGenerate();
+    private final dbDeleteLaterGenerate db = new dbDeleteLaterGenerate();
 
     private DialogTool dialogAddProduct;
 

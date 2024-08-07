@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBGenerate {
+public class dbDeleteLaterGenerate {
 
     private List<RegisteredUser> registeredUsers;
     private List<Employee> employees;
@@ -20,7 +20,7 @@ public class DBGenerate {
     private List<Purchase> purchases;
     private List<Complaint> complaints;
 
-    public DBGenerate() {
+    public dbDeleteLaterGenerate() {
         initializeDatabase();
     }
 

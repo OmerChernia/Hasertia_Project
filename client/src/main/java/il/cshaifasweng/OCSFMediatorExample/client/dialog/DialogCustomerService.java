@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.dialog;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.CustomerServiceBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,7 +71,7 @@ public class DialogCustomerService {
     @FXML
     private Label purchaseTypeField;
 
-    private DBGenerate dbGenerate;
+    private dbDeleteLaterGenerate dbGenerate;
 
     private Hall hall;
     private MovieTicket selectedMovieTicket;
@@ -83,7 +83,7 @@ public class DialogCustomerService {
 
     public void initialize() {
         // Initialize DBGenerate instance
-        dbGenerate = new DBGenerate();
+        dbGenerate = new dbDeleteLaterGenerate();
         // Set visibility of boxes to false initially
         changeScreeningBox.setVisible(false);
         changeScreeningBox.setManaged(false);

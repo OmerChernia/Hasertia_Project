@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,7 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainBoundary implements Initializable {
-    private final DBGenerate db = new DBGenerate();
+    private final dbDeleteLaterGenerate db = new dbDeleteLaterGenerate();
 
     private ObservableList<MovieInstance> listProducts;
 

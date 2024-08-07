@@ -2,7 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class MovieSmallBoundary {
 
-    private final DBGenerate db = new DBGenerate();
+    private final dbDeleteLaterGenerate db = new dbDeleteLaterGenerate();
     private HomeBoundary homeController;
     public Movie movie;
 

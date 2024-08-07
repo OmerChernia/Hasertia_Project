@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee;
 
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
@@ -46,7 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EditMovieScreeningsBoundary implements Initializable {
-    private final DBGenerate db = new DBGenerate();
+    private final dbDeleteLaterGenerate db = new dbDeleteLaterGenerate();
 
     private final ColorAdjust colorAdjust = new ColorAdjust();
 

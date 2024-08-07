@@ -17,7 +17,7 @@ public class ConstantsPath {
     public static final String ICON_PACKAGE = MEDIA_PACKAGE + "icons/";
     public static final String PROFILE_PICTURES_PACKAGE = MEDIA_PACKAGE + "profiles/";
 
-    public static final String LOGIN_VIEW = COSTUMER_PACKAGE + "LoginView.fxml";
+    public static final String LOGIN_VIEW = COSTUMER_PACKAGE + "DeleteLater.fxml";
     public static final String START_VIEW = COSTUMER_PACKAGE+ "StartView.fxml";
     public static final String MAIN_VIEW = COSTUMER_PACKAGE + "MainView.fxml";
     public static final String SMALL_MOVIE_VIEW = COSTUMER_PACKAGE + "MovieSmall.fxml";

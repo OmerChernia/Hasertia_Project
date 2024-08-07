@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.dbDeleteLaterGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -36,7 +36,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 
 public class OrdersBoundary implements Initializable {
-    private final DBGenerate db = new DBGenerate();
+    private final dbDeleteLaterGenerate db = new dbDeleteLaterGenerate();
 
     private final String CANNOT_DELETED = "This user cannot be deleted";
 
