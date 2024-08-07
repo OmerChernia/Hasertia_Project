@@ -19,7 +19,7 @@ public class HomeViewingPackageInstance extends Purchase{
     public HomeViewingPackageInstance() {
     }
 
-    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, int price) {
+    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate) {
         super(purchaseDate, owner, purchaseValidation);
         this.movie = movie;
         this.activationDate = viewingDate;

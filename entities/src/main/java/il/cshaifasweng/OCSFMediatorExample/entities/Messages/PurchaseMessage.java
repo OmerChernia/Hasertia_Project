@@ -49,7 +49,6 @@ public class PurchaseMessage extends Message
     public enum RequestType
     {
         ADD_PURCHASE,
-        GET_PURCHASE,//????
         REMOVE_PURCHASE,
         GET_PURCHASES_BY_CUSTOMER_ID,
         GET_PURCHASES_BY_THEATER_ID,
