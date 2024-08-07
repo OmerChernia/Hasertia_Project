@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleChatClient;
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 
 public class Main {
 

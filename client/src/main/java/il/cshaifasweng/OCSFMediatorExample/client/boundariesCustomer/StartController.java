@@ -5,8 +5,8 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleChatClient;
-import il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
@@ -18,8 +18,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import static il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleChatClient.loadFXML;
-import static il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleChatClient.scene;
+import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.loadFXML;
+import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.scene;
 
 
 public class StartController  {

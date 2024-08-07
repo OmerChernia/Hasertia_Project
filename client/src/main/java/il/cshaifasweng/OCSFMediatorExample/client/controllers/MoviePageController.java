@@ -1,6 +1,6 @@
-package il.cshaifasweng.OCSFMediatorExample.client.Controllers;
+package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
-import il.cshaifasweng.OCSFMediatorExample.client.Connect.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 

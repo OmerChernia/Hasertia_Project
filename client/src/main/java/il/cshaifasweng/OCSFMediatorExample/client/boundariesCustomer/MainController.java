@@ -178,7 +178,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void settingsWindows(ActionEvent event) {
-        showFXMLWindows( ConstantsPath.EMPLOEE_PACKAGE +"SettingsView.fxml" );
+        showFXMLWindows( ConstantsPath.EMPLOEE_PACKAGE +"ComplaintView.fxml" );
 //        setDisableButtons(event);
     }
 

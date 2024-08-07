@@ -1,23 +1,21 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,7 +26,6 @@ public class HomeController implements Initializable {
 
     private static final int ITEMS_PER_ROW = 4;
     private List<Movie> items;
-    private final DBGenerate db = new DBGenerate();
     private DialogTool dialogInfo;
 
     @FXML
@@ -46,22 +43,26 @@ public class HomeController implements Initializable {
     @FXML
     private GridPane grid;
 
-
-
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Register this controller to listen for MovieMessage events
+        EventBus.getDefault().register(this);
+
+        // Request the list of movies from the server
+        new MovieController().requestAllMovies();
+    }
+
+    @Subscribe
+    public void onMovieMessageReceived(MovieMessage message) {
         try {
-            setItems();
+            setItems(message.movies);
         } catch (IOException e) {
-            e.printStackTrace(); // טיפול בשגיאה
+            e.printStackTrace();
         }
     }
 
-    public void setItems() throws IOException {
-        this.items = db.getMovies();
+    public void setItems(List<Movie> movies) throws IOException {
+        this.items = movies;
         updateGrid();
     }
 
@@ -100,10 +101,11 @@ public class HomeController implements Initializable {
             System.err.println("Root is null, cannot set.");
         }
     }
+
     public void showInfo(Movie movie) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.COSTUMER_PACKAGE+"MovieInfo.fxml"));
-            Parent pane = loader.load(); // Use Parent to accommodate different Pane types
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.COSTUMER_PACKAGE + "MovieInfo.fxml"));
+            Parent pane = loader.load();
 
             MovieInfoController movieInfoController = loader.getController();
             movieInfoController.sethomeController(this);
@@ -115,7 +117,6 @@ public class HomeController implements Initializable {
 
             dialogInfo = new DialogTool(InfoContainer, stckHome);
             dialogInfo.show();
-
 
             dialogInfo.setOnDialogClosed(ev -> {
                 stckHome.setEffect(null);
@@ -136,14 +137,8 @@ public class HomeController implements Initializable {
         }
     }
 
-
-
-
+    public void cleanup() {
+        // Unregister this controller from EventBus when it's no longer needed
+        EventBus.getDefault().unregister(this);
+    }
 }
-
-
-
-
-
-
-

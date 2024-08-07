@@ -1,4 +1,4 @@
-package il.cshaifasweng.OCSFMediatorExample.client.Connect;
+package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainController;
 import javafx.application.Application;
