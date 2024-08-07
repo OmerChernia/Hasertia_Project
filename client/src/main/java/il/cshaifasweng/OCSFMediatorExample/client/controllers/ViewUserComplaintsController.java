@@ -1,19 +1,14 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
-
-import java.io.IOException;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message.MessageType;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage.RequestType;
 
 public class ViewUserComplaintsController {
-    private static SimpleClient client;
 
-    public static void main(String[] args) throws IOException {
-        client = SimpleClient.getClient();
-        client.openConnection();
-
-        ComplaintMessage getComplaint = new ComplaintMessage();
-
-                // NOT FULLY IMPLEMENTED YET BY COMPLAINTMESSAGE!!!!
+    public void requestUserComplaints(String userId) {
+        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, RequestType.GET_COMPLIANTS_BY_CUSTOMER_ID, userId);
+        SimpleClient.getClient().sendRequest(requestMessage);
     }
 }

@@ -72,8 +72,7 @@ public class CustomerServiceBoundary implements Initializable {
          loadData();
           animateNodes();
 
-        // הוספת מאזין לאירוע דאבל קליק על שורות הטבלה
-        tblComplaints.setRowFactory(tv -> {
+         tblComplaints.setRowFactory(tv -> {
             TableRow<Complaint> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {

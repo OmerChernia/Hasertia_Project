@@ -1,20 +1,21 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
-
-import java.io.IOException;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message.MessageType;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage.RequestType;
 
 public class ComplaintHandlingPageController {
-    private static SimpleClient client;
 
-    public static void main(String[] args) throws IOException {
-        client = SimpleClient.getClient();
-        client.openConnection();
-
-        String id = "";  //needs to be initialized!!!!!!!!!!
-        ComplaintMessage getComplaintList = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_ALL_COMPLIANTS, id);
-
-        SimpleClient.getClient().sendToServer(getComplaintList);
+    public void requestAllComplaints() {
+        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, RequestType.GET_ALL_COMPLIANTS);
+        SimpleClient.getClient().sendRequest(requestMessage);
     }
+
+    public void updateComplaintStatus(String complaintId) {
+        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, RequestType.ANSWER_COMPLIANT, complaintId);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
+
 }
