@@ -19,7 +19,7 @@ import javafx.util.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class TheaterPurchaseController {
+public class TheaterPurchaseBoundary {
     @FXML
     private StackPane stackPane;
 

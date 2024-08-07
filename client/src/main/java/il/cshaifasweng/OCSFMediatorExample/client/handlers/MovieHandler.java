@@ -4,16 +4,16 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage.ResponseType;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.HomeController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.HomeBoundary;
 
 import java.io.IOException;
 import java.util.List;
 
 public class MovieHandler extends MessageHandler {
 
-    private HomeController homeController;
+    private HomeBoundary homeController;
 
-    public MovieHandler(HomeController homeController) {
+    public MovieHandler(HomeBoundary homeController) {
         this.homeController = homeController;
     }
 

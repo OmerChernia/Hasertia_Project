@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HomeController implements Initializable {
+public class HomeBoundary implements Initializable {
 
     private static final int ITEMS_PER_ROW = 4;
     private List<Movie> items;
@@ -84,7 +84,7 @@ public class HomeController implements Initializable {
     private Node createItem(Movie item) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.SMALL_MOVIE_VIEW));
         StackPane itemBox = loader.load();
-        MovieSmallController controller = loader.getController();
+        MovieSmallBoundary controller = loader.getController();
         if (controller != null) {
             controller.setMovieShort(item);
             controller.setHomeController(this);
@@ -107,7 +107,7 @@ public class HomeController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.COSTUMER_PACKAGE + "MovieInfo.fxml"));
             Parent pane = loader.load();
 
-            MovieInfoController movieInfoController = loader.getController();
+            MovieInfoBoundary movieInfoController = loader.getController();
             movieInfoController.sethomeController(this);
             movieInfoController.setInfo(movie);
 
@@ -137,7 +137,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    public void cleanup() {
+     public void cleanup() {
         // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }

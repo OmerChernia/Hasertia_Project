@@ -1,9 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.dialog;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersController;
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.CustomerServiceController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -58,7 +56,7 @@ public class DialogComplaintController {
     @FXML
     private TextField viewingMovieField;
 
-    private OrdersController ordersController;
+    private OrdersBoundary ordersController;
     public void initialize() {
             // Example: Initialize with a sample purchase type
             setPurchaseType("MovieTicket");
@@ -102,7 +100,7 @@ public class DialogComplaintController {
             System.out.println("Customer area closed.");
         }
 
-    public void setOrdersController(OrdersController ordersController) {
+    public void setOrdersController(OrdersBoundary ordersController) {
         this.ordersController = ordersController;
 
     }

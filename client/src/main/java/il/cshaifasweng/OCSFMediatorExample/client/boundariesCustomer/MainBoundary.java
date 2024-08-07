@@ -3,39 +3,29 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-public class MainController implements Initializable {
+public class MainBoundary implements Initializable {
     private final DBGenerate db = new DBGenerate();
 
     private ObservableList<MovieInstance> listProducts;
@@ -284,19 +274,34 @@ public class MainController implements Initializable {
 
 
 
+    private Object currentController;
+
     private void showFXMLWindows(String FXMLName) {
+
+        if (currentController instanceof HomeBoundary) {
+            ((HomeBoundary) currentController).cleanup();
+        }
+
         rootContainer.getChildren().clear();
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(FXMLName));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLName));
+            Parent root = loader.load();
+
+
+            currentController = loader.getController();
+
+
             AnchorPane.setBottomAnchor(root, 0.0);
             AnchorPane.setTopAnchor(root, 0.0);
             AnchorPane.setLeftAnchor(root, 0.0);
             AnchorPane.setRightAnchor(root, 0.0);
             rootContainer.getChildren().setAll(root);
+
         } catch (IOException ex) {
-            Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MainBoundary.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 
     public Button getBtnStatistics() {
         return btnReports;

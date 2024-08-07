@@ -21,7 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class AboutController implements Initializable {
+public class AboutBoundary implements Initializable {
 
     @FXML
     private ImageView estfx;
@@ -116,7 +116,7 @@ public class AboutController implements Initializable {
             try {
                 desktop.browse(new URI(url));
             } catch (IOException | URISyntaxException ex) {
-                Logger.getLogger(AboutController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(AboutBoundary.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
     }

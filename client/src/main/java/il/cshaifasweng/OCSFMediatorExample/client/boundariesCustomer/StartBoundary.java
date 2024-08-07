@@ -22,7 +22,7 @@ import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClien
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.scene;
 
 
-public class StartController  {
+public class StartBoundary {
 
     @FXML
     private ResourceBundle resources;

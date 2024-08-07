@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 
-public class MovieInfoController {
+public class MovieInfoBoundary {
 
     public Button btnGenre;
      @FXML
@@ -46,9 +46,9 @@ public class MovieInfoController {
     private ImageView image;
 
 
-    private HomeController homeController;
+    private HomeBoundary homeController;
 
-    public void sethomeController(HomeController homeController) {
+    public void sethomeController(HomeBoundary homeController) {
         this.homeController = homeController;
     }
 

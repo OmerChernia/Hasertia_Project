@@ -24,10 +24,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MovieSmallController {
+public class MovieSmallBoundary {
 
     private final DBGenerate db = new DBGenerate();
-    private HomeController homeController;
+    private HomeBoundary homeController;
     public Movie movie;
 
     @FXML
@@ -127,7 +127,7 @@ public class MovieSmallController {
         return movie;
     }
 
-    public void setHomeController(HomeController homeController) {
+    public void setHomeController(HomeBoundary homeController) {
         this.homeController = homeController;
     }
 
@@ -280,7 +280,7 @@ public class MovieSmallController {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/il/cshaifasweng/OCSFMediatorExample/client/boundriesCustomer/TheaterPurchaseView.fxml"));
                     Parent root = loader.load();
-                    TheaterPurchaseController purchaseController = loader.getController();
+                    TheaterPurchaseBoundary purchaseController = loader.getController();
                     purchaseController.setMovieInstance(filteredInstances.get(0));
 
                     // Set the new root in HomeController

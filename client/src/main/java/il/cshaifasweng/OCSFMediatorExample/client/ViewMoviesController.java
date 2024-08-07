@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MovieInfoController;
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MovieSmallController;
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.LogInController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MovieInfoBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MovieSmallBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.LogInBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.dialog.DialogTicketController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -126,7 +126,7 @@ public class ViewMoviesController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("MovieSmall.fxml"));
                 Node hoverItem = loader.load();
                 hoverItem.setStyle("-fx-pref-width: 100%; -fx-pref-height: 100%;");
-                MovieSmallController controller = loader.getController();
+                MovieSmallBoundary controller = loader.getController();
 //                if (controller != null) {
 //                    controller.setParentController(this);
 //                }
@@ -168,7 +168,7 @@ public class ViewMoviesController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("MovieInfo.fxml"));
             Node movieDetails = loader.load();
-            MovieInfoController controller = loader.getController();
+            MovieInfoBoundary controller = loader.getController();
 
 
             VBox vbox = new VBox();
@@ -260,7 +260,7 @@ public class ViewMoviesController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dialogComplaint.fxml"));
             Parent root = loader.load();
-            LogInController controller = loader.getController();
+            LogInBoundary controller = loader.getController();
             if (controller != null) {
                 controller.setParentController(this);
             }

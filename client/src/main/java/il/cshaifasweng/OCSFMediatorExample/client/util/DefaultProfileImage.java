@@ -15,7 +15,7 @@
  */
 package il.cshaifasweng.OCSFMediatorExample.client.util;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -38,6 +38,6 @@ public class DefaultProfileImage {
     }
 
     private static InputStream getProfilePictureFromPackage(String imageName) throws FileNotFoundException {
-        return OrdersController.class.getResourceAsStream(ConstantsPath.PROFILE_PICTURES_PACKAGE + imageName + ".png");
+        return OrdersBoundary.class.getResourceAsStream(ConstantsPath.PROFILE_PICTURES_PACKAGE + imageName + ".png");
     }
 }

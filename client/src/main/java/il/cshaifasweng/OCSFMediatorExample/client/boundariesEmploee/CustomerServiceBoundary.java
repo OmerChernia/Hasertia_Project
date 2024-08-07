@@ -1,22 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee;
 
-import animatefx.animation.Shake;
 import il.cshaifasweng.OCSFMediatorExample.client.dialog.DialogCustomerService;
-import il.cshaifasweng.OCSFMediatorExample.client.dialog.DialogTicketController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.mask.TextFieldMask;
-import il.cshaifasweng.OCSFMediatorExample.client.util.comboBox.AutocompleteComboBox;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.client.util.mask.RequieredFieldsValidators;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,22 +17,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
-public class CustomerServiceController implements Initializable {
+public class CustomerServiceBoundary implements Initializable {
 
     private ObservableList<Complaint> listComplaints;
     private ObservableList<RegisteredUser> listCustomers;

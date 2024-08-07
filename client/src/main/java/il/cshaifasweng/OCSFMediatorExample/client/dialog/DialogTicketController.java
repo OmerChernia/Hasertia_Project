@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.dialog;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieTicket;
 import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
@@ -93,9 +93,9 @@ public class DialogTicketController {
     private MovieTicket movieTicket;
     private MultiEntryTicket multiEntryTicket;
     private HomeViewingPackageInstance homeViewingPackage;
-    private OrdersController ordersController;
+    private OrdersBoundary ordersController;
 
-    public void setOrdersController(OrdersController ordersController) {
+    public void setOrdersController(OrdersBoundary ordersController) {
         this.ordersController = ordersController;
     }
     public void setTicketInfo(Purchase purchase) {

@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class PackagePurchaseController {
+public class PackagePurchaseBoundary {
     @FXML
     private StackPane stackPane;
 

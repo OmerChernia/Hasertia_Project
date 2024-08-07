@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class ReportsController implements Initializable {
+public class ReportsBoundary implements Initializable {
 
     @FXML
     private AnchorPane rootStatistics;

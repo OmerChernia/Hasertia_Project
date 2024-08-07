@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainBoundary;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +22,7 @@ public class SimpleChatClient extends Application {
     public static Scene scene;
     public static SimpleClient client;
     private static Stage primaryStage;
-    private static MainController mainController;
+    private static MainBoundary mainBoundary;
 
 
     @Override
@@ -44,8 +44,8 @@ public class SimpleChatClient extends Application {
         // Register the appropriate controller
         switch (fxml) {
             case "MainView":
-                mainController = fxmlLoader.getController();
-                EventBus.getDefault().register(mainController);
+                mainBoundary = fxmlLoader.getController();
+                EventBus.getDefault().register(mainBoundary);
                 break;
 
             default:
@@ -68,43 +68,18 @@ public class SimpleChatClient extends Application {
     @Override
     public void stop() throws Exception {
         EventBus.getDefault().unregister(this);
-        if (mainController != null) {
-            EventBus.getDefault().unregister(mainController);
+        if (mainBoundary != null) {
+            EventBus.getDefault().unregister(mainBoundary);
         }
 
         super.stop();
     }
 
-    @Subscribe
-    public void onScreeningsEvent(Object event) {
-        System.out.println("Received ScreeningEvent in CinemaAppClient");
-        Platform.runLater(() -> {
-            try {
-                setRoot("dashboard");
-                if (mainController != null) {
-                    System.out.println("Updating dashboard with screenings: "  );
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     @Subscribe
     public void onMoviesEvent(Object event) {
-        System.out.println("Received MovieEvent in CinemaAppClient");
-        Platform.runLater(() -> {
-            try {
-                setRoot("dashboardMovieList");
-                if (mainController != null) {
-                    System.out.println("Updating dashboard with movies: "  );
+        System.out.println("Received Movie Event in Client");
 
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     public void sendRequest(String action) {

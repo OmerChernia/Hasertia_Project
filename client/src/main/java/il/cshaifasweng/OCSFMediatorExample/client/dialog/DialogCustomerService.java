@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.dialog;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.CustomerServiceController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.CustomerServiceBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.DBGenerate;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.event.ActionEvent;
@@ -66,7 +66,7 @@ public class DialogCustomerService {
     @FXML
     private ScrollPane finalResponseScrollPane;
 
-    private CustomerServiceController customerServiceController;
+    private CustomerServiceBoundary customerServiceController;
 
     @FXML
     private Label purchaseTypeField;
@@ -93,7 +93,7 @@ public class DialogCustomerService {
         refundTicketBox.setManaged(false);
     }
 
-    public void setCustomerServiceController(CustomerServiceController customerServiceController) {
+    public void setCustomerServiceController(CustomerServiceBoundary customerServiceController) {
         this.customerServiceController = customerServiceController;
     }
 

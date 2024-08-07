@@ -35,7 +35,7 @@ import javafx.scene.text.Text;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 
-public class OrdersController implements Initializable {
+public class OrdersBoundary implements Initializable {
     private final DBGenerate db = new DBGenerate();
 
     private final String CANNOT_DELETED = "This user cannot be deleted";

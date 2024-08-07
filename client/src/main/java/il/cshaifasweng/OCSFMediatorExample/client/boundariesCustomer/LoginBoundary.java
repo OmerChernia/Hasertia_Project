@@ -5,7 +5,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.layout.VBox;
 
 
-public class LoginController  {
+public class LoginBoundary {
     @FXML
     private RadioButton customerRadioButton;
 

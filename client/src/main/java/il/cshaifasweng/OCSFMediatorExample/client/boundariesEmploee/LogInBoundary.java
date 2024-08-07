@@ -11,7 +11,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class LogInController {
+public class LogInBoundary {
 
     @FXML
     private ResourceBundle resources;
