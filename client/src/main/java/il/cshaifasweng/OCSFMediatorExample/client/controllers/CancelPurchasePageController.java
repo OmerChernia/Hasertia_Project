@@ -1,23 +1,19 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
-
-import java.io.IOException;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.CancelPurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message.MessageType;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.CancelPurchaseMessage.RequestType;
 
 public class CancelPurchasePageController {
-    private static SimpleClient client;
 
-    public static void main(String[] args) throws IOException {
-        client = SimpleClient.getClient();
-        client.openConnection();
+    public void requestCancelPurchase(int purchaseId) {
+        CancelPurchaseMessage requestMessage = new CancelPurchaseMessage(MessageType.REQUEST, RequestType.REQUEST_CANCEL_PURCHASE, purchaseId);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
 
-        String id = "";  //needs to be initialized!!!!!!!!!!
-        PurchaseMessage getPurchaseHistory = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.GET_PURCHASES_BY_CUSTOMER_ID);
-        PurchaseMessage purchaseDelete = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.REMOVE_PURCHASE);
-
-        SimpleClient.getClient().sendToServer(getPurchaseHistory);
-        SimpleClient.getClient().sendToServer(purchaseDelete);
-
+    public void confirmCancelPurchase(int purchaseId) {
+        CancelPurchaseMessage requestMessage = new CancelPurchaseMessage(MessageType.REQUEST, RequestType.CONFIRM_CANCEL_PURCHASE, purchaseId);
+        SimpleClient.getClient().sendRequest(requestMessage);
     }
 }
