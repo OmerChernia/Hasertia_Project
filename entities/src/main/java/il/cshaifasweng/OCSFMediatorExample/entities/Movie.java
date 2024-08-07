@@ -56,11 +56,15 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String genre;
 
+    @Column(nullable = false)
+    private boolean isActive;
 
-    public Movie() {
+    public Movie()
+    {
+
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre) {
+    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, boolean isActive) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -72,6 +76,7 @@ public class Movie implements Serializable {
         this.homeViewingPrice = homeViewingPrice;
         this.theaterPrice = theaterPrice;
         this.genre = genre;
+        this.isActive = isActive;
     }
 
     // Getters and setters
@@ -169,6 +174,10 @@ public class Movie implements Serializable {
     }
 
     public void setGenre(String genre) {}
+
+    public boolean isActive() {return isActive;}
+
+    public void setActive(boolean isActive) {this.isActive = isActive;}
 
     @Override
     public String toString() {

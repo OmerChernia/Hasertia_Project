@@ -50,7 +50,7 @@ public class HomeBoundary implements Initializable {
         EventBus.getDefault().register(this);
 
         // Request the list of movies from the server
-        new MovieController().requestAllMovies();
+        MovieController.requestAllMovies();
     }
 
     @Subscribe

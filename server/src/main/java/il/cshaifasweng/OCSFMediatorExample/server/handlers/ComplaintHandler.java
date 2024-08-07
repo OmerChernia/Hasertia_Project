@@ -26,8 +26,9 @@ public class ComplaintHandler extends MessageHandler
             case ADD_COMPLIANT -> add_complaint();
             case ANSWER_COMPLIANT -> answer_compliant();
             case GET_ALL_COMPLIANTS -> get_all_complaints();
-            case GET_COMPLIANTS_BY_THEATER -> get_complaint_by_theater();
-            case GET_COMPLIANTS_BY_CUSTOMER_ID -> get_complaint_by_customer_id();
+            case GET_COMPLIANTS_BY_THEATER -> get_complaints_by_theater();
+            case GET_COMPLIANTS_BY_CUSTOMER_ID -> get_complaints_by_customer_id();
+            case GET_OPEN_COMPLIANTS -> get_open_complaints();
         }
     }
 
@@ -89,11 +90,29 @@ public class ComplaintHandler extends MessageHandler
         }
     }
 
-    private void get_complaint_by_theater()
+    private void get_complaints_by_theater()
     {
-        //need field of theater/theater_name in compliant
+        // Create a query to find the Theater by ID
+        Query<Theater> query_user = session.createQuery("FROM RegisteredUser WHERE id_number = :id", Theater.class);
+        query_user.setParameter("id", message.theater);
+
+        Theater theater = query_user.getSingleResult();
+
+        if(theater != null)
+        {
+
+            // Create an HQL query to fetch complaints by Theater ID
+           // Query<Complaint> query_compliants = session.createQuery("FROM Complaint WHERE purchase. = :customerId", Complaint.class);
+           // query_compliants.setParameter("customerId", theater.getId());
+
+            // Execute the query and get the result list
+           // message.compliants = query_compliants.getResultList();
+           // message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+        }
+        else
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
     }
-    private void get_complaint_by_customer_id()
+    private void get_complaints_by_customer_id()
     {
         // Create a query to find the user by ID
         Query<RegisteredUser> query_user = session.createQuery("FROM RegisteredUser WHERE id_number = :id", RegisteredUser.class);
@@ -113,5 +132,15 @@ public class ComplaintHandler extends MessageHandler
         }
         else
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
+    }
+    public void get_open_complaints()
+    {
+        // Create a query to find the user by ID
+        Query<Complaint> query = session.createQuery("FROM Complaint WHERE isClosed = :bool", Complaint.class);
+        query.setParameter("bool", false);
+
+        // Execute the query and get the result list
+        message.compliants = query.getResultList();
+        message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
     }
 }

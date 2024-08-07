@@ -63,13 +63,29 @@ public class MovieHandler extends MessageHandler
     }
     private void deactivate_movie()
     {
+        Query<Movie> query = session.createQuery("FROM Movie where id= :_id", Movie.class);
+        query.setParameter("_id", message.id);
+
+        Movie movie = query.uniqueResult();
+
+        if(movie != null)
+        {
+            movie.setActive(false);
+            session.update(message.movies.getFirst());
+            session.flush();
+            message.responseType = MovieMessage.ResponseType.MOVIE_UPDATED;
+        }
+        else
+            message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
+
 
     }
     private void get_all_movies()
     {
         try {
             // Create an HQL query to fetch all complaints
-            Query<Movie> query = session.createQuery("FROM Movie ", Movie.class);
+            Query<Movie> query = session.createQuery("FROM Movie where isActive= :_active", Movie.class);
+            query.setParameter("_active", true);
             // Execute the query and get the result list
             message.movies = query.getResultList();
 

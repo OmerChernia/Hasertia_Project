@@ -82,5 +82,6 @@ public class ComplaintMessage extends Message
         GET_COMPLIANTS_BY_THEATER,
         ADD_COMPLIANT,
         ANSWER_COMPLIANT,
+        GET_OPEN_COMPLIANTS
     }
 }

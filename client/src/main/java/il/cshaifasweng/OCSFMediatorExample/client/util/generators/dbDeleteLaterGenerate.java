@@ -44,7 +44,7 @@ public class dbDeleteLaterGenerate {
             registeredUsers = generateRegisteredUsers();
             theaterManagers = generateTheaterManagers();
             theaters = generateTheatersAndAssignManagers();
-            movies = generateMovies();
+            //movies = generateMovies();
             priceRequests = generatePriceRequests();
             halls = generateHallsAndSeats();
             movieInstances = generateMovieInstances();
@@ -107,12 +107,12 @@ public class dbDeleteLaterGenerate {
         }
         return theaters;
     }
-
+/*
     private List<Movie> generateMovies() {
         return List.of(
-                new Movie( "קפטן אמריקה", "Steve Rogers, a rejected military soldier transforms into Captain America after taking a dose of a 'Super-Soldier serum'.", "Marvel Studios", "Captain America", List.of("Chris Evans", "Sebastian Stan", "Hayley Atwell"), "captainamerica.jpg", Movie.StreamingType.BOTH, 124, 50, 60, "action"),
-                new Movie( "צ'לנג'רס", "A drama centered around three friends, their ambitions, and the competitive tennis circuit.", "MGM", "Challengers", List.of("Zendaya", "Mike Faist", "Josh O'Connor"), "challengers.jpg", Movie.StreamingType.BOTH, 120, 50, 60, "drama"),
-                new Movie( "דדפול וולברין", "Deadpool teams up with Wolverine for a new mission that involves time travel.", "Marvel Studios", "Deadpool & Wolverine", List.of("Ryan Reynolds", "Hugh Jackman", "Morena Baccarin"), "deadpool-wolverine.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "action"),
+                new Movie( "קפטן אמריקה", "Steve Rogers, a rejected military soldier transforms into Captain America after taking a dose of a 'Super-Soldier serum'.", "Marvel Studios", "Captain America", List.of("Chris Evans", "Sebastian Stan", "Hayley Atwell"), "captainamerica.jpg", Movie.StreamingType.BOTH, 124, 50, 60, "action",true),
+                new Movie( "צ'לנג'רס", "A drama centered around three friends, their ambitions, and the competitive tennis circuit.", "MGM", "Challengers", List.of("Zendaya", "Mike Faist", "Josh O'Connor"), "challengers.jpg", Movie.StreamingType.BOTH, 120, 50, 60, "drama",true),
+                new Movie( "דדפול וולברין", "Deadpool teams up with Wolverine for a new mission that involves time travel.", "Marvel Studios", "Deadpool & Wolverine", List.of("Ryan Reynolds", "Hugh Jackman", "Morena Baccarin"), "deadpool-wolverine.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "action",true),
                 new Movie( "גלדיאטור 2", "The story continues with Maximus's son seeking revenge against the Roman Empire.", "Universal Pictures", "Gladiator II", List.of("Russell Crowe", "Joaquin Phoenix", "Connie Nielsen"), "gladiator_ii.jpg", Movie.StreamingType.BOTH, 155, 50, 60, "action"),
                 new Movie( "הקול בראש 2", "The emotions inside Riley's mind return for a new adventure.", "Pixar Animation Studios", "Inside Out 2", List.of("Amy Poehler", "Bill Hader", "Lewis Black"), "inside_out_two.jpg", Movie.StreamingType.BOTH, 95, 50, 60, "animation"),
                 new Movie( "לה לה לנד", "A jazz musician and an aspiring actress fall in love while pursuing their dreams in Los Angeles.", "Lionsgate", "La La Land", List.of("Ryan Gosling", "Emma Stone", "John Legend"), "LaLaLand.jpg", Movie.StreamingType.BOTH, 128, 50, 60, "musical"),
@@ -132,7 +132,7 @@ public class dbDeleteLaterGenerate {
                 new Movie( "הג'וקר 2", "A dark origin story about the Joker's transformation from struggling comedian to a criminal mastermind.", "Warner Bros.", "The Joker 2", List.of("Joaquin Phoenix", "Robert De Niro", "Lady Gaga"), "the_joker2024.jpg", Movie.StreamingType.BOTH, 122, 50, 60, "drama")
         );
     }
-
+*/
     private List<PriceRequest> generatePriceRequests() {
         return List.of(
                 new PriceRequest(20, movies.get(0), Movie.StreamingType.HOME_VIEWING),
