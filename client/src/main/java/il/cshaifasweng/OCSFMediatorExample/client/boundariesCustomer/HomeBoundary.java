@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -54,16 +55,25 @@ public class HomeBoundary implements Initializable {
 
     @Subscribe
     public void onMovieMessageReceived(MovieMessage message) {
-        try {
-            setItems(message.movies);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Platform.runLater(() ->
+        {
+            try {
+                setItems(message.movies);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void setItems(List<Movie> movies) throws IOException {
         this.items = movies;
-        updateGrid();
+        Platform.runLater(() -> {
+            try {
+                updateGrid();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void updateGrid() throws IOException {
