@@ -336,8 +336,7 @@ public class GenerateDB {
                         user,
                         "validation" + i,
                         movies.get(i % movies.size()),
-                        LocalDateTime.now().plusDays(1),
-                        100 + i
+                        LocalDateTime.now().plusDays(1)
                 );
                 session.save(homePackage);
 

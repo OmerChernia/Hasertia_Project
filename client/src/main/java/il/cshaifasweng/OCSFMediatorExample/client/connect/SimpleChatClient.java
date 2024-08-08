@@ -1,6 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -66,16 +69,25 @@ public class SimpleChatClient extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() throws Exception
+    {
         EventBus.getDefault().unregister(this);
         if (mainBoundary != null) {
             EventBus.getDefault().unregister(mainBoundary);
         }
 
+        //if user in login, we need to log him out
+        if(SimpleClient.user !=null)
+        {
+            if(SimpleClient.user instanceof RegisteredUser)
+                LoginPageController.requestUserLogOut(SimpleClient.user.getId_number());
+            else
+                LoginPageController.requestEmployeeLogOut(SimpleClient.user.getId_number());
+        }
+        //
+
         super.stop();
     }
-
-
     @Subscribe
     public void onMoviesEvent(Object event) {
         System.out.println("Received Movie Event in Client");

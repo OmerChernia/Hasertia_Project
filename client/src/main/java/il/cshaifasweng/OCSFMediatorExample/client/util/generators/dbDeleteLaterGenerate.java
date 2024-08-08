@@ -195,8 +195,7 @@ public class dbDeleteLaterGenerate {
                     user,
                     "validation" + i,
                     movies.get(i % movies.size()),
-                    LocalDateTime.now().plusDays(1),
-                    100 + i
+                    LocalDateTime.now().plusDays(1)
             );
             purchases.add(homePackage);
 
@@ -229,8 +228,7 @@ public class dbDeleteLaterGenerate {
                     user,
                     "expired_validation" + i,
                     movies.get(i % movies.size()),
-                    LocalDateTime.now().minusMonths(1).plusDays(1),
-                    100 + i
+                    LocalDateTime.now().minusMonths(1).plusDays(1)
             );
             purchases.add(expiredHomePackage);
 
