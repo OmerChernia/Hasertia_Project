@@ -2,10 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
-import il.cshaifasweng.OCSFMediatorExample.entities.Seat;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;

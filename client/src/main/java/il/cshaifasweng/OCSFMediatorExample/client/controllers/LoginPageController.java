@@ -5,8 +5,6 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessag
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 
-import java.io.IOException;
-
 public class LoginPageController
 {
 

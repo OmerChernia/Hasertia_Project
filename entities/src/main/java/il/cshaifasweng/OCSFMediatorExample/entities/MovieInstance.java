@@ -1,11 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import com.google.gson.Gson;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import org.json.JSONObject;
 
 @Entity
 @Table(name = "movie_instances")

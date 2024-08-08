@@ -1,7 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
-import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class MovieMessage extends Message
         // GET_ALL_MOVIES
         super(messageType);
         this.requestType = requestType;
+        System.out.println(movies.toString());
     }
     public MovieMessage(MessageType messageType,RequestType requestType, int id)
     {

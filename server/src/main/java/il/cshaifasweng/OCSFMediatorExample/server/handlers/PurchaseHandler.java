@@ -36,7 +36,6 @@ public class PurchaseHandler extends MessageHandler
         switch (message.requestType)
         {
             case ADD_PURCHASE -> add_purchase();
-            case GET_PURCHASE -> get_purchase();
             case REMOVE_PURCHASE -> remove_purchase();
             case GET_PURCHASES_BY_CUSTOMER_ID -> get_purchases_by_customer_id();
             case GET_PURCHASES_BY_THEATER_ID -> get_purchases_by_theater_id();
@@ -61,6 +60,8 @@ public class PurchaseHandler extends MessageHandler
         }
     }
 
+    /*
+     מיותר
     private void get_purchase() {
         try {
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
@@ -76,7 +77,7 @@ public class PurchaseHandler extends MessageHandler
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
         }
     }
-
+*/
     private void remove_purchase() {
         try {
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());

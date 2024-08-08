@@ -3,7 +3,6 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
-import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.PriceRequest;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;

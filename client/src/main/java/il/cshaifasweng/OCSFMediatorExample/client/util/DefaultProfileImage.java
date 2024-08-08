@@ -15,7 +15,7 @@
  */
 package il.cshaifasweng.OCSFMediatorExample.client.util;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.OrdersBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import java.io.FileNotFoundException;
 import java.io.InputStream;

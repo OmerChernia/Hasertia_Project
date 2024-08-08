@@ -1,8 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MainBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -78,7 +77,7 @@ public class SimpleChatClient extends Application {
 
     @Subscribe
     public void onMoviesEvent(Object event) {
-        System.out.println("Received Movie Event in Client");
+        System.out.println("Received  Event in Client");
 
     }
 

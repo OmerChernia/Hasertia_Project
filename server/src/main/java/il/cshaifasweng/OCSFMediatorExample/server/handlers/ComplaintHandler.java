@@ -7,8 +7,6 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.util.List;
-
 public class ComplaintHandler extends MessageHandler
 {
     private ComplaintMessage message;

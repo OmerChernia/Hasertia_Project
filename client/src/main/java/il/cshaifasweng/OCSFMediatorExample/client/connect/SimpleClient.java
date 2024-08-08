@@ -2,7 +2,6 @@ package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
