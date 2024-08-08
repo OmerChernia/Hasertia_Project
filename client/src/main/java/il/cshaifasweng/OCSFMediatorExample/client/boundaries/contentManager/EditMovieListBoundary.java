@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
@@ -11,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.Notificatio
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +47,6 @@ import java.util.logging.Logger;
 
 public class EditMovieListBoundary implements Initializable {
 
-    private final ColorAdjust colorAdjust = new ColorAdjust();
 
     private final long LIMIT = 1000000;
 
@@ -53,8 +55,6 @@ public class EditMovieListBoundary implements Initializable {
     private final String IS_GREATER = "Minimum price cannot be higher than sale price";
 
 
-    @FXML
-    private Label txtAddProduct;
 
     private ObservableList<Movie> listProducts;
 
@@ -99,8 +99,6 @@ public class EditMovieListBoundary implements Initializable {
     @FXML
     private TableColumn<Movie, Integer> colDuration;
 
-    @FXML
-    private TableColumn<Movie, String> colDirector;
 
     @FXML
     private TableColumn<Movie, Double> colTheaterPrice;
@@ -114,84 +112,31 @@ public class EditMovieListBoundary implements Initializable {
     @FXML
     private AnchorPane containerAddProduct;
 
-
-
-
-    @FXML
-    private TextField txtEnglishName;
-
-    @FXML
-    private TextField txtHebrewName;
-
-
-    @FXML
-    private TextField txtProducer;
-
-    @FXML
-    private TextField txtDuration;
-
-    @FXML
-    private TextField txtTheaterPrice;
-
-    @FXML
-    private TextField txtHVPrice;
-
-    @FXML
-    private TextField txtGenre;
-    @FXML
-    private TextField txtActors;
-    @FXML
-    private TextArea txtDescription;
-
-    @FXML
-    private Button btnUpdateProduct;
-
-    @FXML
-    private Button btnSaveProduct;
-
-    @FXML
-    private Button btnCancelAddProduct;
-
-    @FXML
-    private ImageView imageProduct;
-
-    @FXML
-    private Pane paneContainer;
-
-    @FXML
-    private HBox imageContainer;
-
     private DialogTool dialogAddProduct;
 
     private DialogTool dialogDeleteProduct;
-
-    private static final Stage stage = new Stage();
-
-    private File imageFile;
 
     private CustomContextMenu contextMenu;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        // Register this controller to listen for MovieMessage events
+        EventBus.getDefault().register(this);
+
+        // Request the list of movies from the server
+        MovieController.requestAllMovies();
+
         listProducts = FXCollections.observableArrayList();
         filterProducts = FXCollections.observableArrayList();
-        loadData();
-        setMask();
         animateNodes();
-        selectText();
-        setValidations();
-        validateUser();
-        characterLimiter();
-        initializeImage();
-        setTextIfFieldIsEmpty();
-        // הוספת מאזין לאירוע דאבל קליק על שורות הטבלה
+
         tblProducts.setRowFactory(tv -> {
             TableRow<Movie> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Movie rowData = row.getItem();
-                    // כאן את יכולה לקרוא לפונקציה שתפתח את הדיאלוג
-                    showDialogDetailsProduct();
+                     showDialogDetailsProduct();
                 }
             });
             return row;
@@ -211,26 +156,9 @@ public class EditMovieListBoundary implements Initializable {
             contextMenu.hide();
         });
 
-
-
         contextMenu.show();
     }
 
-    private void initializeImage() {
-        imageContainer.hoverProperty().addListener((o, oldV, newV) -> {
-            if (newV) {
-                colorAdjust.setBrightness(0.25);
-                imageProduct.setEffect(colorAdjust);
-            } else {
-                imageProduct.setEffect(null);
-            }
-        });
-
-        imageContainer.setPadding(new Insets(5));
-        filterProducts = FXCollections.observableArrayList();
-        imageProduct.setFitHeight(imageContainer.getPrefHeight() - 10);
-        imageProduct.setFitWidth(imageContainer.getPrefWidth() - 10);
-    }
 
     private void animateNodes() {
         Animations.fadeInUp(btnNewProduct);
@@ -238,69 +166,41 @@ public class EditMovieListBoundary implements Initializable {
         Animations.fadeInUp(hBoxSearch);
     }
 
-    private void setValidations() {
-        RequieredFieldsValidators.toTextField(txtEnglishName);
-        RequieredFieldsValidators.toTextField(txtHebrewName);
-        RequieredFieldsValidators.toTextField(txtProducer);
-        RequieredFieldsValidators.toTextField(txtDuration);
-        RequieredFieldsValidators.toTextField(txtTheaterPrice);
-        RequieredFieldsValidators.toTextField(txtHVPrice);
-        RequieredFieldsValidators.toTextField(txtGenre);
-        RequieredFieldsValidators.toTextArea(txtDescription);
-         RequieredFieldsValidators.addLabelBehavior(txtEnglishName, "English Name");
-        RequieredFieldsValidators.addLabelBehavior(txtHebrewName, "Hebrew Name");
-        RequieredFieldsValidators.addLabelBehavior(txtProducer, "Producer");
-        RequieredFieldsValidators.addLabelBehavior(txtDuration, "Duration");
-        RequieredFieldsValidators.addLabelBehavior(txtTheaterPrice, "Theater Price");
-        RequieredFieldsValidators.addLabelBehavior(txtHVPrice, "HV Price");
-        RequieredFieldsValidators.addLabelBehavior(txtGenre, "Genre");
-        RequieredFieldsValidators.addLabelBehavior(txtDescription, "Description");
-         RequieredFieldsValidators.addLabelBehavior(txtActors, "Actors");
-    }
 
-    private void setMask() {
-        TextFieldMask.onlyNumbers(txtDuration);
-        TextFieldMask.onlyNumbers(txtTheaterPrice);
-        TextFieldMask.onlyNumbers(txtHVPrice);
-    }
+    /*TABLE*/
 
-    private void selectText() {
-        TextFieldMask.selectText(txtEnglishName);
-        TextFieldMask.selectText(txtHebrewName);
-        TextFieldMask.selectText(txtProducer);
-        TextFieldMask.selectText(txtDuration);
-        TextFieldMask.selectText(txtTheaterPrice);
-        TextFieldMask.selectText(txtHVPrice);
-        TextFieldMask.selectText(txtGenre);
-        TextFieldMask.selectTextToTextArea(txtDescription);
-    }
+    @FXML
+    private void loadData(MovieMessage movieMessage) {
+        listProducts.setAll(movieMessage.movies);
+        tblProducts.setItems(listProducts);
+        tblProducts.setFixedCellSize(30);
 
-    private void setTextIfFieldIsEmpty() {
-        TextFieldMask.setTextIfFieldIsEmpty(txtTheaterPrice);
-        TextFieldMask.setTextIfFieldIsEmpty(txtHVPrice);
-        TextFieldMask.setTextIfFieldIsEmpty(txtDuration);
-    }
 
-    private void characterLimiter() {
-         TextFieldMask.characterLimit(txtHVPrice, 3);
-        TextFieldMask.characterLimit(txtDuration, 3);
-        TextFieldMask.characterLimit(txtTheaterPrice, 3);
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colEnglish.setCellValueFactory(new PropertyValueFactory<>("englishName"));
+        colHebrew.setCellValueFactory(new PropertyValueFactory<>("hebrewName"));
+        colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
+        colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
+        ButtonFactory buttonFactory = new ButtonFactory();
+        ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = buttonFactory.new ButtonGenreCellValueFactory();
+        colGenre.setCellValueFactory(buttonGenreCellFactory);
+        ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = buttonFactory.new ButtonMovieTypeCellValueFactory();
+        colStreamingType.setCellValueFactory(buttonTypeCellFactory);
 
     }
+
+
+
+
+    /* DIALOG */
 
     @FXML
     private void showDialogAddProduct() {
-        resetValidation();
-        enableEditControls();
+
         disableTable();
         rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-
-        txtAddProduct.setText("Add Movie");
-        imageContainer.toFront();
         containerAddProduct.setVisible(true);
-        btnSaveProduct.setDisable(false);
-        btnUpdateProduct.setVisible(true);
-        btnSaveProduct.toFront();
 
         dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
 
@@ -308,11 +208,9 @@ public class EditMovieListBoundary implements Initializable {
 
 
         dialogAddProduct.setOnDialogClosed(ev -> {
-            closeStage();
-            tblProducts.setDisable(false);
+             tblProducts.setDisable(false);
             rootProducts.setEffect(null);
             containerAddProduct.setVisible(false);
-            cleanControls();
         });
     }
 
@@ -341,7 +239,6 @@ public class EditMovieListBoundary implements Initializable {
             tblProducts.setDisable(false);
             rootProducts.setEffect(null);
             containerDeleteProducts.setVisible(false);
-            cleanControls();
         });
     }
 
@@ -360,9 +257,7 @@ public class EditMovieListBoundary implements Initializable {
         }
 
         showDialogAddProduct();
-        btnUpdateProduct.toFront();
-        txtAddProduct.setText("Update Movie");
-        selectedRecord();
+         selectedRecord();
     }
 
     @FXML
@@ -373,361 +268,24 @@ public class EditMovieListBoundary implements Initializable {
         }
 
         showDialogAddProduct();
-        txtAddProduct.setText("Movie Details");
-        selectedRecord();
-        paneContainer.toFront();
-        btnUpdateProduct.setVisible(false);
-        btnSaveProduct.setDisable(true);
-        btnSaveProduct.toFront();
-        disableEditControls();
-    }
-
-    @FXML
-    private void loadData() {
-        loadTable();
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colEnglish.setCellValueFactory(new PropertyValueFactory<>("englishName"));
-        colHebrew.setCellValueFactory(new PropertyValueFactory<>("hebrewName"));
-         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
-         colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
-        colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
-         ButtonFactory buttonFactory = new ButtonFactory();
-
-         ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = buttonFactory.new ButtonGenreCellValueFactory();
-
-         colGenre.setCellValueFactory(buttonGenreCellFactory);
-
-        ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = buttonFactory.new ButtonMovieTypeCellValueFactory();
-        colStreamingType.setCellValueFactory(buttonTypeCellFactory);
+         selectedRecord();
 
     }
 
-    private void loadTable() {
-        listProducts.setAll(db.getMovies());
-        tblProducts.setItems(listProducts);
-        tblProducts.setFixedCellSize(30);
-    }
+
+
+
 
     private void selectedRecord() {
         Movie movie = tblProducts.getSelectionModel().getSelectedItem();
-        txtEnglishName.setText(movie.getEnglishName());
-        txtHebrewName.setText(movie.getHebrewName());
-        txtProducer.setText(movie.getProducer());
-        txtDuration.setText(String.valueOf(movie.getDuration()));
-        txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
-        txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
-        txtGenre.setText(movie.getGenre());
-        txtDescription.setText(movie.getInfo());
-        txtActors.setText(movie.getMainActors().toString().replace("[", "").replace("]", ""));
-        imageProduct.setImage(getImage(movie.getId()));
-        expandImage(movie.getId(), movie.getEnglishName());
+
     }
 
-    @FXML
-    private void newProduct() {
-         String englishName = txtEnglishName.getText().trim();
-        String hebrewName = txtHebrewName.getText().trim();
-        String producer = txtProducer.getText().trim();
-        String duration = txtDuration.getText().trim();
-        String theaterPrice = txtTheaterPrice.getText().trim();
-        String hvPrice = txtHVPrice.getText().trim();
-        String genre = txtGenre.getText().trim();
-        String description = txtDescription.getText().trim();
-        String actors = txtActors.getText().trim();
-
-
-
-
-        if (englishName.isEmpty()) {
-            txtEnglishName.requestFocus();
-            Animations.shake(txtEnglishName);
-            return;
-        }
-
-        if (hebrewName.isEmpty()) {
-            txtHebrewName.requestFocus();
-            Animations.shake(txtHebrewName);
-            return;
-        }
-
-
-        if (producer.isEmpty()) {
-            txtProducer.requestFocus();
-            Animations.shake(txtProducer);
-            return;
-        }
-
-        if (duration.isEmpty()) {
-            txtDuration.requestFocus();
-            Animations.shake(txtDuration);
-            return;
-        }
-
-        if (theaterPrice.isEmpty()) {
-            txtTheaterPrice.requestFocus();
-            Animations.shake(txtTheaterPrice);
-            return;
-        }
-
-        if (hvPrice.isEmpty()) {
-            txtHVPrice.requestFocus();
-            Animations.shake(txtHVPrice);
-            return;
-        }
-
-        if (genre.isEmpty()) {
-            txtGenre.requestFocus();
-            Animations.shake(txtGenre);
-            return;
-        }
-
-        if (description.isEmpty()) {
-            txtDescription.requestFocus();
-            Animations.shake(txtDescription);
-            return;
-        }
-
-        if (imageFile != null && imageFile.length() > LIMIT) {
-            Animations.shake(imageContainer);
-            NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE);
-            return;
-        }
-
-        Movie movie = new Movie();
-        movie.setEnglishName(englishName);
-        movie.setHebrewName(hebrewName);
-        movie.setProducer(producer);
-        movie.setDuration(Integer.parseInt(duration));
-        movie.setTheaterPrice((int) Double.parseDouble(theaterPrice));
-        movie.setHomeViewingPrice((int) Double.parseDouble(hvPrice));
-        movie.setGenre(genre);
-        List<String> actorsList = Arrays.asList(actors.split(", "));
-        movie.setMainActors(actorsList);
-        movie.setInfo(description);
-        movie.setImage(getInputStream());
-
-        listProducts.add(movie);
-        loadData();
-        cleanControls();
-        closeDialogAddProduct();
-        AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_ADDED);
-    }
-
-    private String getInputStream() {
-        InputStream is;
-        try {
-            if (imageFile != null) {
-                is = new FileInputStream(imageFile);
-            } else {
-                is = EditMovieListBoundary.class.getResourceAsStream(ConstantsPath.NO_IMAGE_AVAILABLE);
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(EditMovieListBoundary.class.getName()).log(Level.SEVERE, null, ex);
-            NotificationsBuilder.create(NotificationType.INFORMATION, ConstantsPath.MESSAGE_IMAGE_NOT_FOUND);
-            is = EditMovieListBoundary.class.getResourceAsStream(ConstantsPath.NO_IMAGE_AVAILABLE);
-        }
-        return is.toString();
-    }
-
-    private Image getImage(int id) {
-        // חפש את הסרט לפי ה-ID
-        Movie movie = null;
-        for (Movie m : listProducts) {
-            if (m.getId() == id) {
-                movie = m;
-                break;
-            }
-        }
-
-        if (movie == null || movie.getImage() == null) {
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true); // Remove size constraints
-        }
-
-        String imagePath = ConstantsPath.MOVIE_PACKAGE + movie.getImage();
-        URL imageUrl = getClass().getResource(imagePath);
-
-        if (imageUrl == null) {
-            System.out.println("Image not found: " + imagePath);
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true); // Remove size constraints
-        }
-
-        try {
-            return new Image(imageUrl.toExternalForm(), true); // Remove size constraints
-        } catch (Exception e) {
-            System.out.println("Failed to load image: " + imagePath);
-            e.printStackTrace();
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true); // Remove size constraints
-        }
-    }
-
-
-    @FXML
-    private void updateProduct() {
-         String englishName = txtEnglishName.getText().trim();
-        String hebrewName = txtHebrewName.getText().trim();
-        String producer = txtProducer.getText().trim();
-        String duration = txtDuration.getText().trim();
-        String theaterPrice = txtTheaterPrice.getText().trim();
-        String hvPrice = txtHVPrice.getText().trim();
-        String genre = txtGenre.getText().trim();
-        String description = txtDescription.getText().trim();
-        String actors = txtActors.getText().trim();
-        Movie selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
-
-
-
-
-        if (englishName.isEmpty()) {
-            txtEnglishName.requestFocus();
-            Animations.shake(txtEnglishName);
-            return;
-        }
-
-        if (hebrewName.isEmpty()) {
-            txtHebrewName.requestFocus();
-            Animations.shake(txtHebrewName);
-            return;
-        }
-
-
-        if (producer.isEmpty()) {
-            txtProducer.requestFocus();
-            Animations.shake(txtProducer);
-            return;
-        }
-
-        if (duration.isEmpty()) {
-            txtDuration.requestFocus();
-            Animations.shake(txtDuration);
-            return;
-        }
-
-        if (theaterPrice.isEmpty()) {
-            txtTheaterPrice.requestFocus();
-            Animations.shake(txtTheaterPrice);
-            return;
-        }
-
-        if (hvPrice.isEmpty()) {
-            txtHVPrice.requestFocus();
-            Animations.shake(txtHVPrice);
-            return;
-        }
-
-        if (genre.isEmpty()) {
-            txtGenre.requestFocus();
-            Animations.shake(txtGenre);
-            return;
-        }
-
-        if (description.isEmpty()) {
-            txtDescription.requestFocus();
-            Animations.shake(txtDescription);
-            return;
-        }
-
-        if (imageFile != null && imageFile.length() > LIMIT) {
-            Animations.shake(imageContainer);
-            NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE);
-            return;
-        }
-
-        Movie movie = tblProducts.getSelectionModel().getSelectedItem();
-        movie.setEnglishName(englishName);
-        movie.setHebrewName(hebrewName);
-        movie.setProducer(producer);
-        movie.setDuration(Integer.parseInt(duration));
-        movie.setTheaterPrice((int) Double.parseDouble(theaterPrice));
-        movie.setHomeViewingPrice((int) Double.parseDouble(hvPrice));
-        movie.setGenre(genre);
-        movie.setInfo(description);
-        movie.setImage(getInputStream());
-        List<String> actorsList = Arrays.asList(actors.split(", "));
-        movie.setMainActors(actorsList);
-        loadData();
-        cleanControls();
-        closeDialogAddProduct();
-        AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_UPDATED);
-    }
-
-    @FXML
-    private void deleteProducts() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-            return;
-        }
-
-        listProducts.remove(tblProducts.getSelectionModel().getSelectedItem());
-        loadData();
-        cleanControls();
-        hideDialogDeleteProduct();
-        AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_DELETED);
-    }
-
-    private void cleanControls() {
-        imageFile = null;
-         txtEnglishName.clear();
-        txtHebrewName.clear();
-        txtProducer.clear();
-        txtDuration.clear();
-        txtTheaterPrice.clear();
-        txtHVPrice.clear();
-        txtGenre.clear();
-        txtDescription.clear();
-        txtActors.clear();
-        imageProduct.setImage(new Image(ConstantsPath.NO_IMAGE_AVAILABLE));
-    }
-
-    private void disableEditControls() {
-         txtEnglishName.setEditable(false);
-        txtHebrewName.setEditable(false);
-        txtProducer.setEditable(false);
-        txtDuration.setEditable(false);
-        txtTheaterPrice.setEditable(false);
-        txtHVPrice.setEditable(false);
-        txtGenre.setEditable(false);
-        txtDescription.setEditable(false);
-        txtActors.setEditable(false);
-    }
-
-    private void enableEditControls() {
-         txtEnglishName.setEditable(true);
-        txtHebrewName.setEditable(true);
-        txtProducer.setEditable(true);
-        txtDuration.setEditable(true);
-        txtTheaterPrice.setEditable(true);
-        txtHVPrice.setEditable(true);
-        txtGenre.setEditable(true);
-        txtDescription.setEditable(true);
-        txtActors.setEditable(true);
-    }
 
     private void disableTable() {
         tblProducts.setDisable(true);
     }
 
-    private void resetValidation() {
-         txtEnglishName.clear();
-        txtHebrewName.clear();
-        txtProducer.clear();
-        txtDuration.clear();
-        txtTheaterPrice.clear();
-        txtActors.clear();
-        txtHVPrice.clear();
-        txtGenre.clear();
-        txtDescription.clear();
-    }
-
-    private void validateUser() {
-        setContextMenu();
-        deleteUserDeleteKey();
-
-        colTheaterPrice.setVisible(true);
-        colHVPrice.setVisible(true);
-        btnNewProduct.setDisable(false);
-        txtTheaterPrice.setVisible(true);
-        txtHVPrice.setVisible(true);
-    }
 
     private void setDisableMenuItem() {
         contextMenu.getEditButton().setDisable(true);
@@ -741,30 +299,6 @@ public class EditMovieListBoundary implements Initializable {
 
 
 
-
-
-    public static void closeStage() {
-        if (stage != null) {
-            stage.hide();
-        }
-    }
-
-    private void deleteUserDeleteKey() {
-        rootProducts.setOnKeyPressed(ev -> {
-            if (ev.getCode().equals(KeyCode.DELETE)) {
-                if (tblProducts.isDisable()) {
-                    return;
-                }
-
-                if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-                    return;
-                }
-
-                deleteProducts();
-            }
-        });
-    }
 
     @FXML
     private void filterNameProduct() {
@@ -798,39 +332,12 @@ public class EditMovieListBoundary implements Initializable {
         }
     }
 
-    private void expandImage(int id, String title) {
-        paneContainer.hoverProperty().addListener((o, oldV, newV) -> {
-            if (newV) {
-                colorAdjust.setBrightness(0.25);
-                imageProduct.setEffect(colorAdjust);
-            } else {
-                imageProduct.setEffect(null);
-            }
-        });
 
-        paneContainer.setOnMouseClicked(ev -> {
-            final Image image = getImage(id);
-            final ImageView imageView = new ImageView(image);
-            imageView.setPreserveRatio(true);
-            imageView.setFitWidth(550);
 
-            final BorderPane boderPane = new BorderPane(imageView);
-            boderPane.setStyle("-fx-background-color: white");
-            boderPane.setCenter(imageView);
-
-            final ScrollPane root = new ScrollPane(boderPane);
-            root.setStyle("-fx-background-color: white");
-            root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            root.getStylesheets().add(ConstantsPath.LIGHT_THEME);
-            root.getStyleClass().add("scroll-bar");
-
-            root.setFitToHeight(true);
-            root.setFitToWidth(true);
-
-            stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
-            stage.setScene(new Scene(root, 550, 550));
-            stage.setTitle(title);
-            stage.show();
-        });
+    public void cleanup() {
+        // Unregister this controller from EventBus when it's no longer needed
+        EventBus.getDefault().unregister(this);
     }
+
+
 }

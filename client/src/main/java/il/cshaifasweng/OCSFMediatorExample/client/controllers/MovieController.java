@@ -15,14 +15,14 @@ public class MovieController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public void addMovie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre)
+    public static void addMovie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre)
     {
         Movie movie = new Movie(hebrewName,info,producer,englishName,mainActors,image,streamingType,duration,theaterPrice,homeViewingPrice,genre,true);
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, movie, RequestType.ADD_MOVIE);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre)
+    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre)
     {
         movie.setHebrewName(hebrewName);
         movie.setInfo(info);
@@ -41,7 +41,7 @@ public class MovieController {
     }
 
     // id of the movie in mySql
-    public void deleteMovie(int id)
+    public static void deleteMovie(int id)
     {
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.DEACTIVATE_MOVIE, id);
         SimpleClient.getClient().sendRequest(requestMessage);

@@ -1,4 +1,4 @@
-package il.cshaifasweng.OCSFMediatorExample.client.boundaries.companyManager;
+package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic;
 
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;

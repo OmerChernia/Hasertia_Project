@@ -1,5 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -10,6 +18,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.time.LocalDateTime;
 
 public class PackagePurchaseBoundary {
     @FXML
@@ -87,9 +99,13 @@ public class PackagePurchaseBoundary {
     private Timeline timer;
     private int timeRemaining;
     private double packagePrice;
+    private RegisteredUser currentUser;
+    private Movie currentMovie;
+    private MovieInstance currentMovieInstance;
 
     @FXML
     public void initialize() {
+        EventBus.getDefault().register(this);
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
@@ -141,8 +157,10 @@ public class PackagePurchaseBoundary {
 
     @FXML
     private void purchaseTicket() {
-        // Implement ticket purchasing logic
-        packagePrice = 40.00; // Or set this value based on the selected package
+        LocalDateTime purchaseDate = LocalDateTime.now();
+        String purchaseValidation = "Validated";
+        PurchaseController.AddHomeViewing(currentUser.getId(), purchaseDate, currentUser, purchaseValidation, currentMovie, purchaseDate);
+        packagePrice = 40.00; // Set this value based on the selected package
         System.out.println("Package purchased successfully.");
         stopTimer();
         showConfirmation();
@@ -233,5 +251,61 @@ public class PackagePurchaseBoundary {
     private void closeApplication() {
         Stage stage = (Stage) stackPane.getScene().getWindow();
         stage.close();
+    }
+
+    @Subscribe
+    public void onPurchaseMessageReceived(PurchaseMessage message) {
+        if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED) {
+            System.out.println("Purchase added successfully!");
+        } else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED) {
+            System.out.println("Purchase removed successfully!");
+        }
+        // Handle other response types if necessary
+    }
+
+    public void setCurrentUser(RegisteredUser user) {
+        this.currentUser = user;
+    }
+
+    public void setCurrentMovie(Movie movie) {
+        this.currentMovie = movie;
+        movieTitle.setText(movie.getEnglishName());
+        // Set other movie-related details here
+    }
+
+    public void setCurrentMovieInstance(MovieInstance movieInstance) {
+        this.currentMovieInstance = movieInstance;
+        // Set movie instance details here
+    }
+
+    // Relevant requests for additional actions
+    @FXML
+    public void reserveSeat() {
+        if (currentMovieInstance != null) {
+            SeatController.reserveSeat(currentMovieInstance);
+            System.out.println("Seat reservation requested.");
+        }
+    }
+
+    @FXML
+    public void cancelSeatReservation() {
+        if (currentMovieInstance != null) {
+            SeatController.cancelSeatReservation(currentMovieInstance);
+            System.out.println("Seat reservation cancellation requested.");
+        }
+    }
+
+    @FXML
+    public void loadTheaters() {
+        TheaterController.getAllTheaters();
+        System.out.println("Request to load all theaters sent.");
+    }
+
+    @FXML
+    public void loadSeatsForCurrentHall() {
+        if (currentMovieInstance != null) {
+            SeatController.getAllSeatsByHall(currentMovieInstance.getHall().getId());
+            System.out.println("Request to load all seats for the current hall sent.");
+        }
     }
 }

@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
@@ -8,9 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -113,6 +112,9 @@ public class TheaterPurchaseBoundary {
     @FXML
     private Label pricePaidLabel;
 
+    @FXML
+    private Spinner<Integer> ticketsSpinner; // רכיב לבחירת מספר כרטיסים
+
     private MovieInstance currentMovieInstance;
     private Seat selectedSeat;
     private Timeline timer;
@@ -125,6 +127,9 @@ public class TheaterPurchaseBoundary {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(seatSelectionPane);
         highlightStep(1);
+
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
+        ticketsSpinner.setValueFactory(valueFactory); // הגדרת טווח לבחירת מספר כרטיסים
     }
 
     public void setMovieInstance(MovieInstance movieInstance) {
@@ -158,8 +163,28 @@ public class TheaterPurchaseBoundary {
             Button prevButton = (Button) seatGrid.lookup("#" + selectedSeat.getRow() + "-" + selectedSeat.getCol());
             prevButton.setStyle("-fx-background-color: #4CAF50FF;");
         }
+
+        if (isSingleSeatLeft(seat)) { // בדיקה אם נשאר מושב בודד
+            System.out.println("Cannot leave a single seat!");
+            return;
+        }
+
         selectedSeat = seat;
         seatButton.setStyle("-fx-background-color: #e72241;");
+        resetTimer(); // איפוס הסטופר בבחירת כיסא אחר
+    }
+
+    private boolean isSingleSeatLeft(Seat seat) {
+        // בדיקה אם בחירת הכיסא תשאיר מושב בודד
+        // יש לממש לוגיקה מותאמת לפי הצורך
+        return false;
+    }
+
+    private void resetTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+        startTimer();
     }
 
     @FXML
@@ -185,7 +210,6 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void goToPaymentDetails() {
-        startTimer();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(paymentDetailsPane);
         highlightStep(3);
@@ -195,7 +219,6 @@ public class TheaterPurchaseBoundary {
     private void goToSeatSelection() {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(seatSelectionPane);
-        stopTimer();
         highlightStep(1);
     }
 
@@ -220,9 +243,11 @@ public class TheaterPurchaseBoundary {
     @FXML
     private void purchaseTicket() {
         if (selectedSeat != null) {
+            int ticketCount = ticketsSpinner.getValue();
             String purchaseValidation = generatePurchaseValidation();
             RegisteredUser loggedInUser = getLoggedInUser();
             PurchaseController.AddMovieTicket(loggedInUser.getId(), LocalDateTime.now(), loggedInUser, purchaseValidation, currentMovieInstance, selectedSeat);
+            // יש לשנות את הבקשה כדי לטפל ברכישת מספר כרטיסים
         } else {
             System.out.println("Please select a seat.");
         }
@@ -246,7 +271,7 @@ public class TheaterPurchaseBoundary {
             timer.stop();
         }
 
-        timeRemaining = 600; // 10 minutes in seconds
+        timeRemaining = 600; // 10 דקות בשניות
         timerLabel.setText(formatTime(timeRemaining));
 
         timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
@@ -283,7 +308,7 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void submitPayment() {
-        // Implement payment submission logic
+        // יש לממש את הלוגיקה של תשלום
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
         showConfirmation();
@@ -291,7 +316,6 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void cancelPayment() {
-        // Hide the credit card fields
         creditCardPane.setVisible(false);
     }
 
@@ -317,6 +341,11 @@ public class TheaterPurchaseBoundary {
                 step3Text.setStyle("-fx-text-fill: #ffc500;");
                 break;
         }
+
+        // הוספת זום לסטפ הנבחר
+        Animations.hover(step1Label, 200, 1.2);
+        Animations.hover(step2Label, 200, 1.2);
+        Animations.hover(step3Label, 200, 1.2);
     }
 
     private void showConfirmation() {
@@ -341,11 +370,11 @@ public class TheaterPurchaseBoundary {
     }
 
     private String generatePurchaseValidation() {
-         return "validation-code";
+        return "validation-code";
     }
 
     private RegisteredUser getLoggedInUser() {
-         return new RegisteredUser();
+        return new RegisteredUser(); // יש לשנות למימוש נכון שמחזיר את המשתמש המחובר
     }
 
     public void cleanup() {

@@ -62,8 +62,7 @@ public class HomeBoundary implements Initializable {
                 setItems(items);
             } catch (IOException e) {
                 e.printStackTrace();
-                // Optionally, you could show an error dialog to the user here
-            }
+             }
         });
     }
 

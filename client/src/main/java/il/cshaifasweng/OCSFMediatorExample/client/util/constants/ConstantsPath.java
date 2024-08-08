@@ -9,8 +9,8 @@ public class ConstantsPath {
     public static final Double MIN_HEIGHT = 640.00;
 
     public static final String SOURCE_PACKAGE = "/il/cshaifasweng/OCSFMediatorExample/client/";
-    public static final String BOUNDARIES_PACKAGE = SOURCE_PACKAGE + "boundries/";
-    public static final String COMPANY_MANAGER_PACKAGE =  BOUNDARIES_PACKAGE + "companyManager/";
+    public static final String BOUNDARIES_PACKAGE = SOURCE_PACKAGE + "boundaries/";
+    public static final String REPORTS_PACKAGE =  BOUNDARIES_PACKAGE + "reports/";
     public static final String CONTENT_MANAGER_PACKAGE =  BOUNDARIES_PACKAGE + "contentManager/";
     public static final String CUSTOMER_SERVICE_PACKAGE =  BOUNDARIES_PACKAGE + "customerService/";
     public static final String REGISTER_USER_PACKAGE =  BOUNDARIES_PACKAGE + "registeredUser/";
@@ -31,13 +31,11 @@ public class ConstantsPath {
 
 
      /* REGISTER_USER_VIEWS */
-
     public static final String COMPLAINT_VIEW =  REGISTER_USER_PACKAGE + "ComplaintView.fxml";
     public static final String DIALOG_COMPLAINT_VIEW  =  REGISTER_USER_PACKAGE + "dialogComplaint.fxml";
     public static final String ORDERS_VIEW =  REGISTER_USER_PACKAGE + " OrdersView.fxml";
 
     /* CONTENT_MANAGER_VIEWS */
-
     public static final String CONTENT_MOVIES_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieListView.fxml";
     public static final String CONTENT_SCREENINGS_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieScreeningsView.fxml";
 
@@ -46,8 +44,8 @@ public class ConstantsPath {
     public static final String DIALOG_CUSTOMER_SERVICE_VIEW  =  CUSTOMER_SERVICE_PACKAGE + "dialogCustomerService.fxml";
 
 
-    /* COMPANY_MANAGER_VIEWS */
-    public static final String COMPANY_MANAGER_VIEW  =  COMPANY_MANAGER_PACKAGE + "ReportsView.fxml";
+    /* REPORTS_VIEWS */
+    public static final String COMPANY_MANAGER_VIEW  =  REPORTS_PACKAGE + "ReportsView.fxml";
 
 
     public static final String MEDIA_PACKAGE = SOURCE_PACKAGE+ "media/";

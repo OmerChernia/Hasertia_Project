@@ -1,10 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,8 +16,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class ComplaintBoundary implements Initializable {
@@ -44,7 +49,11 @@ public class ComplaintBoundary implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initializeComplaintForm();
+
+        // Register this controller to listen for MovieMessage events
+        EventBus.getDefault().register(this);
+
+          initializeComplaintForm();
     }
 
     private void initializeComplaintForm() {
@@ -66,7 +75,13 @@ public class ComplaintBoundary implements Initializable {
         }
 
         // Code to submit the complaint to the system goes here
-
+       // ComplaintController.addComplaint(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, RegisteredUser registeredUser);
         AlertsBuilder.create(AlertType.SUCCESS, stckComplaint, rootComplaint, rootComplaint, "Complaint submitted successfully. A response will be sent to the customer's email within 24 hours.");
     }
+
+    public void cleanup() {
+        // Unregister this controller from EventBus when it's no longer needed
+        EventBus.getDefault().unregister(this);
+    }
+
 }

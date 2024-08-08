@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.customerService;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
@@ -7,6 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,20 +20,19 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class CustomerServiceBoundary implements Initializable {
 
     private ObservableList<Complaint> listComplaints;
-    private ObservableList<RegisteredUser> listCustomers;
-
-
     private DialogTool dialogAddProduct;
-
 
     @FXML
     private TableColumn<Complaint, Integer> colId;
@@ -39,7 +40,6 @@ public class CustomerServiceBoundary implements Initializable {
     private TableColumn<Complaint, String> colCustomerName;
     @FXML
     private TableColumn<Complaint, Button> colPurchase;
-
     @FXML
     private TableColumn<Complaint, String> colDate;
     @FXML
@@ -50,7 +50,6 @@ public class CustomerServiceBoundary implements Initializable {
     private AnchorPane containerDeleteComplaint;
     @FXML
     private AnchorPane containerHandleComplaint;
-
     @FXML
     private AnchorPane rootCustomerService;
     @FXML
@@ -60,21 +59,18 @@ public class CustomerServiceBoundary implements Initializable {
     @FXML
     private TableView<Complaint> tblComplaints;
 
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-         setActionToggleButton();
-         loadData();
-          animateNodes();
+        EventBus.getDefault().register(this);
+        setActionToggleButton();
+        ComplaintController.getAllComplaints();  // Request to load data from the server
+        animateNodes();
 
-         tblComplaints.setRowFactory(tv -> {
+        tblComplaints.setRowFactory(tv -> {
             TableRow<Complaint> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Complaint rowData = row.getItem();
-                    // כאן את יכולה לקרוא לפונקציה שתפתח את הדיאלוג
                     showDialogDetailsQuote();
                 }
             });
@@ -82,115 +78,18 @@ public class CustomerServiceBoundary implements Initializable {
         });
     }
 
-
-    private void animateNodes() {
-        Animations.fadeInUp(rootSearch);
-        Animations.fadeInUp(tblComplaints);
-    }
-
-
-
-    @FXML
-    private void showDialogAddQuotes() {
-        // השבתת הטבלה
-        disableTable();
-
-        // קבלת ההזמנה הנבחרת
-        Complaint selectedPurchase = tblComplaints.getSelectionModel().getSelectedItem();
-
-        // אם לא נבחרה הזמנה, הצגת התראה וחזרה
-        if (selectedPurchase == null) {
-            AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, "No complaint selected");
-            tblComplaints.setDisable(false);
-            return;
-        }
-
-        try {
-            // הטעינת ה-Ticket.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/il/cshaifasweng/OCSFMediatorExample/client/boundaries/customerService/dialogCustomerService.fxml"));
-            AnchorPane ticketPane = loader.load();
-
-            // השגת ה-Controller של ה-Ticket והעברת המידע הנבחר
-            DialogCustomerService dialogCustomerService = loader.getController();
-            dialogCustomerService.setCustomerServiceController(this);
-
-            dialogCustomerService.setComplaint(selectedPurchase);
-
-            containerHandleComplaint.getChildren().clear();
-            containerHandleComplaint.getChildren().add(ticketPane);
-            containerHandleComplaint.setVisible(true);
-
-             dialogAddProduct = new DialogTool(containerHandleComplaint, stckCustomerService);
-            dialogAddProduct.show();
-
-
-            dialogAddProduct.setOnDialogClosed(ev -> {
-                 tblComplaints.setDisable(false);
-                rootCustomerService.setEffect(null);
-                containerHandleComplaint.setVisible(false);
-            });
-
-            // הוספת אפקט טשטוש ל-rootUsers
-            rootCustomerService.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // במקרה של שגיאה בטעינת ה-FXML, להפעיל מחדש את הטבלה
-            tblComplaints.setDisable(false);
+    @Subscribe
+    public void onComplaintMessageReceived(ComplaintMessage message) {
+        if (message.responseType == ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST) {
+            loadTableData(message.compliants);
         }
     }
 
-    @FXML
-    public void closeDialogAddQuotes() {
-        System.out.println("closeDialogAddQuotes called");
-        if (dialogAddProduct != null) {
-            dialogAddProduct.close();
-        }
-    }
+    private void loadTableData(List<Complaint> complaints) {
+        listComplaints = FXCollections.observableArrayList(complaints);
+        tblComplaints.setItems(listComplaints);
+        tblComplaints.setFixedCellSize(30);
 
-
-
-    @FXML
-    private void closeDialogDeleteQuote() {
-        System.out.println("closeDialogDeleteQuote called");
-
-    }
-
-
-
-    @FXML
-    private void showDialogDetailsQuote() {
-        System.out.println("showDialogDetailsQuote called");
-        if (tblComplaints.getSelectionModel().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-            return;
-        }
-
-        Complaint selectedComplaint = tblComplaints.getSelectionModel().getSelectedItem();
-        System.out.println("Selected Complaint for Details: " + selectedComplaint);
-
-        showDialogAddQuotes();
-
-        selectedRecord();
-     }
-
-    private void selectedRecord() {
-        Complaint complaint = tblComplaints.getSelectionModel().getSelectedItem();
-        DialogCustomerService dialogCustomerService = new DialogCustomerService();
-        dialogCustomerService.setComplaint(complaint);
-    }
-
-    @FXML
-    private void setActionToggleButton() {
-        System.out.println("setActionToggleButton called");
-     }
-
-    @FXML
-    private void loadData() {
-        System.out.println("loadData called");
-        loadTable();
-
-        // Set up the cell value factories
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("info"));
         colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
@@ -200,80 +99,120 @@ public class CustomerServiceBoundary implements Initializable {
                 cellData.getValue().getRegisteredUser().getName()
         ));
 
-        // Correct usage of ButtonFactory
         ButtonFactory buttonFactory = new ButtonFactory();
-        ButtonFactory.ButtonTypeOrderCellValueFactory buttonCellFactory = buttonFactory.new ButtonTypeOrderCellValueFactory(colPurchase);
-        colPurchase.setCellValueFactory(buttonCellFactory);
-
-        // Assuming ButtonExistsCellValueFactory is correctly implemented
+        colPurchase.setCellValueFactory(buttonFactory.new ButtonTypeOrderCellValueFactory(colPurchase));
         colStatus.setCellValueFactory(buttonFactory.new ButtonExistsCellValueFactory(colStatus));
     }
 
-
-    private void loadTable() {
-        System.out.println("loadTable called");
-        listComplaints = FXCollections.observableArrayList(db.getComplaints());
-        tblComplaints.setItems(listComplaints);
-        tblComplaints.setFixedCellSize(30);
+    private void animateNodes() {
+        Animations.fadeInUp(rootSearch);
+        Animations.fadeInUp(tblComplaints);
     }
 
+    @FXML
+    private void showDialogAddQuotes() {
+        disableTable();
+        Complaint selectedComplaint = tblComplaints.getSelectionModel().getSelectedItem();
+        if (selectedComplaint == null) {
+            AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, "No complaint selected");
+            tblComplaints.setDisable(false);
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_CUSTOMER_SERVICE_VIEW));
+            AnchorPane ticketPane = loader.load();
+
+            DialogCustomerService dialogCustomerService = loader.getController();
+            dialogCustomerService.setCustomerServiceController(this);
+            dialogCustomerService.setComplaint(selectedComplaint);
+
+            containerHandleComplaint.getChildren().clear();
+            containerHandleComplaint.getChildren().add(ticketPane);
+            containerHandleComplaint.setVisible(true);
+
+            dialogAddProduct = new DialogTool(containerHandleComplaint, stckCustomerService);
+            dialogAddProduct.show();
+
+            dialogAddProduct.setOnDialogClosed(ev -> {
+                tblComplaints.setDisable(false);
+                rootCustomerService.setEffect(null);
+                containerHandleComplaint.setVisible(false);
+            });
+
+            rootCustomerService.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            tblComplaints.setDisable(false);
+        }
+    }
+
+    @FXML
+    public void closeDialogAddQuotes() {
+        if (dialogAddProduct != null) {
+            dialogAddProduct.close();
+        }
+    }
+
+    @FXML
+    private void showDialogDetailsQuote() {
+        if (tblComplaints.getSelectionModel().isEmpty()) {
+            AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
+            return;
+        }
+        showDialogAddQuotes();
+        selectedRecord();
+    }
+
+    private void selectedRecord() {
+        Complaint complaint = tblComplaints.getSelectionModel().getSelectedItem();
+        DialogCustomerService dialogCustomerService = new DialogCustomerService();
+        dialogCustomerService.setComplaint(complaint);
+    }
+
+    @FXML
+    private void setActionToggleButton() {
+        // Implement action handling for toggle buttons if necessary
+    }
+
+    @FXML
+    private void loadData() {
+        ComplaintController.getAllComplaints();  // Request to load data from the server
+    }
 
     @FXML
     private void newQuote() {
-        System.out.println("newQuote called");
-
         loadData();
-         closeDialogAddQuotes();
+        closeDialogAddQuotes();
         AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
     }
 
     @FXML
     private void deleteQuotes() {
-        System.out.println("deleteQuotes called");
         Complaint selectedQuote = tblComplaints.getSelectionModel().getSelectedItem();
         if (selectedQuote != null) {
             listComplaints.remove(selectedQuote);
             tblComplaints.refresh();
             loadData();
-             closeDialogDeleteQuote();
+            closeDialogDeleteQuote();
             AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
         }
     }
 
     @FXML
     private void updateQuotes() {
-        System.out.println("updateQuotes called");
-
-        Complaint complaint = tblComplaints.getSelectionModel().getSelectedItem();
-
         loadData();
-         closeDialogAddQuotes();
+        closeDialogAddQuotes();
         AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
     }
 
-
-
-
-
-
-
     private void disableTable() {
-        System.out.println("disableTable called");
         tblComplaints.setDisable(true);
     }
 
-
-
-
-
-
-
-
-
+    @FXML
+    private void closeDialogDeleteQuote() {
+        // Implement close dialog logic here
     }
-
-
-
-
-
+}
