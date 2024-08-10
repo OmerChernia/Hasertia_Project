@@ -1,4 +1,4 @@
-package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
+package il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
@@ -6,12 +6,14 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -44,41 +46,39 @@ public class HomeBoundary implements Initializable {
     @FXML
     private GridPane grid;
 
+    private String currentScreeningFilter="All";
+    private String Genre="All";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
+
         // Request the list of movies from the server
         MovieController.requestAllMovies();
-
     }
 
     @Subscribe
     public void onMovieMessageReceived(MovieMessage message) {
-        Platform.runLater(() -> {
-            if (message.movies == null) {
-                System.err.println("Received MovieMessage with null movies list.");
-                return;
-            }
+        Platform.runLater(() ->
+        {
             try {
-                System.err.println("Received MovieMessage in Client\n" + message.movies.toString());
-                items = message.movies;
-                setItems(items);
+                setItems(message.movies);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
 
-
     public void setItems(List<Movie> movies) throws IOException {
-        if (movies == null || movies.isEmpty()) {
-            System.err.println("No movies to display.");
-            return;
-        }
         this.items = movies;
-        updateGrid();
+        Platform.runLater(() -> {
+            try {
+                updateGrid();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void updateGrid() throws IOException {
@@ -97,7 +97,7 @@ public class HomeBoundary implements Initializable {
     }
 
     private Node createItem(Movie item) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.MOVIE_SMALL_VIEW));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.SMALL_MOVIE_VIEW));
         StackPane itemBox = loader.load();
         MovieSmallBoundary controller = loader.getController();
         if (controller != null) {
@@ -119,11 +119,11 @@ public class HomeBoundary implements Initializable {
 
     public void showInfo(Movie movie) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.MOVIE_INFO_VIEW));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.COSTUMER_PACKAGE + "MovieInfo.fxml"));
             Parent pane = loader.load();
 
             MovieInfoBoundary movieInfoController = loader.getController();
-            movieInfoController.setHomeController(this);
+            movieInfoController.sethomeController(this);
             movieInfoController.setInfo(movie);
 
             InfoContainer.getChildren().clear();
@@ -152,8 +152,31 @@ public class HomeBoundary implements Initializable {
         }
     }
 
-    // Unregister EventBus in cleanup
-    public void cleanup() {
+
+    @FXML
+    void FilterByScreeningType(ActionEvent event)
+    {
+        Button clickedButton = (Button) event.getSource();
+        currentScreeningFilter = clickedButton.getText();
+        FilterByScreeningTypeAndGenre(event);
+    }
+    @FXML
+    void FilterByGenre(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        Genre = clickedButton.getText();
+        Genre = Genre.toLowerCase();
+        FilterByScreeningTypeAndGenre(event);
+
+    }
+
+    @FXML
+    void FilterByScreeningTypeAndGenre(ActionEvent event) {
+        MovieController.getMoviesFilteredByScreeningTypeAndGenre(currentScreeningFilter,Genre);
+
+    }
+
+     public void cleanup() {
+        // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }
 }

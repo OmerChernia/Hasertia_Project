@@ -11,6 +11,8 @@ public class MovieMessage extends Message
     public int id;
     public RequestType requestType;
     public ResponseType responseType;
+    public String Genre;
+    public Movie.StreamingType Screening;
 
     public MovieMessage(MessageType messageType,Movie movie,RequestType requestType)
     {
@@ -34,6 +36,25 @@ public class MovieMessage extends Message
         this.requestType = requestType;
         this.id = id;
     }
+    public MovieMessage(MessageType messageType,RequestType requestType, String screening, String Genre)
+    {
+        // GET_MOVIES_FILTERED_BY_SCREENING_TYPE_AND_GENRE
+        super(messageType);
+        this.requestType = requestType;
+        this.Genre = Genre;
+        switch (screening)
+        {
+            case "Home Viewing":
+                Screening= Movie.StreamingType.HOME_VIEWING;
+                break;
+            case "Theater":
+                Screening= Movie.StreamingType.THEATER_VIEWING;
+                break;
+            case "All":
+                Screening= Movie.StreamingType.BOTH;
+                break;
+        }
+    }
 
     public enum ResponseType
     {
@@ -53,6 +74,9 @@ public class MovieMessage extends Message
         DEACTIVATE_MOVIE,
         GET_ALL_MOVIES,
         UPDATE_MOVIE,
+        GET_MOVIES_PRESENTED_IN_THEATER,
+        GET_MOVIES_PRESENTED_IN_HOME_VIEWING,
+        GET_MOVIES_FILTERED_BY_SCREENING_TYPE_AND_GENRE
     }
 
 }
