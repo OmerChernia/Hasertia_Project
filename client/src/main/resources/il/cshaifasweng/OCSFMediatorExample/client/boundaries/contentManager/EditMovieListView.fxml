@@ -50,7 +50,7 @@
             </AnchorPane>
             <AnchorPane fx:id="containerDeleteProducts" layoutX="289.0" layoutY="216.0" prefHeight="246.0" prefWidth="392.0" visible="false">
                <children>
-                  <Button layoutX="208.0" layoutY="201.0" onMouseClicked="#deleteProducts" prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
+                  <Button layoutX="208.0" layoutY="201.0"  prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>

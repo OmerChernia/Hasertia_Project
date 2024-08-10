@@ -1,5 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
@@ -10,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.Notificatio
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,6 +33,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -161,10 +166,16 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        // Register this controller to listen for MovieMessage events
+        EventBus.getDefault().register(this);
+
+        // Request the list of movies from the server
+        MovieInstanceController.requestAllMovieInstances();
+
         listTheater = FXCollections.observableArrayList();
          filterProducts = FXCollections.observableArrayList();
-        loadData();
-         animateNodes();
+          animateNodes();
         selectText();
         initalizeComboBox();
         setValidations();
@@ -362,9 +373,11 @@ public class EditMovieScreeningsBoundary implements Initializable {
         disableEditControls();
     }
 
-    @FXML
-    private void loadData() {
-        loadTable();
+    @Subscribe
+    public void loadData(MovieInstanceMessage movieInstanceMessage) {
+        listTheater.setAll(movieInstanceMessage.movies);
+        tblProducts.setItems(listTheater);
+        tblProducts.setFixedCellSize(30);
 
         colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         colEnglish.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getEnglishName()));
@@ -378,11 +391,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
 
 
-    private void loadTable() {
-       // listTheater.setAll(db.getMovieInstances());
-        tblProducts.setItems(listTheater);
-        tblProducts.setFixedCellSize(30);
-    }
 
     private void selectedRecord() {
         MovieInstance movieInstance = tblProducts.getSelectionModel().getSelectedItem();
@@ -446,8 +454,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
          movie.getMovie().setImage(getInputStream());
 
         listTheater.add(movie);
-        loadData();
-        cleanControls();
+         cleanControls();
         closeDialogAddProduct();
         AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_ADDED);
     }
@@ -547,8 +554,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
         movie.getMovie().setHebrewName(hebrewName);
 
         movie.getMovie().setImage(getInputStream());
-        loadData();
-        cleanControls();
+         cleanControls();
         closeDialogAddProduct();
         AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_UPDATED);
     }
@@ -561,8 +567,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
         }
 
         listTheater.remove(tblProducts.getSelectionModel().getSelectedItem());
-        loadData();
-        cleanControls();
+         cleanControls();
         hideDialogDeleteProduct();
         AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_DELETED);
     }

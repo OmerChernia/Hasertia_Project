@@ -26,8 +26,7 @@ public class MovieMessage extends Message
         // GET_ALL_MOVIES
         super(messageType);
         this.requestType = requestType;
-        System.out.println(movies.toString());
-    }
+     }
     public MovieMessage(MessageType messageType,RequestType requestType, int id)
     {
         // DELETE_MOVIE

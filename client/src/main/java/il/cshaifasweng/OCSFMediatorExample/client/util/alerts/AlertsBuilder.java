@@ -26,6 +26,10 @@ public class AlertsBuilder {
     private static String bodyStyle;
 
     public static void create(AlertType type, StackPane dialogContainer, Node nodeToBlur, Node nodeToDisable, String body) {
+        create(type, dialogContainer, nodeToBlur, nodeToDisable, body, "Okay", null, null);
+    }
+
+    public static void create(AlertType type, StackPane dialogContainer, Node nodeToBlur, Node nodeToDisable, String body, String primaryButtonText, Runnable primaryAction, String secondaryButtonText) {
 
         setFunction(type);
 
@@ -36,14 +40,21 @@ public class AlertsBuilder {
         AnchorPane content = new AnchorPane();
         content.setPrefSize(390, 230);
 
-        Button button = new Button("Okay");
-        button.getStyleClass().add(buttonStyle);
+        Button primaryButton = new Button(primaryButtonText);
+        primaryButton.getStyleClass().add(buttonStyle);
 
         HBox buttonContainer = new HBox();
         buttonContainer.setLayoutY(115);
         buttonContainer.setPrefSize(390, 115);
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().add(button);
+        buttonContainer.getChildren().add(primaryButton);
+
+        if (secondaryButtonText != null) {
+            Button secondaryButton = new Button(secondaryButtonText);
+            secondaryButton.getStyleClass().add("alert-secondary-button");
+            buttonContainer.getChildren().add(secondaryButton);
+            secondaryButton.setOnMouseClicked(e -> alertStage.close());
+        }
 
         Text textTitle = new Text(title);
         textTitle.getStyleClass().add(titleStyle);
@@ -63,7 +74,7 @@ public class AlertsBuilder {
         root.getStyleClass().add("jfx-dialog-overlay-pane");
 
         Scene scene = new Scene(root);
-        scene.getStylesheets().add(AlertsBuilder.class.getResource(ConstantsPath.CSS_LIGHT_THEME).toExternalForm()); // Ensure this path is correct
+        scene.getStylesheets().add(AlertsBuilder.class.getResource(ConstantsPath.CSS_LIGHT_THEME).toExternalForm());
         alertStage.setScene(scene);
 
         nodeToDisable.setDisable(true);
@@ -71,7 +82,10 @@ public class AlertsBuilder {
 
         alertStage.show();
 
-        button.setOnMouseClicked(e -> {
+        primaryButton.setOnMouseClicked(e -> {
+            if (primaryAction != null) {
+                primaryAction.run();
+            }
             alertStage.close();
         });
 
@@ -84,6 +98,10 @@ public class AlertsBuilder {
             nodeToDisable.setDisable(false);
             nodeToBlur.setEffect(null);
         });
+
+        // Close the alert by clicking outside
+        root.setOnMouseClicked(e -> alertStage.close());
+        content.setOnMouseClicked(e -> e.consume());
     }
 
     private static void setFunction(AlertType type) {
@@ -100,6 +118,20 @@ public class AlertsBuilder {
                 buttonStyle = "alert-error-button";
                 titleStyle = "alert-error-title";
                 bodyStyle = "alert-error-body";
+                break;
+
+            case WARNING:
+                title = "Warning!";
+                buttonStyle = "alert-warning-button";
+                titleStyle = "alert-warning-title";
+                bodyStyle = "alert-warning-body";
+                break;
+
+            case INFO:
+                title = "Information";
+                buttonStyle = "alert-info-button";
+                titleStyle = "alert-info-title";
+                bodyStyle = "alert-info-body";
                 break;
         }
     }

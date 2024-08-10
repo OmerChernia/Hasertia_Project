@@ -57,8 +57,7 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
-		if (msg instanceof Message)
-		{
+		if (msg instanceof Message) {
 			// Post the received message to EventBus
 			EventBus.getDefault().post(msg);
 		} else {

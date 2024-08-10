@@ -1,7 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -36,7 +38,7 @@ public class SimpleChatClient extends Application {
     }
 
     public static void setRoot(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(SimpleChatClient.class.getResource("/il/cshaifasweng/OCSFMediatorExample/client/boundriesCustomer/" + fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(SimpleChatClient.class.getResource(ConstantsPath.USER_PACKAGE + fxml + ".fxml"));
         Parent root = fxmlLoader.load();
         scene.setRoot(root);
 
@@ -53,7 +55,7 @@ public class SimpleChatClient extends Application {
     }
 
     public static Parent loadFXML(String fxml) throws IOException {
-        String fxmlPath = "/il/cshaifasweng/OCSFMediatorExample/client/boundriesCustomer/" + fxml + ".fxml";
+        String fxmlPath = ConstantsPath.USER_PACKAGE + fxml + ".fxml";
         URL fxmlUrl = SimpleChatClient.class.getResource(fxmlPath);
         if (fxmlUrl == null) {
             System.err.println("FXML file not found at: " + fxmlPath);
@@ -76,8 +78,8 @@ public class SimpleChatClient extends Application {
 
 
     @Subscribe
-    public void onMoviesEvent(Object event) {
-        System.out.println("Received  Event in Client");
+    public void onMessageEvent(Object event) {
+        System.out.println("Received Message in Client");
 
     }
 

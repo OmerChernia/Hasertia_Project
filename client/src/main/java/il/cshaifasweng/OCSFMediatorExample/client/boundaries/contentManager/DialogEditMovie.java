@@ -14,6 +14,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.Notificatio
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -44,46 +45,25 @@ public class DialogEditMovie implements Initializable {
     private final ColorAdjust colorAdjust = new ColorAdjust();
 
     @FXML
-    private Label txtAddProduct;
+    private Button btnCancel;
 
     @FXML
-    private TextField txtStreamingType;
+    private Button btnClose;
+
+    @FXML
+    private Button btnSave;
+
+    @FXML
+    private ComboBox<String> comboGenre;
+
+    @FXML
+    private ComboBox<String> comboType;
 
     @FXML
     private AnchorPane containerAddProduct;
 
     @FXML
-    private TextField txtEnglishName;
-
-    @FXML
-    private TextField txtHebrewName;
-
-    @FXML
-    private TextField txtProducer;
-
-    @FXML
-    private TextField txtDuration;
-
-    @FXML
-    private TextField txtTheaterPrice;
-
-    @FXML
-    private TextField txtHVPrice;
-
-    @FXML
-    private TextField txtGenre;
-
-    @FXML
-    private TextField txtActors;
-
-    @FXML
-    private TextArea txtDescription;
-
-    @FXML
-    private Button btnUpdateProduct;
-
-    @FXML
-    private Button btnSaveProduct;
+    private HBox imageContainer;
 
     @FXML
     private ImageView imageProduct;
@@ -92,7 +72,44 @@ public class DialogEditMovie implements Initializable {
     private Pane paneContainer;
 
     @FXML
-    private HBox imageContainer;
+    private TextField txtActors;
+
+    @FXML
+    private Label txtAddProduct;
+
+    @FXML
+    private TextArea txtDescription;
+
+    @FXML
+    private TextField txtDuration;
+
+    @FXML
+    private TextField txtEnglishName;
+
+    @FXML
+    private TextField txtHVPrice;
+
+    @FXML
+    private TextField txtHebrewName;
+
+    @FXML
+    private TextField txtProducer;
+
+    @FXML
+    private TextField txtTheaterPrice;
+
+    @FXML
+    private Label txtTitle;
+
+    @FXML
+    void handleClose(ActionEvent event) {
+
+    }
+
+    @FXML
+    void handleSave(ActionEvent event) {
+
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -121,8 +138,7 @@ public class DialogEditMovie implements Initializable {
         cleanControls();
         enableEditControls();
         txtAddProduct.setText("Add Movie");
-        btnSaveProduct.setVisible(true);
-        btnUpdateProduct.setVisible(false);
+        btnSave.setVisible(true);
     }
 
     private void initializeImageHoverEffect() {
@@ -136,10 +152,10 @@ public class DialogEditMovie implements Initializable {
     }
 
     private void setValidations() {
-        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtGenre)
+        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice)
                 .forEach(RequieredFieldsValidators::toTextField);
         RequieredFieldsValidators.toTextArea(txtDescription);
-        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtGenre, txtDescription, txtActors)
+        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
                 .forEach(field -> RequieredFieldsValidators.addLabelBehavior((TextInputControl) field, field.getPromptText()));
     }
 
@@ -148,7 +164,7 @@ public class DialogEditMovie implements Initializable {
     }
 
     private void selectText() {
-        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtGenre)
+        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice)
                 .forEach(TextFieldMask::selectText);
         TextFieldMask.selectTextToTextArea(txtDescription);
     }
@@ -174,14 +190,12 @@ public class DialogEditMovie implements Initializable {
         txtDuration.setText(String.valueOf(movie.getDuration()));
         txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
         txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
-        txtGenre.setText(movie.getGenre());
+      //  comboGenre.setItems(movie.getGenre());
         txtDescription.setText(movie.getInfo());
         txtActors.setText(String.join(", ", movie.getMainActors()));
         imageProduct.setImage(getImage(movie));
         expandImage(movie, movie.getEnglishName());
 
-        btnUpdateProduct.setVisible(true);
-        btnSaveProduct.setVisible(false);
         txtAddProduct.setText("Update Movie");
     }
 
@@ -195,14 +209,12 @@ public class DialogEditMovie implements Initializable {
         String duration = txtDuration.getText().trim();
         String theaterPrice = txtTheaterPrice.getText().trim();
         String hvPrice = txtHVPrice.getText().trim();
-        String genre = txtGenre.getText().trim();
-        String streamingType = txtStreamingType.getText().trim();
+        String genre = comboGenre.getSelectionModel().getSelectedItem();
+        String streamingType = comboType.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();
         List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
 
-        MovieController.addMovie(hebrewName, description, producer, englishName, actors, getInputStream(),
-                Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration),
-                Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
+
 
         cleanControls();
         closeDialog();
@@ -229,10 +241,7 @@ public class DialogEditMovie implements Initializable {
             showErrorAndFocus(txtHVPrice);
             return false;
         }
-        if (txtGenre.getText().trim().isEmpty()) {
-            showErrorAndFocus(txtGenre);
-            return false;
-        }
+
         if (txtDescription.getText().trim().isEmpty()) {
             showErrorAndFocus(txtDescription);
             return false;
@@ -315,13 +324,13 @@ public class DialogEditMovie implements Initializable {
 
     private void cleanControls() {
         imageFile = null;
-        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtGenre, txtDescription, txtActors)
+        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
                 .forEach(TextInputControl::clear);
         imageProduct.setImage(new Image(ConstantsPath.NO_IMAGE_AVAILABLE));
     }
 
     private void enableEditControls() {
-        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtGenre, txtDescription, txtActors)
+        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
                 .forEach(field -> field.setEditable(true));
     }
 }

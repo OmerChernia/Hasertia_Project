@@ -263,6 +263,8 @@ public class DialogCustomerService {
         customerServiceController.closeDialogAddQuotes();
     }
 
+
+
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }

@@ -1,110 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="containerAddProduct" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditMovie">
-         <children>
-            <Label fx:id="txtAddProduct" layoutX="41.0" layoutY="14.0" prefHeight="45.0" prefWidth="226.0" text="Add Movie">
+<AnchorPane fx:id="containerAddProduct" prefHeight="583.0" prefWidth="664.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditMovie">
+    <children>
+        <GridPane alignment="TOP_LEFT" hgap="20.0" layoutX="23.0" layoutY="10.0" prefHeight="655.0" prefWidth="620.0" vgap="30.0">
+            <!-- Title -->
+            <Label fx:id="txtAddProduct" text="Add Movie" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
                 <font>
-                    <Font size="28.0" />
+                    <Font size="24.0" />
                 </font>
             </Label>
-             <TextField fx:id="txtStreamingType" layoutX="105.0" layoutY="78.0" prefHeight="30.0" prefWidth="285.0" promptText="English Name" styleClass="text-field">
-                 <font>
-                     <Font size="14.0" />
-                 </font>
-             </TextField>
-            <TextField fx:id="txtEnglishName" layoutX="105.0" layoutY="78.0" prefHeight="30.0" prefWidth="285.0" promptText="English Name" styleClass="text-field">
+
+            <!-- Row 1: English Name -->
+            <TextField fx:id="txtEnglishName" prefWidth="200.0" promptText="English Name" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="1">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
-            <TextField fx:id="txtHebrewName" layoutX="411.0" layoutY="78.0" prefHeight="30.0" prefWidth="292.0" promptText="Hebrew Name" styleClass="text-field">
+
+            <!-- Row 2: Hebrew Name -->
+            <TextField fx:id="txtHebrewName" prefWidth="200.0" promptText="Hebrew Name" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
-            <TextField fx:id="txtProducer" layoutX="41.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Producer" styleClass="text-field">
+
+            <!-- Row 3: Producer -->
+            <TextField fx:id="txtProducer" prefWidth="200.0" promptText="Producer" styleClass="text-field" GridPane.rowIndex="5">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
-            <TextField fx:id="txtDuration" layoutX="508.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Duration" styleClass="text-field">
+
+            <!-- Row 6: Actors -->
+            <TextField fx:id="txtActors" prefWidth="200.0" promptText="Actors" styleClass="text-field" GridPane.rowIndex="6">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
-            <TextField fx:id="txtTheaterPrice" layoutX="39.0" layoutY="274.0" prefHeight="30.0" prefWidth="195.0" promptText="Theater Price" styleClass="text-field">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextField>
-            <TextField fx:id="txtHVPrice" layoutX="41.0" layoutY="216.0" prefHeight="30.0" prefWidth="195.0" promptText="Home Viewing Price" styleClass="text-field">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextField>
-            <TextField fx:id="txtGenre" layoutX="266.0" layoutY="146.0" prefHeight="30.0" prefWidth="195.0" promptText="Genre" styleClass="text-field">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextField>
-            <TextArea fx:id="txtDescription" layoutX="39.0" layoutY="346.0" prefHeight="100.0" prefWidth="420.0" promptText="Description" styleClass="floating-label">
+
+            <!-- Row 9: Description -->
+            <TextArea fx:id="txtDescription" prefHeight="64.0" prefWidth="300.0" promptText="Description" styleClass="text-area" GridPane.rowIndex="8">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextArea>
-            <Button fx:id="btnUpdateProduct" layoutX="392.0" layoutY="452.0" onMouseClicked="#updateProduct" prefHeight="25.0" prefWidth="131.0" styleClass="action-button" text="Update" textFill="WHITE">
-                <font>
-                    <Font name="System Bold" size="12.0" />
-                </font>
-            </Button>
-            <Button fx:id="btnSaveProduct" layoutX="392.0" layoutY="452.0" onMouseClicked="#newProduct" prefHeight="25.0" prefWidth="131.0" styleClass="action-button" text="Save" textFill="WHITE">
-                <font>
-                    <Font name="System Bold" size="12.0" />
-                </font>
-            </Button>
-            <Button fx:id="btnCancelAddProduct" layoutX="253.0" layoutY="452.0" onMouseClicked="#closeDialogAddProduct" prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
-                <font>
-                    <Font name="System Bold" size="12.0" />
-                </font>
-            </Button>
-            <Button contentDisplay="CENTER" layoutX="704.0" onMouseClicked="#closeDialogAddProduct" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
-                <graphic>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../../media/icons/icons8-close-50.png" />
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Pane fx:id="paneContainer" layoutX="508.0" layoutY="216.0" prefHeight="217.0" prefWidth="203.0">
-                <cursor>
-                    <Cursor fx:constant="HAND" />
-                </cursor>
+         <Label fx:id="txtTitle" text="Add Movie">
+            <font>
+               <Font size="24.0" />
+            </font>
+         </Label>
+
+            <!-- Row 10: Image and Buttons -->
+            <Pane fx:id="paneContainer" prefHeight="465.0" prefWidth="277.0" style="-fx-border-color: lightgray; -fx-border-width: 1;" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="8">
                 <children>
-                    <HBox fx:id="imageContainer" alignment="CENTER" layoutX="-16.0" maxWidth="241.0" prefHeight="217.0" prefWidth="203.0">
+                    <HBox fx:id="imageContainer" alignment="CENTER" layoutX="28.0" layoutY="-5.0" prefHeight="467.0" prefWidth="211.0">
                         <children>
-                            <ImageView fx:id="imageProduct" fitHeight="138.0" fitWidth="236.0" pickOnBounds="true" preserveRatio="true">
+                            <ImageView fx:id="imageProduct" fitHeight="218.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
                                     <Image url="@../../media/empty-image.jpg" />
                                 </image>
                             </ImageView>
                         </children>
-                        <cursor>
-                            <Cursor fx:constant="HAND" />
-                        </cursor>
                     </HBox>
                 </children>
             </Pane>
-            <TextField fx:id="txtActors" layoutX="266.0" layoutY="216.0" prefHeight="30.0" prefWidth="285.0" promptText="Actors" styleClass="jfx-text-field">
+
+            <Button fx:id="btnSave" onAction="#handleSave" prefHeight="30.0" prefWidth="80.0" styleClass="action-button" text="Save" textFill="WHITE" GridPane.rowIndex="9">
                 <font>
-                    <Font size="14.0" />
+                    <Font name="System Bold" size="12.0" />
                 </font>
-            </TextField>
-        </children>
-    </AnchorPane>
+            </Button>
+
+            <Button fx:id="btnCancel" onAction="#handleClose" prefHeight="30.0" prefWidth="80.0" styleClass="button-cancel" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                <font>
+                    <Font name="System Bold" size="12.0" />
+                </font>
+            </Button>
+
+                  <!-- Row 4: Genre (ComboBox) -->
+            <ComboBox fx:id="comboGenre" prefHeight="67.0" prefWidth="239.0" promptText="Select Genre" GridPane.rowIndex="3">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Action" />
+                        <String fx:value="Comedy" />
+                        <String fx:value="Drama" />
+                        <String fx:value="Horror" />
+                        <String fx:value="Romance" />
+                        <String fx:value="Sci-Fi" />
+                        <String fx:value="Documentary" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+         <HBox prefHeight="15.0" prefWidth="300.0" spacing="10.0" GridPane.rowIndex="7">
+            <children>
+      
+                  <!-- Row 7: Home Viewing Price -->
+                  <TextField fx:id="txtHVPrice" prefWidth="200.0" promptText="Home Viewing Price" styleClass="text-field">
+                      <font>
+                          <Font size="14.0" />
+                      </font>
+                  </TextField>
+      
+                  <!-- Row 8: Theater Price -->
+                  <TextField fx:id="txtTheaterPrice" prefWidth="200.0" promptText="Theater Price" styleClass="text-field">
+                      <font>
+                          <Font size="14.0" />
+                      </font>
+                  </TextField>
+            </children>
+         </HBox>
+         <HBox prefHeight="15.0" prefWidth="300.0" spacing="10.0" GridPane.rowIndex="4">
+            <children>
+               <ComboBox fx:id="comboType" prefHeight="40.0" prefWidth="211.0" promptText="Select Genre">
+                  <items>
+                     <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Action" />
+                        <String fx:value="Comedy" />
+                        <String fx:value="Drama" />
+                        <String fx:value="Horror" />
+                        <String fx:value="Romance" />
+                        <String fx:value="Sci-Fi" />
+                        <String fx:value="Documentary" />
+                     </FXCollections>
+                  </items>
+               </ComboBox>
+      
+                  <!-- Row 5: Duration -->
+                  <TextField fx:id="txtDuration" prefWidth="200.0" promptText="Duration" styleClass="text-field">
+                      <font>
+                          <Font size="14.0" />
+                      </font>
+                  </TextField>
+            </children>
+         </HBox>
+         <columnConstraints>
+            <ColumnConstraints maxWidth="264.0" minWidth="300.0" prefWidth="264.0" />
+            <ColumnConstraints maxWidth="145.0" minWidth="300.0" prefWidth="300.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
+            <RowConstraints maxHeight="46.0" minHeight="46.0" prefHeight="46.0" />
+            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" />
+            <RowConstraints />
+            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+            <RowConstraints />
+         </rowConstraints>
+
+        </GridPane>
+
+        <Button fx:id="btnClose" layoutX="600.0" layoutY="12.0" onAction="#handleClose" prefHeight="35.0" prefWidth="49.0" styleClass="button-close" text=" ">
+            <graphic>
+                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../../media/icons/icons8-close-50.png" />
+                </ImageView>
+            </graphic>
+        </Button>
+    </children>
+</AnchorPane>

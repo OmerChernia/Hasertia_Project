@@ -49,11 +49,11 @@ public class ComplaintBoundary implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initializeComplaintForm();
 
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
 
-          initializeComplaintForm();
     }
 
     private void initializeComplaintForm() {

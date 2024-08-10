@@ -7,10 +7,22 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.Person;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +35,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class MainBoundary implements Initializable {
 
@@ -46,7 +60,7 @@ public class MainBoundary implements Initializable {
     private Button btnEditScreenings;
 
     @FXML
-    private Button btnExit;
+    private Button btnLog;
 
     @FXML
     private Button btnHome;
@@ -117,18 +131,56 @@ public class MainBoundary implements Initializable {
     @FXML
     private AnchorPane tooltipSettings;
 
+    @FXML
+    private ToggleGroup userTypeToggleGroup;
+
+
+    @FXML
+    private TextField txtPassword;
+
+    @FXML
+    private TextField txtUser;
+
+    @FXML
+    private TextField txtEmploee;
+
+
+
+
     private DialogTool dialogLogIn;
     @FXML
     private ImageView image;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        homeWindowsInitialize();
+    private String loggedInUserId;
+    private Employee.EmployeeType loggedInEmploeeId;
 
+
+    public void initialize(URL location, ResourceBundle resources) {
+        EventBus.getDefault().register(this);
+
+        // Create the ToggleGroup and add the radio buttons to it
+        userTypeToggleGroup = new ToggleGroup();
+        customerRadioButton.setToggleGroup(userTypeToggleGroup);
+        employeeRadioButton.setToggleGroup(userTypeToggleGroup);
+
+        // Set the initial selection if needed
+        customerRadioButton.setSelected(true);
+
+        // Add a listener to clear text fields on selection change
+        userTypeToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            clearTextFields();
+        });
+
+        homeWindowsInitialize();
+        resetButtons();
         tooltips();
     }
 
-
+    private void clearTextFields() {
+        txtUser.clear();
+        txtEmploee.clear();
+        txtPassword.clear();
+    }
 
     @FXML
     private void setDisableButtons(ActionEvent event) {
@@ -200,15 +252,12 @@ public class MainBoundary implements Initializable {
         setDisableButtons(event);
     }
 
-
-
     @FXML
     private void closeLoginDialog() {
         if (dialogLogIn != null) {
             dialogLogIn.close();
         }
     }
-
 
     @FXML
     private void loginWindow() {
@@ -263,7 +312,7 @@ public class MainBoundary implements Initializable {
         Animations.tooltip(btnHome, tooltipHome);
          Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
         Animations.tooltip(btnEditScreenings, tooltipEditScreenings);
-        Animations.tooltip(btnExit, tooltipExit);
+        Animations.tooltip(btnLog, tooltipExit);
         Animations.tooltip(btnOrders, tooltipOrders);
         Animations.tooltip(btnComplaints, tooltipComplaints);
         Animations.tooltip(btnReports, tooltipReports);
@@ -272,22 +321,14 @@ public class MainBoundary implements Initializable {
 
 
 
-    private Object currentController;
 
     private void showFXMLWindows(String FXMLName) {
 
-        if (currentController instanceof HomeBoundary) {
-            ((HomeBoundary) currentController).cleanup();
-        }
 
         rootContainer.getChildren().clear();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLName));
             Parent root = loader.load();
-
-
-            currentController = loader.getController();
-
 
             AnchorPane.setBottomAnchor(root, 0.0);
             AnchorPane.setTopAnchor(root, 0.0);
@@ -309,6 +350,185 @@ public class MainBoundary implements Initializable {
 
     public Button getBtnAbout() {
         return btnAbout;
+    }
+
+
+    @FXML
+    private void login(ActionEvent event) {
+        String UserName = txtUser.getText();
+        String EmploeeName = txtEmploee.getText();
+        String password = txtPassword.getText();
+
+        if (customerRadioButton.isSelected()) {
+            LoginPageController.requestUserLogin(UserName);
+            System.out.println("SEND Login");
+        } else if (employeeRadioButton.isSelected()) {
+            LoginPageController.requestEmployeeLogin(EmploeeName, password);
+            System.out.println("SEND EMPLOYEE Login");
+
+        }
+    }
+
+    @Subscribe
+    public void handleLoginResponse(LoginMessage loginMessage) {
+        if (loginMessage instanceof EmployeeLoginMessage) {
+
+            handleEmployeeLoginResponse((EmployeeLoginMessage)loginMessage);
+        }
+        else  handleCustomerLoginResponse(loginMessage);
+    }
+
+
+
+
+
+
+    public void handleCustomerLoginResponse(LoginMessage loginMessage) {
+        Platform.runLater(() -> {
+            if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
+                this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
+                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User" + loginMessage.id + "Logged in!");
+
+                // Update the UI based on the user's role
+                updateUserBasedOnRole(loginMessage.id);
+
+                // Close the login dialog or do any other post-login actions
+                closeLoginDialog();
+            } else if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_FAILED) {
+                // Handle login failure (show error message, etc.)
+                NotificationsBuilder.create(NotificationType.ERROR,"Login failed. Please check your credentials.");
+
+            } else if (loginMessage.responseType == LoginMessage.ResponseType.ALREADY_LOGGED) {
+
+                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User" + loginMessage.id + "Logged in!");
+            }
+        });
+    }
+
+
+    public void handleEmployeeLoginResponse(EmployeeLoginMessage loginMessage) {
+        Platform.runLater(() -> {
+            if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
+                this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
+
+                // Update the UI based on the user's role
+                updateEmployeeBasedOnRole(loginMessage.id, loginMessage.employeeType);
+                NotificationsBuilder.create(NotificationType.SUCCESS, "Employee" + loginMessage.employeeType+  loginMessage.employeeType.name() + "Logged in!");
+
+                // Close the login dialog or do any other post-login actions
+                closeLoginDialog();
+            } else if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_FAILED) {
+                // Handle login failure (show error message, etc.)
+                NotificationsBuilder.create(NotificationType.ERROR,"Login failed. Please check your credentials.");
+            } else if (loginMessage.responseType == LoginMessage.ResponseType.ALREADY_LOGGED) {
+                // Handle the case where the user is already logged in
+                NotificationsBuilder.create(NotificationType.ERROR,"User is already logged in.");
+            }
+        });
+    }
+
+
+    private void resetButtons() {
+        // Disable all buttons by default
+        btnOrders.setVisible(false);
+        btnEditMovieList.setVisible(false);
+        btnEditScreenings.setVisible(false);
+        btnComplaints.setVisible(false);
+        btnReports.setVisible(false);
+
+
+        // Show common buttons
+        btnAbout.setVisible(true);
+        btnLog.setVisible(true);
+        btnSettings.setVisible(true);
+        btnHome.setVisible(true);
+        btnME.setVisible(true);
+    }
+
+    private void updateUserBasedOnRole(String userId ) {
+        // Disable all buttons by default
+         btnEditMovieList.setVisible(false);
+        btnEditScreenings.setVisible(false);
+        btnComplaints.setVisible(false);
+        btnReports.setVisible(false);
+
+
+        // Show common buttons
+        btnAbout.setVisible(true);
+        btnLog.setVisible(true);
+        btnSettings.setVisible(true);
+        btnHome.setVisible(true);
+        btnME.setVisible(true);
+        btnOrders.setVisible(true);
+
+     }
+
+
+    private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role ) {
+
+        // Disable all buttons by default
+        btnEditMovieList.setVisible(false);
+        btnEditScreenings.setVisible(false);
+        btnComplaints.setVisible(false);
+        btnReports.setVisible(false);
+
+
+        // Show common buttons
+        btnAbout.setVisible(true);
+        btnLog.setVisible(true);
+        btnSettings.setVisible(true);
+        btnHome.setVisible(true);
+        btnME.setVisible(true);
+        btnOrders.setVisible(true);
+
+
+        switch (role) {
+            case CONTENT_MANAGER:
+                btnEditMovieList.setVisible(true);
+                btnEditScreenings.setVisible(true);
+                break;
+            case CUSTOMER_SERVICE:
+                btnComplaints.setVisible(true);
+                break;
+            case THEATER_MANAGER:
+                btnComplaints.setVisible(true);
+                btnEditMovieList.setVisible(true);
+                btnEditScreenings.setVisible(true);
+                btnReports.setVisible(true);
+            case  COMPANY_MANAGER:
+                btnComplaints.setVisible(true);
+                btnEditMovieList.setVisible(true);
+                btnEditScreenings.setVisible(true);
+                btnReports.setVisible(true);
+                break;
+
+        }
+
+    }
+
+
+    @FXML
+    private void logout() {
+        if (loggedInUserId != null || loggedInEmploeeId != null) {
+            AlertsBuilder.create(AlertType.WARNING, stckMain, stckMain, stckMain, "Are you sure you want to log out?", "Yes", () -> {
+                sendLogoutRequest();
+                loggedInUserId = null;
+                loggedInEmploeeId = null;
+                resetButtons();
+                clearTextFields();
+                closeLoginDialog();
+                AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
+            }, "Cancel");
+        } else {
+            loginWindow();
+        }
+    }
+
+
+    private void sendLogoutRequest() {
+        if (loggedInUserId != null || loggedInEmploeeId != null) {
+            LoginPageController.requestUserLogOut(loggedInUserId);
+        }
     }
 
 

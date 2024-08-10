@@ -33,6 +33,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,15 +47,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EditMovieListBoundary implements Initializable {
-
-
-    private final long LIMIT = 1000000;
-
-    private final String ALREADY_EXISTS = "There is already a product with this barcode";
-
-    private final String IS_GREATER = "Minimum price cannot be higher than sale price";
-
-
 
     private ObservableList<Movie> listProducts;
 
@@ -126,7 +118,6 @@ public class EditMovieListBoundary implements Initializable {
 
         // Request the list of movies from the server
         MovieController.requestAllMovies();
-
         listProducts = FXCollections.observableArrayList();
         filterProducts = FXCollections.observableArrayList();
         animateNodes();
@@ -169,8 +160,8 @@ public class EditMovieListBoundary implements Initializable {
 
     /*TABLE*/
 
-    @FXML
-    private void loadData(MovieMessage movieMessage) {
+    @Subscribe
+    public void loadData(MovieMessage movieMessage) {
         listProducts.setAll(movieMessage.movies);
         tblProducts.setItems(listProducts);
         tblProducts.setFixedCellSize(30);

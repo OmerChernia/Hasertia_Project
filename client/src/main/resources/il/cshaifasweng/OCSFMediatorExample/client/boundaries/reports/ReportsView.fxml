@@ -45,7 +45,7 @@
                               <!-- Ticket Sales Report Tab -->
                               <Tab closable="false" text="Ticket Sales">
                                  <AnchorPane>
-                                    <ToggleButton fx:id="toggleTicketSalesChartType" layoutX="3.0" layoutY="8.0" onAction="#handleToggleTicketSalesChartType" prefHeight="27.0" prefWidth="120.0" styleClass="action-button" text="Toggle Chart Type" />
+                                    <ToggleButton fx:id="toggleTicketSalesChartType" layoutX="3.0" layoutY="8.0"  prefHeight="27.0" prefWidth="120.0" styleClass="action-button" text="Toggle Chart Type" />
                                     <PieChart fx:id="ticketSalesPieChart" layoutY="47.0" prefHeight="387.0" prefWidth="947.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
                                     <BarChart fx:id="ticketSalesBarChart" layoutY="31.0" prefHeight="383.0" prefWidth="934.0" title="Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
@@ -60,7 +60,7 @@
                               <!-- Package Sales Report Tab -->
                               <Tab closable="false" text="Package Sales">
                                  <AnchorPane>
-                                    <ToggleButton fx:id="togglePackageSalesChartType" layoutX="3.0" layoutY="4.0" onAction="#handleTogglePackageSalesChartType" styleClass="action-button" text="Toggle Chart Type" />
+                                    <ToggleButton fx:id="togglePackageSalesChartType" layoutX="3.0" layoutY="4.0"  styleClass="action-button" text="Toggle Chart Type" />
                                     <PieChart fx:id="packageSalesPieChart" prefHeight="437.0" prefWidth="940.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
                                     <BarChart fx:id="packageSalesBarChart" layoutY="31.0" prefHeight="405.0" prefWidth="940.0" title="Package Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
@@ -75,7 +75,7 @@
                               <!-- Multi-Entry Ticket Sales Report Tab -->
                               <Tab closable="false" text="Multi-Entry Ticket Sales">
                                  <AnchorPane>
-                                    <ToggleButton fx:id="toggleMultiEntryTicketSalesChartType" layoutX="3.0" layoutY="4.0" onAction="#handleToggleMultiEntryTicketSalesChartType" styleClass="action-button" text="Toggle Chart Type" />
+                                    <ToggleButton fx:id="toggleMultiEntryTicketSalesChartType" layoutX="3.0" layoutY="4.0"  styleClass="action-button" text="Toggle Chart Type" />
                                     <PieChart fx:id="multiEntryTicketSalesPieChart" prefHeight="437.0" prefWidth="940.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
                                     <BarChart fx:id="multiEntryTicketSalesBarChart" layoutY="31.0" prefHeight="405.0" prefWidth="940.0" title="Multi-Entry Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
@@ -90,7 +90,7 @@
                               <!-- Complaint Status Report Tab -->
                               <Tab closable="false" text="Complaint Status">
                                  <AnchorPane prefHeight="442.0" prefWidth="918.0">
-                                    <ToggleButton fx:id="toggleComplaintStatusChartType" layoutX="3.0" layoutY="3.0" onAction="#handleToggleComplaintStatusChartType" styleClass="action-button" text="Toggle Chart Type" />
+                                    <ToggleButton fx:id="toggleComplaintStatusChartType" layoutX="3.0" layoutY="3.0"  styleClass="action-button" text="Toggle Chart Type" />
                                     <PieChart fx:id="complaintStatusPieChart" prefHeight="442.0" prefWidth="946.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
                                     <BarChart fx:id="complaintStatusBarChart" layoutY="28.0" prefHeight="409.0" prefWidth="946.0" title="Complaint Status" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
@@ -136,7 +136,7 @@
                </opaqueInsets>
                <bottom>
                   <!-- Download Button -->
-                  <Button fx:id="downloadButton" alignment="CENTER" onAction="#handleDownloadButtonAction" prefHeight="27.0" prefWidth="150.0" text="Download PDF" BorderPane.alignment="CENTER">
+                  <Button fx:id="downloadButton" alignment="CENTER"  prefHeight="27.0" prefWidth="150.0" text="Download PDF" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="20.0" />
                      </BorderPane.margin>

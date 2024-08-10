@@ -22,9 +22,8 @@ public class ConstantsPath {
     public static final String ABOUT_VIEW =  USER_PACKAGE + "AboutView.fxml";
     public static final String DIALOG_TICKET_VIEW =  USER_PACKAGE + "dialogTicket.fxml";
     public static final String HOME_VIEW =  USER_PACKAGE + "HomeView.fxml";
-    public static final String MAIN_VIEW =  USER_PACKAGE + "HomeView.fxml";
-    public static final String ME_PURCHASE_VIEW =  USER_PACKAGE + " MEPurchaseView.fxml";
-    public static final String PACKAGE_PURCHASE_VIEW =  USER_PACKAGE + " PackagePurchaseView.fxml";
+    public static final String ME_PURCHASE_VIEW =  USER_PACKAGE + "MEPurchaseView.fxml";
+    public static final String PACKAGE_PURCHASE_VIEW =  USER_PACKAGE + "PackagePurchaseView.fxml";
     public static final String MOVIE_INFO_VIEW =  USER_PACKAGE + "MovieInfo.fxml";
     public static final String MOVIE_SMALL_VIEW =  USER_PACKAGE + "MovieSmall.fxml";
     public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + " TheaterPurchaseView.fxml";
@@ -33,7 +32,7 @@ public class ConstantsPath {
      /* REGISTER_USER_VIEWS */
     public static final String COMPLAINT_VIEW =  REGISTER_USER_PACKAGE + "ComplaintView.fxml";
     public static final String DIALOG_COMPLAINT_VIEW  =  REGISTER_USER_PACKAGE + "dialogComplaint.fxml";
-    public static final String ORDERS_VIEW =  REGISTER_USER_PACKAGE + " OrdersView.fxml";
+    public static final String ORDERS_VIEW =  REGISTER_USER_PACKAGE + "OrdersView.fxml";
 
     /* CONTENT_MANAGER_VIEWS */
     public static final String CONTENT_MOVIES_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieListView.fxml";

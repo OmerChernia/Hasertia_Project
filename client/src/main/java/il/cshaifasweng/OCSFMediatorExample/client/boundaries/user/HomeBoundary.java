@@ -46,25 +46,31 @@ public class HomeBoundary implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
-
         // Request the list of movies from the server
         MovieController.requestAllMovies();
+
     }
 
     @Subscribe
     public void onMovieMessageReceived(MovieMessage message) {
         Platform.runLater(() -> {
+            if (message.movies == null) {
+                System.err.println("Received MovieMessage with null movies list.");
+                return;
+            }
             try {
-                System.err.println("Received MovieMessage in Client\n"+message.movies.toString());
+                System.err.println("Received MovieMessage in Client\n" + message.movies.toString());
                 items = message.movies;
                 setItems(items);
             } catch (IOException e) {
                 e.printStackTrace();
-             }
+            }
         });
     }
+
 
     public void setItems(List<Movie> movies) throws IOException {
         if (movies == null || movies.isEmpty()) {
@@ -146,8 +152,8 @@ public class HomeBoundary implements Initializable {
         }
     }
 
+    // Unregister EventBus in cleanup
     public void cleanup() {
-        // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }
 }
