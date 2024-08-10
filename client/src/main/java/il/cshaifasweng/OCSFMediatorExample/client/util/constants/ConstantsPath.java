@@ -8,21 +8,58 @@ public class ConstantsPath {
     public static final Double MIN_WIDTH = 1040.00;
     public static final Double MIN_HEIGHT = 640.00;
 
-     public static final String SOURCE_PACKAGE = "/il/cshaifasweng/OCSFMediatorExample/client/";
-    public static final String COSTUMER_PACKAGE = SOURCE_PACKAGE + "boundriesCustomer/";
-    public static final String EMPLOEE_PACKAGE =  SOURCE_PACKAGE + "boundariesEmploee/";
+    public static final String SOURCE_PACKAGE = "/il/cshaifasweng/OCSFMediatorExample/client/";
+    public static final String BOUNDARIES_PACKAGE = SOURCE_PACKAGE + "boundaries/";
+    public static final String REPORTS_PACKAGE =  BOUNDARIES_PACKAGE + "reports/";
+    public static final String CONTENT_MANAGER_PACKAGE =  BOUNDARIES_PACKAGE + "contentManager/";
+    public static final String CUSTOMER_SERVICE_PACKAGE =  BOUNDARIES_PACKAGE + "customerService/";
+    public static final String REGISTER_USER_PACKAGE =  BOUNDARIES_PACKAGE + "registeredUser/";
+    public static final String USER_PACKAGE =  BOUNDARIES_PACKAGE + "user/";
 
-    public static final String MEDIA_PACKAGE = "/il/cshaifasweng/OCSFMediatorExample/client/media/";
+
+    /* USER_VIEWS */
+    public static final String START_VIEW =  USER_PACKAGE + "StartView.fxml";
+    public static final String ABOUT_VIEW =  USER_PACKAGE + "AboutView.fxml";
+    public static final String DIALOG_TICKET_VIEW =  USER_PACKAGE + "dialogTicket.fxml";
+    public static final String HOME_VIEW =  USER_PACKAGE + "HomeView.fxml";
+    public static final String ME_PURCHASE_VIEW =  USER_PACKAGE + "MEPurchaseView.fxml";
+    public static final String PACKAGE_PURCHASE_VIEW =  USER_PACKAGE + "PackagePurchaseView.fxml";
+    public static final String MOVIE_INFO_VIEW =  USER_PACKAGE + "MovieInfo.fxml";
+    public static final String MOVIE_SMALL_VIEW =  USER_PACKAGE + "MovieSmall.fxml";
+    public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + " TheaterPurchaseView.fxml";
+
+
+     /* REGISTER_USER_VIEWS */
+    public static final String COMPLAINT_VIEW =  REGISTER_USER_PACKAGE + "ComplaintView.fxml";
+    public static final String DIALOG_COMPLAINT_VIEW  =  REGISTER_USER_PACKAGE + "dialogComplaint.fxml";
+    public static final String ORDERS_VIEW =  REGISTER_USER_PACKAGE + "OrdersView.fxml";
+
+    /* CONTENT_MANAGER_VIEWS */
+    public static final String CONTENT_MOVIES_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieListView.fxml";
+    public static final String CONTENT_SCREENINGS_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieScreeningsView.fxml";
+
+    /* CUSTOMER_MANAGER_VIEWS */
+    public static final String CUSTOMER_SERVICE_VIEW  =  CUSTOMER_SERVICE_PACKAGE + "CustomerService.fxml";
+    public static final String DIALOG_CUSTOMER_SERVICE_VIEW  =  CUSTOMER_SERVICE_PACKAGE + "dialogCustomerService.fxml";
+
+
+    /* REPORTS_VIEWS */
+    public static final String COMPANY_MANAGER_VIEW  =  REPORTS_PACKAGE + "ReportsView.fxml";
+
+
+    public static final String MEDIA_PACKAGE = SOURCE_PACKAGE+ "media/";
     public static final String MOVIE_PACKAGE = MEDIA_PACKAGE + "Movie/";
     public static final String ICON_PACKAGE = MEDIA_PACKAGE + "icons/";
     public static final String PROFILE_PICTURES_PACKAGE = MEDIA_PACKAGE + "profiles/";
 
-    public static final String LOGIN_VIEW = COSTUMER_PACKAGE + "DeleteLater.fxml";
-    public static final String START_VIEW = COSTUMER_PACKAGE+ "StartView.fxml";
-    public static final String MAIN_VIEW = COSTUMER_PACKAGE + "MainView.fxml";
-    public static final String SMALL_MOVIE_VIEW = COSTUMER_PACKAGE + "MovieSmall.fxml";
-    //public static final String MAIN_VIEW = COSTUMER_PACKAGE + "MainView.fxml";
-    //public static final String MAIN_VIEW = COSTUMER_PACKAGE + "MainView.fxml";
+
+
+
+
+
+
+
+
 
 
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MovieController {
 
-    public static void requestAllMovies() {
+    public static void  requestAllMovies() {
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.GET_ALL_MOVIES);
         SimpleClient.getClient().sendRequest(requestMessage);
     }

@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MovieInfoBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer.MovieSmallBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.boundariesEmploee.LogInBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.dialog.DialogTicketController;
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieInfoBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.DialogTicketController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

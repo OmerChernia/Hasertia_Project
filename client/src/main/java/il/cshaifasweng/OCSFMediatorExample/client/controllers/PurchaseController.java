@@ -4,7 +4,6 @@ import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 
 import java.time.LocalDateTime;
 

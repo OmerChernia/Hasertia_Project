@@ -1,7 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import org.json.JSONObject;
-
 import javax.persistence.*;
 
 @Entity

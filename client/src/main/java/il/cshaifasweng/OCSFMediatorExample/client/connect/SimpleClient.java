@@ -2,8 +2,6 @@ package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Person;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
@@ -14,9 +12,6 @@ public class SimpleClient extends AbstractClient {
 	private static SimpleClient client = null;
 	public static String host = "";
 	public static int port = 0;
-
-	public static Person user = null; //this to know what user is online
-
 
 	SimpleClient(String host, int port) {
 		super(host, port);
@@ -62,13 +57,10 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	protected void handleMessageFromServer(Object msg) {
-		if (msg instanceof Message)
-		{
+		if (msg instanceof Message) {
 			// Post the received message to EventBus
 			EventBus.getDefault().post(msg);
-		}
-		else
-		{
+		} else {
 			System.err.println("Received unknown message type from server: " + msg.getClass());
 		}
 	}

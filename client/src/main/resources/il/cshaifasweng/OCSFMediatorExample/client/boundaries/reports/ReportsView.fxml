@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="544.0" prefWidth="899.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.ReportsBoundary">
+   <children>
+      <AnchorPane fx:id="rootStatistics" prefHeight="624.0" prefWidth="1014.0" styleClass="date-picker" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <BorderPane prefHeight="545.0" prefWidth="957.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <top>
+                  <HBox alignment="CENTER" prefHeight="45.0" prefWidth="1000.0" spacing="10.0" BorderPane.alignment="CENTER">
+                     <padding>
+                        <Insets bottom="10.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Text fx:id="title" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h1" text="REPORTS">
+                           <font>
+                              <Font name="System Bold" size="35.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+               </top>
+               <center>
+                  <VBox fx:id="vbox" prefHeight="552.0" prefWidth="962.0" spacing="20" BorderPane.alignment="CENTER">
+                     <children>
+                        <TabPane fx:id="tabPane" prefHeight="521.0" prefWidth="960.0" style="-fx-background-color: white;" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS">
+                           <tabs>
+                              <!-- Existing Tabs -->
+                              <!-- Ticket Sales Report Tab -->
+                              <Tab closable="false" text="Ticket Sales">
+                                 <AnchorPane>
+                                    <ToggleButton fx:id="toggleTicketSalesChartType" layoutX="3.0" layoutY="8.0"  prefHeight="27.0" prefWidth="120.0" styleClass="action-button" text="Toggle Chart Type" />
+                                    <PieChart fx:id="ticketSalesPieChart" layoutY="47.0" prefHeight="387.0" prefWidth="947.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                                    <BarChart fx:id="ticketSalesBarChart" layoutY="31.0" prefHeight="383.0" prefWidth="934.0" title="Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <xAxis>
+                                          <CategoryAxis label="Days in Month" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis label="Sales" />
+                                       </yAxis>
+                                    </BarChart>
+                                 </AnchorPane>
+                              </Tab>
+                              <!-- Package Sales Report Tab -->
+                              <Tab closable="false" text="Package Sales">
+                                 <AnchorPane>
+                                    <ToggleButton fx:id="togglePackageSalesChartType" layoutX="3.0" layoutY="4.0"  styleClass="action-button" text="Toggle Chart Type" />
+                                    <PieChart fx:id="packageSalesPieChart" prefHeight="437.0" prefWidth="940.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                                    <BarChart fx:id="packageSalesBarChart" layoutY="31.0" prefHeight="405.0" prefWidth="940.0" title="Package Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <xAxis>
+                                          <CategoryAxis label="Days in Month" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis label="Sales" />
+                                       </yAxis>
+                                    </BarChart>
+                                 </AnchorPane>
+                              </Tab>
+                              <!-- Multi-Entry Ticket Sales Report Tab -->
+                              <Tab closable="false" text="Multi-Entry Ticket Sales">
+                                 <AnchorPane>
+                                    <ToggleButton fx:id="toggleMultiEntryTicketSalesChartType" layoutX="3.0" layoutY="4.0"  styleClass="action-button" text="Toggle Chart Type" />
+                                    <PieChart fx:id="multiEntryTicketSalesPieChart" prefHeight="437.0" prefWidth="940.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                                    <BarChart fx:id="multiEntryTicketSalesBarChart" layoutY="31.0" prefHeight="405.0" prefWidth="940.0" title="Multi-Entry Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <xAxis>
+                                          <CategoryAxis label="Days in Month" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis label="Sales" />
+                                       </yAxis>
+                                    </BarChart>
+                                 </AnchorPane>
+                              </Tab>
+                              <!-- Complaint Status Report Tab -->
+                              <Tab closable="false" text="Complaint Status">
+                                 <AnchorPane prefHeight="442.0" prefWidth="918.0">
+                                    <ToggleButton fx:id="toggleComplaintStatusChartType" layoutX="3.0" layoutY="3.0"  styleClass="action-button" text="Toggle Chart Type" />
+                                    <PieChart fx:id="complaintStatusPieChart" prefHeight="442.0" prefWidth="946.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                                    <BarChart fx:id="complaintStatusBarChart" layoutY="28.0" prefHeight="409.0" prefWidth="946.0" title="Complaint Status" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <xAxis>
+                                          <CategoryAxis label="Days in Month" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis label="Complaints" />
+                                       </yAxis>
+                                    </BarChart>
+                                    <BarChart fx:id="complaintStatusHistogram" layoutY="28.0" prefHeight="409.0" prefWidth="946.0" title="Complaints by Cinema" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                       <xAxis>
+                                          <CategoryAxis label="Days in Month" />
+                                       </xAxis>
+                                       <yAxis>
+                                          <NumberAxis label="Complaints" />
+                                       </yAxis>
+                                    </BarChart>
+                                 </AnchorPane>
+                              </Tab>
+                              <!-- Network Manager Additional Reports Tab -->
+                              <Tab closable="false" text="Network Manager Reports">
+                                 <AnchorPane>
+                                    <Text fx:id="networkManagerInstructions" layoutX="20.0" layoutY="20.0" text="The Network Manager may request additional reports that are similar in nature but different in content. Therefore, the system should be designed flexibly so that minimal development work is required to generate new reports." wrappingWidth="900.0">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Text>
+                                    <VBox layoutY="70.0" prefHeight="400.0" prefWidth="940.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0">
+                                       <!-- Future reports can be added here dynamically -->
+                                    </VBox>
+                                 </AnchorPane>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" right="20.0" />
+                     </padding>
+                  </VBox>
+               </center>
+               <opaqueInsets>
+                  <Insets bottom="20.0" left="50.0" right="50.0" />
+               </opaqueInsets>
+               <bottom>
+                  <!-- Download Button -->
+                  <Button fx:id="downloadButton" alignment="CENTER"  prefHeight="27.0" prefWidth="150.0" text="Download PDF" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="20.0" />
+                     </BorderPane.margin>
+                  </Button>
+               </bottom>
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

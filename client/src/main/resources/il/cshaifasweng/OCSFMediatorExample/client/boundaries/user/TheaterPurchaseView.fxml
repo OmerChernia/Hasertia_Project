@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="857.0" prefWidth="1004.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.TheaterPurchaseBoundary">
+   <!-- Top section with tabs and movie details -->
+   <top>
+      <VBox>
+         <HBox alignment="CENTER" spacing="10" style="-fx-background-color: #161438; -fx-padding: 10px;">
+            <Label fx:id="step1Label" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="1" />
+            <Label fx:id="step1Text" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="Seat Selection" />
+            <Label fx:id="step2Label" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="2" />
+            <Label fx:id="step2Text" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="Ticket Type" />
+            <Label fx:id="step3Label" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="3" />
+            <Label fx:id="step3Text" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="Payment Details" />
+            <Button onAction="#closeApplication" style="-fx-background-color: transperant; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="X" />
+         </HBox>
+         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #1d1d48; -fx-padding: 10px;">
+            <ImageView fx:id="movieImage" fitHeight="50" fitWidth="50" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="movieTitle" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 16px;" text=" | " />
+            <Label fx:id="movieLocation" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 16px;" text=" | " />
+            <Label fx:id="movieDate" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 16px;" text=" | " />
+            <Label fx:id="movieTime" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+            <Label style="-fx-text-fill: white; -fx-font-size: 16px;" text=" | " />
+            <Label fx:id="movieHall" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+         </HBox>
+      </VBox>
+   </top>
+
+   <!-- Center section with stack pane for different steps -->
+   <center>
+      <StackPane fx:id="stackPane" prefHeight="752.0" prefWidth="949.0" style="-fx-background-color: #cae8fb;">
+         <!-- Step 1: Seat Selection -->
+         <VBox fx:id="seatSelectionPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px;">
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="100.0" fitWidth="530.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../media/icons/screenSVG.png" />
+                     </image>
+                  </ImageView>
+                  <Label graphicTextGap="0.0" prefHeight="5.0" prefWidth="80.0" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Screen" />
+               </children>
+            </StackPane>
+            <GridPane fx:id="seatGrid" alignment="CENTER" hgap="10" vgap="10" />
+            <HBox alignment="CENTER" spacing="10">
+               <Label style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-padding: 5px;" text="Available Seat" />
+               <Label style="-fx-background-color: #e72241; -fx-text-fill: white; -fx-padding: 5px;" text="Selected Seat" />
+               <Label style="-fx-background-color: #838f97; -fx-text-fill: white; -fx-padding: 5px;" text="Reserved Seat" />
+            </HBox>
+            <Button onAction="#goToTicketSelection" style="-fx-background-color: #ffc500;" text="Next" />
+         </VBox>
+
+         <!-- Step 2: Ticket Selection -->
+         <VBox fx:id="ticketSelectionPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px;">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f44336;" text="Select Ticket Type" />
+            <Button onAction="#goToPaymentDetails" style="-fx-background-color: #ffc500;" text="Regular - ₪47.90" />
+            <Button onAction="#showIdPhoneFields" style="-fx-background-color: #f44336;" text="Card Package - ₪40.00" />
+            <!-- ID/Phone Fields -->
+            <VBox fx:id="idPhonePane" alignment="CENTER" prefHeight="211.0" prefWidth="875.0" spacing="10" style="-fx-padding: 20px;" visible="false">
+               <Label style="-fx-font-size: 18px;" text="Enter ID or Phone Number" />
+               <GridPane alignment="CENTER" hgap="10" prefHeight="60.0" prefWidth="796.0" vgap="10">
+                  <Label text="ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="idField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Label text="Phone Number:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+               </GridPane>
+               <Button onAction="#goToPaymentDetails" styleClass="button-yes" text="Next" />
+               <Button onAction="#hideIdPhoneFields" styleClass="button-cancel" text="Cancel" />
+            </VBox>
+            <Button onAction="#goToTicketSelection" style=": ;" styleClass="button-cancel" stylesheets="@../../css/main.css" text="Back" />
+         </VBox>
+
+         <!-- Step 3: Payment Details -->
+         <VBox fx:id="paymentDetailsPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px;">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f44336;" text="Payment Details" />
+            <Label fx:id="timerLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: black;" text="10:00" />
+            <GridPane alignment="CENTER" hgap="10" vgap="10">
+               <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+               <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" />
+               <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+               <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <Label text="ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+               <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+               <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               <Label text="Phone Number:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+               <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <Label text="Confirm Phone Number:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+               <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+            </GridPane>
+            <Button onAction="#showCreditCardFields" style="-fx-background-color: #ffc500;" text="Pay with Credit Card" />
+
+            <!-- Credit Card Fields -->
+            <VBox fx:id="creditCardPane" alignment="CENTER" prefHeight="234.0" prefWidth="961.0" spacing="10" visible="false">
+               <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Credit Card Details" />
+               <GridPane alignment="CENTER" hgap="10" prefHeight="95.0" prefWidth="789.0" vgap="10">
+                  <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="cardNumberField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Label text="Expiration Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <TextField fx:id="expirationDateField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="CVV:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <TextField fx:id="cvvField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+               </GridPane>
+               <Button onAction="#submitPayment" text="Submit" />
+               <Button onAction="#cancelPayment" text="Cancel" />
+            </VBox>
+            <Button onAction="#goToTicketSelection" style=": ;" styleClass="button-cancel" stylesheets="@../../css/main.css" text="Back" />
+         </VBox>
+
+         <!-- Step 4: Ticket Confirmation -->
+         <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" prefHeight="724.0" prefWidth="959.0" spacing="20" style="-fx-padding: 20px;">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4caf50;" text="Ticket Confirmation" />
+            <ImageView fx:id="confirmationMovieImage" fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="confirmationDetails" style="-fx-font-size: 18px;" />
+            <Label fx:id="pricePaidLabel" style="-fx-font-size: 18px;" />
+            <Button onAction="#closeApplication" style=": ;" styleClass="button-cancel" text="Close" />
+         </VBox>
+      </StackPane>
+   </center>
+</BorderPane>

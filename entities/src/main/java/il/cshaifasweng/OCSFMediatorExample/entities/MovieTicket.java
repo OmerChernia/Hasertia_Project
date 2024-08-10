@@ -1,8 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import com.google.gson.Gson;
-import org.json.JSONObject;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 

@@ -1,12 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import com.google.gson.Gson;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
