@@ -404,7 +404,7 @@ public class MainBoundary implements Initializable {
 
             } else if (loginMessage.responseType == LoginMessage.ResponseType.ALREADY_LOGGED) {
 
-                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User" + loginMessage.id + "Logged in!");
+                NotificationsBuilder.create(NotificationType.ERROR,"Registered User is already logged in.");
             }
         });
     }
