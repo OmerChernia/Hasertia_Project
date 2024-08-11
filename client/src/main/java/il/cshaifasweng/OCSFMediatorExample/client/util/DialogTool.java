@@ -16,17 +16,22 @@ public class DialogTool {
     private final StackPane root;
 
     public DialogTool(Region region, StackPane container) {
-
         dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.initStyle(StageStyle.TRANSPARENT);
 
+        // Ensure the region has a transparent background
+        region.setStyle("-fx-background-color: transparent;");
+
         root = new StackPane(region);
 
+        // Create the scene with transparent fill
         Scene scene = new Scene(root);
+        scene.setFill(null); // Transparent background for the scene
+
+        // Add the stylesheet if necessary
         scene.getStylesheets().add(getClass().getResource(ConstantsPath.CSS_LIGHT_THEME).toExternalForm()); // Ensure this path is correct
         dialogStage.setScene(scene);
-
     }
 
     public void setOnDialogOpened(EventHandler<WindowEvent> action) {
@@ -45,6 +50,4 @@ public class DialogTool {
         System.out.println("Closing dialog");
         dialogStage.close();
     }
-
-
 }

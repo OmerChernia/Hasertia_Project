@@ -51,7 +51,7 @@ public class AlertsBuilder {
 
         if (secondaryButtonText != null) {
             Button secondaryButton = new Button(secondaryButtonText);
-            secondaryButton.getStyleClass().add("alert-secondary-button");
+            secondaryButton.getStyleClass().add("alert-warning-button ");
             buttonContainer.getChildren().add(secondaryButton);
             secondaryButton.setOnMouseClicked(e -> alertStage.close());
         }

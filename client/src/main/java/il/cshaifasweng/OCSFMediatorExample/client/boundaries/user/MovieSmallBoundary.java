@@ -210,7 +210,7 @@ public class MovieSmallBoundary {
         txtMovieTheater.setText(movie.getEnglishName());
 
         try {
-            String imagePath = "/il/cshaifasweng/OCSFMediatorExample/client/media/Movie/" + movie.getImage();
+            String imagePath = ConstantsPath.MOVIE_PACKAGE + movie.getImage();
             URL imageUrl = getClass().getResource(imagePath);
 
             if (imageUrl == null) {

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
@@ -145,8 +146,6 @@ public class MainBoundary implements Initializable {
     private TextField txtEmploee;
 
 
-
-
     private DialogTool dialogLogIn;
     @FXML
     private ImageView image;
@@ -261,24 +260,23 @@ public class MainBoundary implements Initializable {
 
     @FXML
     private void loginWindow() {
-        rootContainer.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+        rootContainer.setEffect(ConstantsPath.BOX_BLUR_EFFECT); // Blur the background
 
-        pnLogIn.setVisible(true);
+        pnLogIn.setVisible(true); // Show the login pane
 
         dialogLogIn = new DialogTool(pnLogIn, stckMain);
-
         dialogLogIn.show();
         dialogLogIn.setOnDialogOpened(ev -> employeeLogin.requestFocus());
         handleRadioButtonAction();
 
         dialogLogIn.setOnDialogClosed(ev -> {
-
-            rootContainer.setEffect(null);
-            pnLogIn.setVisible(false);
+            rootContainer.setEffect(null); // Remove the blur effect
+            pnLogIn.setVisible(false); // Hide the login pane
         });
 
-        pnLogIn.toFront();
+        pnLogIn.toFront(); // Ensure the login pane is in front of other elements
     }
+
 
     @FXML
     private void handleRadioButtonAction() {

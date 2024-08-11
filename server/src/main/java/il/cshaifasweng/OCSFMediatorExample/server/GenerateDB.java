@@ -85,7 +85,7 @@ public class GenerateDB {
             employees = List.of(
                     new Employee("705182943","John Doe", true, "password10", Employee.EmployeeType.COMPANY_MANAGER),
                     new Employee("238947615","Jane Smith", false, "password120", Employee.EmployeeType.CUSTOMER_SERVICE),
-                    new Employee("864205739","Michael Johnson", true, "password1230", Employee.EmployeeType.CONTENT_MANAGER)
+                    new Employee("864205739","Michael Johnson", false, "password1230", Employee.EmployeeType.CONTENT_MANAGER)
             );
 
             Transaction transaction = session.beginTransaction();

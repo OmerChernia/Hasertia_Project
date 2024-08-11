@@ -8,7 +8,7 @@
 
 <StackPane fx:id="stckMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style=": ;" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary">
    <children>
-      <AnchorPane prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: f5f5f7;">
+      <AnchorPane prefHeight="419.0" prefWidth="728.0" style="-fx-background-color: f5f5f7;">
          <children>
             <AnchorPane fx:id="rootContainer" layoutX="70.0" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #f5f5f7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
 
@@ -79,7 +79,7 @@
             <!-- New top toolbar -->
             <AnchorPane fx:id="rootTopMenu" prefHeight="50.0" prefWidth="1000.0" style="-fx-background-color: #1d1d48;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <HBox alignment="TOP_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="1000.0">
+                  <HBox alignment="TOP_RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="50.0" prefWidth="930.0">
                      <children>
                         <Button fx:id="btnLog" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#logout" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" styleClass="main-view-button" text=" " textFill="WHITE">
                            <graphic>
@@ -131,7 +131,14 @@
                   </HBox>
                </children>
             </AnchorPane>
-
+            <!-- New right toolbar -->
+            <AnchorPane fx:id="rootRightMenu" prefHeight="600.0" prefWidth="70.0" style="-fx-background-color: #1d1d48;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <VBox prefHeight="600.0" prefWidth="70.0">
+                     <!-- Empty right toolbar -->
+                  </VBox>
+               </children>
+            </AnchorPane>
             <!-- Tooltip and other UI elements -->
             <AnchorPane fx:id="tooltipSettings" layoutX="792.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="73.0" visible="false" AnchorPane.bottomAnchor="517.0">
                <children>
@@ -279,50 +286,51 @@
 
          </children>
       </AnchorPane>
-      <!-- Existing login pane -->
-      <AnchorPane fx:id="pnLogIn" prefHeight="448.0" prefWidth="816.0" style="-fx-background-color: transparent;" visible="false" StackPane.alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER" layoutX="254.0" layoutY="180.0" prefHeight="128.0" prefWidth="452.0" style="-fx-background-color: transparent;">
+
+            <!-- Existing login pane -->
+            <AnchorPane fx:id="pnLogIn" style="-fx-background-color: transparent;" visible="false" StackPane.alignment="CENTER">
                <children>
-                  <Label prefHeight="47.0" prefWidth="462.0" style="-fx-background-color: #e72141; -fx-text-fill: white; -fx-padding: 10; -fx-font-size: 18;" text="Login to Personal Area">
-                     <graphic>
-                        <Button mnemonicParsing="false" onAction="#closeLoginDialog" styleClass="button-close" text="x" />
-                     </graphic>
-                  </Label>
-                  <VBox alignment="CENTER" prefHeight="97.0" prefWidth="424.0" spacing="10.0" style="-fx-background-color: #262262; -fx-padding: 20;">
+                  <VBox alignment="CENTER" prefHeight="143.0" prefWidth="445.0" style="-fx-background-color: transparent;">
                      <children>
-                        <HBox alignment="CENTER" spacing="10.0">
-                           <children>
-                              <RadioButton fx:id="customerRadioButton" onAction="#handleRadioButtonAction" selected="true" text="Customer" textFill="WHITE" />
-                              <RadioButton fx:id="employeeRadioButton" onAction="#handleRadioButtonAction" text="Employee" textFill="WHITE" />
-                           </children>
-                        </HBox>
-                        <VBox fx:id="customerLogin" alignment="CENTER" spacing="10.0">
-                           <children>
-                              <HBox alignment="CENTER" spacing="10.0">
-                                 <children>
-                                    <Button onAction="#login" style="-fx-background-color: #f3bc00; -fx-font-size: 16;" text="✓" />
-                                    <TextField fx:id="txtUser" promptText="ID Number" style="-fx-pref-width: 200; -fx-font-size: 16;" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                        <VBox fx:id="employeeLogin" alignment="CENTER" managed="false" spacing="10.0" visible="false">
+                        <Label prefHeight="47.0" prefWidth="462.0" style="-fx-background-color: #e72141; -fx-text-fill: white; -fx-padding: 10; -fx-font-size: 18;" text="Login to Personal Area">
+                           <graphic>
+                              <Button mnemonicParsing="false" onAction="#closeLoginDialog" styleClass="button-close" text="x" />
+                           </graphic>
+                        </Label>
+                        <VBox alignment="CENTER" prefHeight="97.0" prefWidth="424.0" spacing="10.0" style="-fx-background-color: #262262; -fx-padding: 20;">
                            <children>
                               <HBox alignment="CENTER" spacing="10.0">
                                  <children>
-                                    <TextField fx:id="txtEmploee" promptText="Username" style="-fx-pref-width: 100; -fx-font-size: 16;" />
-                                    <PasswordField fx:id="txtPassword" promptText="Password" style="-fx-pref-width: 100; -fx-font-size: 16;" />
-                                    <Button onAction="#login" style="-fx-background-color: #f3bc00; -fx-font-size: 16;" text="✓" />
+                                    <RadioButton fx:id="customerRadioButton" onAction="#handleRadioButtonAction" selected="true" text="Customer" textFill="WHITE" />
+                                    <RadioButton fx:id="employeeRadioButton" onAction="#handleRadioButtonAction" text="Employee" textFill="WHITE" />
                                  </children>
                               </HBox>
+                              <VBox fx:id="customerLogin" alignment="CENTER" spacing="10.0">
+                                 <children>
+                                    <HBox alignment="CENTER" spacing="10.0">
+                                       <children>
+                                          <Button onAction="#login" style="-fx-background-color: #f3bc00; -fx-font-size: 16;" text="✓" />
+                                          <TextField fx:id="txtUser" promptText="ID Number" style="-fx-pref-width: 200; -fx-font-size: 16;" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="employeeLogin" alignment="CENTER" managed="false" spacing="10.0" visible="false">
+                                 <children>
+                                    <HBox alignment="CENTER" spacing="10.0">
+                                       <children>
+                                          <TextField fx:id="txtEmploee" promptText="Username" style="-fx-pref-width: 100; -fx-font-size: 16;" />
+                                          <PasswordField fx:id="txtPassword" promptText="Password" style="-fx-pref-width: 100; -fx-font-size: 16;" />
+                                          <Button onAction="#login" style="-fx-background-color: #f3bc00; -fx-font-size: 16;" text="✓" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
                            </children>
                         </VBox>
                      </children>
                   </VBox>
                </children>
-            </VBox>
+            </AnchorPane>
          </children>
-      </AnchorPane>
-   </children>
-</StackPane>
+      </StackPane>

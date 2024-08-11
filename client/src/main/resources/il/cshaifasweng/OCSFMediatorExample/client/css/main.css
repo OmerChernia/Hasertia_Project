@@ -120,6 +120,33 @@
     -fx-font-size: 15;
 }
 
+
+/* התראות WARNING */
+.alert-warning-button {
+    -fx-font-family: "Lato";
+    -fx-background-color: -delete;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-pref-height: 50px;
+    -fx-pref-width: 340px;
+    -fx-font-size: 15;
+}
+
+
+.alert-warning-title {
+    -fx-font-family: "Lato";
+    -fx-fill: -delete;
+    -fx-font-size: 30;
+}
+
+.alert-warning-body {
+    -fx-font-family: "Lato";
+    -fx-fill: -delete;
+    -fx-font-size: 15;
+}
+
+
+
 /* התראות הצלחה */
 .alert-success-button {
     -fx-font-family: "Lato";

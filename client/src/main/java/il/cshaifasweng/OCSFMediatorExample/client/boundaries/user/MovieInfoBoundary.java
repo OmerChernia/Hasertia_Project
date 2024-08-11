@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,10 +16,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MovieInfoBoundary {
+public class MovieInfoBoundary implements Initializable {
 
     public Button btnGenre;
      @FXML
@@ -48,9 +51,17 @@ public class MovieInfoBoundary {
 
     private HomeBoundary homeController;
 
+    @FXML
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+
     public void setHomeController(HomeBoundary homeController) {
         this.homeController = homeController;
     }
+
+
 
     public void setInfo (Movie movie)
     {

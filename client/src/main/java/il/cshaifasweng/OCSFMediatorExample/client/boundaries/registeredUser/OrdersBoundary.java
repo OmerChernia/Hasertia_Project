@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.DialogTicketController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
@@ -110,12 +111,14 @@ public class OrdersBoundary implements Initializable {
 
     private ObservableList<Purchase> filterOrders;
 
+    private int id;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         listOrders = FXCollections.observableArrayList();
         filterOrders = FXCollections.observableArrayList();
         EventBus.getDefault().register(this);
-        PurchaseController.GetAllPurchases(); // מבקש את כל ההזמנות מהשרת
+        PurchaseController.GetPurchasesByCustomerID(id);
         animateNodes();
         setContextMenu();
 
@@ -130,6 +133,11 @@ public class OrdersBoundary implements Initializable {
             return row;
         });
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {

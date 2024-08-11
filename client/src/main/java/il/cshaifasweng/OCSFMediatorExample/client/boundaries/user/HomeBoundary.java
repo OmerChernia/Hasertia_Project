@@ -1,5 +1,6 @@
-package il.cshaifasweng.OCSFMediatorExample.client.boundariesCustomer;
+package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
@@ -97,7 +98,7 @@ public class HomeBoundary implements Initializable {
     }
 
     private Node createItem(Movie item) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.SMALL_MOVIE_VIEW));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.MOVIE_SMALL_VIEW));
         StackPane itemBox = loader.load();
         MovieSmallBoundary controller = loader.getController();
         if (controller != null) {
@@ -119,11 +120,12 @@ public class HomeBoundary implements Initializable {
 
     public void showInfo(Movie movie) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.COSTUMER_PACKAGE + "MovieInfo.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.MOVIE_INFO_VIEW));
             Parent pane = loader.load();
 
             MovieInfoBoundary movieInfoController = loader.getController();
-            movieInfoController.sethomeController(this);
+            System.err.println("movieInfoController");
+            movieInfoController.setHomeController(this);
             movieInfoController.setInfo(movie);
 
             InfoContainer.getChildren().clear();
