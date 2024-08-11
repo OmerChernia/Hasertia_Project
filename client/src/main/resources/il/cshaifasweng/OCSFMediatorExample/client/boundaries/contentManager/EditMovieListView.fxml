@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -46,12 +45,12 @@
                   <TextField fx:id="txtSearchProduct" onKeyReleased="#filterNameProduct" prefHeight="25.0" prefWidth="339.0" promptText="Search product" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <AnchorPane fx:id="containerAddProduct" layoutX="96.0" layoutY="24.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="506.0" prefWidth="767.0" style="-fx-background-radius: 10;" visible="false">
+            <AnchorPane fx:id="containerAddProduct" layoutX="163.0" layoutY="114.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="364.0" prefWidth="593.0" style="-fx-background-radius: 10;" visible="false">
 
             </AnchorPane>
             <AnchorPane fx:id="containerDeleteProducts" layoutX="289.0" layoutY="216.0" prefHeight="246.0" prefWidth="392.0" visible="false">
                <children>
-                  <Button layoutX="208.0" layoutY="201.0"  prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
+                  <Button layoutX="208.0" layoutY="201.0" prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -83,7 +82,7 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <Button fx:id="btnNewProduct" layoutX="759.0" layoutY="17.0"  prefHeight="39.0" prefWidth="155.0" styleClass="action-button" text="New product" textFill="WHITE" AnchorPane.rightAnchor="16.0">
+            <Button fx:id="btnNewProduct" layoutX="759.0" layoutY="17.0" prefHeight="39.0" prefWidth="155.0" styleClass="action-button" text="New product" textFill="WHITE" AnchorPane.rightAnchor="16.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
