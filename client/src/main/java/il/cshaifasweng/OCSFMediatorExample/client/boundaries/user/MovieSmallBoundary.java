@@ -225,7 +225,6 @@ public class MovieSmallBoundary {
             e.printStackTrace();
         }
 
-        MovieInstanceController.requestMovieInstanceById(movie.getId());
     }
 
     @Subscribe
@@ -308,7 +307,8 @@ public class MovieSmallBoundary {
     }
 
     public void goToSelect(ActionEvent actionEvent) {
-   //     populateCinemasComboBox(movie);
+        MovieInstanceController.requestMovieInstanceById(movie.getId());
+        //populateCinemasComboBox( movie);
         selectTheaterPane.setVisible(true);
     }
 
