@@ -21,10 +21,13 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class MovieSmallBoundary {
@@ -98,6 +101,10 @@ public class MovieSmallBoundary {
     @FXML
     private Text txtMovieTheater;
 
+    private String theaterName;
+    private LocalDate date;
+    private LocalTime time;
+
     @FXML
     public void initialize() {
         EventBus.getDefault().register(this);
@@ -160,7 +167,8 @@ public class MovieSmallBoundary {
                 disableAndResetComboBox(cmbHour);
             } else {
                 enableComboBox(cmbDate);
-                MovieInstanceController.requestMovieInstancesByTheaterName(newValue);
+                MovieInstanceController.requestMovieInstancesByMovieIdAndTheaterName(movie.getId(), newValue);
+                theaterName=newValue;
             }
         });
 
@@ -170,13 +178,15 @@ public class MovieSmallBoundary {
                 disableAndResetComboBox(cmbHour);
             } else {
                 enableComboBox(cmbHour);
-                MovieInstanceController.requestMovieInstancesByDate(LocalDate.parse(newValue, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
+                date = LocalDate.from(LocalDate.parse(newValue, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
+                MovieInstanceController.requestMovieInstancesByMovieIdTheaterNameDate(movie.getId(), theaterName,LocalDate.parse(newValue, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
             }
         });
 
 
         cmbHour.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             btnBook.setDisable(newValue == null);
+            time = LocalTime.from(LocalTime.parse(newValue, DateTimeFormatter.ofPattern("HH:mm")));
         });
     }
 
@@ -231,15 +241,17 @@ public class MovieSmallBoundary {
     public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
         Platform.runLater(() -> {
             switch (message.requestType) {
-                case GET_ALL_MOVIE_INSTANCES:
+                case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID:
                     populateCinemasComboBox(message.movies);
                     break;
-                case GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME:
+                case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_AND_THEATER_NAME:
                     populateDatesComboBox(message.movies);
                     break;
-                case GET_ALL_MOVIE_INSTANCES_BY_DATE:
+                case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_THEATER_ID_DATE:
                     populateHoursComboBox(message.movies);
                     break;
+                case GET_MOVIE_INSTANCE_AFTER_SELECTION:
+                    loadSeatSelectionPage(message.movies.get(0));
                 default:
                     break;
             }
@@ -267,7 +279,7 @@ public class MovieSmallBoundary {
 
     private void populateHoursComboBox(List<MovieInstance> movieInstances) {
         Set<String> hours = movieInstances.stream()
-                .map(instance -> instance.getTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .map(instance -> instance.getTime().toLocalTime().minusHours(3).format(DateTimeFormatter.ofPattern("HH:mm")))
                 .collect(Collectors.toSet());
 
         cmbHour.getItems().setAll(hours);
@@ -275,15 +287,19 @@ public class MovieSmallBoundary {
 
     private void handlePayButton() {
         String selectedCinema = cmbCinema.getSelectionModel().getSelectedItem();
-        String selectedDate = cmbDate.getSelectionModel().getSelectedItem();
-        String selectedHour = cmbHour.getSelectionModel().getSelectedItem();
-
+         String selectedDate = cmbDate.getSelectionModel().getSelectedItem();
+         String selectedHour = cmbHour.getSelectionModel().getSelectedItem();
+        LocalDateTime dateTime = LocalDateTime.of(date, time);
+        System.out.println(dateTime);
         if (selectedCinema != null && selectedDate != null && selectedHour != null) {
-            MovieInstanceController.requestMovieInstancesByTheaterName(selectedCinema);
-
+            MovieInstanceController.requestMovieInstanceAfterSelection(movie.getId(), selectedCinema, dateTime);
         } else {
             System.out.println("Cinema, date or hour not selected!");
         }
+    }
+    private void loadSeatSelectionPage(MovieInstance movieInstance)
+    {
+        System.out.println(movieInstance.toString());
     }
 
     @FXML
@@ -307,8 +323,7 @@ public class MovieSmallBoundary {
     }
 
     public void goToSelect(ActionEvent actionEvent) {
-        MovieInstanceController.requestMovieInstanceById(movie.getId());
-        //populateCinemasComboBox( movie);
+        MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
         selectTheaterPane.setVisible(true);
     }
 
@@ -319,4 +334,6 @@ public class MovieSmallBoundary {
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
+
+
 }

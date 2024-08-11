@@ -46,8 +46,8 @@ public class MovieHandler extends MessageHandler
             }
 
             // Conditionally append genre filtering
-            if (message.Genre != null && !message.Genre.equals("All")) {
-                hql.append("AND genre = :genre");
+            if (message.Genre != null && !message.Genre.equals("all")) {
+                hql.append(" AND genre = :genre");
             }
 
             // Create the query with the constructed HQL
@@ -63,7 +63,7 @@ public class MovieHandler extends MessageHandler
             }
 
             // Set genre parameter if applicable
-            if (message.Genre != null && !message.Genre.equals("All")) {
+            if (message.Genre != null && !message.Genre.equals("all")) {
                 query.setParameter("genre", message.Genre);
             }
 

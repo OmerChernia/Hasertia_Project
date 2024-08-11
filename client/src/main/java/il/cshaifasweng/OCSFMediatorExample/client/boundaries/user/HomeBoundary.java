@@ -49,8 +49,8 @@ public class HomeBoundary implements Initializable {
     @FXML
     private GridPane grid;
 
-    private String currentScreeningFilter="All";
-    private String Genre="All";
+    private String currentScreeningFilter="all";
+    private String Genre="all";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

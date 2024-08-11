@@ -11,6 +11,7 @@ public class MovieInstanceMessage extends Message
     public List<MovieInstance> movies = new ArrayList<>();
     public String key;
     public int id;
+    public String theaterName;
     public LocalDateTime date;
     public RequestType requestType;
     public ResponseType responseType;
@@ -32,6 +33,21 @@ public class MovieInstanceMessage extends Message
         this.id = id;
         this.requestType = requestType;
     }
+    public MovieInstanceMessage(MessageType messageType, RequestType requestType, int movieID, String theaterName)
+    {
+        super(messageType);
+        this.id = movieID;
+        this.requestType = requestType;
+        this.theaterName= theaterName;
+    }
+    public MovieInstanceMessage(MessageType messageType, RequestType requestType, int movieID, String theaterName, LocalDateTime date)
+    {
+        super(messageType);
+        this.id = movieID;
+        this.requestType = requestType;
+        this.theaterName= theaterName;
+        this.date = date;
+    }
     public MovieInstanceMessage(MessageType messageType, RequestType requestType, String key)
     {
         // GET_ALL_MOVIE_INSTANCES , GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME, GET_ALL_MOVIE_INSTANCES_BY_GENRE , GET_ALL_MOVIE_INSTANCES_BY_NAME
@@ -47,6 +63,7 @@ public class MovieInstanceMessage extends Message
         this.requestType = requestType;
         this.date = date;
     }
+
 
     public enum ResponseType
     {
@@ -64,11 +81,13 @@ public class MovieInstanceMessage extends Message
         GET_MOVIE_INSTANCE,
         DELETE_MOVIE_INSTANCE,
         UPDATE_MOVIE_INSTANCE,
-        GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME,
+        GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID,
         GET_ALL_MOVIE_INSTANCES_BY_GENRE,
         GET_ALL_MOVIE_INSTANCES,
-        GET_ALL_MOVIE_INSTANCES_BY_DATE,
-        GET_ALL_MOVIE_INSTANCES_BY_NAME
+        GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_AND_THEATER_NAME,
+        GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_THEATER_ID_DATE,
+        GET_ALL_MOVIE_INSTANCES_BY_NAME,
+        GET_MOVIE_INSTANCE_AFTER_SELECTION
 
 
     }
