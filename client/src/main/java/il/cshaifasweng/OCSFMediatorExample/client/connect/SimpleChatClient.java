@@ -1,7 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -72,7 +74,13 @@ public class SimpleChatClient extends Application {
         if (mainBoundary != null) {
             EventBus.getDefault().unregister(mainBoundary);
         }
-
+        //if there is a user that login, we need to log him out
+        if(SimpleClient.user !=null)
+        {
+            if(!SimpleClient.user.isEmpty())
+                LoginPageController.requestUserLogOut(SimpleClient.user);
+        }
+        System.out.println("Stop was successful");
         super.stop();
     }
 

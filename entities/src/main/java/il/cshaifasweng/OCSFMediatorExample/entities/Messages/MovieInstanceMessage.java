@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MovieInstanceMessage extends Message
 {
-    public List<MovieInstance> movies;
+    public List<MovieInstance> movies = new ArrayList<>();
     public String key;
     public int id;
     public LocalDateTime date;
@@ -20,7 +20,6 @@ public class MovieInstanceMessage extends Message
         //ADD_MOVIE_INSTANCE,UPDATE_MOVIE_INSTANCE
 
         super(messageType);
-        movies = new ArrayList<>();
         movies.add(movieInstance);
         //this.theater_name = movieInstance.getTheater();
         this.requestType = requestType;

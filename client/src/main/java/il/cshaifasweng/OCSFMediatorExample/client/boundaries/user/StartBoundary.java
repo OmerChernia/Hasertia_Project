@@ -10,6 +10,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ConnectionMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -60,6 +62,7 @@ public class StartBoundary {
             messageField.setText("Client created, host: " + SimpleClient.host + ", port: " + SimpleClient.port);
             NotificationsBuilder.create(NotificationType.SUCCESS, "Welcome to the system!");
 
+            SimpleClient.getClient().sendRequest(new ConnectionMessage(Message.MessageType.REQUEST,ConnectionMessage.RequestType.FIRST_CONNECTION));
 
             scene = new Scene(loadFXML("MainView"));
             Stage stage = new Stage(); // Create a new Stage instance

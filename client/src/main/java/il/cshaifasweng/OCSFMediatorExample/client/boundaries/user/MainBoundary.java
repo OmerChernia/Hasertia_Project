@@ -156,6 +156,9 @@ public class MainBoundary implements Initializable {
 
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
+        txtUser.setStyle("-fx-text-fill: #cae8fb;");
+        txtEmploee.setStyle("-fx-text-fill: #cae8fb;");
+        txtPassword.setStyle("-fx-text-fill: #cae8fb;");
 
         // Create the ToggleGroup and add the radio buttons to it
         userTypeToggleGroup = new ToggleGroup();
@@ -383,7 +386,10 @@ public class MainBoundary implements Initializable {
 
     public void handleCustomerLoginResponse(LoginMessage loginMessage) {
         Platform.runLater(() -> {
-            if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
+            if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL)
+            {
+                SimpleClient.user = loginMessage.id; // Save the logged-in user ID
+
                 this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
                 NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User" + loginMessage.id + "Logged in!");
 
@@ -407,6 +413,8 @@ public class MainBoundary implements Initializable {
     public void handleEmployeeLoginResponse(EmployeeLoginMessage loginMessage) {
         Platform.runLater(() -> {
             if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
+                SimpleClient.user = loginMessage.id; // Save the logged-in user ID
+
                 this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
 
                 // Update the UI based on the user's role
@@ -525,6 +533,7 @@ public class MainBoundary implements Initializable {
 
     private void sendLogoutRequest() {
         if (loggedInUserId != null || loggedInEmploeeId != null) {
+            SimpleClient.user = ""; // Save the logged-in user ID
             LoginPageController.requestUserLogOut(loggedInUserId);
         }
     }

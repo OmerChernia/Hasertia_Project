@@ -259,7 +259,7 @@ public class ViewMoviesController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("dialogComplaint.fxml"));
             Parent root = loader.load();
-            LogInBoundary controller = loader.getController();
+            Delete_LogInBoundary controller = loader.getController();
             if (controller != null) {
                 controller.setParentController(this);
             }

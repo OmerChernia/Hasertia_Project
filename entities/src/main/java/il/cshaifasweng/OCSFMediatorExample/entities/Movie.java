@@ -30,7 +30,7 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String englishName;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> mainActors;
 
     @Column(nullable = false)
@@ -108,6 +108,7 @@ public class Movie implements Serializable {
         this.englishName = englishName;
     }
 
+
     public List<String> getMainActors() {
         return mainActors;
     }
@@ -174,6 +175,7 @@ public class Movie implements Serializable {
 
     public void setActive(boolean isActive) {this.isActive = isActive;}
 
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -189,6 +191,7 @@ public class Movie implements Serializable {
                 ", homeViewingPrice=" + homeViewingPrice +
                 ", theaterPrice=" + theaterPrice +
                 ", genre=" + genre +
+                ", isActive=" + isActive +
                 '}';
     }
 
