@@ -1,13 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -17,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -36,8 +36,6 @@ public class ComplaintBoundary implements Initializable {
     @FXML
     private TextField txtCustomerEmail;
 
-
-
     @FXML
     private TextArea txtComplaintDetails;
 
@@ -51,9 +49,8 @@ public class ComplaintBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeComplaintForm();
 
-        // Register this controller to listen for MovieMessage events
+        // Register this controller to listen for events
         EventBus.getDefault().register(this);
-
     }
 
     private void initializeComplaintForm() {
@@ -64,24 +61,40 @@ public class ComplaintBoundary implements Initializable {
     private void submitComplaint() {
         String customerName = txtCustomerName.getText().trim();
         String customerEmail = txtCustomerEmail.getText().trim();
-         String complaintDetails = txtComplaintDetails.getText().trim();
+        String complaintDetails = txtComplaintDetails.getText().trim();
 
-        if (customerName.isEmpty() || customerEmail.isEmpty()  || complaintDetails.isEmpty()) {
-            Animations.shake(txtCustomerName);
-            Animations.shake(txtCustomerEmail);
-             Animations.shake(txtComplaintDetails);
+
+
+        if (customerName.isEmpty() || customerEmail.isEmpty() || complaintDetails.isEmpty()) {
+            if (customerName.isEmpty() ) {
+                Animations.shake(txtCustomerName);
+            }
+            if (customerEmail.isEmpty() ) {
+                Animations.shake(txtCustomerEmail);
+            }
+            if (complaintDetails.isEmpty() ) {
+                Animations.shake(txtComplaintDetails);
+            }
+
             NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.");
             return;
         }
 
+
         // Code to submit the complaint to the system goes here
-       // ComplaintController.addComplaint(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, RegisteredUser registeredUser);
+        LocalDateTime creationDate = LocalDateTime.now();
+        ComplaintController.addComplaint( complaintDetails,  creationDate,  null,  false,  null);
         AlertsBuilder.create(AlertType.SUCCESS, stckComplaint, rootComplaint, rootComplaint, "Complaint submitted successfully. A response will be sent to the customer's email within 24 hours.");
+    }
+
+    @Subscribe
+    public void onComplaintMessageReceived(ComplaintMessage message) {
+        // Handle the event, e.g., update the UI with complaint information
+        System.out.println("Received complaint message: " + message);
     }
 
     public void cleanup() {
         // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }
-
 }

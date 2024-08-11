@@ -45,10 +45,6 @@ public class OrdersBoundary implements Initializable {
 
     private final String CANNOT_DELETED = "This user cannot be deleted";
 
-    private final String ADMINISTRATOR_ONLY = "This user can only be administrator type";
-
-    private final String UNABLE_TO_CHANGE = "Unable to change user type";
-
     @FXML
     private AnchorPane OrderContainer;
 
@@ -183,7 +179,7 @@ public class OrdersBoundary implements Initializable {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/il/cshaifasweng/OCSFMediatorExample/client/boundaries/user/dialogTicket.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_TICKET_VIEW));
             AnchorPane ticketPane = loader.load();
 
             DialogTicketController dialogTicketController = loader.getController();
@@ -199,7 +195,7 @@ public class OrdersBoundary implements Initializable {
             dialogAddUser.show();
 
             dialogAddUser.setOnDialogOpened(ev -> {
-                // פעולות נוספות שניתן לבצע בעת פתיחת הדיאלוג, אם יש צורך
+
             });
 
             dialogAddUser.setOnDialogClosed(ev -> {
@@ -261,7 +257,7 @@ public class OrdersBoundary implements Initializable {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/il/cshaifasweng/OCSFMediatorExample/client/boundaries/registeredUser/dialogComplaint.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_COMPLAINT_VIEW));
             AnchorPane ticketPane = loader.load();
 
             DialogComplaintController dialogComplaintController = loader.getController();
@@ -277,7 +273,7 @@ public class OrdersBoundary implements Initializable {
             dialogAddUser.show();
 
             dialogAddUser.setOnDialogOpened(ev -> {
-                // פעולות נוספות שניתן לבצע בעת פתיחת הדיאלוג, אם יש צורך
+
             });
 
             dialogAddUser.setOnDialogClosed(ev -> {
@@ -321,7 +317,7 @@ public class OrdersBoundary implements Initializable {
     }
 
     private void loadTable() {
-        PurchaseController.GetAllPurchases(); // מבקש את כל ההזמנות מהשרת
+        PurchaseController.GetAllPurchases();
     }
 
     @FXML
@@ -333,7 +329,7 @@ public class OrdersBoundary implements Initializable {
             return;
         }
 
-        PurchaseController.RemovePurchase(id); // מחיקת ההזמנה מהשרת
+        PurchaseController.RemovePurchase(id);
         listOrders.remove(tblOrders.getSelectionModel().getSelectedItem());
         loadData();
         closeDialogDeleteUser();

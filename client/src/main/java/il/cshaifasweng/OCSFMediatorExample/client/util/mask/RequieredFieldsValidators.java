@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.util.mask;
 
+import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -12,7 +13,7 @@ import javafx.scene.text.Text;
 public class RequieredFieldsValidators {
 
     private static final String MESSAGE = "Obligatory field";
-    private static final String ICON_PATH = "/il/cshaifasweng/OCSFMediatorExample/client/media/warning.png"; // Update the path to your icon file
+    private static final String ICON_PATH = ConstantsPath.MEDIA_PACKAGE+ "warning.png";
 
     public static void toTextField(TextField txt) {
         addValidationListener(txt);

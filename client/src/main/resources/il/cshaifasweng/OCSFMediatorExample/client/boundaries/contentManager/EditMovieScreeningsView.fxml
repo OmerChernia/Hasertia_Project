@@ -47,13 +47,13 @@
                         <Image url="@../../media/icons/icons8_Search_52px.png" />
                      </image>
                   </ImageView>
-                  <TextField fx:id="txtSearchBarCode" layoutX="233.0" layoutY="10.0" onKeyReleased="#filterCodeBar" prefHeight="25.0" prefWidth="326.0" promptText="Search barcode" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="txtSearchBarCode" layoutX="233.0" layoutY="10.0"   prefHeight="25.0" prefWidth="326.0" promptText="Search barcode" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
                   <ImageView fitHeight="20.0" fitWidth="20.0" opacity="0.5" translateY="10.0" HBox.hgrow="ALWAYS">
                      <image>
                         <Image url="@../../media/icons/icons8_Search_52px.png" />
                      </image>
                   </ImageView>
-                  <TextField fx:id="txtSearchProduct" onKeyReleased="#filterNameProduct" prefHeight="25.0" prefWidth="339.0" promptText="Search product" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="txtSearchProduct"   prefHeight="25.0" prefWidth="339.0" promptText="Search product" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <AnchorPane fx:id="containerAddProduct" layoutX="96.0" layoutY="24.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="506.0" prefWidth="767.0" style="-fx-background-radius: 10;" visible="false">

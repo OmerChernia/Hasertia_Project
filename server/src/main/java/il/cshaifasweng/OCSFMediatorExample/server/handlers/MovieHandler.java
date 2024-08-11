@@ -205,22 +205,41 @@ public class MovieHandler extends MessageHandler
             }
         }
     }
-    private void update_movie()
-    {
-        // Create an HQL query to fetch all complaints
-        // Searching if the movie is existed in DB
-        Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);
-        query.setParameter("_id", message.movies.getFirst().getId());
+    private void update_movie() {
+        try {
+            // Get the movie ID from the incoming message
+            int movieId = message.movies.getFirst().getId();
 
-        Movie movie = query.uniqueResult();
+            // Retrieve the current persistent instance of the movie from the session
+            Movie persistentMovie = session.get(Movie.class, movieId);
 
-        if(movie != null)
-        {
-            session.update(message.movies.getFirst());
-            session.flush();
-            message.responseType = MovieMessage.ResponseType.MOVIE_UPDATED;
-        }
-        else
+            if (persistentMovie != null) {
+                // Update the persistent movie with the new values from the message
+                persistentMovie.setEnglishName(message.movies.getFirst().getEnglishName());
+                persistentMovie.setHebrewName(message.movies.getFirst().getHebrewName());
+                persistentMovie.setProducer(message.movies.getFirst().getProducer());
+                persistentMovie.setDuration(message.movies.getFirst().getDuration());
+                persistentMovie.setTheaterPrice(message.movies.getFirst().getTheaterPrice());
+                persistentMovie.setHomeViewingPrice(message.movies.getFirst().getHomeViewingPrice());
+                persistentMovie.setGenre(message.movies.getFirst().getGenre());
+                persistentMovie.setStreamingType(message.movies.getFirst().getStreamingType());
+                persistentMovie.setInfo(message.movies.getFirst().getInfo());
+                persistentMovie.setMainActors(message.movies.getFirst().getMainActors());
+
+                // Save the changes
+                session.update(persistentMovie);
+                session.flush();
+                message.responseType = MovieMessage.ResponseType.MOVIE_UPDATED;
+            } else {
+                message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        }
     }
+
 }

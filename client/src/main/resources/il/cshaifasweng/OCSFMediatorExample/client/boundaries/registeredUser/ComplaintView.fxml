@@ -4,11 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="stckComplaint" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: CAE8FBFF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.ComplaintBoundary">
+<StackPane fx:id="stckComplaint" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="337.0" prefWidth="521.0" style="-fx-background-color: CAE8FBFF;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.ComplaintBoundary">
    <children>
       <BorderPane fx:id="rootComplaint" prefHeight="200.0" prefWidth="200.0">
          <center>
-            <VBox alignment="CENTER" prefHeight="350.0" prefWidth="500.0" spacing="15.0" BorderPane.alignment="CENTER">
+            <VBox alignment="CENTER" prefHeight="360.0" prefWidth="541.0" spacing="15.0" BorderPane.alignment="CENTER">
                <children>
                   <Label fx:id="lblTitle" styleClass="header-label" text="Submit a Complaint" />
                   <VBox spacing="8.0">
@@ -25,12 +25,6 @@
                   </VBox>
                   <VBox spacing="8.0">
                      <children>
-                        <Label styleClass="form-label" text="Employee Name:" />
-                        <TextField fx:id="txtEmployeeName" promptText="Enter the name of the employee you're complaining about" styleClass="form-field" />
-                     </children>
-                  </VBox>
-                  <VBox spacing="8.0">
-                     <children>
                         <Label styleClass="form-label" text="Complaint Details:" />
                         <TextArea fx:id="txtComplaintDetails" prefHeight="80.0" promptText="Describe your complaint" styleClass="form-field" />
                      </children>
@@ -43,7 +37,7 @@
             </VBox>
          </center>
          <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
          </padding>
       </BorderPane>
    </children>

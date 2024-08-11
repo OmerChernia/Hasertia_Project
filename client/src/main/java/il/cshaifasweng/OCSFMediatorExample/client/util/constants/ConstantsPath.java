@@ -37,6 +37,7 @@ public class ConstantsPath {
     /* CONTENT_MANAGER_VIEWS */
     public static final String CONTENT_MOVIES_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieListView.fxml";
     public static final String CONTENT_SCREENINGS_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieScreeningsView.fxml";
+    public static final String DIALOG_MOVIE_VIEW  =  CONTENT_MANAGER_PACKAGE + "dialogEditMovie.fxml";
 
     /* CUSTOMER_MANAGER_VIEWS */
     public static final String CUSTOMER_SERVICE_VIEW  =  CUSTOMER_SERVICE_PACKAGE + "CustomerService.fxml";

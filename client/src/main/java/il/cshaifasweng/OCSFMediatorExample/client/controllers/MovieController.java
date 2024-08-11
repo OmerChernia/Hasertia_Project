@@ -21,7 +21,7 @@ public class MovieController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre) {
+    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, String genre) {
         movie.setHebrewName(hebrewName);
         movie.setInfo(info);
         movie.setProducer(producer);
@@ -30,8 +30,6 @@ public class MovieController {
         movie.setImage(image);
         movie.setStreamingType(streamingType);
         movie.setDuration(duration);
-        movie.setTheaterPrice(theaterPrice);
-        movie.setHomeViewingPrice(homeViewingPrice);
         movie.setGenre(genre);
 
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, movie, RequestType.UPDATE_MOVIE);

@@ -1,22 +1,21 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
+import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.mask.RequieredFieldsValidators;
-import il.cshaifasweng.OCSFMediatorExample.client.util.mask.TextFieldMask;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.PriceRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -25,31 +24,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EditMovieListBoundary implements Initializable {
 
     private ObservableList<Movie> listProducts;
-
     private ObservableList<Movie> filterProducts;
 
     @FXML
@@ -91,7 +77,6 @@ public class EditMovieListBoundary implements Initializable {
     @FXML
     private TableColumn<Movie, Integer> colDuration;
 
-
     @FXML
     private TableColumn<Movie, Double> colTheaterPrice;
 
@@ -102,41 +87,38 @@ public class EditMovieListBoundary implements Initializable {
     private TableColumn<Movie, Button> colGenre;
 
     @FXML
+    private TableColumn<Movie, String> colPriceRequestStatus;
+
+    @FXML
     private AnchorPane containerAddProduct;
 
     private DialogTool dialogAddProduct;
-
     private DialogTool dialogDeleteProduct;
-
+    private DialogTool dialogEditProduct;
     private CustomContextMenu contextMenu;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
-
-        // Request the list of movies from the server
         MovieController.requestAllMovies();
         listProducts = FXCollections.observableArrayList();
         filterProducts = FXCollections.observableArrayList();
         animateNodes();
+        setContextMenu();
 
         tblProducts.setRowFactory(tv -> {
             TableRow<Movie> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    Movie rowData = row.getItem();
-                     showDialogDetailsProduct();
+                    showDialogDetailsProduct();
                 }
             });
             return row;
         });
-     }
+    }
 
     private void setContextMenu() {
         contextMenu = new CustomContextMenu(tblProducts);
-
         contextMenu.setActionEdit(ev -> {
             showDialogEditProduct();
             contextMenu.hide();
@@ -146,10 +128,8 @@ public class EditMovieListBoundary implements Initializable {
             showDialogDeleteProduct();
             contextMenu.hide();
         });
-
         contextMenu.show();
     }
-
 
     private void animateNodes() {
         Animations.fadeInUp(btnNewProduct);
@@ -157,15 +137,11 @@ public class EditMovieListBoundary implements Initializable {
         Animations.fadeInUp(hBoxSearch);
     }
 
-
-    /*TABLE*/
-
     @Subscribe
     public void loadData(MovieMessage movieMessage) {
         listProducts.setAll(movieMessage.movies);
         tblProducts.setItems(listProducts);
         tblProducts.setFixedCellSize(30);
-
 
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colEnglish.setCellValueFactory(new PropertyValueFactory<>("englishName"));
@@ -173,40 +149,78 @@ public class EditMovieListBoundary implements Initializable {
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
         colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
+       // colPriceRequestStatus.setCellValueFactory(new PropertyValueFactory<>("priceRequestStatus"));
         ButtonFactory buttonFactory = new ButtonFactory();
         ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = buttonFactory.new ButtonGenreCellValueFactory();
         colGenre.setCellValueFactory(buttonGenreCellFactory);
         ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = buttonFactory.new ButtonMovieTypeCellValueFactory();
         colStreamingType.setCellValueFactory(buttonTypeCellFactory);
-
     }
 
+    @Subscribe
+    public void onPriceRequestMessageReceived(PriceRequestMessage message) {
+        if (message.requests != null && !message.requests.isEmpty()) {
+            PriceRequest request = message.requests.get(0);
+            Movie movie = request.getMovie();
 
+            switch (message.responseType) {
+                case REQUEST_CREATED:
+                    System.out.println("Pending");
+                    break;
+                case PRICE_REQUEST_DECIDE:
 
+                   System.out.println("Approved");
 
-    /* DIALOG */
+                    break;
+                default:
+                    break;
+            }
+            tblProducts.refresh();
+        }
+    }
 
     @FXML
-    private void showDialogAddProduct() {
-
+    private void showDialog(String operation) {
         disableTable();
-        rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-        containerAddProduct.setVisible(true);
+        Movie selectedMovie = tblProducts.getSelectionModel().getSelectedItem();
 
-        dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
+        if (selectedMovie == null) {
+            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, "No movie selected");
+            tblProducts.setDisable(false);
+            return;
+        }
 
-        dialogAddProduct.show();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_MOVIE_VIEW));
+            AnchorPane moviePane = loader.load();
 
+            DialogEditMovie dialogEditMovie = loader.getController();
+            dialogEditMovie.setEditMovieListBoundary(this);
+            dialogEditMovie.setDialog(operation, selectedMovie);
 
-        dialogAddProduct.setOnDialogClosed(ev -> {
-             tblProducts.setDisable(false);
-            rootProducts.setEffect(null);
-            containerAddProduct.setVisible(false);
-        });
+            containerAddProduct.getChildren().clear();
+            containerAddProduct.getChildren().add(moviePane);
+            containerAddProduct.setVisible(true);
+
+            dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
+            dialogAddProduct.show();
+
+            dialogAddProduct.setOnDialogClosed(ev -> {
+                tblProducts.setDisable(false);
+                rootProducts.setEffect(null);
+                containerAddProduct.setVisible(false);
+            });
+
+            rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            tblProducts.setDisable(false);
+        }
     }
 
     @FXML
-    private void closeDialogAddProduct() {
+    public void closeDialogAddProduct() {
         if (dialogAddProduct != null) {
             dialogAddProduct.close();
         }
@@ -247,8 +261,7 @@ public class EditMovieListBoundary implements Initializable {
             return;
         }
 
-        showDialogAddProduct();
-         selectedRecord();
+        showDialog("edit");
     }
 
     @FXML
@@ -257,39 +270,12 @@ public class EditMovieListBoundary implements Initializable {
             AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
             return;
         }
-
-        showDialogAddProduct();
-         selectedRecord();
-
+        showDialog("view");
     }
-
-
-
-
-
-    private void selectedRecord() {
-        Movie movie = tblProducts.getSelectionModel().getSelectedItem();
-
-    }
-
 
     private void disableTable() {
         tblProducts.setDisable(true);
     }
-
-
-    private void setDisableMenuItem() {
-        contextMenu.getEditButton().setDisable(true);
-        contextMenu.getDeleteButton().setDisable(true);
-    }
-
-    private void setEnableMenuItem() {
-        contextMenu.getEditButton().setDisable(false);
-        contextMenu.getDeleteButton().setDisable(false);
-    }
-
-
-
 
     @FXML
     private void filterNameProduct() {
@@ -323,12 +309,7 @@ public class EditMovieListBoundary implements Initializable {
         }
     }
 
-
-
     public void cleanup() {
-        // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }
-
-
 }

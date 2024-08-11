@@ -1,101 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="containerAddProduct" prefHeight="583.0" prefWidth="664.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditMovie">
+<AnchorPane fx:id="containerAddProduct" prefHeight="516.0" prefWidth="619.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditMovie">
     <children>
-        <GridPane alignment="TOP_LEFT" hgap="20.0" layoutX="23.0" layoutY="10.0" prefHeight="655.0" prefWidth="620.0" vgap="30.0">
+        <GridPane alignment="CENTER" hgap="20.0" layoutX="10.0" layoutY="10.0" prefHeight="380.0" prefWidth="580.0" vgap="20.0">
             <!-- Title -->
-            <Label fx:id="txtAddProduct" text="Add Movie" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+            <Label fx:id="txtAddProduct" alignment="CENTER" text="Update Movie" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
                 <font>
                     <Font size="24.0" />
                 </font>
             </Label>
 
             <!-- Row 1: English Name -->
-            <TextField fx:id="txtEnglishName" prefWidth="200.0" promptText="English Name" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <TextField fx:id="txtEnglishName" prefWidth="220.0" promptText="English Name" GridPane.columnIndex="0" GridPane.rowIndex="1">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
 
             <!-- Row 2: Hebrew Name -->
-            <TextField fx:id="txtHebrewName" prefWidth="200.0" promptText="Hebrew Name" styleClass="text-field" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <TextField fx:id="txtHebrewName" prefWidth="220.0" promptText="Hebrew Name" GridPane.columnIndex="0" GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
 
             <!-- Row 3: Producer -->
-            <TextField fx:id="txtProducer" prefWidth="200.0" promptText="Producer" styleClass="text-field" GridPane.rowIndex="5">
+            <TextField fx:id="txtProducer" prefWidth="220.0" promptText="Producer" GridPane.columnIndex="0" GridPane.rowIndex="3">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
 
-            <!-- Row 6: Actors -->
-            <TextField fx:id="txtActors" prefWidth="200.0" promptText="Actors" styleClass="text-field" GridPane.rowIndex="6">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextField>
-
-            <!-- Row 9: Description -->
-            <TextArea fx:id="txtDescription" prefHeight="64.0" prefWidth="300.0" promptText="Description" styleClass="text-area" GridPane.rowIndex="8">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextArea>
-         <Label fx:id="txtTitle" text="Add Movie">
-            <font>
-               <Font size="24.0" />
-            </font>
-         </Label>
-
-            <!-- Row 10: Image and Buttons -->
-            <Pane fx:id="paneContainer" prefHeight="465.0" prefWidth="277.0" style="-fx-border-color: lightgray; -fx-border-width: 1;" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="8">
-                <children>
-                    <HBox fx:id="imageContainer" alignment="CENTER" layoutX="28.0" layoutY="-5.0" prefHeight="467.0" prefWidth="211.0">
-                        <children>
-                            <ImageView fx:id="imageProduct" fitHeight="218.0" fitWidth="239.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                    <Image url="@../../media/empty-image.jpg" />
-                                </image>
-                            </ImageView>
-                        </children>
-                    </HBox>
-                </children>
-            </Pane>
-
-            <Button fx:id="btnSave" onAction="#handleSave" prefHeight="30.0" prefWidth="80.0" styleClass="action-button" text="Save" textFill="WHITE" GridPane.rowIndex="9">
-                <font>
-                    <Font name="System Bold" size="12.0" />
-                </font>
-            </Button>
-
-            <Button fx:id="btnCancel" onAction="#handleClose" prefHeight="30.0" prefWidth="80.0" styleClass="button-cancel" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="9">
-                <font>
-                    <Font name="System Bold" size="12.0" />
-                </font>
-            </Button>
-
-                  <!-- Row 4: Genre (ComboBox) -->
-            <ComboBox fx:id="comboGenre" prefHeight="67.0" prefWidth="239.0" promptText="Select Genre" GridPane.rowIndex="3">
+            <!-- Row 4: Genre (ComboBox) -->
+            <ComboBox fx:id="comboGenre" prefHeight="35.0" prefWidth="223.0" promptText="Select Genre" GridPane.columnIndex="0" GridPane.rowIndex="4">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="Action" />
@@ -108,76 +52,110 @@
                     </FXCollections>
                 </items>
             </ComboBox>
-         <HBox prefHeight="15.0" prefWidth="300.0" spacing="10.0" GridPane.rowIndex="7">
-            <children>
-      
-                  <!-- Row 7: Home Viewing Price -->
-                  <TextField fx:id="txtHVPrice" prefWidth="200.0" promptText="Home Viewing Price" styleClass="text-field">
-                      <font>
-                          <Font size="14.0" />
-                      </font>
-                  </TextField>
-      
-                  <!-- Row 8: Theater Price -->
-                  <TextField fx:id="txtTheaterPrice" prefWidth="200.0" promptText="Theater Price" styleClass="text-field">
-                      <font>
-                          <Font size="14.0" />
-                      </font>
-                  </TextField>
-            </children>
-         </HBox>
-         <HBox prefHeight="15.0" prefWidth="300.0" spacing="10.0" GridPane.rowIndex="4">
-            <children>
-               <ComboBox fx:id="comboType" prefHeight="40.0" prefWidth="211.0" promptText="Select Genre">
-                  <items>
-                     <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Action" />
-                        <String fx:value="Comedy" />
-                        <String fx:value="Drama" />
-                        <String fx:value="Horror" />
-                        <String fx:value="Romance" />
-                        <String fx:value="Sci-Fi" />
-                        <String fx:value="Documentary" />
-                     </FXCollections>
-                  </items>
-               </ComboBox>
-      
-                  <!-- Row 5: Duration -->
-                  <TextField fx:id="txtDuration" prefWidth="200.0" promptText="Duration" styleClass="text-field">
-                      <font>
-                          <Font size="14.0" />
-                      </font>
-                  </TextField>
-            </children>
-         </HBox>
-         <columnConstraints>
-            <ColumnConstraints maxWidth="264.0" minWidth="300.0" prefWidth="264.0" />
-            <ColumnConstraints maxWidth="145.0" minWidth="300.0" prefWidth="300.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" />
-            <RowConstraints maxHeight="46.0" minHeight="46.0" prefHeight="46.0" />
-            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" />
-            <RowConstraints />
-            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
-            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
-            <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
-            <RowConstraints />
-         </rowConstraints>
+
+            <!-- Row 5: Duration and Type -->
+            <HBox prefHeight="31.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                <children>
+                    <TextField fx:id="txtDuration" prefHeight="30.0" prefWidth="96.0" promptText="Duration">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </TextField>
+                    <ComboBox fx:id="comboType" prefHeight="30.0" prefWidth="118.0" promptText="Select Type">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Theater" />
+                                <String fx:value="Home Viewing" />
+                                <String fx:value="All Platforms" />
+                                <String fx:value="Not Available" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </children>
+            </HBox>
+
+            <!-- Row 6: Actors -->
+            <TextField fx:id="txtActors" prefWidth="220.0" promptText="Actors" GridPane.columnIndex="0" GridPane.rowIndex="6">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </TextField>
+
+            <!-- Row 7: Prices -->
+            <HBox prefHeight="31.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="7">
+                <children>
+                    <TextField fx:id="txtHVPrice" prefWidth="100.0" promptText="Home Viewing Price">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </TextField>
+                    <TextField fx:id="txtTheaterPrice" prefWidth="100.0" promptText="Theater Price">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </TextField>
+                </children>
+            </HBox>
+
+            <!-- Row 8: Description -->
+            <TextArea fx:id="txtDescription" prefHeight="45.0" prefWidth="335.0" promptText="Description" GridPane.columnIndex="0" GridPane.rowIndex="8">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </TextArea>
+
+            <!-- Row 9: Image -->
+            <VBox fx:id="imageContainer" alignment="CENTER" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="8">
+            <Pane fx:id="paneContainer">
+               <children>
+                      <ImageView fx:id="imageProduct" fitHeight="300.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                              <Image url="@../../media/empty-image.jpg" />
+                          </image>
+                      </ImageView>
+               </children>
+            </Pane>
+                <Label fx:id="lblPathImage" text="No Image" />
+            </VBox>
+
+            <!-- Row 10: Buttons -->
+            <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="9">
+                <children>
+                    <Button fx:id="btnSave" onAction="#handleSave" prefHeight="30.0" prefWidth="80.0" styleClass="action-button" text="Save" textFill="WHITE">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="btnCancel" onAction="#handleClose" prefHeight="30.0" prefWidth="80.0" styleClass="button-cancel" text="Cancel">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Button>
+                </children>
+            </HBox>
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
 
         </GridPane>
 
-        <Button fx:id="btnClose" layoutX="600.0" layoutY="12.0" onAction="#handleClose" prefHeight="35.0" prefWidth="49.0" styleClass="button-close" text=" ">
+        <Button fx:id="btnClose" layoutX="565.0" layoutY="10.0" onAction="#handleClose" prefHeight="35.0" prefWidth="35.0" styleClass="button-close" text=" ">
             <graphic>
                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-close-50.png" />
+                    <Image url="@../../media/icons/icons8-close-50.png" />
                 </ImageView>
             </graphic>
         </Button>

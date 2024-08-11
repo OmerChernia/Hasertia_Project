@@ -53,6 +53,7 @@ public class MovieInstance implements Serializable {
         this.hall = hall;
     }
 
+
     public int getId() {
         return id;
     }
