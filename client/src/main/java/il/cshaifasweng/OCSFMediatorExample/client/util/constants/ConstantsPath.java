@@ -26,7 +26,7 @@ public class ConstantsPath {
     public static final String PACKAGE_PURCHASE_VIEW =  USER_PACKAGE + "PackagePurchaseView.fxml";
     public static final String MOVIE_INFO_VIEW =  USER_PACKAGE + "MovieInfo.fxml";
     public static final String MOVIE_SMALL_VIEW =  USER_PACKAGE + "MovieSmall.fxml";
-    public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + " TheaterPurchaseView.fxml";
+    public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + "TheaterPurchaseView.fxml";
 
 
      /* REGISTER_USER_VIEWS */

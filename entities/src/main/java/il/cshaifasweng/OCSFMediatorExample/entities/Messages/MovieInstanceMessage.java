@@ -48,6 +48,7 @@ public class MovieInstanceMessage extends Message
         this.theaterName= theaterName;
         this.date = date;
     }
+    
     public MovieInstanceMessage(MessageType messageType, RequestType requestType, String key)
     {
         // GET_ALL_MOVIE_INSTANCES , GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME, GET_ALL_MOVIE_INSTANCES_BY_GENRE , GET_ALL_MOVIE_INSTANCES_BY_NAME

@@ -279,17 +279,22 @@ public class GenerateDB {
                 return;
             }
 
+            // Set the time to include only up to minutes, with seconds and nanoseconds set to 0
+            LocalDateTime startDate = LocalDateTime.of(2024, 8, 18, 12, 0).plusHours(3);
+
             movieInstances = List.of(
-                    new MovieInstance(movies.get(0), LocalDateTime.now().plusDays(1), halls.get(0)),
-                    new MovieInstance(movies.get(1), LocalDateTime.now().plusDays(2), halls.get(1)),
-                    new MovieInstance(movies.get(2), LocalDateTime.now().plusDays(3), halls.get(2)),
-                    new MovieInstance(movies.get(3), LocalDateTime.now().plusDays(4), halls.get(3)),
-                    new MovieInstance(movies.get(4), LocalDateTime.now().plusDays(5), halls.get(4)),
-                    new MovieInstance(movies.get(5), LocalDateTime.now().plusDays(6), halls.get(5)),
-                    new MovieInstance(movies.get(6), LocalDateTime.now().plusDays(7), halls.get(6)),
-                    new MovieInstance(movies.get(7), LocalDateTime.now().plusDays(8), halls.get(7)),
-                    new MovieInstance(movies.get(8), LocalDateTime.now().plusDays(9), halls.get(8)),
-                    new MovieInstance(movies.get(9), LocalDateTime.now().plusDays(10), halls.get(9))
+                    new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0)),
+                    new MovieInstance(movies.get(1), startDate.plusDays(1).plusHours(2), halls.get(1)),
+                    new MovieInstance(movies.get(2), startDate.plusDays(2).plusHours(4), halls.get(2)),
+                    new MovieInstance(movies.get(3), startDate.plusDays(3).plusHours(2), halls.get(3)),
+                    new MovieInstance(movies.get(4), startDate.plusDays(4).plusHours(1), halls.get(4)),
+                    new MovieInstance(movies.get(5), startDate.plusDays(5).plusHours(6), halls.get(5)),
+                    new MovieInstance(movies.get(6), startDate.plusDays(6).plusHours(8), halls.get(6)),
+                    new MovieInstance(movies.get(7), startDate.plusDays(7).plusHours(10), halls.get(7)),
+                    new MovieInstance(movies.get(8), startDate.plusDays(8).plusHours(4), halls.get(8)),
+                    new MovieInstance(movies.get(9), startDate.plusDays(9).plusHours(10), halls.get(9)),
+                    new MovieInstance(movies.get(0), startDate.plusDays(2).plusHours(8), halls.get(0)),
+                    new MovieInstance(movies.get(0), startDate.plusDays(3).plusHours(6), halls.get(8))
             );
 
             Transaction transaction = session.beginTransaction();
@@ -303,6 +308,7 @@ public class GenerateDB {
             System.out.println("Movie Instances table is already populated.");
         }
     }
+
 
     private void generatePurchases() {
         List<Purchase> existingPurchases = session.createQuery("from Purchase", Purchase.class).list();

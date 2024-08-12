@@ -252,6 +252,7 @@ public class MovieSmallBoundary {
                     break;
                 case GET_MOVIE_INSTANCE_AFTER_SELECTION:
                     loadSeatSelectionPage(message.movies.get(0));
+                    break;
                 default:
                     break;
             }
@@ -299,7 +300,16 @@ public class MovieSmallBoundary {
     }
     private void loadSeatSelectionPage(MovieInstance movieInstance)
     {
-        System.out.println(movieInstance.toString());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.THEATER_PURCHASE_VIEW));
+            Parent root = loader.load();
+            TheaterPurchaseBoundary purchaseController = loader.getController();
+            purchaseController.setMovieInstance(movieInstance);
+            homeController.setRoot(root);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

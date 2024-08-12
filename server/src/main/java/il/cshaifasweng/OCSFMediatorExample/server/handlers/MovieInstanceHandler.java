@@ -42,15 +42,28 @@ public class MovieInstanceHandler extends MessageHandler
         }
     }
 
-    private void get_movie_instance_after_selection()
-    {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and hall.theater.location= :theater and time= :datetime", MovieInstance.class);
-        query.setParameter("movie",message.id);
-        query.setParameter("theater",message.theaterName);
-        query.setParameter("datetime",message.date);
+    private void get_movie_instance_after_selection() {
+        System.out.println("print get_movie_instance_after_selection");
+        System.out.println(message.date);
+        System.out.println(message.id);
+        System.out.println(message.theaterName);
+
+        Query<MovieInstance> query = session.createNativeQuery(
+                "SELECT * FROM Movie_Instances WHERE movie_id = :movie AND hall_id IN (SELECT id FROM Halls WHERE theater_id = (SELECT id FROM Theaters WHERE location = :theater)) AND DATE_FORMAT(time, '%Y-%m-%d %H:%i') = DATE_FORMAT(:dateTime, '%Y-%m-%d %H:%i')",
+                MovieInstance.class
+        );
+        query.setParameter("movie", message.id);
+        query.setParameter("theater", message.theaterName);
+        query.setParameter("dateTime", message.date.toString());
+
         message.movies = query.list();
-        message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
+        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE;
+//        if(message.movies!=null)
+//            System.out.println(message.movies.get(0).getId());
+
     }
+
+
 
     private void get_all_movie_instances_by_movie_id_and_theater_name()
     {
