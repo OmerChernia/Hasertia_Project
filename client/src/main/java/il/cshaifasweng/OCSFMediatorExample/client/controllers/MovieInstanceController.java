@@ -37,15 +37,16 @@ public class MovieInstanceController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void requestMovieInstanceById(int id) {
+    public static void requestMovieInstancesByMovieId(int id) {
         // Create a request to get a movie instance by ID
-        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCE, id);
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID, id);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void requestMovieInstancesByTheaterName(String theaterName) {
+    public static void requestMovieInstancesByMovieIdAndTheaterName(int movieId, String TheaterName) {
         // Create a request to get all movie instances by theater name
-        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME, theaterName);
+        System.out.println("Sending movieID= "+ movieId + " theater name = " +TheaterName);
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_AND_THEATER_NAME, movieId, TheaterName);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
@@ -55,9 +56,16 @@ public class MovieInstanceController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void requestMovieInstancesByDate(LocalDateTime date) {
-        // Create a request to get all movie instances by date
-        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_DATE, date);
+
+    public static void requestMovieInstancesByMovieIdTheaterNameDate(int movieId, String TheaterName, LocalDateTime date) {
+        // Create a request to get all movie instances by theater name
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_THEATER_ID_DATE, movieId, TheaterName, date);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
+    public static void requestMovieInstanceAfterSelection (int movieId, String TheaterName, LocalDateTime date)
+    {
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCE_AFTER_SELECTION, movieId, TheaterName, date);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

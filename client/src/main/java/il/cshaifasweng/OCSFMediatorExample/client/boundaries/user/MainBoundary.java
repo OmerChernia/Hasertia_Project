@@ -311,14 +311,14 @@ public class MainBoundary implements Initializable {
 
     private void tooltips() {
         Animations.tooltip(btnHome, tooltipHome);
-         Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
+        Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
         Animations.tooltip(btnEditScreenings, tooltipEditScreenings);
         Animations.tooltip(btnLog, tooltipExit);
         Animations.tooltip(btnOrders, tooltipOrders);
         Animations.tooltip(btnComplaints, tooltipComplaints);
         Animations.tooltip(btnReports, tooltipReports);
         Animations.tooltip(btnAbout, tooltipAbout);
-     }
+    }
 
 
 
@@ -404,7 +404,7 @@ public class MainBoundary implements Initializable {
 
             } else if (loginMessage.responseType == LoginMessage.ResponseType.ALREADY_LOGGED) {
 
-                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User" + loginMessage.id + "Logged in!");
+                NotificationsBuilder.create(NotificationType.ERROR,"Registered User is already logged in.");
             }
         });
     }
@@ -453,7 +453,7 @@ public class MainBoundary implements Initializable {
 
     private void updateUserBasedOnRole(String userId ) {
         // Disable all buttons by default
-         btnEditMovieList.setVisible(false);
+        btnEditMovieList.setVisible(false);
         btnEditScreenings.setVisible(false);
         btnComplaints.setVisible(false);
         btnReports.setVisible(false);
@@ -467,7 +467,7 @@ public class MainBoundary implements Initializable {
         btnME.setVisible(true);
         btnOrders.setVisible(true);
 
-     }
+    }
 
 
     private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role ) {

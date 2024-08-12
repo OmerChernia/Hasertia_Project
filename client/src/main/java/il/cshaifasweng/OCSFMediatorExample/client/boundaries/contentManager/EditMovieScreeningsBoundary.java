@@ -10,12 +10,14 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.Notificatio
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -29,6 +31,7 @@ import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -40,16 +43,10 @@ public class EditMovieScreeningsBoundary implements Initializable {
     private final ColorAdjust colorAdjust = new ColorAdjust();
     private ObservableList<MovieInstance> listTheater;
     private ObservableList<MovieInstance> filterProducts;
-    private DialogTool dialogAddProduct;
-    private DialogTool dialogDeleteProduct;
+    private DialogTool dialogEdit;
+    private DialogTool dialogDelete;
     private static final Stage stage = new Stage();
     private CustomContextMenu contextMenu;
-
-    @FXML
-    private Label txtAddProduct;
-
-    @FXML
-    private Button btnCancelAddProduct, btnNewProduct, btnSaveProduct, btnUpdateProduct;
 
     @FXML
     private TableColumn<MovieInstance, String> colDate, colEnglish, colHall, colHebrew, colHour, colTheater;
@@ -58,16 +55,13 @@ public class EditMovieScreeningsBoundary implements Initializable {
     private TableColumn<MovieInstance, Integer> colId;
 
     @FXML
-    private AnchorPane containerAddProduct, containerDeleteProducts, rootProducts;
+    private AnchorPane containerEdit, containerDelete, rootProducts;
 
     @FXML
-    private HBox hBoxSearch, imageContainer;
+    private HBox hBoxSearch;
 
     @FXML
-    private ImageView imageProduct;
-
-    @FXML
-    private Pane paneContainer;
+    private Button btnNewScrenning;
 
     @FXML
     private StackPane stckProducts;
@@ -75,14 +69,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
     @FXML
     private TableView<MovieInstance> tblProducts;
 
-    @FXML
-    private TextField txtEnglishName, txtHebrewName, txtId, txtSearchBarCode, txtSearchProduct;
 
-    @FXML
-    private ComboBox<String> cmbHall, cmbHour, cmbTheater;
-
-    @FXML
-    private DatePicker dtptDate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -94,20 +81,19 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
         listTheater = FXCollections.observableArrayList();
         filterProducts = FXCollections.observableArrayList();
-
         animateNodes();
-        selectText();
-        initializeComboBox();
-        setValidations();
-        validateUser();
-        characterLimiter();
-         closeDialogWithTextFields();
-        closeDialogWithEscapeKey();
-    }
+        setContextMenu();
 
-    private void initializeComboBox() {
-        List<String> availableHours = Arrays.asList("10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00");
-        cmbHour.setItems(FXCollections.observableArrayList(availableHours));
+        tblProducts.setRowFactory(tv -> {
+            TableRow<MovieInstance> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    showDialogDetails();
+                }
+            });
+            return row;
+        });
+
     }
 
     @Subscribe
@@ -126,201 +112,98 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
     }
 
-    @FXML
-    private void showDialogAddProduct() {
-        resetValidation();
-        enableEditControls();
-        disableTable();
-        rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
 
-        txtAddProduct.setText("Add Movie");
-        imageContainer.toFront();
-        containerAddProduct.setVisible(true);
-        btnSaveProduct.setDisable(false);
-        btnUpdateProduct.setVisible(true);
-        btnSaveProduct.toFront();
+    private void setContextMenu() {
+        contextMenu = new CustomContextMenu(tblProducts);
 
-        dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
-        dialogAddProduct.show();
-
-        dialogAddProduct.setOnDialogOpened(ev -> txtEnglishName.requestFocus());
-
-        dialogAddProduct.setOnDialogClosed(ev -> {
-            closeStage();
-            tblProducts.setDisable(false);
-            rootProducts.setEffect(null);
-            containerAddProduct.setVisible(false);
-            cleanControls();
+        contextMenu.setActionEdit(ev -> {
+            showDialogEdit();
+            contextMenu.hide();
         });
-    }
 
-    @FXML
-    private void closeDialogAddProduct() {
-        if (dialogAddProduct != null) {
-            dialogAddProduct.close();
-        }
-    }
-
-    @FXML
-    private void showDialogDeleteProduct() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-            return;
-        }
-
-        rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-        containerDeleteProducts.setVisible(true);
-        disableTable();
-
-        dialogDeleteProduct = new DialogTool(containerDeleteProducts, stckProducts);
-        dialogDeleteProduct.show();
-
-        dialogDeleteProduct.setOnDialogClosed(ev -> {
-            tblProducts.setDisable(false);
-            rootProducts.setEffect(null);
-            containerDeleteProducts.setVisible(false);
-            cleanControls();
+        contextMenu.setActionDelete(ev -> {
+            deleteProducts();
+            contextMenu.hide();
         });
+
+
+        contextMenu.show();
     }
 
+
+
     @FXML
-    private void hideDialogDeleteProduct() {
-        if (dialogDeleteProduct != null) {
-            dialogDeleteProduct.close();
+    private void showDialog(String operation) {
+        tblProducts.setDisable(true);
+        MovieInstance selectedMovieInstance = tblProducts.getSelectionModel().getSelectedItem();
+
+        if (selectedMovieInstance == null) {
+            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, "No movie selected");
+            tblProducts.setDisable(false);
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_SCREENING_VIEW));
+            AnchorPane moviePane = loader.load();
+
+            DialogEditScreening dialogEditScreening = loader.getController();
+            dialogEditScreening.setEditScreeningListBoundary(this);
+            dialogEditScreening.setDialog(operation, selectedMovieInstance);
+
+            containerEdit.getChildren().clear();
+            containerEdit.getChildren().add(moviePane);
+            containerEdit.setVisible(true);
+
+            dialogEdit = new DialogTool(containerEdit, stckProducts);
+            dialogEdit.show();
+
+            dialogEdit.setOnDialogClosed(ev -> {
+                tblProducts.setDisable(false);
+                rootProducts.setEffect(null);
+                containerEdit.setVisible(false);
+            });
+
+            rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            tblProducts.setDisable(false);
         }
     }
 
     @FXML
-    private void showDialogEditProduct() {
+    private void showDialogEdit() {
         if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
             AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
             return;
         }
 
-        showDialogAddProduct();
-        btnUpdateProduct.toFront();
-        txtAddProduct.setText("Update Movie");
-        selectedRecord();
+        showDialog("edit");
     }
 
     @FXML
-    private void showDialogDetailsProduct() {
+    private void showDialogDetails() {
         if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
             AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
             return;
         }
-
-        showDialogAddProduct();
-        txtAddProduct.setText("Movie Details");
-        selectedRecord();
-        paneContainer.toFront();
-        btnUpdateProduct.setVisible(false);
-        btnSaveProduct.setDisable(true);
-        btnSaveProduct.toFront();
-        disableEditControls();
-    }
-
-    private void selectedRecord() {
-        MovieInstance movieInstance = tblProducts.getSelectionModel().getSelectedItem();
-        txtId.setText(String.valueOf(movieInstance.getId()));
-        txtEnglishName.setText(movieInstance.getMovie().getEnglishName());
-        txtHebrewName.setText(movieInstance.getMovie().getHebrewName());
-
-        // Set ComboBox values based on the selected MovieInstance
-        cmbHall.setValue(movieInstance.getHall().toString());
-        cmbTheater.setValue(movieInstance.getHall().getTheater().getLocation());
-        cmbHour.setValue(movieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-
-        // Also set the date picker value
-        dtptDate.setValue(movieInstance.getTime().toLocalDate());
+        showDialog("view");
     }
 
     @FXML
-    private void newProduct() {
-        String id = txtId.getText().trim();
-        String englishName = txtEnglishName.getText().trim();
-        String hebrewName = txtHebrewName.getText().trim();
-
-        if (id.isEmpty()) {
-            txtId.requestFocus();
-            Animations.shake(txtId);
-            return;
+    public void closeDialog() {
+        if (dialogEdit != null) {
+            dialogEdit.close();
         }
-
-        for (MovieInstance p : listTheater) {
-            if (p.getId() == Integer.parseInt(id)) {
-                txtId.requestFocus();
-                NotificationsBuilder.create(NotificationType.ERROR, "There is already a product with this barcode");
-                return;
-            }
-        }
-
-        if (englishName.isEmpty()) {
-            txtEnglishName.requestFocus();
-            Animations.shake(txtEnglishName);
-            return;
-        }
-
-        if (hebrewName.isEmpty()) {
-            txtHebrewName.requestFocus();
-            Animations.shake(txtHebrewName);
-            return;
-        }
-
-        // Code to handle adding the new product goes here
-        MovieInstance movieInstance = new MovieInstance();
-        movieInstance.getMovie().setEnglishName(englishName);
-        movieInstance.getMovie().setHebrewName(hebrewName);
-        movieInstance.getMovie().setImage(getInputStream());
-
-        listTheater.add(movieInstance);
-        cleanControls();
-        closeDialogAddProduct();
-        AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_ADDED);
     }
 
+
     @FXML
-    private void updateProduct() {
-        String id = txtId.getText().trim();
-        String englishName = txtEnglishName.getText().trim();
-        String hebrewName = txtHebrewName.getText().trim();
-
-        MovieInstance selectedProduct = tblProducts.getSelectionModel().getSelectedItem();
-
-        if (id.isEmpty()) {
-            txtId.requestFocus();
-            Animations.shake(txtId);
-            return;
+    private void hideDialogDelete() {
+        if (dialogDelete != null) {
+            dialogDelete.close();
         }
-
-        for (MovieInstance p : listTheater) {
-            if (p.getId() == Integer.parseInt(id) && p != selectedProduct) {
-                txtId.requestFocus();
-                Animations.shake(txtId);
-                NotificationsBuilder.create(NotificationType.ERROR, "There is already a product with this barcode");
-                return;
-            }
-        }
-
-        if (englishName.isEmpty()) {
-            txtEnglishName.requestFocus();
-            Animations.shake(txtEnglishName);
-            return;
-        }
-
-        if (hebrewName.isEmpty()) {
-            txtHebrewName.requestFocus();
-            Animations.shake(txtHebrewName);
-            return;
-        }
-
-        selectedProduct.getMovie().setEnglishName(englishName);
-        selectedProduct.getMovie().setHebrewName(hebrewName);
-        selectedProduct.getMovie().setImage(getInputStream());
-
-        cleanControls();
-        closeDialogAddProduct();
-        AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_UPDATED);
     }
 
     @FXML
@@ -331,144 +214,19 @@ public class EditMovieScreeningsBoundary implements Initializable {
         }
 
         listTheater.remove(tblProducts.getSelectionModel().getSelectedItem());
-        cleanControls();
-        hideDialogDeleteProduct();
+        hideDialogDelete();
         AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_DELETED);
     }
 
-    private String getInputStream() {
-        // Implementation to handle image input stream
-        // This method should return the path to the image or null if none exists
-        return null; // Placeholder, replace with actual logic
-    }
 
-    private void cleanControls() {
-        txtId.clear();
-        txtEnglishName.clear();
-        txtHebrewName.clear();
-        imageProduct.setImage(new Image(ConstantsPath.NO_IMAGE_AVAILABLE));
-    }
-
-    private void disableEditControls() {
-        txtId.setEditable(false);
-        txtEnglishName.setEditable(false);
-        txtHebrewName.setEditable(false);
-    }
-
-    private void enableEditControls() {
-        txtId.setEditable(true);
-        txtEnglishName.setEditable(true);
-        txtHebrewName.setEditable(true);
-    }
-
-    private void disableTable() {
-        tblProducts.setDisable(true);
-    }
-
-    private void resetValidation() {
-        txtId.clear();
-        txtEnglishName.clear();
-        txtHebrewName.clear();
-    }
-
-    private void validateUser() {
-        setContextMenu();
-        deleteUserDeleteKey();
-        btnNewProduct.setDisable(false);
-    }
-
-    private void setContextMenu() {
-        contextMenu = new CustomContextMenu(tblProducts);
-
-        contextMenu.setActionEdit(ev -> {
-            showDialogEditProduct();
-            contextMenu.hide();
-        });
-
-        contextMenu.setActionDelete(ev -> {
-            showDialogDeleteProduct();
-            contextMenu.hide();
-        });
-
-        contextMenu.setActionDetails(ev -> {
-            showDialogDetailsProduct();
-            contextMenu.hide();
-        });
-
-        contextMenu.show();
-    }
-
-    private void deleteUserDeleteKey() {
-        rootProducts.setOnKeyPressed(ev -> {
-            if (ev.getCode().equals(KeyCode.DELETE)) {
-                if (tblProducts.isDisable()) {
-                    return;
-                }
-
-                if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-                    return;
-                }
-
-                deleteProducts();
-            }
-        });
-    }
-
-    private void closeDialogWithEscapeKey() {
-        rootProducts.setOnKeyReleased(ev -> {
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
-                closeDialogAddProduct();
-            }
-
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
-                hideDialogDeleteProduct();
-            }
-
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
-                tblProducts.setDisable(false);
-                rootProducts.setEffect(null);
-            }
-        });
-    }
-
-    private void closeDialogWithTextFields() {
-        txtId.setOnKeyReleased(ev -> {
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
-                closeDialogAddProduct();
-            }
-        });
-
-        txtEnglishName.setOnKeyReleased(ev -> {
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
-                closeDialogAddProduct();
-            }
-        });
-
-        txtHebrewName.setOnKeyReleased(ev -> {
-            if (ev.getCode().equals(KeyCode.ESCAPE)) {
-                closeDialogAddProduct();
-            }
-        });
-    }
 
     private void animateNodes() {
-        Animations.fadeInUp(btnNewProduct);
+        Animations.fadeInUp(btnNewScrenning);
         Animations.fadeInUp(tblProducts);
         Animations.fadeInUp(hBoxSearch);
     }
 
-    private void selectText() {
-        // Implementation to select text
-    }
 
-    private void setValidations() {
-        // Implementation to set validations
-    }
-
-    private void characterLimiter() {
-        // Implementation to limit characters
-    }
 
     public static void closeStage() {
         if (stage != null) {

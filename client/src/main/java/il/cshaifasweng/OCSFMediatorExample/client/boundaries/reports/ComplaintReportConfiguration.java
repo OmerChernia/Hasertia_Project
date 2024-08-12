@@ -1,5 +1,6 @@
-package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic;
+package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportConfiguration;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 
 import java.util.List;

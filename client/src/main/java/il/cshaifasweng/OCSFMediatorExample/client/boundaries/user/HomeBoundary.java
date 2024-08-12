@@ -20,6 +20,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import javafx.scene.control.ComboBox;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,14 +49,13 @@ public class HomeBoundary implements Initializable {
     @FXML
     private GridPane grid;
 
-    private String currentScreeningFilter="All";
-    private String Genre="All";
+    private String currentScreeningFilter="all";
+    private String Genre="all";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
-
         // Request the list of movies from the server
         MovieController.requestAllMovies();
     }
@@ -75,12 +76,15 @@ public class HomeBoundary implements Initializable {
         this.items = movies;
         Platform.runLater(() -> {
             try {
-                updateGrid();
-            } catch (IOException e) {
+                updateGrid(); // Update the grid with the movie items
+            }
+            catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
     }
+
+
 
     private void updateGrid() throws IOException {
         grid.getChildren().clear();
@@ -177,7 +181,7 @@ public class HomeBoundary implements Initializable {
 
     }
 
-     public void cleanup() {
+    public void cleanup() {
         // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }

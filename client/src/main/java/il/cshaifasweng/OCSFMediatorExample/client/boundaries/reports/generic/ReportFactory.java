@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.ComplaintReport;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.reports.TicketSalesReport;
 
 public class ReportFactory {

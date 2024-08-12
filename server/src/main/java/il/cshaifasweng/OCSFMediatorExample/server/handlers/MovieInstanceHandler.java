@@ -7,6 +7,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.Iterator;
+
 public class MovieInstanceHandler extends MessageHandler
 {
     private MovieInstanceMessage message;
@@ -30,13 +32,48 @@ public class MovieInstanceHandler extends MessageHandler
             case GET_MOVIE_INSTANCE -> get_movie_instance_by_id();
             case DELETE_MOVIE_INSTANCE -> delete_movie_instance();
             case UPDATE_MOVIE_INSTANCE -> update_movie_instance();
-            case GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME -> get_all_movie_instances_by_theater_name();
+            case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID -> get_all_movie_instances_by_movie_id();
+            case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_AND_THEATER_NAME -> get_all_movie_instances_by_movie_id_and_theater_name();
             case GET_ALL_MOVIE_INSTANCES_BY_GENRE -> get_all_movie_instances_by_genre();
             case GET_ALL_MOVIE_INSTANCES -> get_all_movie_instances();
-            case GET_ALL_MOVIE_INSTANCES_BY_DATE -> get_all_movie_instances_by_date();
+            case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_THEATER_ID_DATE -> get_all_movie_instances_by_movie_theater_id_and_date();
             case GET_ALL_MOVIE_INSTANCES_BY_NAME -> get_all_movie_instances_by_name();
+            case GET_MOVIE_INSTANCE_AFTER_SELECTION -> get_movie_instance_after_selection();
         }
     }
+
+    private void get_movie_instance_after_selection() {
+        System.out.println("print get_movie_instance_after_selection");
+        System.out.println(message.date);
+        System.out.println(message.id);
+        System.out.println(message.theaterName);
+
+        Query<MovieInstance> query = session.createNativeQuery(
+                "SELECT * FROM Movie_Instances WHERE movie_id = :movie AND hall_id IN (SELECT id FROM Halls WHERE theater_id = (SELECT id FROM Theaters WHERE location = :theater)) AND DATE_FORMAT(time, '%Y-%m-%d %H:%i') = DATE_FORMAT(:dateTime, '%Y-%m-%d %H:%i')",
+                MovieInstance.class
+        );
+        query.setParameter("movie", message.id);
+        query.setParameter("theater", message.theaterName);
+        query.setParameter("dateTime", message.date.toString());
+
+        message.movies = query.list();
+        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE;
+//        if(message.movies!=null)
+//            System.out.println(message.movies.get(0).getId());
+
+    }
+
+
+
+    private void get_all_movie_instances_by_movie_id_and_theater_name()
+    {
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and hall.theater.location= :theater", MovieInstance.class);
+        query.setParameter("movie",message.id);
+        query.setParameter("theater",message.theaterName);
+        message.movies = query.list();
+        message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
+    }
+
     private void add_movie_intance()
     {
         if(message.movies.getFirst()!=null)
@@ -81,12 +118,12 @@ public class MovieInstanceHandler extends MessageHandler
             session.flush();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
         }
-            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
     }
-    private void get_all_movie_instances_by_theater_name()
+    private void get_all_movie_instances_by_movie_id()
     {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location = :theater", MovieInstance.class);
-        query.setParameter("theater",message.key);
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie", MovieInstance.class);
+        query.setParameter("movie",message.id);
 
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
@@ -118,14 +155,23 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
-    private void get_all_movie_instances_by_date()
-    {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where time = :time", MovieInstance.class);
-        query.setParameter("time",message.date);
-
-        message.movies = query.list();
-        message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
+    private void get_all_movie_instances_by_movie_theater_id_and_date() {
+        get_all_movie_instances_by_movie_id_and_theater_name();
+        if (message.movies == null) {
+            System.out.println("Empty movies ");
+            return;
+        }
+        // Use an iterator to safely remove elements from the list
+        Iterator<MovieInstance> iterator = message.movies.iterator();
+        while (iterator.hasNext()) {
+            MovieInstance movie = iterator.next();
+            System.out.println(movie.getId());
+            if (!movie.getTime().toLocalDate().equals(message.date.toLocalDate())) {
+                iterator.remove();
+            }
+        }
     }
+
     private void get_all_movie_instances_by_name()
     {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.hebrewName = :hebrew", MovieInstance.class);

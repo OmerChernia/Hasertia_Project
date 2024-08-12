@@ -1,19 +1,32 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.HallController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.Hall;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.HallMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class DialogEditScreening implements Initializable {
@@ -21,11 +34,13 @@ public class DialogEditScreening implements Initializable {
     private int screeningId = -1;
     private String currentMode;
 
+    private Map<String, Integer> movieMap = new HashMap<>();
+
     @FXML
     private AnchorPane containerAddProduct;
 
     @FXML
-    private ComboBox<Movie> cmbMovies;
+    private Text txtMovie;
 
     @FXML
     private DatePicker dtptDate;
@@ -34,16 +49,13 @@ public class DialogEditScreening implements Initializable {
     private ComboBox<String> cmbHour;
 
     @FXML
-    private ComboBox<Hall> cmbHall;
+    private Text txtHall;
 
     @FXML
-    private ComboBox<String> cmbTheater;
+    private Text txtTheater;
 
     @FXML
     private Button btnSaveProduct;
-
-    @FXML
-    private Button btnUpdateProduct;
 
     @FXML
     private Button btnCancelAddProduct;
@@ -56,9 +68,39 @@ public class DialogEditScreening implements Initializable {
 
     private EditMovieScreeningsBoundary editMovieScreeningsBoundary;
 
+    private MovieInstance movieInstance;
+
+    private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
+
+        // Listener to update available hours when date changes
+        dtptDate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                updateAvailableHours(newValue);
+            }
+        });
+    }
+
+    private void updateAvailableHours(LocalDate date) {
+        cmbHour.getItems().clear();
+
+        // שליחת בקשה ל-HallController כדי להביא את הזמנים הפנויים לתאריך שנבחר
+        Hall hall = movieInstance.getHall();
+        HallController.requestAvailableTimes(hall, date);
+    }
+
+    @Subscribe
+    public void onHallMessageReceived(HallMessage message) {
+        if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_TIMES) {
+            cmbHour.getItems().clear();
+            List<LocalTime> availableTimes = message.getAvailableTimes();
+            for (LocalTime time : availableTimes) {
+                cmbHour.getItems().add(time.format(hourFormatter));
+            }
+        }
     }
 
     public void cleanup() {
@@ -69,16 +111,16 @@ public class DialogEditScreening implements Initializable {
         this.editMovieScreeningsBoundary = editMovieScreeningsBoundary;
     }
 
-    public void setDialog(String operation, int screeningId, Movie movie, LocalDateTime time, Hall hall) {
+    public void setDialog(String operation, MovieInstance movieInstance) {
         this.currentMode = operation;
-        this.screeningId = screeningId;
+        this.movieInstance = movieInstance;
 
         if ("view".equals(operation)) {
-            populateFieldsForView(movie, time, hall);
+            populateFieldsForView(movieInstance.getMovie(), movieInstance.getTime());
         } else if ("add".equals(operation)) {
             prepareForNewScreening();
         } else if ("edit".equals(operation)) {
-            populateFieldsForEdit(movie, time, hall);
+            populateFieldsForEdit(movieInstance.getMovie(), movieInstance.getTime());
         }
     }
 
@@ -89,23 +131,20 @@ public class DialogEditScreening implements Initializable {
         btnSaveProduct.setVisible(true);
     }
 
-    private void populateFieldsForEdit(Movie movie, LocalDateTime time, Hall hall) {
-        cmbMovies.setValue(movie);
+    private void populateFieldsForEdit(Movie movie, LocalDateTime time) {
+        txtMovie.setText(movie.getEnglishName());
         dtptDate.setValue(time.toLocalDate());
-        cmbHour.setValue(time.toLocalTime().toString());
-        cmbTheater.setValue(hall.getTheater().getLocation());
-        cmbHall.setValue(hall);
+        updateAvailableHours(time.toLocalDate());
+        cmbHour.setValue(time.toLocalTime().format(hourFormatter));
 
         txtAddProduct.setText("Update Screening");
         enableEditControls();
     }
 
-    private void populateFieldsForView(Movie movie, LocalDateTime time, Hall hall) {
-        cmbMovies.setValue(movie);
+    private void populateFieldsForView(Movie movie, LocalDateTime time) {
+        txtMovie.setText(movie.getEnglishName());
         dtptDate.setValue(time.toLocalDate());
-        cmbHour.setValue(time.toLocalTime().toString());
-        cmbTheater.setValue(hall.getTheater().getLocation());
-        cmbHall.setValue(hall);
+        cmbHour.setValue(time.toLocalTime().format(hourFormatter));
 
         txtAddProduct.setText("View Screening");
         disableEditControls();
@@ -113,37 +152,58 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void disableEditControls() {
-        cmbMovies.setDisable(true);
         dtptDate.setDisable(true);
         cmbHour.setDisable(true);
-        cmbTheater.setDisable(true);
-        cmbHall.setDisable(true);
     }
 
     private void enableEditControls() {
-        cmbMovies.setDisable(false);
         dtptDate.setDisable(false);
         cmbHour.setDisable(false);
-        cmbTheater.setDisable(false);
-        cmbHall.setDisable(false);
     }
 
     @FXML
     private void handleSave(ActionEvent event) {
         if (!validateInputs()) return;
 
-        int movieId = cmbMovies.getValue().getId();
-        LocalDateTime dateTime = LocalDateTime.of(dtptDate.getValue(), LocalTime.parse(cmbHour.getValue()));
-        int hallId = cmbHall.getValue().getId();
+        String movieName = txtMovie.getText();
+        LocalDateTime dateTime = LocalDateTime.of(dtptDate.getValue(), LocalTime.parse(cmbHour.getValue(), hourFormatter));
 
         if ("add".equals(currentMode)) {
-            MovieInstanceController.addMovieInstance(movieId, dateTime, hallId);
+            MovieInstanceController.addMovieInstance(movieMap.get(movieName), dateTime, movieInstance.getHall().getId());
         } else if ("edit".equals(currentMode)) {
-            MovieInstanceController.updateMovieInstance(screeningId, movieId, dateTime, hallId);
+            MovieInstanceController.updateMovieInstance(screeningId, movieMap.get(movieName), dateTime, movieInstance.getHall().getId());
         }
 
         cleanControls();
         closeDialog();
+    }
+
+    @Subscribe
+    public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
+        switch (message.requestType) {
+            case UPDATE_MOVIE_INSTANCE:
+                showAlert("You have updated the screening for " + message.movies.get(0).getMovie().getEnglishName() + "!", AlertType.SUCCESS);
+                break;
+            case ADD_MOVIE_INSTANCE:
+                showAlert("You have added a new screening for " + message.movies.get(0).getMovie().getEnglishName() + "!", AlertType.SUCCESS);
+                break;
+            case DELETE_MOVIE_INSTANCE:
+                showAlert("You have removed the screening for " + message.movies.get(0).getMovie().getEnglishName() + "!", AlertType.SUCCESS);
+                break;
+            default:
+                showAlert("Failed to process the screening for " + message.movies.get(0).getMovie().getEnglishName() + ".", AlertType.ERROR);
+                break;
+        }
+    }
+
+    private void showAlert(String messageText, AlertType alertType) {
+        AlertsBuilder.create(
+                alertType,
+                null,
+                containerAddProduct,
+                containerAddProduct,
+                messageText
+        );
     }
 
     @FXML
@@ -152,25 +212,18 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void closeDialog() {
-      //  editMovieScreeningsBoundary.closeDialogAddProduct();
+        editMovieScreeningsBoundary.closeDialog();
         cleanup();
     }
 
     private boolean validateInputs() {
-        if (cmbMovies.getValue() == null) {
-            showErrorAndFocus(cmbMovies);
-            return false;
-        }
+
         if (dtptDate.getValue() == null) {
             showErrorAndFocus(dtptDate);
             return false;
         }
         if (cmbHour.getValue() == null || cmbHour.getValue().isEmpty()) {
             showErrorAndFocus(cmbHour);
-            return false;
-        }
-        if (cmbHall.getValue() == null) {
-            showErrorAndFocus(cmbHall);
             return false;
         }
         return true;
@@ -182,10 +235,7 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void cleanControls() {
-        cmbMovies.setValue(null);
         dtptDate.setValue(null);
         cmbHour.setValue(null);
-        cmbTheater.setValue(null);
-        cmbHall.setValue(null);
     }
 }

@@ -26,7 +26,7 @@ public class ConstantsPath {
     public static final String PACKAGE_PURCHASE_VIEW =  USER_PACKAGE + "PackagePurchaseView.fxml";
     public static final String MOVIE_INFO_VIEW =  USER_PACKAGE + "MovieInfo.fxml";
     public static final String MOVIE_SMALL_VIEW =  USER_PACKAGE + "MovieSmall.fxml";
-    public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + " TheaterPurchaseView.fxml";
+    public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + "TheaterPurchaseView.fxml";
 
 
      /* REGISTER_USER_VIEWS */
@@ -38,6 +38,10 @@ public class ConstantsPath {
     public static final String CONTENT_MOVIES_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieListView.fxml";
     public static final String CONTENT_SCREENINGS_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieScreeningsView.fxml";
     public static final String DIALOG_MOVIE_VIEW  =  CONTENT_MANAGER_PACKAGE + "dialogEditMovie.fxml";
+    public static final String DIALOG_SCREENING_VIEW  =  CONTENT_MANAGER_PACKAGE + "dialogEditScreening.fxml";
+
+
+
 
     /* CUSTOMER_MANAGER_VIEWS */
     public static final String CUSTOMER_SERVICE_VIEW  =  CUSTOMER_SERVICE_PACKAGE + "CustomerService.fxml";

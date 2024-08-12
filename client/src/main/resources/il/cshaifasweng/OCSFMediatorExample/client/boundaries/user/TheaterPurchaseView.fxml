@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.Spinner?>
 <BorderPane prefHeight="857.0" prefWidth="1004.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.TheaterPurchaseBoundary">
    <!-- Top section with tabs and movie details -->
    <top>
@@ -68,6 +69,10 @@
          <!-- Step 2: Ticket Selection -->
          <VBox fx:id="ticketSelectionPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px;">
             <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #f44336;" text="Select Ticket Type" />
+            <HBox alignment="CENTER" spacing="10">
+               <Label style="-fx-font-size: 18px;" text="Number of Tickets:" />
+               <Spinner fx:id="ticketsSpinner" prefWidth="80" />
+            </HBox>
             <Button onAction="#goToPaymentDetails" style="-fx-background-color: #ffc500;" text="Regular - ₪47.90" />
             <Button onAction="#showIdPhoneFields" style="-fx-background-color: #f44336;" text="Card Package - ₪40.00" />
             <!-- ID/Phone Fields -->
