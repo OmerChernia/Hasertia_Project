@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800" prefWidth="1000" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.PackagePurchaseBoundary">
+<BorderPane prefHeight="800" prefWidth="1000" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.HomeViewingPurchaseBoundary">
     <!-- Top section with tabs and movie details -->
     <top>
         <VBox>

@@ -7,39 +7,39 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="containerAddProduct" prefHeight="516.0" prefWidth="619.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditMovie">
+<AnchorPane fx:id="containerAddProduct" prefHeight="534.0" prefWidth="622.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-width: 2px; -fx-background-radius: 10px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditMovie">
     <children>
         <GridPane alignment="CENTER" hgap="20.0" layoutX="10.0" layoutY="10.0" prefHeight="380.0" prefWidth="580.0" vgap="20.0">
             <!-- Title -->
-            <Label fx:id="txtAddProduct" alignment="CENTER" text="Update Movie" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+            <Label fx:id="txtAddProduct" alignment="CENTER" text="Update Movie" textFill="#3a1c9d" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
                 <font>
                     <Font size="24.0" />
                 </font>
             </Label>
 
             <!-- Row 1: English Name -->
-            <TextField fx:id="txtEnglishName" prefWidth="220.0" promptText="English Name" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <TextField fx:id="txtEnglishName" prefWidth="220.0" promptText="English Name" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="1">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
 
             <!-- Row 2: Hebrew Name -->
-            <TextField fx:id="txtHebrewName" prefWidth="220.0" promptText="Hebrew Name" GridPane.columnIndex="0" GridPane.rowIndex="2">
+            <TextField fx:id="txtHebrewName" prefWidth="220.0" promptText="Hebrew Name" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="2">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
 
             <!-- Row 3: Producer -->
-            <TextField fx:id="txtProducer" prefWidth="220.0" promptText="Producer" GridPane.columnIndex="0" GridPane.rowIndex="3">
+            <TextField fx:id="txtProducer" prefWidth="220.0" promptText="Producer" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="3">
                 <font>
                     <Font size="14.0" />
                 </font>
             </TextField>
 
             <!-- Row 4: Genre (ComboBox) -->
-            <ComboBox fx:id="comboGenre" prefHeight="35.0" prefWidth="223.0" promptText="Select Genre" GridPane.columnIndex="0" GridPane.rowIndex="4">
+            <ComboBox fx:id="comboGenre" prefHeight="35.0" prefWidth="223.0" promptText="Select Genre" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="4">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="Action" />
@@ -56,12 +56,12 @@
             <!-- Row 5: Duration and Type -->
             <HBox prefHeight="31.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="5">
                 <children>
-                    <TextField fx:id="txtDuration" prefHeight="30.0" prefWidth="96.0" promptText="Duration">
+                    <TextField fx:id="txtDuration" prefHeight="30.0" prefWidth="96.0" promptText="Duration" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;">
                         <font>
                             <Font size="14.0" />
                         </font>
                     </TextField>
-                    <ComboBox fx:id="comboType" prefHeight="30.0" prefWidth="118.0" promptText="Select Type">
+                    <ComboBox fx:id="comboType" prefHeight="30.0" prefWidth="118.0" promptText="Select Type" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
                                 <String fx:value="Theater" />
@@ -75,7 +75,7 @@
             </HBox>
 
             <!-- Row 6: Actors -->
-            <TextField fx:id="txtActors" prefWidth="220.0" promptText="Actors" GridPane.columnIndex="0" GridPane.rowIndex="6">
+            <TextField fx:id="txtActors" prefWidth="220.0" promptText="Actors" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="6">
                 <font>
                     <Font size="14.0" />
                 </font>
@@ -84,12 +84,12 @@
             <!-- Row 7: Prices -->
             <HBox prefHeight="31.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="7">
                 <children>
-                    <TextField fx:id="txtHVPrice" prefWidth="100.0" promptText="Home Viewing Price">
+                    <TextField fx:id="txtHVPrice" prefWidth="100.0" promptText="Home Viewing Price" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;">
                         <font>
                             <Font size="14.0" />
                         </font>
                     </TextField>
-                    <TextField fx:id="txtTheaterPrice" prefWidth="100.0" promptText="Theater Price">
+                    <TextField fx:id="txtTheaterPrice" prefWidth="100.0" promptText="Theater Price" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;">
                         <font>
                             <Font size="14.0" />
                         </font>
@@ -98,7 +98,7 @@
             </HBox>
 
             <!-- Row 8: Description -->
-            <TextArea fx:id="txtDescription" prefHeight="45.0" prefWidth="335.0" promptText="Description" GridPane.columnIndex="0" GridPane.rowIndex="8">
+            <TextArea fx:id="txtDescription" prefHeight="45.0" prefWidth="335.0" promptText="Description" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="8">
                 <font>
                     <Font size="14.0" />
                 </font>
@@ -106,33 +106,34 @@
 
             <!-- Row 9: Image -->
             <VBox fx:id="imageContainer" alignment="CENTER" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="8">
-            <Pane fx:id="paneContainer">
-               <children>
-                      <ImageView fx:id="imageProduct" fitHeight="300.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                          <image>
-                              <Image url="@../../media/empty-image.jpg" />
-                          </image>
-                      </ImageView>
-               </children>
-            </Pane>
+                <Pane fx:id="paneContainer">
+                    <children>
+                        <ImageView fx:id="imageProduct" fitHeight="300.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../media/empty-image.jpg" />
+                            </image>
+                        </ImageView>
+                    </children>
+                </Pane>
                 <Label fx:id="lblPathImage" text="No Image" />
             </VBox>
 
             <!-- Row 10: Buttons -->
             <HBox alignment="CENTER" spacing="10.0" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="9">
                 <children>
-                    <Button fx:id="btnSave" onAction="#handleSave" prefHeight="30.0" prefWidth="80.0" styleClass="action-button" text="Save" textFill="WHITE">
+                    <Button fx:id="btnSave" onAction="#handleSave" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #3a1c9d;" styleClass="action-button" text="Save" textFill="WHITE">
                         <font>
                             <Font name="System Bold" size="12.0" />
                         </font>
                     </Button>
-                    <Button fx:id="btnCancel" onAction="#handleClose" prefHeight="30.0" prefWidth="80.0" styleClass="button-cancel" text="Cancel">
+                    <Button fx:id="btnCancel" onAction="#handleClose" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #3a1c9d; -fx-text-fill: #FFFFFF;" styleClass="button-cancel" text="Cancel">
                         <font>
                             <Font name="System Bold" size="12.0" />
                         </font>
                     </Button>
                 </children>
             </HBox>
+
             <columnConstraints>
                 <ColumnConstraints />
                 <ColumnConstraints />
@@ -149,14 +150,11 @@
                 <RowConstraints />
                 <RowConstraints />
             </rowConstraints>
-
         </GridPane>
 
         <Button fx:id="btnClose" layoutX="565.0" layoutY="10.0" onAction="#handleClose" prefHeight="35.0" prefWidth="35.0" styleClass="button-close" text=" ">
             <graphic>
-                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../../media/icons/icons8-close-50.png" />
-                </ImageView>
+                <Text fill="#3a1c9d" style="-fx-font-size: 20px;" text="X" />
             </graphic>
         </Button>
     </children>

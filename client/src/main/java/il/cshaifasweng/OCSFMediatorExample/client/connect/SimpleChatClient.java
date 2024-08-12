@@ -78,7 +78,10 @@ public class SimpleChatClient extends Application {
         if(SimpleClient.user !=null)
         {
             if(!SimpleClient.user.isEmpty())
+            {
                 LoginPageController.requestUserLogOut(SimpleClient.user);
+                LoginPageController.requestEmployeeLogOut(SimpleClient.user); // maybe we can do it better
+            }
         }
         System.out.println("Stop was successful");
         super.stop();

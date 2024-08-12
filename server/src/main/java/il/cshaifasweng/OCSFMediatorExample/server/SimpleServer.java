@@ -65,6 +65,8 @@ public class SimpleServer extends AbstractServer
 					messageHandler = new TheaterHandler((TheaterMessage) msg, client, session);
 				} else if(msg instanceof ConnectionMessage) {
 					messageHandler = new ConnectionHandler((ConnectionMessage) msg , client, session ,clients);
+				} else if (msg instanceof RegisteredUserMessage) {
+					messageHandler = new RegisteredUserHandler((RegisteredUserMessage)msg , client, session);
 				}
 
 				if (messageHandler != null) {

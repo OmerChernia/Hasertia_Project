@@ -1,14 +1,30 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
 public class MEPurchaseBoundary {
 
@@ -44,6 +60,7 @@ public class MEPurchaseBoundary {
     @FXML
     private Label timerLabel;
 
+    // credit card details start
     @FXML
     private TextField cardNumberField;
 
@@ -52,6 +69,7 @@ public class MEPurchaseBoundary {
 
     @FXML
     private TextField cvvField;
+    // credit card details end
 
     @FXML
     private Label step1Label;
@@ -71,11 +89,38 @@ public class MEPurchaseBoundary {
     @FXML
     private Label pricePaidLabel;
 
-    private Timeline timer;
-    private int timeRemaining;
+    //the user details
+    @FXML
+    private TextField firstNameTF;
+
+    @FXML
+    private TextField lastNameTF;
+
+    @FXML
+    private TextField emailTF;
+
+    @FXML
+    private TextField confirmEmailTF;
+
+    @FXML
+    private TextField idNumberTF;
+
+    @FXML
+    private TextField confirmIdNumberTF;
+    //end of user details
+
+    @FXML
+    private ComboBox<Integer>quantityCB;
+    private int quantity;
+
+
+    // Regular expression for validating an email address
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     @FXML
     public void initialize() {
+        EventBus.getDefault().register(this);
+
         stackPane.getChildren().clear();
         stackPane.getChildren().add(packageSelectionPane);
         highlightStep(1);
@@ -101,7 +146,9 @@ public class MEPurchaseBoundary {
 
     @FXML
     private void goToPaymentDetails() {
+        //quantity = (int)quantityCB.getValue();
         stackPane.getChildren().clear();
+        initializePaymentDetails();
         stackPane.getChildren().add(paymentDetailsPane);
         highlightStep(2);
     }
@@ -127,19 +174,26 @@ public class MEPurchaseBoundary {
     }
 
     @FXML
-    private void showCreditCardFields() {
-        creditCardPane.setVisible(true);
+    private void showCreditCardFields()
+    {
+        // if details are valid show the credit card pane
+        if(checkDetails())
+            creditCardPane.setVisible(true);
     }
 
     @FXML
     private void submitPayment() {
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
-        showConfirmation();
+        RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
     }
 
     @FXML
-    private void cancelPayment() {
+    private void cancelPayment()
+    {
+        cardNumberField.clear();
+        expirationDateField.clear();
+        cvvField.clear();
         creditCardPane.setVisible(false);
     }
 
@@ -158,18 +212,120 @@ public class MEPurchaseBoundary {
     }
 
     private void showConfirmation() {
-        confirmationDetails.setText(
-                "Package: " +"10 tickets" + "\n" +
-                        "Price Paid: ₪" + packagePrice
-        );
-        confirmationPackageImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE+"logo.png")));
-        stackPane.getChildren().clear();
-        stackPane.getChildren().add(packageConfirmationPane);
+        Platform.runLater(() -> {
+
+            confirmationDetails.setText(
+                    "Package: " + "20 tickets" + "\n" +
+                            "Price Paid: 290₪"
+            );
+            confirmationPackageImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE + "logo.png")));
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(packageConfirmationPane);
+            EventBus.getDefault().unregister(this);
+        });
     }
 
     @FXML
-    private void closeApplication() {
+    private void closeApplication()
+    {
+        EventBus.getDefault().unregister(this);
+    }
+    public void cleanup() {
+        EventBus.getDefault().unregister(this);
+    }
 
+
+    @Subscribe
+    public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
+    {
+        String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+        //for(int i=0 ;i<quantity ;i++)
+            PurchaseController.AddMultiEntryTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation);
+    }
+
+    @Subscribe
+    public void onPurchaseReceivedMessage(PurchaseMessage message)
+    {
+        if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED)
+        {
+            showConfirmation();
+        }
+    }
+
+
+    // a method that checks if the details that the user given is valid , returns true if the details are valid
+    private boolean checkDetails()
+    {
+
+        if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
+                || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.");
+            return false;
+        }
+
+        String textFirstName = firstNameTF.getText();
+        for (char c : textFirstName.toCharArray()) {
+            if (Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.");
+                return false;
+            }
+        }
+
+        String textLastName = lastNameTF.getText();
+        for (char c : textLastName.toCharArray()) {
+            if (Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.");
+                return false;
+            }
+        }
+
+        String textID = idNumberTF.getText();
+        for (char c : textID.toCharArray()) {
+            if (!Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.");
+                return false;
+            }
+        }
+
+        if(!idNumberTF.getText().equals(confirmIdNumberTF.getText()))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!");
+            return false;
+        }
+
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        if (!pattern.matcher(emailTF.getText()).matches())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.");
+            return false;
+        }
+
+
+        if(!emailTF.getText().equals(confirmEmailTF.getText()))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!");
+            return false;
+        }
+        return true;
+    }
+
+    private void initializePaymentDetails()
+    {
+        firstNameTF.clear();
+        lastNameTF.clear();
+        emailTF.clear();
+        confirmEmailTF.clear();
+        idNumberTF.clear();
+        confirmIdNumberTF.clear();
+
+        cardNumberField.clear();
+        expirationDateField.clear();
+        cvvField.clear();
+        creditCardPane.setVisible(false);
     }
 
 }

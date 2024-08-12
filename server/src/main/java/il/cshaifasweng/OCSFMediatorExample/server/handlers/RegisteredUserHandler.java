@@ -1,0 +1,55 @@
+package il.cshaifasweng.OCSFMediatorExample.server.handlers;
+
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+
+public class RegisteredUserHandler extends MessageHandler
+{
+    private RegisteredUserMessage message;
+
+    public RegisteredUserHandler(RegisteredUserMessage message, ConnectionToClient client, Session session)
+    {
+        super(client, session);
+        this.message = message;
+    }
+
+    @Override
+    public void setMessageTypeToResponse()
+    {
+        message.messageType= Message.MessageType.RESPONSE;
+    }
+
+    public void handleMessage()
+    {
+        switch (message.requestType)
+        {
+            case ADD_NEW_USER -> add_new_user();
+        }
+    }
+
+    private void add_new_user()
+    {
+        Query<RegisteredUser> query = session.createQuery("FROM RegisteredUser WHERE id_number = :id", RegisteredUser.class);
+        query.setParameter("id", message.user_id);
+
+        if(query.getResultList().isEmpty())
+        {
+            RegisteredUser new_user = new RegisteredUser(message.user_id, message.name, false, message.email, 0);
+            session.save(new_user);
+            session.flush();
+            message.responseType = RegisteredUserMessage.ResponseType.USER_ADDED;
+
+            message.registeredUser = new_user;
+        }
+        else
+        {
+            message.responseType = RegisteredUserMessage.ResponseType.USER_DID_NOT_ADDED;
+            message.registeredUser = query.getResultList().getFirst();
+        }
+    }
+}

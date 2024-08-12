@@ -49,7 +49,7 @@ public class HomeBoundary implements Initializable {
     @FXML
     private GridPane grid;
 
-    private String currentScreeningFilter="all";
+    static String currentScreeningFilter="Theater";        // sets in what type of screening the user wants to see
     private String Genre="all";
 
     @Override
@@ -57,7 +57,7 @@ public class HomeBoundary implements Initializable {
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
         // Request the list of movies from the server
-        MovieController.requestAllMovies();
+        MovieController.getMoviesPresentedInTheater();
     }
 
     @Subscribe
@@ -158,14 +158,15 @@ public class HomeBoundary implements Initializable {
         }
     }
 
-
     @FXML
-    void FilterByScreeningType(ActionEvent event)
+    void FilterByScreeningType(ActionEvent event)           //THEATER / HOME VIEWING
     {
         Button clickedButton = (Button) event.getSource();
         currentScreeningFilter = clickedButton.getText();
+        System.out.println("currentScreeningFilter = " + currentScreeningFilter);
         FilterByScreeningTypeAndGenre(event);
     }
+
     @FXML
     void FilterByGenre(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
@@ -181,7 +182,7 @@ public class HomeBoundary implements Initializable {
 
     }
 
-     public void cleanup() {
+    public void cleanup() {
         // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }

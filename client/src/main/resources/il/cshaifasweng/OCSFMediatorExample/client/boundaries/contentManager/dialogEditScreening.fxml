@@ -4,50 +4,48 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<AnchorPane fx:id="containerAddProduct" prefHeight="344.0" prefWidth="498.0" style="-fx-background-color: white; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditScreening">
-
+<AnchorPane fx:id="containerAddProduct" prefHeight="450.0" prefWidth="687.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-width: 2px; -fx-background-radius: 10px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.DialogEditScreening">
     <children>
 
         <!-- Title -->
-        <Label fx:id="txtAddProduct" layoutX="20.0" layoutY="15.0" text="Add Screening">
+        <Label fx:id="txtAddProduct" layoutX="238.0" layoutY="18.0" text="Edit Screening" textFill="#3a1c9d">
             <font>
-                <Font size="24.0" />
+                <Font name="System Bold" size="24.0" />
             </font>
         </Label>
 
         <!-- Close Button -->
-        <Button fx:id="btnClose" layoutX="418.0" layoutY="18.0" onMouseClicked="#closeDialogAddProduct" prefHeight="30.0" prefWidth="30.0" styleClass="button-close" text=" ">
+        <Button fx:id="btnClose" layoutX="621.0" layoutY="21.0" onAction="#handleClose" prefHeight="30.0" prefWidth="30.0" styleClass="button-close" text=" ">
             <graphic>
-                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@../../media/icons/icons8-close-50.png" />
-                </ImageView>
+                <Text fill="#3a1c9d" style="-fx-font-size: 20px;" text="X" />
             </graphic>
         </Button>
 
         <!-- Input Fields -->
-        <GridPane hgap="10.0" layoutX="20.0" layoutY="60.0" vgap="25.0">
+        <GridPane fx:id="gridPaneInputs" alignment="CENTER" hgap="10.0" layoutX="98.0" layoutY="101.0" prefHeight="209.0" prefWidth="489.0" style="-fx-border-color: #3a1c9d; -fx-border-width: 1px;" vgap="25.0">
             <children>
-
-                <!-- Row 1: Movie Selection -->
-                <ComboBox fx:id="cmbMovies" prefHeight="25.0" prefWidth="336.0" promptText="Select Movie" GridPane.columnSpan="2" />
-
-                <!-- Row 2: Date and Theater -->
-                <DatePicker fx:id="dtptDate" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <ComboBox fx:id="cmbTheater" prefWidth="150.0" promptText="Theater" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-                <!-- Row 3: Hall and Hour -->
-                <ComboBox fx:id="cmbHall" prefHeight="25.0" prefWidth="174.0" promptText="Hall" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <ComboBox fx:id="cmbHour" prefWidth="150.0" promptText="Hour" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-
+                <Text fx:id="txtMovie" strokeType="OUTSIDE" strokeWidth="0.0" text="Movie Title" wrappingWidth="164.736328125">
+                    <font>
+                        <Font name="System Bold Italic" size="18.0" />
+                    </font>
+                </Text>
+                <ComboBox fx:id="cmbDate" prefHeight="21.0" prefWidth="165.0" promptText="Date" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.rowIndex="2" />
+                <Text fx:id="txtTheater" strokeType="OUTSIDE" strokeWidth="0.0" text="Theater" textAlignment="CENTER" wrappingWidth="166.736328125" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Text>
+                <Text fx:id="txtHall" strokeType="OUTSIDE" strokeWidth="0.0" text="Hall" textAlignment="CENTER" wrappingWidth="137.0625" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Text>
+                <ComboBox fx:id="cmbHour" prefWidth="150.0" promptText="Hour" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             </children>
-
             <columnConstraints>
-                <ColumnConstraints />
-                <ColumnConstraints />
+                <ColumnConstraints maxWidth="223.0" minWidth="167.0" prefWidth="167.0" />
+                <ColumnConstraints maxWidth="159.0" minWidth="103.0" prefWidth="159.0" />
             </columnConstraints>
-
             <rowConstraints>
                 <RowConstraints minHeight="40.0" />
                 <RowConstraints minHeight="40.0" />
@@ -56,30 +54,20 @@
         </GridPane>
 
         <!-- Action Buttons -->
-        <HBox layoutX="127.0" layoutY="280.0" spacing="10.0">
+        <HBox layoutX="245.0" layoutY="333.0" spacing="10.0">
             <children>
-
-                <Button fx:id="btnSaveProduct" onMouseClicked="#newProduct" prefHeight="30.0" prefWidth="80.0" styleClass="action-button" text="Save" textFill="WHITE">
+                <Button fx:id="btnSaveProduct" onAction="#handleSave" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #3a1c9d;" styleClass="action-button" text="Save" textFill="#FFFFFF">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-
-                <Button fx:id="btnUpdateProduct" onMouseClicked="#updateProduct" prefHeight="30.0" prefWidth="80.0" styleClass="action-button" text="Update" textFill="WHITE">
+                <Button fx:id="btnCancelAddProduct" onAction="#handleClose" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #3a1c9d; -fx-text-fill: #FFFFFF;" styleClass="button-cancel" text="Cancel">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Button>
-
-                <Button fx:id="btnCancelAddProduct" onMouseClicked="#closeDialogAddProduct" prefHeight="30.0" prefWidth="80.0" styleClass="button-cancel" text="Cancel">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-
             </children>
         </HBox>
 
     </children>
-
 </AnchorPane>

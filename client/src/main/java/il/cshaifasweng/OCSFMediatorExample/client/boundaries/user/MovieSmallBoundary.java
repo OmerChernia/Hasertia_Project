@@ -27,7 +27,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class MovieSmallBoundary {
@@ -66,7 +65,10 @@ public class MovieSmallBoundary {
     private ComboBox<String> cmbDate;
 
     @FXML
-    private ComboBox<String> cmbDateHv;
+    private DatePicker cmbDateHv;
+
+    @FXML
+    private ComboBox<String> cmbHourHv;
 
     @FXML
     private ComboBox<String> cmbHour;
@@ -122,9 +124,15 @@ public class MovieSmallBoundary {
         if (btnPayTheater != null) {
             btnPayTheater.setOnAction(event -> handlePayButton());
         }
+        if (btnPayHV != null) {
+            btnPayHV.setOnAction(event -> handlePayButton());
+        }
 
         if (btnCloseTheater != null) {
             btnCloseTheater.setOnAction(event -> handleCloseButton());
+        }
+        if (btnCloseHV != null) {
+            btnCloseHV.setOnAction(event -> handleCloseButton());
         }
         if (cmbCinema != null && cmbDate != null && cmbHour != null) {
             setupComboBoxes();
@@ -252,7 +260,6 @@ public class MovieSmallBoundary {
                     break;
                 case GET_MOVIE_INSTANCE_AFTER_SELECTION:
                     loadSeatSelectionPage(message.movies.get(0));
-                    break;
                 default:
                     break;
             }
@@ -287,17 +294,33 @@ public class MovieSmallBoundary {
     }
 
     private void handlePayButton() {
-        String selectedCinema = cmbCinema.getSelectionModel().getSelectedItem();
-         String selectedDate = cmbDate.getSelectionModel().getSelectedItem();
-         String selectedHour = cmbHour.getSelectionModel().getSelectedItem();
-        LocalDateTime dateTime = LocalDateTime.of(date, time);
-        System.out.println(dateTime);
-        if (selectedCinema != null && selectedDate != null && selectedHour != null) {
-            MovieInstanceController.requestMovieInstanceAfterSelection(movie.getId(), selectedCinema, dateTime);
-        } else {
-            System.out.println("Cinema, date or hour not selected!");
+        if (HomeBoundary.currentScreeningFilter.equals("Theater")){
+            String selectedCinema = cmbCinema.getSelectionModel().getSelectedItem();
+            String selectedDate = cmbDate.getSelectionModel().getSelectedItem();
+            String selectedHour = cmbHour.getSelectionModel().getSelectedItem();
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
+            System.out.println(dateTime);
+            if (selectedCinema != null && selectedDate != null && selectedHour != null) {
+                MovieInstanceController.requestMovieInstanceAfterSelection(movie.getId(), selectedCinema, dateTime);
+            } else {
+                System.out.println("Cinema, date or hour not selected!");
+            }
+        }
+        else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")){
+            String selectedDate = cmbDateHv.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String selectedHour = cmbHourHv.getSelectionModel().getSelectedItem();
+            date = LocalDate.from(LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
+            time = LocalTime.from(LocalTime.parse(selectedHour, DateTimeFormatter.ofPattern("HH:mm")));
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
+            System.out.println(dateTime);
+            if (selectedDate != null && selectedHour != null) {
+                MovieInstanceController.requestMovieInstanceAfterSelection(movie.getId(), "Home Viewing", dateTime);
+            } else {
+                System.out.println("Date or hour not selected!");
+            }
         }
     }
+
     private void loadSeatSelectionPage(MovieInstance movieInstance)
     {
         try {
@@ -306,7 +329,19 @@ public class MovieSmallBoundary {
             TheaterPurchaseBoundary purchaseController = loader.getController();
             purchaseController.setMovieInstance(movieInstance);
             homeController.setRoot(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void loadHomeViewingPurchasePage()
+    {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.HOME_VIEWING_PURCHASE_VIEW));
+            Parent root = loader.load();
+            HomeViewingPurchaseBoundary purchaseController = loader.getController();
+            //purchaseController.setMovieInstance(movieInstance);
+            homeController.setRoot(root);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -327,14 +362,33 @@ public class MovieSmallBoundary {
         }
     }
 
+    @FXML
+    void setHVdate(ActionEvent event) {
+        cmbHourHv.setDisable(false);
+        for (int i = 12; i <= 24; i++) {
+            cmbHourHv.getItems().add(LocalTime.of(i % 24, 0).format(DateTimeFormatter.ofPattern("HH:mm")));
+        }
+    }
+
     private void handleCloseButton() {
         imagePanel.setVisible(true);
-        selectTheaterPane.setVisible(false);
+        if (HomeBoundary.currentScreeningFilter.equals("Theater")){
+            selectTheaterPane.setVisible(false);
+        }
+        else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")){
+            selectHvPanel.setVisible(false);
+        }
     }
 
     public void goToSelect(ActionEvent actionEvent) {
         MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
-        selectTheaterPane.setVisible(true);
+        if (HomeBoundary.currentScreeningFilter.equals("Theater")){
+            selectTheaterPane.setVisible(true);
+        }
+        else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")){
+            txtMovieHV.setText(movie.getEnglishName());
+            selectHvPanel.setVisible(true);
+        }
     }
 
     public void goToInfo(ActionEvent actionEvent) {

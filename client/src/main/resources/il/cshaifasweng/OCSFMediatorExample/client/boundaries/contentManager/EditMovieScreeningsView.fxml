@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -13,7 +9,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -47,100 +42,29 @@
                         <Image url="@../../media/icons/icons8_Search_52px.png" />
                      </image>
                   </ImageView>
-                  <TextField fx:id="txtSearchBarCode" layoutX="233.0" layoutY="10.0"   prefHeight="25.0" prefWidth="326.0" promptText="Search barcode" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="txtSearchBarCode" layoutX="233.0" layoutY="10.0" prefHeight="25.0" prefWidth="326.0" promptText="Search id" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
                   <ImageView fitHeight="20.0" fitWidth="20.0" opacity="0.5" translateY="10.0" HBox.hgrow="ALWAYS">
                      <image>
                         <Image url="@../../media/icons/icons8_Search_52px.png" />
                      </image>
                   </ImageView>
-                  <TextField fx:id="txtSearchProduct"   prefHeight="25.0" prefWidth="339.0" promptText="Search product" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="txtSearchProduct" prefHeight="25.0" prefWidth="339.0" promptText="Search Screnning" styleClass="text-field-search" translateY="10.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <AnchorPane fx:id="containerAddProduct" layoutX="96.0" layoutY="24.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="506.0" prefWidth="767.0" style="-fx-background-radius: 10;" visible="false">
-               <children>
-                  <ComboBox fx:id="cmbTheater" layoutX="244.0" layoutY="134.0" prefWidth="150.0" promptText="Theater" />
-                  <Label fx:id="txtAddProduct" layoutX="41.0" layoutY="14.0" prefHeight="45.0" prefWidth="226.0" text="Add Movie">
-                     <font>
-                        <Font size="28.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="txtId" layoutX="41.0" layoutY="78.0" prefHeight="30.0" prefWidth="37.0" promptText="ID" styleClass="text-field">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </TextField>
-                  <TextField fx:id="txtEnglishName" layoutX="105.0" layoutY="78.0" prefHeight="30.0" prefWidth="285.0" promptText="English Name" styleClass="text-field">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </TextField>
-                  <TextField fx:id="txtHebrewName" layoutX="411.0" layoutY="78.0" prefHeight="30.0" prefWidth="292.0" promptText="Hebrew Name" styleClass="text-field">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </TextField>
-                  <Button fx:id="btnUpdateProduct" layoutX="392.0" layoutY="452.0" onMouseClicked="#updateProduct" prefHeight="25.0" prefWidth="131.0" styleClass="action-button" text="Update" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="btnSaveProduct" layoutX="392.0" layoutY="452.0" onMouseClicked="#newProduct" prefHeight="25.0" prefWidth="131.0" styleClass="action-button" text="Save" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="btnCancelAddProduct" layoutX="253.0" layoutY="452.0" onMouseClicked="#closeDialogAddProduct" prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <Button contentDisplay="CENTER" layoutX="704.0" onMouseClicked="#closeDialogAddProduct" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../media/icons/icons8-close-50.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Pane fx:id="paneContainer" layoutX="508.0" layoutY="216.0" prefHeight="217.0" prefWidth="203.0">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <children>
-                        <HBox fx:id="imageContainer" alignment="CENTER" maxWidth="241.0" prefHeight="217.0" prefWidth="241.0">
-                           <children>
-                              <ImageView fx:id="imageProduct" fitHeight="138.0" fitWidth="236.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../media/empty-image.jpg" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </HBox>
-                     </children>
-                  </Pane>
-                  <DatePicker fx:id="dtptDate" layoutX="39.0" layoutY="134.0" />
-                  <ComboBox fx:id="cmbHour" layoutX="569.0" layoutY="134.0" prefWidth="150.0" promptText="Hour" />
-                  <ComboBox fx:id="cmbHall" layoutX="407.0" layoutY="134.0" prefWidth="150.0" promptText="Hall" />
-
-               </children>
-            </AnchorPane>
-            <AnchorPane fx:id="containerDeleteProducts" layoutX="289.0" layoutY="216.0" prefHeight="246.0" prefWidth="392.0" visible="false">
+            <AnchorPane fx:id="containerEdit" layoutX="96.0" layoutY="24.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="506.0" prefWidth="767.0" style="-fx-background-radius: 10;" visible="false" />
+            <AnchorPane fx:id="containerDelete" layoutX="289.0" layoutY="216.0" prefHeight="246.0" prefWidth="392.0" visible="false">
                <children>
                   <Button layoutX="208.0" layoutY="201.0" onMouseClicked="#deleteProducts" prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
-                  <Button layoutX="57.0" layoutY="201.0" onMouseClicked="#hideDialogDeleteProduct" prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
+                  <Button layoutX="57.0" layoutY="201.0" onMouseClicked="#hideDialogDelete" prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
-                  <Button contentDisplay="CENTER" layoutX="360.0" onMouseClicked="#hideDialogDeleteProduct" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
+                  <Button contentDisplay="CENTER" layoutX="360.0" onMouseClicked="#hideDialogDelete" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" ">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -162,7 +86,7 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <Button fx:id="btnNewProduct" layoutX="759.0" layoutY="17.0" onMouseClicked="#showDialogAddProduct" prefHeight="39.0" prefWidth="155.0" styleClass="action-button" text="New product" textFill="WHITE" AnchorPane.rightAnchor="16.0">
+            <Button fx:id="btnNewScrenning" layoutX="759.0" layoutY="17.0"  prefHeight="39.0" prefWidth="155.0" styleClass="action-button" text="New Screening" textFill="WHITE" AnchorPane.rightAnchor="16.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

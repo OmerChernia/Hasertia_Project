@@ -194,7 +194,7 @@ public class MainBoundary implements Initializable {
 //        setDisableButtons(event, btnExit);
     }
 
-    private void homeWindowsInitialize() {
+    public void homeWindowsInitialize() {
         btnHome.setDisable(true);
         showFXMLWindows(ConstantsPath.HOME_VIEW);
     }
@@ -248,6 +248,7 @@ public class MainBoundary implements Initializable {
         setDisableButtons(event);
     }
 
+    // choose package btn
     @FXML
     private void MEWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.ME_PURCHASE_VIEW);
@@ -413,9 +414,10 @@ public class MainBoundary implements Initializable {
     public void handleEmployeeLoginResponse(EmployeeLoginMessage loginMessage) {
         Platform.runLater(() -> {
             if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
-                SimpleClient.user = loginMessage.id; // Save the logged-in user ID
+                SimpleClient.user = loginMessage.id; // Save the logged-in employee ID
 
-                this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
+                this.loggedInUserId = loginMessage.id; // Save the logged-in employee ID
+                this.loggedInEmploeeId = loginMessage.employeeType; // Save the logged-in employee type
 
                 // Update the UI based on the user's role
                 updateEmployeeBasedOnRole(loginMessage.id, loginMessage.employeeType);
@@ -532,9 +534,13 @@ public class MainBoundary implements Initializable {
 
 
     private void sendLogoutRequest() {
-        if (loggedInUserId != null || loggedInEmploeeId != null) {
+        if (loggedInUserId != null )
+        {
             SimpleClient.user = ""; // Save the logged-in user ID
-            LoginPageController.requestUserLogOut(loggedInUserId);
+            if(loggedInEmploeeId != null)
+                LoginPageController.requestEmployeeLogOut(loggedInUserId);
+            else
+                LoginPageController.requestUserLogOut(loggedInUserId);
         }
     }
 

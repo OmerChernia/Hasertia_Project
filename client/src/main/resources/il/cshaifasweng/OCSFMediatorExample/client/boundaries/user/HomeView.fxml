@@ -21,10 +21,9 @@
                   <!-- VBox containing two rows of buttons -->
                   <VBox alignment="CENTER" prefHeight="88.0" prefWidth="451.0">
                      <HBox spacing="20">
-                        <Button onAction="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="All" />
                         <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Theater" />
                         <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Home Viewing" />
-                      </HBox>
+                     </HBox>
                      <HBox spacing="20">
                         <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="All" />
                         <Button onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Action" />
@@ -38,7 +37,7 @@
          </top>
          <center>
 
-                  <!-- ScrollPane with GridPane inside -->
+            <!-- ScrollPane with GridPane inside -->
             <ScrollPane fitToWidth="true" onDragDetected="#FilterByScreeningType" prefHeight="363.0" prefWidth="914.0" style="-fx-background-color: #1d1d48;" BorderPane.alignment="CENTER">
                <content>
                   <GridPane fx:id="grid" hgap="100" style="-fx-background-color: #1d1d48;" vgap="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -56,7 +55,7 @@
                         <RowConstraints percentHeight="50.0" />
                         <RowConstraints percentHeight="50.0" />
 
-                           </rowConstraints>
+                     </rowConstraints>
                      <padding>
                         <Insets bottom="10" left="10" right="10" top="10" />
                      </padding>

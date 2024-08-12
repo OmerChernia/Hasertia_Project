@@ -1,11 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.MovieTicket;
-import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
-import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -48,6 +45,14 @@ public class PurchaseHandler extends MessageHandler
     private void add_purchase() {
         if (message.purchases.getFirst() != null) {
             try {
+                if(message.purchases.getFirst() instanceof MultiEntryTicket)
+                {
+                    Query<RegisteredUser> query = session.createQuery("from RegisteredUser where id = :id", RegisteredUser.class);
+                    query.setParameter("id", message.key);
+                    RegisteredUser user = query.getResultList().getFirst();
+                    user.setTicket_counter(user.getTicket_counter() + 20);
+                    session.update(user);
+                }
                 session.save(message.purchases.getFirst());
                 session.flush();
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_ADDED;

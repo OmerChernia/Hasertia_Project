@@ -3,7 +3,6 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
@@ -23,7 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
 
-public class PackagePurchaseBoundary {
+public class HomeViewingPurchaseBoundary {
     @FXML
     private StackPane stackPane;
 

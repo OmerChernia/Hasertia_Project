@@ -16,10 +16,10 @@ public class PurchaseController
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void AddMultiEntryTicket(int customerId, LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation)
+    public static void AddMultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation)
     {
         MultiEntryTicket newTicket = new MultiEntryTicket(purchaseDate, owner, purchaseValidation);
-        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,customerId);
+        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

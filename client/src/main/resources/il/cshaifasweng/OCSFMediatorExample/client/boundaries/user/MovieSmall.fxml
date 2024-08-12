@@ -4,6 +4,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -117,7 +118,7 @@
       <Pane fx:id="selectHvPanel" cache="true" prefHeight="308.0" prefWidth="196.0" style="-fx-border-width: 3; -fx-background-color: #dc2742;" visible="false">
          <children>
             <Text fx:id="txtMovieHV" fill="WHITE" layoutX="7.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Movie name" wrappingWidth="129.0" />
-            <Button fx:id="btnCloseHV" layoutX="161.0" layoutY="1.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="10.0" styleClass="button-close" text="X" textFill="WHITE">
+            <Button fx:id="btnCloseHV" layoutX="82.0" layoutY="255.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="10.0" styleClass="button-close" text="X" textFill="WHITE">
                <stylesheets>
                   <URL value="@../../cssTemplate/fullpackstyling.css" />
                   <URL value="@../../css/main.css" />
@@ -126,19 +127,19 @@
                   <Font size="9.0" />
                </font>
             </Button>
-            <Button fx:id="btnPayHV" layoutX="44.0" layoutY="236.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="96.0" styleClass="button-book" text="BOOK NOW" textFill="WHITE">
+            <Button fx:id="btnPayHV" layoutX="44.0" layoutY="228.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="96.0" styleClass="button-book" text="BOOK NOW" textFill="WHITE">
                <stylesheets>
                   <URL value="@../../cssTemplate/fullpackstyling.css" />
                   <URL value="@../../css/main.css" />
                </stylesheets>
             </Button>
-            <ComboBox fx:id="cmbMovie" layoutX="17.0" layoutY="91.0" prefWidth="150.0" promptText="Choose Theater" style="-fx-background-color: #cae8fb;" styleClass="action-button" stylesheets="@../../css/main.css" />
             <Text fill="WHITE" layoutX="7.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="BOOK HOME PACKAGE TO |" wrappingWidth="166.0">
                <font>
                   <Font name="System Bold Italic" size="12.0" />
                </font>
             </Text>
-            <ComboBox fx:id="cmbDateHv" layoutX="17.0" layoutY="139.0" prefWidth="150.0" promptText="Choose Date" style="-fx-background-color: #ec4c66;" styleClass="action-button" stylesheets="@../../css/main.css" />
+            <ComboBox fx:id="cmbHourHv" layoutX="9.0" layoutY="141.0" prefHeight="25.0" prefWidth="166.0" promptText="Choose Time" style="-fx-background-color: #ec4c66;" styleClass="action-button" stylesheets="@../../css/main.css" />
+            <DatePicker fx:id="cmbDateHv" layoutX="9.0" layoutY="102.0" onAction="#setHVdate" prefHeight="25.0" prefWidth="166.0" promptText="Choose Date" />
          </children>
       </Pane>
    </children>
