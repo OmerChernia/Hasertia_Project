@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -30,8 +31,8 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String englishName;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> mainActors;
+    @Column
+    private String mainActors;
 
     @Column(nullable = false)
     private String image;
@@ -59,7 +60,7 @@ public class Movie implements Serializable {
 
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, boolean isActive) {
+    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, boolean isActive) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -109,11 +110,12 @@ public class Movie implements Serializable {
     }
 
 
-    public List<String> getMainActors() {
-        return mainActors;
+    public List<String> getMainActors()
+    {
+        return Arrays.stream(mainActors.split("_")).toList();
     }
 
-    public void setMainActors(List<String> mainActors) {
+    public void setMainActors(String mainActors) {
         this.mainActors = mainActors;
     }
 

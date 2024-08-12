@@ -239,8 +239,7 @@ public class MEPurchaseBoundary {
     public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
     {
         String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-        //for(int i=0 ;i<quantity ;i++)
-            PurchaseController.AddMultiEntryTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation);
+        PurchaseController.AddMultiEntryTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation);
     }
 
     @Subscribe

@@ -224,7 +224,8 @@ public class MovieHandler extends MessageHandler
                 persistentMovie.setGenre(message.movies.getFirst().getGenre());
                 persistentMovie.setStreamingType(message.movies.getFirst().getStreamingType());
                 persistentMovie.setInfo(message.movies.getFirst().getInfo());
-                persistentMovie.setMainActors(message.movies.getFirst().getMainActors());
+                String joinedString = String.join("_", message.movies.getFirst().getMainActors());
+                persistentMovie.setMainActors(joinedString);
 
                 // Save the changes
                 session.update(persistentMovie);

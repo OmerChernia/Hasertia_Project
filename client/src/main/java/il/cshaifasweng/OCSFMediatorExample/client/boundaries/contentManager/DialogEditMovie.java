@@ -260,7 +260,7 @@ public class DialogEditMovie implements Initializable {
         String genre = comboGenre.getSelectionModel().getSelectedItem();
         String streamingType = comboType.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();
-        List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
+        String actors = String.join("", txtActors.getText().trim().split(", "));
 
         // Check for changes in details
         boolean detailsChanged = !englishName.equals(movie.getEnglishName()) ||

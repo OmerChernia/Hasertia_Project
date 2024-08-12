@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stkpanel" prefHeight="282.0" prefWidth="184.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary">
+<StackPane fx:id="stkpanel" prefHeight="282.0" prefWidth="184.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary">
    <children>
       <Pane fx:id="imagePanel" prefHeight="255.0" prefWidth="169.0" style=": ;">
          <children>
@@ -94,7 +86,7 @@
                               <URL value="@../../css/main.css" />
                            </stylesheets>
                         </Button>
-                        <Button fx:id="btnCloseTheater" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" prefHeight="27.0" prefWidth="14.0" styleClass="button-close" text="X" textFill="WHITE">
+                        <Button fx:id="btnCloseTheater" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#cleanup" prefHeight="27.0" prefWidth="14.0" styleClass="button-close" text="X" textFill="WHITE">
                            <stylesheets>
                               <URL value="@../../cssTemplate/fullpackstyling.css" />
                               <URL value="@../../css/main.css" />

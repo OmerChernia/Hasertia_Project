@@ -115,8 +115,6 @@ public class MovieSmallBoundary {
 
     @FXML
     public void initialize() {
-        EventBus.getDefault().register(this);
-
         if (imagePanel != null) {
             imagePanel.setOnMouseEntered(event -> handleMouseEnter());
             imagePanel.setOnMouseExited(event -> handleMouseExit());
@@ -254,6 +252,7 @@ public class MovieSmallBoundary {
     @Subscribe
     public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
         Platform.runLater(() -> {
+            System.out.println("testtttttttttttttt");
             switch (message.requestType) {
                 case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID:
                     populateCinemasComboBox(message.movies);
@@ -413,7 +412,12 @@ public class MovieSmallBoundary {
         }
     }
 
-    public void goToSelect(ActionEvent actionEvent) {
+    public void goToSelect(ActionEvent actionEvent)
+    {
+        //need to look this up
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
         MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
         if (HomeBoundary.currentScreeningFilter.equals("Theater")){
             selectTheaterPane.setVisible(true);

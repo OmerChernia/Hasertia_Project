@@ -150,9 +150,17 @@ public class TheaterPurchaseBoundary {
     private void updateSeats() {
         seatGrid.getChildren().clear();
         List<Seat> seats = currentMovieInstance.getHall().getSeats();
-        for (Seat seat : seats) {
+        for (Seat seat : seats)
+        {
+            System.out.println(seat.getId());
             Button seatButton = new Button(String.valueOf(seat.getCol()));
-            seatButton.setStyle("-fx-background-color: #4CAF50FF;");
+            if(seat.getMovies().contains(currentMovieInstance))
+            {
+                seatButton.setStyle("-fx-background-color:  #838f97;");
+            }
+            else
+                seatButton.setStyle("-fx-background-color: #4CAF50FF;");
+
             seatButton.setOnAction(event -> selectSeat(seat, seatButton));
             seatGrid.add(seatButton, seat.getCol(), seat.getRow());
         }

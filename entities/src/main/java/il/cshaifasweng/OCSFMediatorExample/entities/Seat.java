@@ -21,7 +21,7 @@ public class Seat implements Serializable {
     @ManyToOne
     Hall hall;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "seats_movie_instances",
             joinColumns = @JoinColumn(name = "seat_id"),
