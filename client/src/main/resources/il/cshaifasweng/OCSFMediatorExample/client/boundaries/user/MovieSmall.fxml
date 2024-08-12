@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane prefHeight="282.0" prefWidth="184.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary">
+<StackPane fx:id="stkpanel" prefHeight="282.0" prefWidth="184.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary">
    <children>
       <Pane fx:id="imagePanel" prefHeight="255.0" prefWidth="169.0" style=": ;">
          <children>

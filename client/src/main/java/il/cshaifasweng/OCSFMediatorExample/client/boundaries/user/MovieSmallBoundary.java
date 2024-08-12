@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
@@ -14,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -102,6 +105,9 @@ public class MovieSmallBoundary {
 
     @FXML
     private Text txtMovieTheater;
+
+    @FXML
+    private StackPane stkpanel;
 
     private String theaterName;
     private LocalDate date;
@@ -295,27 +301,53 @@ public class MovieSmallBoundary {
 
     private void handlePayButton() {
         if (HomeBoundary.currentScreeningFilter.equals("Theater")){
-            String selectedCinema = cmbCinema.getSelectionModel().getSelectedItem();
-            String selectedDate = cmbDate.getSelectionModel().getSelectedItem();
-            String selectedHour = cmbHour.getSelectionModel().getSelectedItem();
-            LocalDateTime dateTime = LocalDateTime.of(date, time);
-            System.out.println(dateTime);
-            if (selectedCinema != null && selectedDate != null && selectedHour != null) {
+            String selectedCinema ="", selectedHour= "", selectedDate = "";
+            if(cmbCinema.getValue()!=null) {
+                selectedCinema = cmbCinema.getSelectionModel().getSelectedItem();
+            }
+            if(cmbDate.getValue()!=null) {
+                selectedDate = cmbDate.getSelectionModel().getSelectedItem();
+            }
+            if(cmbHour.getValue()!=null) {
+                selectedHour = cmbHour.getSelectionModel().getSelectedItem();
+            }
+
+            if (selectedCinema.isEmpty() || selectedDate.isEmpty() || selectedHour.isEmpty()) {
+                AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "You must fill all boxes!");
+            }
+            else {
+                LocalDateTime dateTime = LocalDateTime.of(date, time);
                 MovieInstanceController.requestMovieInstanceAfterSelection(movie.getId(), selectedCinema, dateTime);
-            } else {
-                System.out.println("Cinema, date or hour not selected!");
             }
         }
         else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")){
-            String selectedDate = cmbDateHv.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            String selectedHour = cmbHourHv.getSelectionModel().getSelectedItem();
-            date = LocalDate.from(LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
-            time = LocalTime.from(LocalTime.parse(selectedHour, DateTimeFormatter.ofPattern("HH:mm")));
-            if (selectedDate != null && selectedHour != null) {
-                loadHomeViewingPurchasePage();
+            String selectedHour= "", selectedDate = "";
+            if(cmbDateHv.getValue()!=null)
+            {
+                selectedDate = cmbDateHv.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                date = LocalDate.from(LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
             }
-            else {
-                System.out.println("Date or hour not selected!");
+            if(cmbHourHv.getValue()!=null)
+            {
+                selectedHour = cmbHourHv.getSelectionModel().getSelectedItem();
+                time = LocalTime.from(LocalTime.parse(selectedHour, DateTimeFormatter.ofPattern("HH:mm")));
+            }
+            if (selectedDate.isEmpty() || selectedHour.isEmpty()) {
+                AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "You must fill all boxes!");
+            }
+            else if(date.isBefore(LocalDate.now()))
+            {
+                AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "Can't choose Day that passed");
+
+            }
+            else if(date.equals(LocalDate.now())&&time.isBefore(LocalTime.now()))
+            {
+                AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "Can't choose Time that passed");
+
+            }
+            else
+            {
+                 loadHomeViewingPurchasePage();
             }
         }
     }
