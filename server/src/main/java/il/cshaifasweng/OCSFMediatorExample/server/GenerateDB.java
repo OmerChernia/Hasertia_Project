@@ -55,15 +55,15 @@ public class GenerateDB {
         List<RegisteredUser> users = session.createQuery("from RegisteredUser", RegisteredUser.class).list();
         if (users.isEmpty()) {
             users = List.of(
-                    new RegisteredUser("318111222","Alice Smith", true, "alice@example.com", 0),
+                    new RegisteredUser("318111222","Alice Smith", false, "alice@example.com", 0),
                     new RegisteredUser("284619537","Bob Johnson", false, "bob@example.com", 0),
-                    new RegisteredUser("719305846","Charlie Brown", true, "charlie@example.com", 0),
+                    new RegisteredUser("719305846","Charlie Brown", false, "charlie@example.com", 0),
                     new RegisteredUser("562890143","David Wilson", false, "david@example.com", 0),
-                    new RegisteredUser("938472615","Eva Davis", true, "eva@example.com", 0),
+                    new RegisteredUser("938472615","Eva Davis", false, "eva@example.com", 0),
                     new RegisteredUser("451298763","Frank Harris", false, "frank@example.com", 0),
-                    new RegisteredUser("895631247","Grace Lee", true, "grace@example.com", 0),
+                    new RegisteredUser("895631247","Grace Lee", false, "grace@example.com", 0),
                     new RegisteredUser("603815927","Henry King", false, "henry@example.com", 1),
-                    new RegisteredUser("748596321","Ivy Martin", true, "ivy@example.com", 8),
+                    new RegisteredUser("748596321","Ivy Martin", false, "ivy@example.com", 8),
                     new RegisteredUser("106753829","Jack White", false, "jack@example.com", 20)
             );
 
@@ -83,7 +83,7 @@ public class GenerateDB {
         List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
         if (employees.isEmpty()) {
             employees = List.of(
-                    new Employee("705182943","John Doe", true, "password10", Employee.EmployeeType.COMPANY_MANAGER),
+                    new Employee("705182943","John Doe", false, "password10", Employee.EmployeeType.COMPANY_MANAGER),
                     new Employee("238947615","Jane Smith", false, "password120", Employee.EmployeeType.CUSTOMER_SERVICE),
                     new Employee("864205739","Michael Johnson", false, "password1230", Employee.EmployeeType.CONTENT_MANAGER)
             );
@@ -104,11 +104,11 @@ public class GenerateDB {
         List<TheaterManager> managers = session.createQuery("from TheaterManager", TheaterManager.class).list();
         if (managers.isEmpty()) {
             managers = List.of(
-                    new TheaterManager("847365912","Josh Bee", true, "password1", Employee.EmployeeType.THEATER_MANAGER, null),
+                    new TheaterManager("847365912","Josh Bee", false, "password1", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("512089637","Mili Tik", false, "password12", Employee.EmployeeType.THEATER_MANAGER, null),
-                    new TheaterManager("396824571","Bob Back", true, "password123", Employee.EmployeeType.THEATER_MANAGER, null),
+                    new TheaterManager("396824571","Bob Back", false, "password123", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("483944123","Emily Davis", false, "password1234", Employee.EmployeeType.THEATER_MANAGER, null),
-                    new TheaterManager("591736842","Daniel Brown", true, "password1235", Employee.EmployeeType.THEATER_MANAGER, null)
+                    new TheaterManager("591736842","Daniel Brown", false, "password1235", Employee.EmployeeType.THEATER_MANAGER, null)
             );
 
             Transaction transaction = session.beginTransaction();
