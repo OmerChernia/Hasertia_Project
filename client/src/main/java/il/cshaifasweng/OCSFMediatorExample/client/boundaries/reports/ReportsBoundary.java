@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ComplaintReportConfiguration;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportConfiguration;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ReportsPageController;
@@ -15,6 +16,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javassist.expr.Instanceof;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -101,51 +103,51 @@ public class ReportsBoundary implements Initializable {
     private void createSalesReports(List<Purchase> purchases) {
         // Creating and setting Ticket Sales Report
         Map<String, Map<String, Integer>> ticketSalesByCinemaAndDay = organizeSalesData(purchases, MovieTicket.class);
-        ReportConfiguration ticketSalesConfig = createBarChartReportConfig(
-                "Ticket Sales",
-                "Days in Month",
-                "Sales",
-                ticketSalesByCinemaAndDay
-        );
-        ticketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("BarChart", ticketSalesConfig).generateReport()).getData());
+        TicketSalesReportConfiguration ticketSalesConfig = new TicketSalesReportConfiguration(purchases);
+        ticketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("TicketSales", ticketSalesConfig).generateReport()).getData());
 
         // Creating and setting Package Sales Report
         Map<String, Map<String, Integer>> packageSalesByCinemaAndDay = organizeSalesData(purchases, HomeViewingPackageInstance.class);
-        ReportConfiguration packageSalesConfig = createBarChartReportConfig(
-                "Package Sales",
-                "Days in Month",
-                "Sales",
-                packageSalesByCinemaAndDay
-        );
-        packageSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("BarChart", packageSalesConfig).generateReport()).getData());
+        TicketSalesReportConfiguration packageSalesConfig = new TicketSalesReportConfiguration(purchases);
+        packageSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("HomeViewSales", packageSalesConfig).generateReport()).getData());
 
         // Creating and setting Multi-Entry Ticket Sales Report
         Map<String, Map<String, Integer>> multiEntryTicketSalesByCinemaAndDay = organizeSalesData(purchases, MultiEntryTicket.class);
-        ReportConfiguration multiEntryTicketSalesConfig = createBarChartReportConfig(
-                "Multi-Entry Ticket Sales",
-                "Days in Month",
-                "Sales",
-                multiEntryTicketSalesByCinemaAndDay
-        );
-        multiEntryTicketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("BarChart", multiEntryTicketSalesConfig).generateReport()).getData());
+        TicketSalesReportConfiguration multiEntryTicketSalesConfig = new TicketSalesReportConfiguration(purchases);
+        multiEntryTicketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("MultiEntrySales", multiEntryTicketSalesConfig).generateReport()).getData());
 
-        // Optionally, create pie charts based on the same data
-        setPieChartDataFromNestedMap(ticketSalesPieChart, ticketSalesByCinemaAndDay);
-        setPieChartDataFromNestedMap(packageSalesPieChart, packageSalesByCinemaAndDay);
-        setPieChartDataFromNestedMap(multiEntryTicketSalesPieChart, multiEntryTicketSalesByCinemaAndDay);
+//        // Optionally, create pie charts based on the same data
+//        setPieChartDataFromNestedMap(ticketSalesPieChart, ticketSalesByCinemaAndDay);
+//        setPieChartDataFromNestedMap(packageSalesPieChart, packageSalesByCinemaAndDay);
+//        setPieChartDataFromNestedMap(multiEntryTicketSalesPieChart, multiEntryTicketSalesByCinemaAndDay);
     }
 
     private Map<String, Map<String, Integer>> organizeSalesData(List<Purchase> purchases, Class<? extends Purchase> purchaseType) {
         Map<String, Map<String, Integer>> salesByCinemaAndDay = new HashMap<>();
 
         for (Purchase purchase : purchases) {
-            if (purchaseType.isInstance(purchase)) {
-                String cinema = purchaseType.cast(purchase).getOwner().getName();
-                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
+            if (purchase instanceof MovieTicket) {
+                MovieTicket temp_movie_ticket = (MovieTicket) purchase;
+                String cinema = temp_movie_ticket.getMovieInstance().getHall().getTheater().getLocation();
+                String day = temp_movie_ticket.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
                 salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
                 Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
                 salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
             }
+//            else if (purchase instanceof MovieTicket) {
+//                String cinema = purchaseType.cast(purchase).getOwner().getName();
+//                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
+//                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
+//                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
+//                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
+//            }
+            //            else if (purchase instanceof MovieTicket) {
+//                String cinema = purchaseType.cast(purchase).getOwner().getName();
+//                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
+//                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
+//                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
+//                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
+//            }
         }
 
         return salesByCinemaAndDay;
@@ -165,43 +167,39 @@ public class ReportsBoundary implements Initializable {
         Map<String, Integer> complaintsByDay = complaints.stream().collect(
                 Collectors.groupingBy(complaint -> complaint.getCreationDate().format(DateTimeFormatter.ofPattern("dd")), Collectors.summingInt(c -> 1))
         );
+        System.out.println("Comp MaP" + complaintsByDay);
 
         // Creating and setting Complaint Status Report
-        ReportConfiguration complaintStatusConfig = new ReportConfiguration(
-                "Complaint Status",
-                "Days in Month",
-                "Complaints",
-                new ArrayList<>(complaintsByDay.keySet()),
-                new ArrayList<>(complaintsByDay.values())
-        );
-        complaintStatusBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("BarChart", complaintStatusConfig).generateReport()).getData());
+        ComplaintReportConfiguration complaintStatusConfig = new ComplaintReportConfiguration(complaints);
+
+        complaintStatusBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("Complaint", complaintStatusConfig).generateReport()).getData());
 
         // Optionally, create histograms or pie charts for complaints
-        setPieChartData(complaintStatusPieChart, complaintsByDay);
+//        setPieChartData(complaintStatusPieChart, complaintsByDay);
     }
 
-    private void setPieChartDataFromNestedMap(PieChart pieChart, Map<String, Map<String, Integer>> salesData) {
-        pieChart.getData().clear();
-
-        for (Map.Entry<String, Map<String, Integer>> entry : salesData.entrySet()) {
-            String category = entry.getKey();
-            int totalSales = entry.getValue().values().stream().mapToInt(Integer::intValue).sum();
-
-            if (totalSales > 0) {
-                PieChart.Data data = new PieChart.Data(category, totalSales);
-                pieChart.getData().add(data);
-            }
-        }
-    }
-
-    private void setPieChartData(PieChart pieChart, Map<String, Integer> data) {
-        pieChart.getData().clear();
-
-        for (Map.Entry<String, Integer> entry : data.entrySet()) {
-            PieChart.Data pieData = new PieChart.Data(entry.getKey(), entry.getValue());
-            pieChart.getData().add(pieData);
-        }
-    }
+//    private void setPieChartDataFromNestedMap(PieChart pieChart, Map<String, Map<String, Integer>> salesData) {
+//        pieChart.getData().clear();
+//
+//        for (Map.Entry<String, Map<String, Integer>> entry : salesData.entrySet()) {
+//            String category = entry.getKey();
+//            int totalSales = entry.getValue().values().stream().mapToInt(Integer::intValue).sum();
+//
+//            if (totalSales > 0) {
+//                PieChart.Data data = new PieChart.Data(category, totalSales);
+//                pieChart.getData().add(data);
+//            }
+//        }
+//    }
+//
+//    private void setPieChartData(PieChart pieChart, Map<String, Integer> data) {
+//        pieChart.getData().clear();
+//
+//        for (Map.Entry<String, Integer> entry : data.entrySet()) {
+//            PieChart.Data pieData = new PieChart.Data(entry.getKey(), entry.getValue());
+//            pieChart.getData().add(pieData);
+//        }
+//    }
 
     // Existing methods for handling chart type toggling and downloading PDF remain the same
 }

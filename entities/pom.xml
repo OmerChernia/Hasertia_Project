@@ -8,6 +8,7 @@
   <groupId>il.cshaifasweng.OCSFMediatorExample</groupId>
   <artifactId>entities</artifactId>
   <packaging>jar</packaging>
+
   <dependencies>
 
     <!-- Existing dependencies -->
@@ -54,4 +55,5 @@
 
 
   </dependencies>
+
 </project>
