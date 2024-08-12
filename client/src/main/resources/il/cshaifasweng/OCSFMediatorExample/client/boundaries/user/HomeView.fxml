@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -20,9 +22,18 @@
                <children>
                   <!-- VBox containing two rows of buttons -->
                   <VBox alignment="CENTER" prefHeight="88.0" prefWidth="451.0">
-                     <HBox spacing="20">
+                     <HBox prefHeight="52.0" prefWidth="930.0" spacing="20">
                         <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Theater" />
                         <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Home Viewing" />
+                        <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="View Upcoming Movies" />
+                     </HBox>
+                     <HBox fx:id="TheaterFilters" prefHeight="52.0" prefWidth="930.0" spacing="20">
+                        <children>
+                           <ComboBox fx:id="cmbTheater" onAction="#FilterByTheater" prefHeight="22.0" prefWidth="133.0" promptText="Filter By Theater" />
+                           <DatePicker fx:id="startDate" prefHeight="25.0" prefWidth="150.0" promptText="Starts From" />
+                           <DatePicker fx:id="endDate" layoutX="163.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="To" />
+                           <Button mnemonicParsing="false" onAction="#Reset" text="Reset" />
+                        </children>
                      </HBox>
                      <HBox spacing="20">
                         <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="All" />

@@ -54,7 +54,7 @@ public class MovieHandler extends MessageHandler
             Query<Movie> query = session.createQuery(hql.toString(), Movie.class);
 
             // Set common parameters
-            query.setParameter("active", true);
+            query.setParameter("available", Movie.Availability.AVAILABLE);
 
             // Set screening type parameters if applicable
             if (message.Screening != Movie.StreamingType.BOTH) {
@@ -87,12 +87,13 @@ public class MovieHandler extends MessageHandler
         try {
             // Create an HQL query to fetch movies with streamingType HOME_VIEWING or BOTH
             Query<Movie> query = session.createQuery(
-                    "FROM Movie WHERE (streamingType = :home OR streamingType = :both) AND isActive = :active",
+                    "FROM Movie WHERE (streamingType = :home OR streamingType = :both) AND available = :available",
                     Movie.class
             );
             query.setParameter("home", Movie.StreamingType.HOME_VIEWING);
             query.setParameter("both", Movie.StreamingType.BOTH);
-            query.setParameter("active", true);
+            query.setParameter("available", Movie.Availability.AVAILABLE);
+
 
             // Execute the query and get the result list
             message.movies = query.getResultList();
@@ -113,12 +114,12 @@ public class MovieHandler extends MessageHandler
         try {
             // Create an HQL query to fetch movies with streamingType THEATER_VIEWING or BOTH
             Query<Movie> query = session.createQuery(
-                    "FROM Movie WHERE (streamingType = :theater OR streamingType = :both) AND isActive = :active",
+                    "FROM Movie WHERE (streamingType = :theater OR streamingType = :both) AND available = :available",
                     Movie.class
             );
             query.setParameter("theater", Movie.StreamingType.THEATER_VIEWING);
             query.setParameter("both", Movie.StreamingType.BOTH);
-            query.setParameter("active", true);
+            query.setParameter("available", Movie.Availability.AVAILABLE);
 
             // Execute the query and get the result list
             message.movies = query.getResultList();
@@ -175,7 +176,7 @@ public class MovieHandler extends MessageHandler
 
         if(movie != null)
         {
-            movie.setActive(false);
+            movie.setActive(Movie.Availability.NOT_AVAILABLE);
             session.update(message.movies.getFirst());
             session.flush();
             message.responseType = MovieMessage.ResponseType.MOVIE_UPDATED;
@@ -189,8 +190,8 @@ public class MovieHandler extends MessageHandler
     {
         try {
             // Create an HQL query to fetch all complaints
-            Query<Movie> query = session.createQuery("FROM Movie where isActive= :_active", Movie.class);
-            query.setParameter("_active", true);
+            Query<Movie> query = session.createQuery("FROM Movie where available= :_available", Movie.class);
+            query.setParameter("_available", Movie.Availability.AVAILABLE);
             // Execute the query and get the result list
             message.movies = query.getResultList();
 

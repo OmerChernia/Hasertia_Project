@@ -2,7 +2,6 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -13,6 +12,13 @@ public class Movie implements Serializable {
         HOME_VIEWING,
         THEATER_VIEWING,
         BOTH
+    }
+
+    public enum Availability
+    {
+        NOT_AVAILABLE,
+        AVAILABLE,
+        COMING_SOON
     }
 
     @Id
@@ -31,8 +37,8 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String englishName;
 
-    @Column
-    private String mainActors;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> mainActors;
 
     @Column(nullable = false)
     private String image;
@@ -53,14 +59,14 @@ public class Movie implements Serializable {
     private String genre;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private Availability available;
 
     public Movie()
     {
 
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, boolean isActive) {
+    public Movie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability ava) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -72,7 +78,7 @@ public class Movie implements Serializable {
         this.homeViewingPrice = homeViewingPrice;
         this.theaterPrice = theaterPrice;
         this.genre = genre;
-        this.isActive = isActive;
+        this.available = ava;
     }
 
     // Getters and setters
@@ -110,12 +116,11 @@ public class Movie implements Serializable {
     }
 
 
-    public List<String> getMainActors()
-    {
-        return Arrays.stream(mainActors.split("_")).toList();
+    public List<String> getMainActors() {
+        return mainActors;
     }
 
-    public void setMainActors(String mainActors) {
+    public void setMainActors(List<String> mainActors) {
         this.mainActors = mainActors;
     }
 
@@ -173,9 +178,9 @@ public class Movie implements Serializable {
 
     public void setGenre(String genre) {}
 
-    public boolean isActive() {return isActive;}
+    public Availability getAvailability() {return available;}
 
-    public void setActive(boolean isActive) {this.isActive = isActive;}
+    public void setActive(Availability available) {this.available = available;}
 
 
     @Override
@@ -193,8 +198,7 @@ public class Movie implements Serializable {
                 ", homeViewingPrice=" + homeViewingPrice +
                 ", theaterPrice=" + theaterPrice +
                 ", genre=" + genre +
-                ", isActive=" + isActive +
-                '}';
+                ", isActive=";
     }
 
 }

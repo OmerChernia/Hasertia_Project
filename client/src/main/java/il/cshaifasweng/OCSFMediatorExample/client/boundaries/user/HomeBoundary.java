@@ -1,11 +1,17 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,10 +20,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.DatePicker;
+import javafx.scene.layout.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.scene.control.ComboBox;
@@ -25,8 +29,11 @@ import javafx.scene.control.ComboBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class HomeBoundary implements Initializable {
 
@@ -37,6 +44,20 @@ public class HomeBoundary implements Initializable {
     @FXML
     private AnchorPane InfoContainer;
 
+    @FXML
+    private HBox TheaterFilters;
+
+    @FXML
+    private ComboBox<String> cmbTheater;
+
+    @FXML
+    private DatePicker endDate;
+
+    @FXML
+    private BorderPane rootHome;
+
+    @FXML
+    private DatePicker startDate;
     @FXML
     private Button btnHV;
 
@@ -58,18 +79,40 @@ public class HomeBoundary implements Initializable {
         EventBus.getDefault().register(this);
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
+        TheaterController.getAllTheaters();
     }
 
     @Subscribe
-    public void onMovieMessageReceived(MovieMessage message) {
+    public void onMovieMessageReceived(Message message) {
         Platform.runLater(() ->
         {
             try {
-                setItems(message.movies);
+                if(message instanceof MovieMessage)
+                     setItems(((MovieMessage)message).movies);
+                else if(message instanceof TheaterMessage)
+                    populateTheatersComboBox(((TheaterMessage)message).theaterList);
+                else if(message instanceof MovieInstanceMessage)
+                    GetAndSetMoviesFromInstances(((MovieInstanceMessage)message).movies);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private void GetAndSetMoviesFromInstances(List<MovieInstance> movieInstances) throws IOException {
+        Set<Movie> uniqueMovies = movieInstances.stream()
+                .map(MovieInstance::getMovie)
+                .collect(Collectors.toSet());
+        setItems(new ArrayList<>(uniqueMovies));
+    }
+
+
+    private void populateTheatersComboBox(List<Theater> theatersList) {
+        Set<String> theaterLocations = theatersList.stream()
+                .map(Theater::getLocation)
+                .collect(Collectors.toSet());
+        List<String> locationsList = new ArrayList<>(theaterLocations);
+        cmbTheater.getItems().setAll(locationsList);
     }
 
     public void setItems(List<Movie> movies) throws IOException {
@@ -83,8 +126,6 @@ public class HomeBoundary implements Initializable {
             }
         });
     }
-
-
 
     private void updateGrid() throws IOException {
         grid.getChildren().clear();
@@ -164,6 +205,11 @@ public class HomeBoundary implements Initializable {
         Button clickedButton = (Button) event.getSource();
         currentScreeningFilter = clickedButton.getText();
         System.out.println("currentScreeningFilter = " + currentScreeningFilter);
+        if(currentScreeningFilter.equals("Theater"))
+            TheaterFilters.setDisable(false);
+        else
+            TheaterFilters.setDisable(true);
+
         FilterByScreeningTypeAndGenre(event);
     }
 
@@ -180,6 +226,20 @@ public class HomeBoundary implements Initializable {
     void FilterByScreeningTypeAndGenre(ActionEvent event) {
         MovieController.getMoviesFilteredByScreeningTypeAndGenre(currentScreeningFilter,Genre);
 
+    }
+
+    @FXML
+    void FilterByTheater(ActionEvent event) {
+        cmbTheater.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                MovieInstanceController.requestMovieInstancesByTheaterName(newValue);
+            }
+        });
+    }
+
+    @FXML
+    void Reset(ActionEvent event) {
+        MovieController.getMoviesPresentedInTheater();
     }
 
     public void cleanup() {

@@ -15,13 +15,13 @@ public class MovieController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void addMovie(String hebrewName, String info, String producer, String englishName,String mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre) {
-        Movie movie = new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, true);
+    public static void addMovie(String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre) {
+        Movie movie = new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, Movie.Availability.AVAILABLE);
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, movie, RequestType.ADD_MOVIE);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, String mainActors, String image, Movie.StreamingType streamingType, int duration, String genre) {
+    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, List<String> mainActors, String image, Movie.StreamingType streamingType, int duration, String genre) {
         movie.setHebrewName(hebrewName);
         movie.setInfo(info);
         movie.setProducer(producer);

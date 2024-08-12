@@ -55,6 +55,11 @@ public class MovieInstanceController {
         MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_GENRE, genre);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
+    public static void requestMovieInstancesByTheaterName(String TheaterName) {
+        // Create a request to get a movie instance by ID
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME, TheaterName);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
 
 
     public static void requestMovieInstancesByMovieIdTheaterNameDate(int movieId, String TheaterName, LocalDateTime date) {
