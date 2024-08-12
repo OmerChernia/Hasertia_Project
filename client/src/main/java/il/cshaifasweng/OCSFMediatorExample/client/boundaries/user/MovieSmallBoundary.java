@@ -311,11 +311,10 @@ public class MovieSmallBoundary {
             String selectedHour = cmbHourHv.getSelectionModel().getSelectedItem();
             date = LocalDate.from(LocalDate.parse(selectedDate, DateTimeFormatter.ofPattern("dd/MM/yyyy")).atStartOfDay());
             time = LocalTime.from(LocalTime.parse(selectedHour, DateTimeFormatter.ofPattern("HH:mm")));
-            LocalDateTime dateTime = LocalDateTime.of(date, time);
-            System.out.println(dateTime);
             if (selectedDate != null && selectedHour != null) {
-                MovieInstanceController.requestMovieInstanceAfterSelection(movie.getId(), "Home Viewing", dateTime);
-            } else {
+                loadHomeViewingPurchasePage();
+            }
+            else {
                 System.out.println("Date or hour not selected!");
             }
         }
@@ -337,10 +336,12 @@ public class MovieSmallBoundary {
     private void loadHomeViewingPurchasePage()
     {
         try {
+            LocalDateTime dateTime = LocalDateTime.of(date, time);
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.HOME_VIEWING_PURCHASE_VIEW));
             Parent root = loader.load();
             HomeViewingPurchaseBoundary purchaseController = loader.getController();
-            //purchaseController.setMovieInstance(movieInstance);
+            purchaseController.setCurrentMovie(movie);
+            purchaseController.setCurrentdateTime(dateTime);
             homeController.setRoot(root);
         } catch (Exception e) {
             e.printStackTrace();

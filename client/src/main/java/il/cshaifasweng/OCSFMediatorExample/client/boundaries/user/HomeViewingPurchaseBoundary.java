@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class HomeViewingPurchaseBoundary {
     @FXML
@@ -95,6 +96,7 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private Label pricePaidLabel;
 
+    private LocalDateTime dateTime;
     private Timeline timer;
     private int timeRemaining;
     private double packagePrice;
@@ -270,6 +272,10 @@ public class HomeViewingPurchaseBoundary {
         this.currentMovie = movie;
         movieTitle.setText(movie.getEnglishName());
         // Set other movie-related details here
+    }
+    public void setCurrentdateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+        //present the time?
     }
 
     public void setCurrentMovieInstance(MovieInstance movieInstance) {
