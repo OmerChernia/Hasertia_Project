@@ -1,14 +1,19 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -22,6 +27,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.regex.Pattern;
 
 public class HomeViewingPurchaseBoundary {
     @FXML
@@ -96,6 +102,29 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private Label pricePaidLabel;
 
+    //the user details
+    @FXML
+    private TextField firstNameTF;
+
+    @FXML
+    private TextField lastNameTF;
+
+    @FXML
+    private TextField emailTF;
+
+    @FXML
+    private TextField confirmEmailTF;
+
+    @FXML
+    private TextField idNumberTF;
+
+    @FXML
+    private TextField confirmIdNumberTF;
+    //end of user details
+
+    // Regular expression for validating an email address
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+
     private LocalDateTime dateTime;
     private Timeline timer;
     private int timeRemaining;
@@ -156,16 +185,6 @@ public class HomeViewingPurchaseBoundary {
         highlightStep(1);
     }
 
-    @FXML
-    private void purchaseTicket() {
-        LocalDateTime purchaseDate = LocalDateTime.now();
-        String purchaseValidation = "Validated";
-        PurchaseController.AddHomeViewing(currentUser.getId(), purchaseDate, currentUser, purchaseValidation, currentMovie, purchaseDate);
-        packagePrice = 40.00; // Set this value based on the selected package
-        System.out.println("Package purchased successfully.");
-        stopTimer();
-        showConfirmation();
-    }
 
     private void startTimer() {
         if (timer != null) {
@@ -203,16 +222,35 @@ public class HomeViewingPurchaseBoundary {
     }
 
     @FXML
-    private void showCreditCardFields() {
-        creditCardPane.setVisible(true);
+    private void showCreditCardFields()
+    {
+        if(checkDetails())
+            creditCardPane.setVisible(true);
     }
 
     @FXML
-    private void submitPayment() {
+    private void submitPayment()
+    {
         // Implement payment submission logic
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
-        showConfirmation();
+        RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+    }
+
+    @Subscribe
+    public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
+    {
+        String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+        PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation,currentMovie,dateTime);
+    }
+
+    @Subscribe
+    public void onPurchaseReceivedMessage(PurchaseMessage message)
+    {
+        if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED)
+        {
+            showConfirmation();
+        }
     }
 
     @FXML
@@ -236,32 +274,28 @@ public class HomeViewingPurchaseBoundary {
     }
 
     private void showConfirmation() {
-        confirmationDetails.setText(
-                "Movie: " + movieTitle.getText() + "\n" +
-                        "Time: " + movieTime.getText() + "\n" +
-                        "Hall: " + movieHall.getText() + "\n" +
-                        "Theater: " + movieLocation.getText() + "\n" +
-                        "Price Paid: ₪" + packagePrice
-        );
-        confirmationMovieImage.setImage(movieImage.getImage());
-        stackPane.getChildren().clear();
-        stackPane.getChildren().add(ticketConfirmationPane);
+        Platform.runLater(() -> {
+            System.out.println("Package purchased successfully.");
+            stopTimer();
+            confirmationDetails.setText(
+                    "Movie: " + movieTitle.getText() + "\n" +
+                            "Time: " + movieTime.getText() + "\n" +
+                            "Hall: " + movieHall.getText() + "\n" +
+                            "Theater: " + movieLocation.getText() + "\n" +
+                            "Price Paid: ₪" + packagePrice
+            );
+            confirmationMovieImage.setImage(movieImage.getImage());
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(ticketConfirmationPane);
+            EventBus.getDefault().unregister(this);
+        });
     }
 
     @FXML
     private void closeApplication() {
+        EventBus.getDefault().unregister(this);
         Stage stage = (Stage) stackPane.getScene().getWindow();
         stage.close();
-    }
-
-    @Subscribe
-    public void onPurchaseMessageReceived(PurchaseMessage message) {
-        if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED) {
-            System.out.println("Purchase added successfully!");
-        } else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED) {
-            System.out.println("Purchase removed successfully!");
-        }
-        // Handle other response types if necessary
     }
 
     public void setCurrentUser(RegisteredUser user) {
@@ -312,5 +346,64 @@ public class HomeViewingPurchaseBoundary {
             SeatController.getAllSeatsByHall(currentMovieInstance.getHall().getId());
             System.out.println("Request to load all seats for the current hall sent.");
         }
+    }
+
+    // a method that checks if the details that the user given is valid , returns true if the details are valid
+    private boolean checkDetails()
+    {
+        if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
+                || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.");
+            return false;
+        }
+
+        String textFirstName = firstNameTF.getText();
+        for (char c : textFirstName.toCharArray()) {
+            if (Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.");
+                return false;
+            }
+        }
+
+        String textLastName = lastNameTF.getText();
+        for (char c : textLastName.toCharArray()) {
+            if (Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.");
+                return false;
+            }
+        }
+
+        String textID = idNumberTF.getText();
+        for (char c : textID.toCharArray()) {
+            if (!Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.");
+                return false;
+            }
+        }
+
+        if(!idNumberTF.getText().equals(confirmIdNumberTF.getText()))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!");
+            return false;
+        }
+
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        if (!pattern.matcher(emailTF.getText()).matches())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.");
+            return false;
+        }
+
+
+        if(!emailTF.getText().equals(confirmEmailTF.getText()))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!");
+            return false;
+        }
+        return true;
     }
 }

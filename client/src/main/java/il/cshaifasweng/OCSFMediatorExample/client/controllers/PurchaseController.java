@@ -23,10 +23,10 @@ public class PurchaseController
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void AddHomeViewing(int customerId, LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate)
+    public static void AddHomeViewing(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate)
     {
         HomeViewingPackageInstance newTicket = new HomeViewingPackageInstance(purchaseDate, owner, purchaseValidation, movie, viewingDate);
-        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,customerId);
+        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

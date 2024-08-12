@@ -30,7 +30,7 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String englishName;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<String> mainActors;
 
     @Column(nullable = false)
