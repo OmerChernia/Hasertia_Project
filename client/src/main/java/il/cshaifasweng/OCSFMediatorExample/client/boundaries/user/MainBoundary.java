@@ -2,7 +2,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import java.io.IOException;
+import org.hibernate.cfg.Configuration;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +40,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import il.cshaifasweng.OCSFMediatorExample.server.handlers.EmployeeHandler;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 public class MainBoundary implements Initializable {
 
@@ -514,17 +518,53 @@ public class MainBoundary implements Initializable {
             case THEATER_MANAGER:
                 btnPriceChange.setVisible(true);
                 btnReports.setVisible(true);
-                System.out.println("THEATER_MANAGER" + EmployeeHandler.getEmployeeById());
+                System.out.println("IM PUTZI THE THEATER MANAGER" + getTheaterLocationByManagerId(Integer.parseInt(userId)));
             case  COMPANY_MANAGER:
                 btnComplaints.setVisible(true);
                 btnEditMovieList.setVisible(true);
                 btnEditScreenings.setVisible(true);
                 btnReports.setVisible(true);
                 break;
+
         }
+
     }
 
+    public static String getTheaterLocationByManagerId(int id) {
+        // Create a SessionFactory and a Session
+        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        String location = null;
 
+        try {
+            // Start a transaction
+            session.beginTransaction();
+
+            // Create and execute the HQL query
+            String hql = "SELECT t.location FROM TheaterManager tm JOIN tm.theater t WHERE tm.id = :id";
+            Query query = session.createQuery(hql);
+            query.setParameter("id", id);
+            List result = query.list();
+
+            // If the TheaterManager entity exists, get the first (and only) result
+            if (!result.isEmpty()) {
+                location = (String) result.get(0);
+            }
+
+            // Commit the transaction
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        } finally {
+            // Close the Session
+            session.close();
+        }
+
+        return location;
+    }
 
 
     @FXML

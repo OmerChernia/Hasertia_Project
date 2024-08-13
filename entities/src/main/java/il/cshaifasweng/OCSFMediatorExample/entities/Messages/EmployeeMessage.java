@@ -1,11 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
-import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
 
 import java.util.ArrayList;
 
-public class EmployeeMessage {
+public class EmployeeMessage extends Message{
     public ArrayList<Employee> employees;
     public String id_number;
     public String name;
