@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
@@ -31,7 +32,7 @@ public class MovieInstanceHandler extends MessageHandler
     {
         switch (message.requestType)
         {
-            case ADD_MOVIE_INSTANCE -> add_movie_intance();
+            case ADD_MOVIE_INSTANCE -> add_movie_instance();
             case GET_MOVIE_INSTANCE -> get_movie_instance_by_id();
             case DELETE_MOVIE_INSTANCE -> delete_movie_instance();
             case UPDATE_MOVIE_INSTANCE -> update_movie_instance();
@@ -124,7 +125,7 @@ public class MovieInstanceHandler extends MessageHandler
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
 
-    private void add_movie_intance()
+    private void add_movie_instance()
     {
         if(message.movies.getFirst()!=null)
         {
@@ -160,16 +161,46 @@ public class MovieInstanceHandler extends MessageHandler
     {
         //?????
     }
-    private void update_movie_instance()
-    {
-        if(message.movies.getFirst()!=null)
-        {
-            session.update(message.movies.getFirst());
-            session.flush();
-            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
-        }
+
+    private void update_movie_instance() {
+        try {
+            // Get the ID from the incoming message
+            int screeningId = message.id;
+
+            // Retrieve the current persistent instance of the movie from the session
+            MovieInstance persistentMovieInstance = session.get(MovieInstance.class,screeningId);
+
+            if (persistentMovieInstance != null) {
+                // Update the persistent with the new values from the message
+                persistentMovieInstance.setTime(message.date);
+
+                // Save the changes
+                session.update(persistentMovieInstance);
+                session.flush();
+                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
+            } else {
+                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
+
     private void get_all_movie_instances_by_movie_id()
     {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie", MovieInstance.class);

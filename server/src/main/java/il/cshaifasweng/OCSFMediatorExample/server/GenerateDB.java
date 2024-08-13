@@ -108,7 +108,7 @@ public class GenerateDB {
                     new TheaterManager("512089637","Mili Tik", false, "password12", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("396824571","Bob Back", false, "password123", Employee.EmployeeType.THEATER_MANAGER, null),
                     new TheaterManager("483944123","Emily Davis", false, "password1234", Employee.EmployeeType.THEATER_MANAGER, null),
-                    new TheaterManager("591736842","Daniel Brown", false, "password1235", Employee.EmployeeType.THEATER_MANAGER, null)
+                    new TheaterManager("1","Daniel Brown", false, "1", Employee.EmployeeType.THEATER_MANAGER, null)
             );
 
             Transaction transaction = session.beginTransaction();

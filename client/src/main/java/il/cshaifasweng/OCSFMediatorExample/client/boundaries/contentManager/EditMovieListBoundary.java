@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditMovieListBoundary implements Initializable {
@@ -140,26 +142,41 @@ public class EditMovieListBoundary implements Initializable {
     @Subscribe
     public void loadData(MovieMessage movieMessage) {
         Platform.runLater(() -> {
-            listProducts.setAll(movieMessage.movies);
-            tblProducts.setItems(listProducts);
-            tblProducts.setFixedCellSize(30);
-
-            colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colEnglish.setCellValueFactory(new PropertyValueFactory<>("englishName"));
-            colHebrew.setCellValueFactory(new PropertyValueFactory<>("hebrewName"));
-            colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
-            colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
-            colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
-
-            ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = new ButtonFactory.ButtonGenreCellValueFactory();
-            colGenre.setCellValueFactory(buttonGenreCellFactory);
-
-            ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = new ButtonFactory.ButtonMovieTypeCellValueFactory();
-            colStreamingType.setCellValueFactory(buttonTypeCellFactory);
+            if (movieMessage.responseType == MovieMessage.ResponseType.RETURN_MOVIES) {
+                loadTableData(movieMessage.movies);
+            } else
+             {
+                MovieController.requestAllMovies();
+            }
         });
     }
 
-    @Subscribe
+
+    private void loadTableData(List<Movie> movies) {
+        listProducts.setAll(movies);
+        tblProducts.setItems(listProducts);
+        tblProducts.setFixedCellSize(30);
+
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colEnglish.setCellValueFactory(new PropertyValueFactory<>("englishName"));
+        colHebrew.setCellValueFactory(new PropertyValueFactory<>("hebrewName"));
+        colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
+        colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
+
+        ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = new ButtonFactory.ButtonGenreCellValueFactory();
+        colGenre.setCellValueFactory(buttonGenreCellFactory);
+
+        ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = new ButtonFactory.ButtonMovieTypeCellValueFactory();
+        colStreamingType.setCellValueFactory(buttonTypeCellFactory);
+    }
+
+
+
+
+
+
+        @Subscribe
     public void onPriceRequestMessageReceived(PriceRequestMessage message) {
         Platform.runLater(() -> {
             if (message.requests != null && !message.requests.isEmpty()) {
@@ -225,7 +242,12 @@ public class EditMovieListBoundary implements Initializable {
         });
     }
 
-    @FXML
+
+
+
+
+
+        @FXML
     public void closeDialogAddProduct() {
         if (dialogAddProduct != null) {
             Platform.runLater(dialogAddProduct::close);

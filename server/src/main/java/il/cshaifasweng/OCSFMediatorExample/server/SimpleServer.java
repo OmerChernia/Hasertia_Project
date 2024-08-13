@@ -68,6 +68,9 @@ public class SimpleServer extends AbstractServer
 				} else if (msg instanceof RegisteredUserMessage) {
 					messageHandler = new RegisteredUserHandler((RegisteredUserMessage)msg , client, session);
 				}
+				else if (msg instanceof HallMessage) {
+					messageHandler = new HallHandler((HallMessage)msg , client, session);
+				}
 
 				if (messageHandler != null) {
 					messageHandler.handleMessage();            	// handle the message ,and change DB if needed

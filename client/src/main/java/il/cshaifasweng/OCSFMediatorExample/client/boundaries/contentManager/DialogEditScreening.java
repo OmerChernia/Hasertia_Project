@@ -98,16 +98,19 @@ public class DialogEditScreening implements Initializable {
             if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_DATES) {
                 cmbDate.getItems().clear();
                 List<LocalDate> availableDates = message.getAvailableDates();
-                cmbDate.getItems().addAll(availableDates);
 
-                if (!availableDates.isEmpty()) {
+                if (availableDates != null && !availableDates.isEmpty()) {
+                    cmbDate.getItems().addAll(availableDates);
                     cmbDate.setValue(availableDates.get(0));  // Set default value to first available date
                 }
             } else if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_TIMES) {
                 cmbHour.getItems().clear();
                 List<LocalTime> availableTimes = message.getAvailableTimes();
-                for (LocalTime time : availableTimes) {
-                    cmbHour.getItems().add(time.format(hourFormatter));
+
+                if (availableTimes != null && !availableTimes.isEmpty()) {
+                    for (LocalTime time : availableTimes) {
+                        cmbHour.getItems().add(time.format(hourFormatter));
+                    }
                 }
             }
         });
@@ -128,6 +131,7 @@ public class DialogEditScreening implements Initializable {
         txtHall.setText(String.valueOf(movieInstance.getHall().getId()) );
         txtTheater.setText(movieInstance.getHall().getTheater().getLocation());
         txtMovie.setText(movieInstance.getMovie().getEnglishName());
+
 
         Hall hall = movieInstance.getHall();
         HallController.requestAvailableDates(hall);  // Request available dates for the selected hall
@@ -185,48 +189,13 @@ public class DialogEditScreening implements Initializable {
 
         LocalDateTime dateTime = LocalDateTime.of(cmbDate.getValue(), LocalTime.parse(cmbHour.getValue(), hourFormatter));
 
-        if ("add".equals(currentMode)) {
-            MovieInstanceController.addMovieInstance(movieInstance.getId(), dateTime, movieInstance.getHall().getId());
-        } else if ("edit".equals(currentMode)) {
-            MovieInstanceController.updateMovieInstance(screeningId, movieInstance.getId(), dateTime, movieInstance.getHall().getId());
-        }
+        screeningId = movieInstance.getId();
+        MovieInstanceController.updateMovieInstance(screeningId,  dateTime);
+
 
         cleanControls();
+        closeDialog();
 
-    }
-
-
-    public void showAlert(String messageText, AlertType alertType) {
-        AlertsBuilder.create(
-                alertType,
-                null,
-                containerAddProduct,
-                containerAddProduct,
-                messageText
-        );
-    }
-
-
-
-    @Subscribe
-    public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
-        Platform.runLater(() -> {
-            switch (message.requestType) {
-                case UPDATE_MOVIE_INSTANCE:
-                    showAlert("You have updated the screening for " + movieInstance.getMovie().getEnglishName() + "!", AlertType.SUCCESS);
-                    break;
-                case ADD_MOVIE_INSTANCE:
-                    showAlert("You have added a new screening for " + movieInstance.getMovie().getEnglishName()+ "!", AlertType.SUCCESS);
-                    break;
-                case DELETE_MOVIE_INSTANCE:
-                    showAlert("You have removed the screening for " + movieInstance.getMovie().getEnglishName() + "!", AlertType.SUCCESS);
-                    break;
-                default:
-                    showAlert("Failed to process the screening for " + movieInstance.getMovie().getEnglishName() + ".", AlertType.ERROR);
-                    break;
-            }
-            closeDialog();
-        });
     }
 
 
@@ -238,8 +207,8 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void closeDialog() {
-        editMovieScreeningsBoundary.closeDialog();
         cleanup();
+        editMovieScreeningsBoundary.closeDialog();
     }
 
     private boolean validateInputs() {
