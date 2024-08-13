@@ -2,10 +2,16 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,9 +20,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,8 +33,11 @@ import javafx.scene.control.ComboBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class HomeBoundary implements Initializable {
 
@@ -52,12 +63,27 @@ public class HomeBoundary implements Initializable {
     static String currentScreeningFilter="Theater";        // sets in what type of screening the user wants to see
     private String Genre="all";
 
+    @FXML
+    private HBox TheaterFilters;
+
+    @FXML
+    private ComboBox<String> cmbTheater;
+
+    @FXML
+    private DatePicker endDate;
+
+    @FXML
+    private DatePicker startDate;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
+
+
+        TheaterController.getAllTheaters();
     }
 
     @Subscribe
@@ -70,6 +96,28 @@ public class HomeBoundary implements Initializable {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    @Subscribe
+    public void onMovieMessageReceived(TheaterMessage message) {
+        Platform.runLater(() ->
+        {
+            populateTheatersComboBox(message.theaterList);
+        });
+    }
+
+    @Subscribe
+    public void onMovieMessageReceived(MovieInstanceMessage message) {
+        if(message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME) {
+            Platform.runLater(() ->
+            {
+                try {
+                    GetAndSetMoviesFromInstances(message.movies);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
     public void setItems(List<Movie> movies) throws IOException {
@@ -164,6 +212,11 @@ public class HomeBoundary implements Initializable {
         Button clickedButton = (Button) event.getSource();
         currentScreeningFilter = clickedButton.getText();
         System.out.println("currentScreeningFilter = " + currentScreeningFilter);
+        if(currentScreeningFilter.equals("Theater"))
+            TheaterFilters.setDisable(false);
+        else
+            TheaterFilters.setDisable(true);
+
         FilterByScreeningTypeAndGenre(event);
     }
 
@@ -185,5 +238,38 @@ public class HomeBoundary implements Initializable {
     public void cleanup() {
         // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
+    }
+
+    @FXML
+    void FilterByTheater(ActionEvent event) {
+        cmbTheater.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println("blblblblblb");
+                MovieInstanceController.requestMovieInstancesByTheaterName(newValue);
+            }
+        });
+    }
+
+    @FXML
+    void Reset(ActionEvent event) {
+        MovieController.getMoviesPresentedInTheater();
+    }
+    private void populateTheatersComboBox(List<Theater> theatersList) {
+        Set<String> theaterLocations = theatersList.stream()
+                .map(Theater::getLocation)
+                .collect(Collectors.toSet());
+        List<String> locationsList = new ArrayList<>(theaterLocations);
+        cmbTheater.getItems().setAll(locationsList);
+    }
+    private void GetAndSetMoviesFromInstances(List<MovieInstance> movieInstances) throws IOException {
+        Set<Movie> uniqueMovies = movieInstances.stream()
+                .map(MovieInstance::getMovie)
+                .collect(Collectors.toSet());
+        setItems(new ArrayList<>(uniqueMovies));
+    }
+
+    private void enableComboBox(ComboBox<String> comboBox) {
+        comboBox.setDisable(false);
+        comboBox.setStyle("-fx-background-color: #cae8fb;");
     }
 }

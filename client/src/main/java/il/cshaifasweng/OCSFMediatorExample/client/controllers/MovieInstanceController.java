@@ -13,6 +13,11 @@ public class MovieInstanceController {
         MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES, "");
         SimpleClient.getClient().sendRequest(requestMessage);
     }
+    public static void requestMovieInstancesByTheaterName(String TheaterName) {
+        // Create a request to get a movie instance by ID
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME, TheaterName);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
 
     public static void addMovieInstance(int movieId, LocalDateTime dateTime, int hallId) {
         // Since there is no constructor that directly accepts movieId, dateTime, and hallId,

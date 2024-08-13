@@ -403,6 +403,8 @@ public class MovieSmallBoundary {
     }
 
     private void handleCloseButton() {
+        EventBus.getDefault().unregister(this);
+
         imagePanel.setVisible(true);
         if (HomeBoundary.currentScreeningFilter.equals("Theater")){
             selectTheaterPane.setVisible(false);

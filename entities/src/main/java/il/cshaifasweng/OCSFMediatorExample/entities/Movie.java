@@ -15,6 +15,13 @@ public class Movie implements Serializable {
         BOTH
     }
 
+    public enum Availability
+    {
+        NOT_AVAILABLE,
+        AVAILABLE,
+        COMING_SOON
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -53,14 +60,14 @@ public class Movie implements Serializable {
     private String genre;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private Availability available;
 
     public Movie()
     {
 
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, boolean isActive) {
+    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability available) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -72,7 +79,7 @@ public class Movie implements Serializable {
         this.homeViewingPrice = homeViewingPrice;
         this.theaterPrice = theaterPrice;
         this.genre = genre;
-        this.isActive = isActive;
+        this.available = available;
     }
 
     // Getters and setters
@@ -173,10 +180,10 @@ public class Movie implements Serializable {
 
     public void setGenre(String genre) {}
 
-    public boolean isActive() {return isActive;}
+    public Availability getAvailability() {return available;}
 
-    public void setActive(boolean isActive) {this.isActive = isActive;}
 
+    public void setActive(Availability available) {this.available=available;}
 
     @Override
     public String toString() {
@@ -193,7 +200,7 @@ public class Movie implements Serializable {
                 ", homeViewingPrice=" + homeViewingPrice +
                 ", theaterPrice=" + theaterPrice +
                 ", genre=" + genre +
-                ", isActive=" + isActive +
+                ", isAvailable=" + available +
                 '}';
     }
 
