@@ -64,11 +64,10 @@
                     <ComboBox fx:id="comboType" prefHeight="30.0" prefWidth="118.0" promptText="Select Type" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-radius: 5px;">
                         <items>
                             <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Theater" />
-                                <String fx:value="Home Viewing" />
-                                <String fx:value="All Platforms" />
-                                <String fx:value="Not Available" />
-                            </FXCollections>
+                                <String fx:value="THEATER_VIEWING" />
+                                <String fx:value="HOME_VIEWING" />
+                                <String fx:value="BOTH" />
+                             </FXCollections>
                         </items>
                     </ComboBox>
                 </children>

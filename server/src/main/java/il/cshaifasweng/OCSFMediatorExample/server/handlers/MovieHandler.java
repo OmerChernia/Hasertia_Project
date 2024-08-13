@@ -169,30 +169,36 @@ public class MovieHandler extends MessageHandler
         message.messageType= Message.MessageType.RESPONSE;
     }
 
-    private void add_movie()
-    {
-        if(message.movies.getFirst() != null)
-        {
-            // Create an HQL query to fetch all complaints
-            // Searching if the movie is existed in DB
-            Query<Movie> query = session.createQuery("FROM Movie WHERE englishName = :_englishName or hebrewName = :_hebrewName", Movie.class);
-            query.setParameter("_englishName", message.movies.getFirst().getEnglishName());
-            query.setParameter("_hebrewName", message.movies.getFirst().getHebrewName());
+    private void add_movie() {
+        if (message.movies != null && !message.movies.isEmpty()) {
+            Movie movieToAdd = message.movies.getFirst();
 
-            List<Movie> movies = query.list();
+            if (movieToAdd != null) {
+                // יצירת שאילתת HQL לבדיקה אם הסרט כבר קיים בבסיס הנתונים
+                Query<Movie> query = session.createQuery(
+                        "FROM Movie WHERE englishName = :_englishName OR hebrewName = :_hebrewName",
+                        Movie.class
+                );
+                query.setParameter("_englishName", movieToAdd.getEnglishName());
+                query.setParameter("_hebrewName", movieToAdd.getHebrewName());
 
-            if(movies == null) {
+                List<Movie> movies = query.list();
 
-                session.save(message.movies.getFirst());
-                session.flush();
-                message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
-            }
-            else // if movie already existed , don't add it
+                if (movies.isEmpty()) { // אם הסרט לא קיים בבסיס הנתונים
+                    session.save(movieToAdd);
+                    session.flush();
+                    message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
+                } else { // אם הסרט כבר קיים, לא נוסיף אותו שוב
+                    message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+                }
+            } else { // אם אין סרט להוסיף
                 message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
-        }
-        else // if we don't have any movie to add
+            }
+        } else { // אם אין רשימת סרטים
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+        }
     }
+
     private void deactivate_movie()
     {
         Query<Movie> query = session.createQuery("FROM Movie where id= :_id", Movie.class);

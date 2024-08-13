@@ -126,7 +126,7 @@ public class DialogEditMovie implements Initializable {
 
     public void setDialog(String operation, Movie movie) {
         this.currentMode = operation;
-        this.movie = "add".equals(operation) ? null : movie;
+        this.movie = "add".equals(operation) ? new Movie() : movie;
         if ("view".equals(operation)) {
             populateFieldsForView();
         } else if ("add".equals(operation)) {
@@ -247,8 +247,12 @@ public class DialogEditMovie implements Initializable {
                 .orElse(new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true));
     }
 
+
+
+
     @FXML
     private void handleSave(ActionEvent event) {
+
         if (!validateInputs()) return;
 
         String englishName = txtEnglishName.getText().trim();
@@ -261,6 +265,8 @@ public class DialogEditMovie implements Initializable {
         String streamingType = comboType.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();
         List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
+
+
 
         // Check for changes in details
         boolean detailsChanged = !englishName.equals(movie.getEnglishName()) ||

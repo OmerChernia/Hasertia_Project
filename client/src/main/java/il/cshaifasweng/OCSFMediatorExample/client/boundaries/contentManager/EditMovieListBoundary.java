@@ -16,6 +16,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.PriceRequest;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,6 +35,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EditMovieListBoundary implements Initializable {
@@ -105,8 +107,8 @@ public class EditMovieListBoundary implements Initializable {
         MovieController.requestAllMovies();
         listProducts = FXCollections.observableArrayList();
         filterProducts = FXCollections.observableArrayList();
-        Platform.runLater(this::animateNodes);
-        Platform.runLater(this::setContextMenu);
+        animateNodes();
+        setContextMenu();
 
         tblProducts.setRowFactory(tv -> {
             TableRow<Movie> row = new TableRow<>();
@@ -141,6 +143,7 @@ public class EditMovieListBoundary implements Initializable {
 
     @Subscribe
     public void loadData(MovieMessage movieMessage) {
+        System.out.println(movieMessage.responseType);
         Platform.runLater(() -> {
             if (movieMessage.responseType == MovieMessage.ResponseType.RETURN_MOVIES) {
                 loadTableData(movieMessage.movies);
@@ -173,37 +176,12 @@ public class EditMovieListBoundary implements Initializable {
 
 
 
-
-
-
-        @Subscribe
-    public void onPriceRequestMessageReceived(PriceRequestMessage message) {
-        Platform.runLater(() -> {
-            if (message.requests != null && !message.requests.isEmpty()) {
-                PriceRequest request = message.requests.get(0);
-                Movie movie = request.getMovie();
-
-                switch (message.responseType) {
-                    case MOVIE_PRICE_CHANGED:
-                        System.out.println("Approved");
-                        break;
-                    case MOVIE_PRICE_NOT_CHANGED:
-                        System.out.println("Not Approved");
-                        break;
-                    default:
-                        break;
-                }
-                tblProducts.refresh();
-            }
-        });
-    }
-
     @FXML
     private void showDialog(String operation) {
         disableTable();
         Movie selectedMovie = tblProducts.getSelectionModel().getSelectedItem();
 
-        if (selectedMovie == null) {
+        if (selectedMovie == null && !Objects.equals(operation, "add")) {
             Platform.runLater(() -> {
                 AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, "No movie selected");
                 tblProducts.setDisable(false);
@@ -247,12 +225,27 @@ public class EditMovieListBoundary implements Initializable {
 
 
 
-        @FXML
+    @FXML
     public void closeDialogAddProduct() {
         if (dialogAddProduct != null) {
             Platform.runLater(dialogAddProduct::close);
         }
+        if (dialogDeleteProduct !=null)
+        {
+            dialogDeleteProduct.close();
+        }
     }
+
+
+
+
+
+    public void handleNewMovie(ActionEvent actionEvent) {
+
+        showDialog("add");
+    }
+
+
 
     @FXML
     private void showDialogDeleteProduct() {
@@ -346,4 +339,6 @@ public class EditMovieListBoundary implements Initializable {
     public void cleanup() {
         Platform.runLater(() -> EventBus.getDefault().unregister(this));
     }
+
+
 }
