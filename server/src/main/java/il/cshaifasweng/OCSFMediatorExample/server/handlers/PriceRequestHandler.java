@@ -34,30 +34,31 @@ public class PriceRequestHandler extends MessageHandler
         }
     }
 
-    private void create_new_price_request()
-    {
-        //not finished!!!
-        Query<PriceRequest> query = session.createQuery("FROM PriceRequest where movie = :_movie and type =:_type", PriceRequest.class);
+    private void create_new_price_request() {
+        Query<PriceRequest> query = session.createQuery(
+                "FROM PriceRequest WHERE movie = :_movie AND type = :_type", PriceRequest.class);
         query.setParameter("_movie", message.requests.getFirst().getMovie());
         query.setParameter("_type", message.requests.getFirst().getType());
 
-        PriceRequest priceRequest = query.uniqueResult();
+        PriceRequest existingPriceRequest = query.uniqueResult();
 
-        if(priceRequest == null)
-        {
+        if (existingPriceRequest == null) {
             session.save(message.requests.getFirst());
-        }
-        else
-        {
-            session.update(message.requests.getFirst());
+        } else {
+            existingPriceRequest.setNewPrice(message.requests.getFirst().getNewPrice());
+            session.update(existingPriceRequest);
         }
         session.flush();
-        message.responseType = PriceRequestMessage.ResponseType.REQUEST_CREATED;
+        message.responseType = PriceRequestMessage.ResponseType.NEW_REQUEST;
     }
+
+
+
+
     private void get_all_price_requests()
     {
         message.requests = session.createQuery("FROM PriceRequest", PriceRequest.class).list();
-        message.responseType = PriceRequestMessage.ResponseType.REQUESTS_LIST;
+        message.responseType = PriceRequestMessage.ResponseType.ALL_REQUESTS;
     }
     private void approve_price_request()
     {
@@ -88,7 +89,7 @@ public class PriceRequestHandler extends MessageHandler
                 }
             }
             session.flush();
-            message.responseType = PriceRequestMessage.ResponseType.PRICE_REQUEST_DECIDE;
+            message.responseType = PriceRequestMessage.ResponseType.MOVIE_PRICE_CHANGED;
         }
         else
             message.responseType = PriceRequestMessage.ResponseType.PRICE_REQUEST_MESSAGE_FAILED;
@@ -105,7 +106,7 @@ public class PriceRequestHandler extends MessageHandler
         {
             session.delete(priceRequest);
             session.flush();
-            message.responseType = PriceRequestMessage.ResponseType.PRICE_REQUEST_DECIDE;
+            message.responseType = PriceRequestMessage.ResponseType.MOVIE_PRICE_NOT_CHANGED;
         }
         else
             message.responseType = PriceRequestMessage.ResponseType.PRICE_REQUEST_MESSAGE_FAILED;

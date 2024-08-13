@@ -34,6 +34,7 @@ public class MovieHandler extends MessageHandler
         }
     }
 
+
     private void getUpcomingMovies() {
         try {
             // Create an HQL query to fetch movies with streamingType THEATER_VIEWING or BOTH

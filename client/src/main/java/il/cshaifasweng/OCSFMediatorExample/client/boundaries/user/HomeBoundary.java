@@ -4,6 +4,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
@@ -32,6 +34,9 @@ import javafx.scene.control.ComboBox;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -69,10 +74,10 @@ public class HomeBoundary implements Initializable {
     private ComboBox<String> cmbTheater;
 
     @FXML
-    private DatePicker endDate;
+    private DatePicker beforeDate;
 
     @FXML
-    private DatePicker startDate;
+    private DatePicker afterDate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,7 +86,7 @@ public class HomeBoundary implements Initializable {
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
         SetTheaterCombo();
-
+        setDateListeners();
         TheaterController.getAllTheaters();
     }
 
@@ -107,7 +112,7 @@ public class HomeBoundary implements Initializable {
 
     @Subscribe
     public void onMovieMessageReceived(MovieInstanceMessage message) {
-        if(message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME) {
+        if(message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME||message.requestType == MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCES_BETWEEN_DATES) {
             Platform.runLater(() ->
             {
                 try {
@@ -118,7 +123,42 @@ public class HomeBoundary implements Initializable {
             });
         }
     }
+    public void setDateListeners ()
+    {
+        System.out.println("init");
+        beforeDate.valueProperty().addListener((observable, oldDate, newDate) -> {
+            if (newDate != null) {
+                System.out.println("before");
+                beforeDate.setValue(newDate);
 
+                if(beforeDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
+                {
+                    AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
+                }
+                else if(afterDate.getValue()!=null&&beforeDate.getValue().isBefore(afterDate.getValue()))
+                    AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Start date can't be bigger than end date");
+                else
+                    MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(),afterDate.getValue());
+            }
+        });
+
+        afterDate.valueProperty().addListener((observable, oldDate, newDate) -> {
+            if (newDate != null) {
+                System.out.println("after");
+                afterDate.setValue(newDate);
+
+                if(afterDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
+                {
+                    AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
+                }
+                else if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(afterDate.getValue()))
+                    AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Start date can't be bigger than end date");
+                else
+                    MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(),afterDate.getValue());
+
+            }
+        });
+    }
     public void setItems(List<Movie> movies) throws IOException {
         this.items = movies;
         Platform.runLater(() -> {
@@ -269,8 +309,8 @@ public class HomeBoundary implements Initializable {
     void Reset(ActionEvent event) {
         MovieController.getMoviesPresentedInTheater();
         cmbTheater.setValue(null);
-        startDate.setValue(null);
-        endDate.setValue(null);
+        afterDate.setValue(null);
+        beforeDate.setValue(null);
     }
     private void populateTheatersComboBox(List<Theater> theatersList) {
         Set<String> theaterLocations = theatersList.stream()

@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.ComboBox?>
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="544.0" prefWidth="899.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.ReportsBoundary">
    <children>
@@ -41,13 +42,16 @@
                      <children>
                         <TabPane fx:id="tabPane" prefHeight="521.0" prefWidth="960.0" style="-fx-background-color: white;" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS">
                            <tabs>
-                              <!-- Existing Tabs -->
                               <!-- Ticket Sales Report Tab -->
                               <Tab closable="false" text="Ticket Sales">
                                  <AnchorPane>
-                                    <ToggleButton fx:id="toggleTicketSalesChartType" layoutX="3.0" layoutY="8.0"  prefHeight="27.0" prefWidth="120.0" styleClass="action-button" text="Toggle Chart Type" />
-                                    <PieChart fx:id="ticketSalesPieChart" layoutY="47.0" prefHeight="387.0" prefWidth="947.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
-                                    <BarChart fx:id="ticketSalesBarChart" layoutY="31.0" prefHeight="383.0" prefWidth="934.0" title="Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                    <HBox spacing="10.0" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <ComboBox fx:id="TicketSalesyearComboBox" />
+                                          <ComboBox fx:id="TicketSalesmonthComboBox" />
+                                       </children>
+                                    </HBox>
+                                    <BarChart fx:id="ticketSalesBarChart" layoutY="50.0" prefHeight="383.0" prefWidth="934.0" title="Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
                                           <CategoryAxis label="Days in Month" />
                                        </xAxis>
@@ -60,9 +64,13 @@
                               <!-- Package Sales Report Tab -->
                               <Tab closable="false" text="Package Sales">
                                  <AnchorPane>
-                                    <ToggleButton fx:id="togglePackageSalesChartType" layoutX="3.0" layoutY="4.0"  styleClass="action-button" text="Toggle Chart Type" />
-                                    <PieChart fx:id="packageSalesPieChart" prefHeight="437.0" prefWidth="940.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
-                                    <BarChart fx:id="packageSalesBarChart" layoutY="31.0" prefHeight="405.0" prefWidth="940.0" title="Package Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                    <HBox spacing="10.0" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <ComboBox fx:id="PackageSalesyearComboBox" />
+                                          <ComboBox fx:id="PackageSalesmonthComboBox" />
+                                       </children>
+                                    </HBox>
+                                    <BarChart fx:id="packageSalesBarChart" layoutY="50.0" prefHeight="405.0" prefWidth="940.0" title="Package Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
                                           <CategoryAxis label="Days in Month" />
                                        </xAxis>
@@ -75,9 +83,13 @@
                               <!-- Multi-Entry Ticket Sales Report Tab -->
                               <Tab closable="false" text="Multi-Entry Ticket Sales">
                                  <AnchorPane>
-                                    <ToggleButton fx:id="toggleMultiEntryTicketSalesChartType" layoutX="3.0" layoutY="4.0"  styleClass="action-button" text="Toggle Chart Type" />
-                                    <PieChart fx:id="multiEntryTicketSalesPieChart" prefHeight="437.0" prefWidth="940.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
-                                    <BarChart fx:id="multiEntryTicketSalesBarChart" layoutY="31.0" prefHeight="405.0" prefWidth="940.0" title="Multi-Entry Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                    <HBox spacing="10.0" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <ComboBox fx:id="MultiSalesyearComboBox" />
+                                          <ComboBox fx:id="MultiSalesmonthComboBox" />
+                                       </children>
+                                    </HBox>
+                                    <BarChart fx:id="multiEntryTicketSalesBarChart" layoutY="50.0" prefHeight="405.0" prefWidth="940.0" title="Multi-Entry Ticket Sales" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
                                           <CategoryAxis label="Days in Month" />
                                        </xAxis>
@@ -90,9 +102,13 @@
                               <!-- Complaint Status Report Tab -->
                               <Tab closable="false" text="Complaint Status">
                                  <AnchorPane prefHeight="442.0" prefWidth="918.0">
-                                    <ToggleButton fx:id="toggleComplaintStatusChartType" layoutX="3.0" layoutY="3.0"  styleClass="action-button" text="Toggle Chart Type" />
-                                    <PieChart fx:id="complaintStatusPieChart" prefHeight="442.0" prefWidth="946.0" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
-                                    <BarChart fx:id="complaintStatusBarChart" layoutY="28.0" prefHeight="409.0" prefWidth="946.0" title="Complaint Status" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                    <HBox spacing="10.0" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <ComboBox fx:id="ComplaintsyearComboBox" />
+                                          <ComboBox fx:id="ComplaintsmonthComboBox" />
+                                       </children>
+                                    </HBox>
+                                    <BarChart fx:id="complaintStatusBarChart" layoutY="50.0" prefHeight="409.0" prefWidth="946.0" title="Complaint Status" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
                                           <CategoryAxis label="Days in Month" />
                                        </xAxis>
@@ -100,7 +116,7 @@
                                           <NumberAxis label="Complaints" />
                                        </yAxis>
                                     </BarChart>
-                                    <BarChart fx:id="complaintStatusHistogram" layoutY="28.0" prefHeight="409.0" prefWidth="946.0" title="Complaints by Cinema" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                                    <BarChart fx:id="complaintStatusHistogram" layoutY="50.0" prefHeight="409.0" prefWidth="946.0" title="Complaints by Cinema" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
                                        <xAxis>
                                           <CategoryAxis label="Days in Month" />
                                        </xAxis>

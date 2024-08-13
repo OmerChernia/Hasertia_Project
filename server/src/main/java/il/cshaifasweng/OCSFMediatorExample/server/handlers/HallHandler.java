@@ -11,34 +11,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HallHandler extends MessageHandler
-{
+import org.hibernate.Hibernate;
+
+public class HallHandler extends MessageHandler {
     private HallMessage message;
 
-    public HallHandler(HallMessage message, ConnectionToClient client, Session session)
-    {
+    public HallHandler(HallMessage message, ConnectionToClient client, Session session) {
         super(client, session);
         this.message = message;
     }
 
-    public void handleMessage()
-    {
-        switch (message.requestType)
-        {
+    public void handleMessage() {
+        switch (message.requestType) {
             case GET_AVAILABLE_DATES -> getAvailableDates();
             case GET_AVAILABLE_TIMES -> getAvailableTimes();
         }
     }
 
     @Override
-    public void setMessageTypeToResponse()
-    {
+    public void setMessageTypeToResponse() {
         message.messageType = HallMessage.MessageType.RESPONSE;
     }
 
     private void getAvailableDates() {
         try {
             Hall hall = message.getHall();
+            // Initialize movieInstances collection
+            Hibernate.initialize(hall.getMovieInstances());
             List<LocalDate> availableDates = getAvailableDatesForHall(hall);
             message.setAvailableDates(availableDates);
         } catch (Exception e) {
@@ -47,6 +46,11 @@ public class HallHandler extends MessageHandler
     }
 
     private List<LocalDate> getAvailableDatesForHall(Hall hall) {
+        // Initialize movieInstances if null
+        if (hall.getMovieInstances() == null) {
+            hall.setMovieInstances(new ArrayList<>());  // or handle the null case appropriately
+        }
+
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusWeeks(2);  // Assuming we're checking the next 2 weeks
 
@@ -57,18 +61,12 @@ public class HallHandler extends MessageHandler
                 .collect(Collectors.toList());
     }
 
-    private void getAvailableTimes() {
-        try {
-            Hall hall = message.getHall();
-            LocalDate date = message.getDate();
-            List<LocalTime> availableTimes = getAvailableTimesForHall(hall, date);
-            message.setAvailableTimes(availableTimes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private List<LocalTime> getAvailableTimesForHall(Hall hall, LocalDate date) {
+        // Initialize movieInstances if null
+        if (hall.getMovieInstances() == null) {
+            hall.setMovieInstances(new ArrayList<>());  // or handle the null case appropriately
+        }
+
         LocalTime startTime = LocalTime.of(12, 0);
         LocalTime endTime = LocalTime.MIDNIGHT;  // Assuming end time is at midnight
 
@@ -88,6 +86,19 @@ public class HallHandler extends MessageHandler
         return availableTimes;
     }
 
+
+    private void getAvailableTimes() {
+        try {
+            Hall hall = message.getHall();
+            LocalDate date = message.getDate();
+            // Initialize movieInstances collection
+            Hibernate.initialize(hall.getMovieInstances());
+            List<LocalTime> availableTimes = getAvailableTimesForHall(hall, date);
+            message.setAvailableTimes(availableTimes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

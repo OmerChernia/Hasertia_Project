@@ -10,87 +10,73 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.greenrobot.eventbus.EventBus;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MovieInfoBoundary implements Initializable {
 
-    public Button btnGenre;
-     @FXML
+    @FXML
+    private Button btnGenre;
+    @FXML
     private Pane paneContainer;
     @FXML
     private Button Close;
-
     @FXML
     private Label lblActors;
-
     @FXML
     private Label lblName;
-
-
     @FXML
     private Label lblInfo;
-
     @FXML
     private Label lblProducer;
-
     @FXML
     private HBox imageContainer;
-
     @FXML
     private ImageView image;
-
 
     private HomeBoundary homeController;
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-
+        // Initialize logic if needed
     }
-
 
     public void setHomeController(HomeBoundary homeController) {
         this.homeController = homeController;
     }
 
-
-
-    public void setInfo (Movie movie)
-    {
+    public void setInfo(Movie movie) {
         lblInfo.setText(movie.getInfo());
         lblActors.setText(movie.getMainActors().toString().replace("[", "").replace("]", ""));
-        lblName.setText(movie.getEnglishName()+ "  |  " +movie.getHebrewName());
+        lblName.setText(movie.getEnglishName() + "  |  " + movie.getHebrewName());
         lblProducer.setText(movie.getProducer());
 
         image.setImage(getImage(movie));
         image.setPreserveRatio(true);
         image.setFitWidth(250);
         image.setFitHeight(350);
-            expandImage(movie);
+        expandImage(movie);
 
-        ButtonFactory.ButtonGenreCellValueFactory factory = new ButtonFactory().new ButtonGenreCellValueFactory();
-        btnGenre = factory.configureGenreButton(btnGenre, movie);
+        ButtonFactory.ButtonGenreCellValueFactory factory = new ButtonFactory.ButtonGenreCellValueFactory();
+        btnGenre = factory.call(new TableColumn.CellDataFeatures<>(null, null, movie)).getValue();
     }
 
     @FXML
     void handleClose(ActionEvent event) {
         homeController.closeDialogAddUser();
-
     }
 
-
     private Image getImage(Movie movie) {
-
         if (movie.getImage() == null) {
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true); // Remove size constraints
+            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true);
         }
 
         String imagePath = ConstantsPath.MOVIE_PACKAGE + movie.getImage();
@@ -110,8 +96,6 @@ public class MovieInfoBoundary implements Initializable {
         }
     }
 
-
-
     private void expandImage(Movie movie) {
         paneContainer.setOnMouseClicked(ev -> {
             Image image = getImage(movie);
@@ -125,7 +109,6 @@ public class MovieInfoBoundary implements Initializable {
             ScrollPane root = new ScrollPane(borderPane);
             root.setStyle("-fx-background-color: white");
             root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
             root.setFitToHeight(true);
             root.setFitToWidth(true);
 
@@ -136,5 +119,4 @@ public class MovieInfoBoundary implements Initializable {
             stage.show();
         });
     }
-
 }

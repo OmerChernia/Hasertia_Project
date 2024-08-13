@@ -8,6 +8,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Iterator;
 
 public class MovieInstanceHandler extends MessageHandler
@@ -41,8 +43,44 @@ public class MovieInstanceHandler extends MessageHandler
             case GET_ALL_MOVIE_INSTANCES_BY_NAME -> get_all_movie_instances_by_name();
             case GET_MOVIE_INSTANCE_AFTER_SELECTION -> get_movie_instance_after_selection();
             case GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME -> get_all_movie_instances_by_theater_name();
+            case GET_MOVIE_INSTANCES_BETWEEN_DATES -> getMovieInstancesBetweenDates();
+
         }
     }
+
+    private void getMovieInstancesBetweenDates() {
+        StringBuilder queryString = new StringBuilder(
+                "FROM MovieInstance WHERE movie.available = :available"
+        );
+
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+
+        if (message.afterDate != null) {
+            startDateTime = message.afterDate.atStartOfDay(); // Start of the afterDate
+            queryString.append(" AND time >= :startDateTime");
+        }
+
+        if (message.beforeDate != null) {
+            endDateTime = message.beforeDate.plusDays(1).atStartOfDay(); // Start of the day after beforeDate
+            queryString.append(" AND time < :endDateTime");
+        }
+
+        Query<MovieInstance> query = session.createQuery(queryString.toString(), MovieInstance.class);
+        query.setParameter("available", Movie.Availability.AVAILABLE);
+
+        if (startDateTime != null) {
+            query.setParameter("startDateTime",startDateTime );
+        }
+
+        if (endDateTime != null) {
+            query.setParameter("endDateTime",endDateTime );
+        }
+
+        message.movies = query.list();
+        message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
+    }
+
 
     private void get_all_movie_instances_by_theater_name() {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location= :theater and movie.available =: available", MovieInstance.class);

@@ -12,329 +12,186 @@ import javafx.util.Callback;
 
 public class ButtonFactory {
 
-    public class ButtonTypeOrderCellValueFactory implements Callback<TableColumn.CellDataFeatures<Complaint, Button>, ObservableValue<Button>> {
 
-        private final TableColumn<Complaint, Button> colPurchase;
-
-        public ButtonTypeOrderCellValueFactory(TableColumn<Complaint, Button> colPurchase) {
-            this.colPurchase = colPurchase;
+    private static Button createButton(String text, String imagePath, String styleClass) {
+        Button button = new Button(text);
+        button.setPrefWidth(100);
+        if (!imagePath.isEmpty()) {
+            ImageView imageView = new ImageView(new Image(ButtonFactory.class.getResourceAsStream(imagePath)));
+            imageView.setFitHeight(20);
+            imageView.setFitWidth(20);
+            button.setGraphic(imageView);
         }
+        button.getStyleClass().addAll(styleClass, "table-row-cell");
+        return button;
+    }
+
+    public static class ButtonTypeOrderCellValueFactory implements Callback<TableColumn.CellDataFeatures<Complaint, Button>, ObservableValue<Button>> {
 
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Complaint, Button> param) {
             Complaint item = param.getValue();
-
-            Button button = new Button();
-            button.setPrefWidth(colPurchase.getWidth() / 2);
-
-            button.setPrefWidth(100);
-            button.setPrefWidth(100); // Adjust the width as needed
-            ImageView imageView = new ImageView();
+            String text, imagePath, styleClass;
 
             if (item.getPurchase() instanceof MultiEntryTicket) {
-                imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png")));
-                button.getStyleClass().addAll("button-green", "table-row-cell");
-                button.setText("Multi-Entry Card");
+                text = "Multi-Entry Card";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png";
+                styleClass = "button-green";
             } else if (item.getPurchase() instanceof MovieTicket) {
-                imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png")));
-                button.getStyleClass().addAll("button-blue", "table-row-cell");
-                button.setText("Movie Ticket");
+                text = "Movie Ticket";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png";
+                styleClass = "button-blue";
             } else {
-                imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png")));
-                button.getStyleClass().addAll("button-purple", "table-row-cell");
-                button.setText("Home Viewing Package");
+                text = "Home Viewing Package";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png";
+                styleClass = "button-purple";
             }
 
-            return new SimpleObjectProperty<>(button);
+            return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }
     }
 
-    public class ButtonExistsCellValueFactory implements Callback<TableColumn.CellDataFeatures<Complaint, Button>, ObservableValue<Button>> {
-
-        private final TableColumn<Complaint, Button> colStatus;
-
-        public ButtonExistsCellValueFactory(TableColumn<Complaint, Button> colStatus) {
-            this.colStatus = colStatus;
-        }
+    public static class ButtonExistsCellValueFactory implements Callback<TableColumn.CellDataFeatures<Complaint, Button>, ObservableValue<Button>> {
 
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Complaint, Button> param) {
             Complaint item = param.getValue();
+            String text = item.isClosed() ? "CLOSE" : "OPEN";
+            String styleClass = item.isClosed() ? "button-yes" : "button-no";
 
-            Button button = new Button();
-            button.setText(item.isClosed() ? "CLOSE" : "OPEN");
-            button.setPrefWidth(colStatus.getWidth() / 2);
-
-            if (item.isClosed()) {
-                button.getStyleClass().addAll("button-yes", "table-row-cell");
-            } else {
-                button.getStyleClass().addAll("button-no", "table-row-cell");
-            }
-            return new SimpleObjectProperty<>(button);
+            return new SimpleObjectProperty<>(createButton(text, "", styleClass));
         }
     }
 
-    public class ButtonTypePurchaseCellValueFactory implements Callback<TableColumn.CellDataFeatures<Purchase, Button>, ObservableValue<Button>> {
 
-        private final TableColumn<Purchase, Button> colTypePurchase;
+    public static class ButtonRequestCellValueFactory implements Callback<TableColumn.CellDataFeatures<PriceRequest, Button>, ObservableValue<Button>> {
 
-        public ButtonTypePurchaseCellValueFactory(TableColumn<Purchase, Button> colTypePurchase) {
-            this.colTypePurchase = colTypePurchase;
+        @Override
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<PriceRequest, Button> param) {
+            return new SimpleObjectProperty<>(createButton("OPEN", "", "button-yes"));
         }
+    }
+
+    public static class ButtonTypePurchaseCellValueFactory implements Callback<TableColumn.CellDataFeatures<Purchase, Button>, ObservableValue<Button>> {
 
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Purchase, Button> param) {
             Purchase item = param.getValue();
-
-            Button button = new Button();
-            button.setPrefWidth(100);
-            button.setPrefWidth(100); // Adjust the width as needed
-            ImageView imageView = new ImageView();
-            button.setPrefWidth(colTypePurchase.getWidth() / 2);
+            String text, imagePath, styleClass;
 
             if (item instanceof MultiEntryTicket) {
-                imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png")));
-                button.getStyleClass().addAll("button-orange", "table-row-cell");
-                button.setText("Multi-Entry Card");
+                text = "Multi-Entry Card";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png";
+                styleClass = "button-orange";
             } else if (item instanceof MovieTicket) {
-                imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png")));
-                button.getStyleClass().addAll("button-blue", "table-row-cell");
-                button.setText("Movie Ticket");
+                text = "Movie Ticket";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png";
+                styleClass = "button-blue";
             } else {
-                imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png")));
-                button.getStyleClass().addAll("button-purple", "table-row-cell");
-                button.setText("Home Viewing Package");
+                text = "Home Viewing Package";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png";
+                styleClass = "button-purple";
             }
-            return new SimpleObjectProperty<>(button);
+
+            return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }
     }
 
-    public class ButtonStatusCellValueFactory implements Callback<TableColumn.CellDataFeatures<Purchase, Button>, ObservableValue<Button>> {
+    public static class ButtonStatusCellValueFactory implements Callback<TableColumn.CellDataFeatures<Purchase, Button>, ObservableValue<Button>> {
+
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Purchase, Button> param) {
             Purchase item = param.getValue();
+            String text = item.getPurchaseValidation().equals("REALIZED") ? "Available" : "Available";
+            String styleClass = item.getPurchaseValidation().equals("REALIZED") ? "button-red" : "button-green";
 
-            Button button = new Button();
-            button.setText(item.getPurchaseValidation().equals("REALIZED") ? "Available" : "Available");
-            button.setPrefWidth(100); // Adjust the width as needed
-
-            if (item.getPurchaseValidation().equals("REALIZED")) {
-                button.getStyleClass().addAll("button-red", "table-row-cell");
-            } else {
-                button.getStyleClass().addAll("button-green", "table-row-cell");
-            }
-            return new SimpleObjectProperty<>(button);
+            return new SimpleObjectProperty<>(createButton(text, "", styleClass));
         }
     }
 
-
-    public class ButtonGenreCellValueFactory implements Callback<TableColumn.CellDataFeatures<Movie, Button>, ObservableValue<Button>> {
-        private TableColumn<Movie, String> colGenre;
-
-        // קונסטרקטור שמקבל את TableColumn כפרמטר
-        public ButtonGenreCellValueFactory() {
-            this.colGenre = colGenre;
-        }
+    public static class ButtonGenreCellValueFactory implements Callback<TableColumn.CellDataFeatures<Movie, Button>, ObservableValue<Button>> {
 
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Movie, Button> param) {
-            // שימוש ב-colGenre או כל לוגיקה אחרת
             Movie item = param.getValue();
+            String text = item.getGenre();
+            String imagePath = "";
+            String styleClass;
 
-            Button button = new Button();
-            button.setText(item.getGenre());
-
-
-            button.setPrefWidth(100);
-            button.setPrefWidth(100); // Adjust the width as needed
-            ImageView imageView = new ImageView();
-
-            // Add style classes based on the genre
             switch (item.getGenre().toLowerCase()) {
                 case "action":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png")));
-                    button.getStyleClass().addAll("button-green", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png";
+                    styleClass = "button-green";
                     break;
                 case "comedy":
-                     imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png")));
-                    button.getStyleClass().addAll("button-blue", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png";
+                    styleClass = "button-blue";
                     break;
                 case "drama":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png")));
-                    button.getStyleClass().addAll("button-purple", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png";
+                    styleClass = "button-purple";
                     break;
                 case "horror":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/horror.png")));
-                    button.getStyleClass().addAll("button-red", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/horror.png";
+                    styleClass = "button-red";
                     break;
                 case "romance":
-                     imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/romance.png")));
-                    button.getStyleClass().addAll("button-pink", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/romance.png";
+                    styleClass = "button-pink";
                     break;
                 case "sci-fi":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/sci-fi.png")));
-                    button.getStyleClass().addAll("button-tomato", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/sci-fi.png";
+                    styleClass = "button-tomato";
                     break;
                 case "thriller":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/horror.png")));
-                    button.getStyleClass().addAll("button-green", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/thriller.png";
+                    styleClass = "button-green";
                     break;
                 case "animation":
-                     imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/animation.png")));
-                    button.getStyleClass().addAll("button-orange", "table-row-cell");
-                    break;
-
-                case "fantasy":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/fantasy.png")));
-                    button.getStyleClass().addAll("button-light-purple", "table-row-cell");
-                    break;
-                case "musical":
-                     imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/musical.png")));
-                    button.getStyleClass().addAll("button-hot-pink", "table-row-cell");
-                    break;
-
-                default:
-                    button.getStyleClass().addAll("button-default", "table-row-cell");
-                    break;
-            }
-
-            // Attach image to the button
-            if (imageView.getImage() != null) {
-                imageView.setFitHeight(20);  // Set the image height
-                imageView.setFitWidth(20);   // Set the image width
-                button.setGraphic(imageView);
-            }
-
-            return new SimpleObjectProperty<>(button);
-        }
-        // מתודה חדשה שמקבלת כפתור ומחזירה את הכפתור מעודכן עם הגדרות הז'אנר
-        public Button configureGenreButton(Button button, Movie movie) {
-            button.setText(movie.getGenre());
-            button.setPrefWidth(100);
-            ImageView imageView = new ImageView();
-
-            // Add style classes based on the genre
-            switch (movie.getGenre().toLowerCase()) {
-                case "action":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png")));
-                    button.getStyleClass().addAll("button-green", "table-row-cell");
-                    break;
-                case "comedy":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png")));
-                    button.getStyleClass().addAll("button-blue", "table-row-cell");
-                    break;
-                case "drama":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png")));
-                    button.getStyleClass().addAll("button-purple", "table-row-cell");
-                    break;
-                case "horror":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/horror.png")));
-                    button.getStyleClass().addAll("button-red", "table-row-cell");
-                    break;
-                case "romance":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/romance.png")));
-                    button.getStyleClass().addAll("button-pink", "table-row-cell");
-                    break;
-                case "sci-fi":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/sci-fi.png")));
-                    button.getStyleClass().addAll("button-tomato", "table-row-cell");
-                    break;
-                case "thriller":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/thriller.png")));
-                    button.getStyleClass().addAll("button-green", "table-row-cell");
-                    break;
-                case "animation":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/animation.png")));
-                    button.getStyleClass().addAll("button-orange", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/animation.png";
+                    styleClass = "button-orange";
                     break;
                 case "fantasy":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/fantasy.png")));
-                    button.getStyleClass().addAll("button-light-purple", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/fantasy.png";
+                    styleClass = "button-light-purple";
                     break;
                 case "musical":
-                    imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/genre/musical.png")));
-                    button.getStyleClass().addAll("button-hot-pink", "table-row-cell");
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/musical.png";
+                    styleClass = "button-hot-pink";
                     break;
                 default:
-                    button.getStyleClass().addAll("button-default", "table-row-cell");
+                    styleClass = "button-default";
                     break;
             }
 
-            // Attach image to the button
-            if (imageView.getImage() != null) {
-                imageView.setFitHeight(20);  // Set the image height
-                imageView.setFitWidth(20);   // Set the image width
-                button.setGraphic(imageView);
-            }
-
-            return button;
+            return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }
-
     }
 
-
-    public class ButtonMovieTypeCellValueFactory implements Callback<TableColumn.CellDataFeatures<Movie, Button>, ObservableValue<Button>> {
-        private TableColumn<Movie, String> colType;
-
-        // קונסטרקטור שמקבל את TableColumn כפרמטר
-        public ButtonMovieTypeCellValueFactory() {
-            this.colType = colType;
-        }
+    public static class ButtonMovieTypeCellValueFactory implements Callback<TableColumn.CellDataFeatures<Movie, Button>, ObservableValue<Button>> {
 
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Movie, Button> param) {
             Movie item = param.getValue();
+            String text = item.getStreamingType().toString();
+            String styleClass;
 
-            Button button = new Button();
-            button.setText(item.getStreamingType().toString());
-
-            button.setPrefWidth(100);
-            button.setPrefWidth(100); // Adjust the width as needed
-            ImageView imageView = new ImageView();
-
-
-            // Add style classes based on the genre
             switch (item.getStreamingType()) {
                 case HOME_VIEWING:
-                    button.getStyleClass().addAll("button-action", "table-row-cell");
+                    styleClass = "button-action";
                     break;
                 case THEATER_VIEWING:
-                    //   imageView.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MEDIA_PACKAGE + "icons/comedy-icon.png")));
-                    button.getStyleClass().addAll("button-comedy", "table-row-cell");
+                    styleClass = "button-comedy";
                     break;
                 case BOTH:
-                    button.getStyleClass().addAll("button-drama", "table-row-cell");
+                    styleClass = "button-drama";
                     break;
                 default:
-                    button.getStyleClass().addAll("button-default", "table-row-cell");
+                    styleClass = "button-default";
                     break;
             }
 
-            // Attach image to the button
-            if (imageView.getImage() != null) {
-                imageView.setFitHeight(20);  // Set the image height
-                imageView.setFitWidth(20);   // Set the image width
-                button.setGraphic(imageView);
-            }
-
-            return new SimpleObjectProperty<>(button);
+            return new SimpleObjectProperty<>(createButton(text, "", styleClass));
         }
-
     }
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}

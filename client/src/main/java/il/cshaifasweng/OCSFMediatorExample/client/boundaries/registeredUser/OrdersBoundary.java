@@ -311,9 +311,8 @@ public class OrdersBoundary implements Initializable {
                 cellData.getValue().getPurchaseDate().toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         ));
 
-        ButtonFactory buttonFactory = new ButtonFactory();
-        colStatus.setCellValueFactory(buttonFactory.new ButtonStatusCellValueFactory());
-        colTypePurchase.setCellValueFactory(buttonFactory.new ButtonTypePurchaseCellValueFactory(colTypePurchase));
+        colStatus.setCellValueFactory(new ButtonFactory.ButtonStatusCellValueFactory());
+        colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
     }
 
     private void loadTable() {

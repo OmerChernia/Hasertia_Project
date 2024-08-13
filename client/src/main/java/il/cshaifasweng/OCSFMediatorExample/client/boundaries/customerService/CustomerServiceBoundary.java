@@ -100,8 +100,8 @@ public class CustomerServiceBoundary implements Initializable {
         ));
 
         ButtonFactory buttonFactory = new ButtonFactory();
-        colPurchase.setCellValueFactory(buttonFactory.new ButtonTypeOrderCellValueFactory(colPurchase));
-        colStatus.setCellValueFactory(buttonFactory.new ButtonExistsCellValueFactory(colStatus));
+        colPurchase.setCellValueFactory(new ButtonFactory.ButtonTypeOrderCellValueFactory());
+        colStatus.setCellValueFactory(new ButtonFactory.ButtonExistsCellValueFactory());
     }
 
     private void animateNodes() {

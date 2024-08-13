@@ -3,6 +3,8 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import javafx.animation.KeyFrame;
@@ -22,7 +24,10 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class TheaterPurchaseBoundary {
     @FXML
@@ -112,20 +117,47 @@ public class TheaterPurchaseBoundary {
     @FXML
     private Label pricePaidLabel;
 
+    //the user details
+    @FXML
+    private TextField firstNameTF;
+
+    @FXML
+    private TextField lastNameTF;
+
+    @FXML
+    private TextField emailTF;
+
+    @FXML
+    private TextField confirmEmailTF;
+
+    @FXML
+    private TextField idNumberTF;
+
+    @FXML
+    private TextField confirmIdNumberTF;
+    //end of user details
+
+    // Regular expression for validating an email address
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+
     @FXML
     private Spinner<Integer> ticketsSpinner; // רכיב לבחירת מספר כרטיסים
 
     private MovieInstance currentMovieInstance;
-    private Seat selectedSeat;
+
+    private List<Seat> selectedSeats = new ArrayList<>();
+
     private Timeline timer;
     private int timeRemaining;
     private double ticketPrice;
+
+    private int numberOfTickets;
 
     @FXML
     public void initialize() {
         EventBus.getDefault().register(this);
         stackPane.getChildren().clear();
-        stackPane.getChildren().add(seatSelectionPane);
+        stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
@@ -152,11 +184,12 @@ public class TheaterPurchaseBoundary {
         List<Seat> seats = currentMovieInstance.getHall().getSeats();
         for (Seat seat : seats)
         {
-            System.out.println(seat.getId());
             Button seatButton = new Button(String.valueOf(seat.getCol()));
+            seatButton.setId(seat.getId() + ""); // Set a unique ID for each button
             if(seat.getMovies().contains(currentMovieInstance))
             {
                 seatButton.setStyle("-fx-background-color:  #838f97;");
+                seatButton.setDisable(true);
             }
             else
                 seatButton.setStyle("-fx-background-color: #4CAF50FF;");
@@ -166,27 +199,28 @@ public class TheaterPurchaseBoundary {
         }
     }
 
-    private void selectSeat(Seat seat, Button seatButton) {
-        if (selectedSeat != null) {
-            Button prevButton = (Button) seatGrid.lookup("#" + selectedSeat.getRow() + "-" + selectedSeat.getCol());
+    private void selectSeat(Seat seat, Button seatButton)
+    {
+        if(selectedSeats.contains(seat))
+        {
+            Button prevButton = (Button) seatGrid.lookup("#" + seat.getId());
             prevButton.setStyle("-fx-background-color: #4CAF50FF;");
+            numberOfTickets++;
+            selectedSeats.remove(seat);
+        }
+        else
+        {
+            if (numberOfTickets > 0) {
+                selectedSeats.add(seat);
+                numberOfTickets--;
+                seatButton.setStyle("-fx-background-color: #e72241;");
+                resetTimer(); // איפוס הסטופר בבחירת כיסא אחר
+            } else
+                NotificationsBuilder.create(NotificationType.ERROR, "You can't select more seats!.");
         }
 
-        if (isSingleSeatLeft(seat)) { // בדיקה אם נשאר מושב בודד
-            System.out.println("Cannot leave a single seat!");
-            return;
-        }
-
-        selectedSeat = seat;
-        seatButton.setStyle("-fx-background-color: #e72241;");
-        resetTimer(); // איפוס הסטופר בבחירת כיסא אחר
     }
 
-    private boolean isSingleSeatLeft(Seat seat) {
-        // בדיקה אם בחירת הכיסא תשאיר מושב בודד
-        // יש לממש לוגיקה מותאמת לפי הצורך
-        return false;
-    }
 
     private void resetTimer() {
         if (timer != null) {
@@ -197,13 +231,18 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void goToTicketSelection() {
-        if (selectedSeat != null) {
-            stackPane.getChildren().clear();
-            stackPane.getChildren().add(ticketSelectionPane);
-            highlightStep(2);
-        } else {
-            System.out.println("Please select a seat.");
-        }
+
+        stackPane.getChildren().clear();
+        stackPane.getChildren().add(ticketSelectionPane);
+        highlightStep(1);
+        initializeSeatSelection();
+    }
+
+    private void initializeSeatSelection()
+    {
+        timer.stop();
+        updateSeats();
+        selectedSeats.clear();
     }
 
     @FXML
@@ -218,49 +257,58 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void goToPaymentDetails() {
-        stackPane.getChildren().clear();
-        stackPane.getChildren().add(paymentDetailsPane);
-        highlightStep(3);
+        if(numberOfTickets > 0)
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"You didn't selected all the seats you asked.");
+        }
+        else {
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(paymentDetailsPane);
+            highlightStep(3);
+        }
     }
 
     @FXML
-    private void goToSeatSelection() {
+    private void goToSeatSelection()
+    {
+        numberOfTickets = ticketsSpinner.getValue();
         stackPane.getChildren().clear();
         stackPane.getChildren().add(seatSelectionPane);
-        highlightStep(1);
+        highlightStep(2);
     }
 
     @FXML
     private void goToNextStep() {
         if (stackPane.getChildren().contains(seatSelectionPane)) {
-            goToTicketSelection();
-        } else if (stackPane.getChildren().contains(ticketSelectionPane)) {
             goToPaymentDetails();
-        }
-    }
-
-    @FXML
-    private void goToPreviousStep() {
-        if (stackPane.getChildren().contains(paymentDetailsPane)) {
-            goToTicketSelection();
         } else if (stackPane.getChildren().contains(ticketSelectionPane)) {
             goToSeatSelection();
         }
     }
 
     @FXML
-    private void purchaseTicket() {
-        if (selectedSeat != null) {
-            int ticketCount = ticketsSpinner.getValue();
-            String purchaseValidation = generatePurchaseValidation();
-            RegisteredUser loggedInUser = getLoggedInUser();
-            PurchaseController.AddMovieTicket(loggedInUser.getId(), LocalDateTime.now(), loggedInUser, purchaseValidation, currentMovieInstance, selectedSeat);
-            // יש לשנות את הבקשה כדי לטפל ברכישת מספר כרטיסים
-        } else {
-            System.out.println("Please select a seat.");
+    private void goToPreviousStep() {
+        if (stackPane.getChildren().contains(paymentDetailsPane)) {
+            goToSeatSelection();
+        } else if (stackPane.getChildren().contains(seatSelectionPane)) {
+            goToTicketSelection();
         }
     }
+/*
+    @FXML
+    private void purchaseTicket() {
+            if (selectedSeat != null) {
+                int ticketCount = ticketsSpinner.getValue();
+                String purchaseValidation = generatePurchaseValidation();
+                RegisteredUser loggedInUser = getLoggedInUser();
+                PurchaseController.AddMovieTicket(loggedInUser.getId(), LocalDateTime.now(), loggedInUser, purchaseValidation, currentMovieInstance, selectedSeat);
+                // יש לשנות את הבקשה כדי לטפל ברכישת מספר כרטיסים
+            } else {
+                System.out.println("Please select a seat.");
+            }
 
+    }
+*/
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {
         Platform.runLater(() -> {
@@ -310,9 +358,12 @@ public class TheaterPurchaseBoundary {
     }
 
     @FXML
-    private void showCreditCardFields() {
-        creditCardPane.setVisible(true);
+    private void showCreditCardFields()
+    {
+        if(checkDetails())
+            creditCardPane.setVisible(true);
     }
+
 
     @FXML
     private void submitPayment() {
@@ -363,7 +414,7 @@ public class TheaterPurchaseBoundary {
                         "Time: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")) + "\n" +
                         "Hall: " + currentMovieInstance.getHall().getId() + "\n" +
                         "Theater: " + currentMovieInstance.getHall().getTheater().getLocation() + "\n" +
-                        "Seat: Row " + selectedSeat.getRow() + ", Seat " + selectedSeat.getCol() + "\n" +
+                        //"Seat: Row " + selectedSeat.getRow() + ", Seat " + selectedSeat.getCol() + "\n" +
                         "Price Paid: ₪" + ticketPrice
         );
         confirmationMovieImage.setImage(movieImage.getImage());
@@ -388,4 +439,66 @@ public class TheaterPurchaseBoundary {
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
+
+    // a method that checks if the details that the user given is valid , returns true if the details are valid
+    private boolean checkDetails()
+    {
+
+        if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
+                || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.");
+            return false;
+        }
+
+        String textFirstName = firstNameTF.getText();
+        for (char c : textFirstName.toCharArray()) {
+            if (Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.");
+                return false;
+            }
+        }
+
+        String textLastName = lastNameTF.getText();
+        for (char c : textLastName.toCharArray()) {
+            if (Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.");
+                return false;
+            }
+        }
+
+        String textID = idNumberTF.getText();
+        for (char c : textID.toCharArray()) {
+            if (!Character.isDigit(c))
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.");
+                return false;
+            }
+        }
+
+        if(!idNumberTF.getText().equals(confirmIdNumberTF.getText()))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!");
+            return false;
+        }
+
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        if (!pattern.matcher(emailTF.getText()).matches())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.");
+            return false;
+        }
+
+
+        if(!emailTF.getText().equals(confirmEmailTF.getText()))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!");
+            return false;
+        }
+        return true;
+    }
+
+
 }

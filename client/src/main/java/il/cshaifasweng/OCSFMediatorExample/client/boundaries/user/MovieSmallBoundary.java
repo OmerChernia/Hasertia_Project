@@ -353,6 +353,7 @@ public class MovieSmallBoundary {
 
     private void loadSeatSelectionPage(MovieInstance movieInstance)
     {
+        EventBus.getDefault().unregister(this);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.THEATER_PURCHASE_VIEW));
             Parent root = loader.load();

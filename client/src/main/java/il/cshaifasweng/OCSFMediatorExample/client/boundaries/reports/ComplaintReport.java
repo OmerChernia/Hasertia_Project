@@ -1,5 +1,6 @@
-package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic;
+package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports;
 
+import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.Report;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -39,10 +40,16 @@ public class ComplaintReport implements Report {
         }
 
         for (Map.Entry<String, Integer> entry : complaintData.entrySet()) {
+            System.out.println(entry);
             series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
         }
 
         barChart.getData().add(series);
+
+        // Force a layout pass
+        barChart.applyCss();
+        barChart.layout();
+
         return barChart;
     }
 }

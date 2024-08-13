@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities.Messages;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,9 @@ public class MovieInstanceMessage extends Message
     public LocalDateTime date;
     public RequestType requestType;
     public ResponseType responseType;
+    public LocalDate beforeDate;
+    public LocalDate afterDate;
+
 
     public MovieInstanceMessage(MessageType messageType, RequestType requestType , MovieInstance movieInstance)
     {
@@ -65,6 +69,14 @@ public class MovieInstanceMessage extends Message
         this.date = date;
     }
 
+    public MovieInstanceMessage(MessageType messageType, RequestType requestType, LocalDate before, LocalDate after)
+    {
+        super(messageType);
+        this.requestType = requestType;
+        this.beforeDate = before;
+        this.afterDate = after;
+    }
+
 
     public enum ResponseType
     {
@@ -89,6 +101,7 @@ public class MovieInstanceMessage extends Message
         GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_THEATER_ID_DATE,
         GET_ALL_MOVIE_INSTANCES_BY_NAME,
         GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME,
+        GET_MOVIE_INSTANCES_BETWEEN_DATES,
         GET_MOVIE_INSTANCE_AFTER_SELECTION
 
 

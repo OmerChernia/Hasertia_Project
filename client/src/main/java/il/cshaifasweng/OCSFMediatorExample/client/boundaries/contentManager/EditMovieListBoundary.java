@@ -149,13 +149,16 @@ public class EditMovieListBoundary implements Initializable {
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
         colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
-       // colPriceRequestStatus.setCellValueFactory(new PropertyValueFactory<>("priceRequestStatus"));
-        ButtonFactory buttonFactory = new ButtonFactory();
-        ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = buttonFactory.new ButtonGenreCellValueFactory();
+        // colPriceRequestStatus.setCellValueFactory(new PropertyValueFactory<>("priceRequestStatus"));
+
+        ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = new ButtonFactory.ButtonGenreCellValueFactory();
         colGenre.setCellValueFactory(buttonGenreCellFactory);
-        ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = buttonFactory.new ButtonMovieTypeCellValueFactory();
+
+        ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = new ButtonFactory.ButtonMovieTypeCellValueFactory();
         colStreamingType.setCellValueFactory(buttonTypeCellFactory);
+
     }
+
 
     @Subscribe
     public void onPriceRequestMessageReceived(PriceRequestMessage message) {
@@ -164,12 +167,12 @@ public class EditMovieListBoundary implements Initializable {
             Movie movie = request.getMovie();
 
             switch (message.responseType) {
-                case REQUEST_CREATED:
-                    System.out.println("Pending");
+                case MOVIE_PRICE_CHANGED:
+                    System.out.println("Approved");
                     break;
-                case PRICE_REQUEST_DECIDE:
+                case MOVIE_PRICE_NOT_CHANGED:
 
-                   System.out.println("Approved");
+                    System.out.println("Not Approved");
 
                     break;
                 default:
@@ -225,6 +228,9 @@ public class EditMovieListBoundary implements Initializable {
             dialogAddProduct.close();
         }
     }
+
+
+
 
     @FXML
     private void showDialogDeleteProduct() {
