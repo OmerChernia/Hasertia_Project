@@ -109,6 +109,8 @@ public class MovieSmallBoundary {
     @FXML
     private StackPane stkpanel;
 
+    private boolean open = false;
+
     private String theaterName;
     private LocalDate date;
     private LocalTime time;
@@ -119,7 +121,6 @@ public class MovieSmallBoundary {
             imagePanel.setOnMouseEntered(event -> handleMouseEnter());
             imagePanel.setOnMouseExited(event -> handleMouseExit());
         }
-
         if (contentPanel != null) {
             contentPanel.setOnMouseEntered(event -> handleMouseEnter());
             contentPanel.setOnMouseExited(event -> handleMouseExit());
@@ -403,6 +404,9 @@ public class MovieSmallBoundary {
     }
 
     private void handleCloseButton() {
+
+        EventBus.getDefault().unregister(this);
+
         imagePanel.setVisible(true);
         if (HomeBoundary.currentScreeningFilter.equals("Theater")){
             selectTheaterPane.setVisible(false);
@@ -414,12 +418,13 @@ public class MovieSmallBoundary {
 
     public void goToSelect(ActionEvent actionEvent)
     {
-        //need to look this up
-        if(!EventBus.getDefault().isRegistered(this))
+
+        if(!EventBus.getDefault().isRegistered(this) )
             EventBus.getDefault().register(this);
 
         MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
-        if (HomeBoundary.currentScreeningFilter.equals("Theater")){
+        if (HomeBoundary.currentScreeningFilter.equals("Theater"))
+        {
             selectTheaterPane.setVisible(true);
         }
         else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")){
@@ -432,7 +437,8 @@ public class MovieSmallBoundary {
         homeController.showInfo(getMovie());
     }
 
-    public void cleanup() {
+    public void cleanup()
+    {
         EventBus.getDefault().unregister(this);
     }
 

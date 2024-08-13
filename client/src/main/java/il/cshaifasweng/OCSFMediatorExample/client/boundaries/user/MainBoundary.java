@@ -200,70 +200,81 @@ public class MainBoundary implements Initializable {
     }
 
     @FXML
-    private void homeWindows(ActionEvent event) {
+    private void homeWindows(ActionEvent event)
+    {
         btnHome.setDisable(true);
         showFXMLWindows(ConstantsPath.HOME_VIEW );
         setDisableButtons(event);
     }
 
     @FXML
-    private void EditMovieScreeningsWindows(ActionEvent event) {
+    private void EditMovieScreeningsWindows(ActionEvent event)
+    {
         showFXMLWindows(ConstantsPath.CONTENT_SCREENINGS_VIEW );
         setDisableButtons(event);
     }
 
     @FXML
-    private void CustomerServiceWindows(ActionEvent event) {
+    private void CustomerServiceWindows(ActionEvent event)
+    {
         showFXMLWindows(ConstantsPath.CUSTOMER_SERVICE_VIEW );
         setDisableButtons(event);
     }
 
     @FXML
-    private void settingsWindows(ActionEvent event) {
+    private void settingsWindows(ActionEvent event)
+    {
         showFXMLWindows( ConstantsPath.COMPLAINT_VIEW );
 //        setDisableButtons(event);
     }
 
     @FXML
-    private void statisticsWindows(ActionEvent event) {
+    private void statisticsWindows(ActionEvent event)
+    {
         showFXMLWindows(ConstantsPath.COMPANY_MANAGER_VIEW );
         setDisableButtons(event);
     }
 
     @FXML
-    private void aboutWindows(ActionEvent event) {
+    private void aboutWindows(ActionEvent event)
+    {
         showFXMLWindows( ConstantsPath.ABOUT_VIEW  ) ;
         setDisableButtons(event);
     }
 
     @FXML
-    private void productsWindows(ActionEvent event) {
+    private void productsWindows(ActionEvent event)
+    {
         showFXMLWindows(ConstantsPath.CONTENT_MOVIES_VIEW );
         setDisableButtons(event);
     }
 
     @FXML
-    private void addUserWindows(ActionEvent event) {
+    private void addUserWindows(ActionEvent event)
+    {
         showFXMLWindows(ConstantsPath.ORDERS_VIEW );
         setDisableButtons(event);
     }
 
     // choose package btn
     @FXML
-    private void MEWindows(ActionEvent event) {
+    private void MEWindows(ActionEvent event)
+    {
         showFXMLWindows(ConstantsPath.ME_PURCHASE_VIEW);
         setDisableButtons(event);
     }
 
     @FXML
-    private void closeLoginDialog() {
+    private void closeLoginDialog()
+    {
         if (dialogLogIn != null) {
             dialogLogIn.close();
         }
     }
 
     @FXML
-    private void loginWindow() {
+    private void loginWindow()
+    {
         rootContainer.setEffect(ConstantsPath.BOX_BLUR_EFFECT); // Blur the background
 
         pnLogIn.setVisible(true); // Show the login pane
@@ -325,7 +336,6 @@ public class MainBoundary implements Initializable {
 
 
     private void showFXMLWindows(String FXMLName) {
-
 
         rootContainer.getChildren().clear();
         try {
