@@ -20,13 +20,13 @@ public class PriceRequestController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void acceptPriceRequest(int requestId) {
-        PriceRequestMessage requestMessage = new PriceRequestMessage(MessageType.REQUEST, RequestType.APPROVE_PRICE_REQUEST);
+    public static void acceptPriceRequest(PriceRequest priceRequest) {
+        PriceRequestMessage requestMessage = new PriceRequestMessage(MessageType.REQUEST, RequestType.APPROVE_PRICE_REQUEST, priceRequest);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void denyPriceRequest(int requestId) {
-        PriceRequestMessage requestMessage = new PriceRequestMessage(MessageType.REQUEST, RequestType.DECLINE_PRICE_REQUEST);
+    public static void denyPriceRequest(PriceRequest priceRequest) {
+        PriceRequestMessage requestMessage = new PriceRequestMessage(MessageType.REQUEST, RequestType.DECLINE_PRICE_REQUEST, priceRequest);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 }

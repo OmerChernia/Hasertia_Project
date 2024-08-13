@@ -19,7 +19,6 @@
                   <TableColumn fx:id="colDuration" prefWidth="92.0" text="Duration" />
                   <TableColumn fx:id="colTheaterPrice" prefWidth="159.0" text="Theater Price" />
                   <TableColumn fx:id="colHVPrice" prefWidth="166.0" text="Home Viewing Price" />
-                  <TableColumn fx:id="colPriceRequestStatus" prefWidth="150.0" text="Price Request Status" />
                   <TableColumn fx:id="colGenre" prefWidth="180.0" text="Genre" />
                </columns>
                <columnResizePolicy>

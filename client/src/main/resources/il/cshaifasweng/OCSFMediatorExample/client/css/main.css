@@ -145,6 +145,36 @@
     -fx-font-size: 15;
 }
 
+/* התראות information */
+.alert-information-button {
+    -fx-font-family: "Lato";
+    -fx-background-color: #9370DB;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-pref-height: 50px;
+    -fx-pref-width: 340px;
+    -fx-font-size: 15;
+}
+
+
+.alert-information-title {
+    -fx-font-family: "Lato";
+    -fx-fill: #9370DB;
+    -fx-font-size: 30;
+}
+
+.alert-information-body {
+    -fx-font-family: "Lato";
+    -fx-fill: #9370DB;
+    -fx-font-size: 15;
+}
+
+
+
+
+
+
+
 
 
 /* התראות הצלחה */

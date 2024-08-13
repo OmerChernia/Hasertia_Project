@@ -536,7 +536,7 @@ public class MainBoundary implements Initializable {
                 clearTextFields();
                 closeLoginDialog();
                 AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
-            }, "Cancel");
+            }, "Cancel",null);
         } else {
             loginWindow();
         }
