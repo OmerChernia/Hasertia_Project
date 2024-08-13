@@ -1,12 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -40,10 +44,19 @@ public class ComplaintBoundary implements Initializable {
     private TextArea txtComplaintDetails;
 
     @FXML
+    private Label emailheader;
+
+    @FXML
+    private Label nameheader;
+
+
+    @FXML
     private Button btnSubmitComplaint;
 
     @FXML
     private Label lblTitle;
+
+    private RegisteredUser user;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,36 +67,53 @@ public class ComplaintBoundary implements Initializable {
     }
 
     private void initializeComplaintForm() {
-        // Initialize form with default data if necessary
+        if(!SimpleClient.user.isEmpty()) {
+            txtCustomerName.setVisible(false);
+            txtCustomerEmail.setVisible(false);
+            nameheader.setVisible(false);
+            emailheader.setVisible(false);
+            RegisteredUserController.getUserByID(SimpleClient.user);
+        }
     }
 
     @FXML
     private void submitComplaint() {
-        String customerName = txtCustomerName.getText().trim();
-        String customerEmail = txtCustomerEmail.getText().trim();
-        String complaintDetails = txtComplaintDetails.getText().trim();
+        String customerName="", customerEmail="",complaintDetails="";
+        if(txtCustomerName.isVisible()) {
+            customerName = txtCustomerName.getText().trim();
+            customerEmail = txtCustomerEmail.getText().trim();
+        }
+        complaintDetails = txtComplaintDetails.getText().trim();
 
-
-
-        if (customerName.isEmpty() || customerEmail.isEmpty() || complaintDetails.isEmpty()) {
-            if (customerName.isEmpty() ) {
-                Animations.shake(txtCustomerName);
-            }
-            if (customerEmail.isEmpty() ) {
-                Animations.shake(txtCustomerEmail);
-            }
+        if(!txtCustomerName.isVisible()) {
             if (complaintDetails.isEmpty() ) {
                 Animations.shake(txtComplaintDetails);
+                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.");
+                return;
+            }
+            LocalDateTime creationDate = LocalDateTime.now();
+            ComplaintController.addComplaint(complaintDetails, creationDate, null, false, user);
+        }
+        else {
+            if (customerName.isEmpty() || customerEmail.isEmpty() || complaintDetails.isEmpty()) {
+                if (customerName.isEmpty()) {
+                    Animations.shake(txtCustomerName);
+                }
+                if (customerEmail.isEmpty()) {
+                    Animations.shake(txtCustomerEmail);
+                }
+                if (complaintDetails.isEmpty()) {
+                    Animations.shake(txtComplaintDetails);
+                }
+                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.");
+                return;
             }
 
-            NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.");
-            return;
+
+            // Code to submit the complaint to the system goes here
+            LocalDateTime creationDate = LocalDateTime.now();
+            ComplaintController.addComplaint(complaintDetails, creationDate, null, false, user);
         }
-
-
-        // Code to submit the complaint to the system goes here
-        LocalDateTime creationDate = LocalDateTime.now();
-        ComplaintController.addComplaint( complaintDetails,  creationDate,  null,  false,  null);
         AlertsBuilder.create(AlertType.SUCCESS, stckComplaint, rootComplaint, rootComplaint, "Complaint submitted successfully. A response will be sent to the customer's email within 24 hours.");
     }
 
@@ -91,6 +121,10 @@ public class ComplaintBoundary implements Initializable {
     public void onComplaintMessageReceived(ComplaintMessage message) {
         // Handle the event, e.g., update the UI with complaint information
         System.out.println("Received complaint message: " + message);
+    }
+    @Subscribe
+    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) {
+        user= message.registeredUser;
     }
 
     public void cleanup() {

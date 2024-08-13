@@ -22,14 +22,23 @@ public class RegisteredUserMessage extends Message
         this.email = email;
         this.requestType = requestType;
     }
+    public RegisteredUserMessage(MessageType messageType,String user_id, RequestType requestType)
+    {
+        super(messageType);
+        this.user_id = user_id;
+        this.requestType = requestType;
+    }
 
     public enum RequestType
     {
-        ADD_NEW_USER
+        ADD_NEW_USER,
+        GET_USER_BY_ID
     }
     public enum ResponseType
     {
         USER_ADDED,
-        USER_DID_NOT_ADDED
+        USER_DID_NOT_ADDED,
+        RETURN_USER,
+        RETURN_USER_FAILED
     }
 }

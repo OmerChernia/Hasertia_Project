@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
@@ -18,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -38,6 +40,9 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private VBox paymentDetailsPane;
+
+    @FXML
+    private GridPane nodetails;
 
     @FXML
     private VBox creditCardPane;
@@ -110,6 +115,9 @@ public class HomeViewingPurchaseBoundary {
     private TextField lastNameTF;
 
     @FXML
+    private Label connectedText;
+
+    @FXML
     private TextField emailTF;
 
     @FXML
@@ -121,6 +129,7 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private TextField confirmIdNumberTF;
     //end of user details
+    private RegisteredUser user=null;
 
     // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -139,6 +148,10 @@ public class HomeViewingPurchaseBoundary {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
+        user=null;
+        if(!SimpleClient.user.isEmpty()) {
+            RegisteredUserController.getUserByID(SimpleClient.user);
+        }
     }
 
     private void highlightStep(int step) {
@@ -173,7 +186,13 @@ public class HomeViewingPurchaseBoundary {
     private void goToPaymentDetails() {
         startTimer();
         stackPane.getChildren().clear();
-        stackPane.getChildren().add(paymentDetailsPane);
+        if(user!=null)
+        {
+            showCreditCardFields();
+        }
+        else
+            stackPane.getChildren().add(paymentDetailsPane);
+
         highlightStep(2);
     }
 
@@ -224,8 +243,10 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private void showCreditCardFields()
     {
-        if(checkDetails())
+        if(user != null || checkDetails()) {
+            stackPane.getChildren().add(creditCardPane);
             creditCardPane.setVisible(true);
+        }
     }
 
     @FXML
@@ -240,8 +261,13 @@ public class HomeViewingPurchaseBoundary {
     @Subscribe
     public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
     {
-        String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-        PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation,currentMovie,dateTime);
+        if(message.requestType==RegisteredUserMessage.RequestType.GET_USER_BY_ID)
+            user= message.registeredUser;
+        else
+        {
+            String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime);
+        }
     }
 
     @Subscribe
@@ -251,6 +277,9 @@ public class HomeViewingPurchaseBoundary {
         {
             showConfirmation();
         }
+    }
+    @Subscribe
+    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) {
     }
 
     @FXML

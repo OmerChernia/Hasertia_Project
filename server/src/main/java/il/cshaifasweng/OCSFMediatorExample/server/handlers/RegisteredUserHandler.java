@@ -2,7 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
@@ -29,6 +31,27 @@ public class RegisteredUserHandler extends MessageHandler
         switch (message.requestType)
         {
             case ADD_NEW_USER -> add_new_user();
+            case GET_USER_BY_ID -> getUserByID();
+        }
+    }
+
+    private void getUserByID() {
+        try {
+            // Create an HQL query to fetch all complaints
+            Query<RegisteredUser> query = session.createQuery("FROM RegisteredUser where  id_number= :_id_number", RegisteredUser.class);
+            query.setParameter("_id_number", message.user_id);
+            // Execute the query and get the result list
+            message.registeredUser = query.uniqueResult();
+
+            // Set the response type
+            message.responseType = RegisteredUserMessage.ResponseType.RETURN_USER;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.responseType = RegisteredUserMessage.ResponseType.RETURN_USER_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
         }
     }
 
