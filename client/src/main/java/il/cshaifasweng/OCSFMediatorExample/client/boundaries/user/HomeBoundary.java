@@ -69,10 +69,10 @@ public class HomeBoundary implements Initializable {
     private ComboBox<String> cmbTheater;
 
     @FXML
-    private DatePicker endDate;
+    private DatePicker beforeDate;
 
     @FXML
-    private DatePicker startDate;
+    private DatePicker afterDate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,6 +81,7 @@ public class HomeBoundary implements Initializable {
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
         SetTheaterCombo();
+        setDateListeners();
         TheaterController.getAllTheaters();
     }
 
@@ -106,7 +107,7 @@ public class HomeBoundary implements Initializable {
 
     @Subscribe
     public void onMovieMessageReceived(MovieInstanceMessage message) {
-        if(message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME) {
+        if(message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME||message.requestType == MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCES_BETWEEN_DATES) {
             Platform.runLater(() ->
             {
                 try {
@@ -119,17 +120,19 @@ public class HomeBoundary implements Initializable {
     }
     public void setDateListeners ()
     {
-        endDate.valueProperty().addListener((observable, oldDate, newDate) -> {
+        System.out.println("init");
+        beforeDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
-                System.out.println("Selected date: " + newDate);
-                //handleDateChange(newDate);
+                System.out.println("before");
+                beforeDate.setValue(newDate);
+                MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(),afterDate.getValue());
             }
         });
 
-        startDate.valueProperty().addListener((observable, oldDate, newDate) -> {
+        afterDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
-                System.out.println("Selected date: " + newDate);
-                //handleDateChange(newDate);
+                System.out.println("after");
+              afterDate.setValue(newDate);
             }
         });
     }
@@ -283,8 +286,8 @@ public class HomeBoundary implements Initializable {
     void Reset(ActionEvent event) {
         MovieController.getMoviesPresentedInTheater();
         cmbTheater.setValue(null);
-        startDate.setValue(null);
-        endDate.setValue(null);
+        afterDate.setValue(null);
+        beforeDate.setValue(null);
     }
     private void populateTheatersComboBox(List<Theater> theatersList) {
         Set<String> theaterLocations = theatersList.stream()

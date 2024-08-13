@@ -30,8 +30,8 @@
                      <HBox fx:id="TheaterFilters" prefHeight="52.0" prefWidth="930.0" spacing="20">
                         <children>
                            <ComboBox fx:id="cmbTheater" prefHeight="22.0" prefWidth="133.0" promptText="Filter By Theater" />
-                           <DatePicker fx:id="startDate" prefHeight="25.0" prefWidth="150.0" promptText="Starts From" />
-                           <DatePicker fx:id="endDate" layoutX="163.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="To" />
+                           <DatePicker fx:id="afterDate" prefHeight="25.0" prefWidth="150.0" promptText="Starts From" />
+                           <DatePicker fx:id="beforeDate" layoutX="163.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="To" />
                            <Button mnemonicParsing="false" onAction="#Reset" text="Reset" />
                         </children>
                      </HBox>

@@ -26,19 +26,24 @@ public class PriceRequestMessage extends Message
         this.requests.add(priceRequest);
     }
 
-    public enum ResponseType
-    {
-        REQUEST_CREATED,
-        REQUESTS_LIST,
-        PRICE_REQUEST_DECIDE,
-        PRICE_REQUEST_MESSAGE_FAILED
-    }
     public enum RequestType
     {
-        CREATE_NEW_PRICE_REQUEST,
-        GET_ALL_PRICE_REQUESTS,
+
+        PRICE_REQUEST_DECIDE,
+        PRICE_REQUEST_MESSAGE_FAILED,
         APPROVE_PRICE_REQUEST,
-        DECLINE_PRICE_REQUEST
+        DECLINE_PRICE_REQUEST,
+        CREATE_NEW_PRICE_REQUEST,
+        GET_ALL_PRICE_REQUESTS
+
+    }
+    public enum ResponseType
+    {
+        MOVIE_PRICE_CHANGED,
+        MOVIE_PRICE_NOT_CHANGED,
+        NEW_REQUEST,
+        ALL_REQUESTS,
+        PRICE_REQUEST_MESSAGE_FAILED
     }
 
 }

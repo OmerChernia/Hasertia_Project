@@ -8,6 +8,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Iterator;
 
 public class MovieInstanceHandler extends MessageHandler
@@ -47,8 +49,41 @@ public class MovieInstanceHandler extends MessageHandler
     }
 
     private void getMovieInstancesBetweenDates() {
+        StringBuilder queryString = new StringBuilder(
+                "FROM MovieInstance WHERE movie.available = :available"
+        );
 
+        // Convert LocalDate to LocalDateTime
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+
+        if (message.beforeDate != null) {
+            startDateTime = message.beforeDate.atStartOfDay(); // Convert to the start of the day
+            queryString.append(" AND time >= :beforeDateTime");
+        }
+
+        if (message.afterDate != null) {
+            endDateTime = message.afterDate.atTime(LocalTime.MAX); // Convert to the end of the day
+            queryString.append(" AND time <= :afterDateTime");
+        }
+
+        Query<MovieInstance> query = session.createQuery(queryString.toString(), MovieInstance.class);
+        query.setParameter("available", Movie.Availability.AVAILABLE);
+
+        if (startDateTime != null) {
+            query.setParameter("beforeDateTime", endDateTime);
+        }
+
+        if (endDateTime != null) {
+            query.setParameter("afterDateTime", startDateTime);
+        }
+
+        message.movies = query.list();
+        message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
+
+
+
 
     private void get_all_movie_instances_by_theater_name() {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location= :theater and movie.available =: available", MovieInstance.class);

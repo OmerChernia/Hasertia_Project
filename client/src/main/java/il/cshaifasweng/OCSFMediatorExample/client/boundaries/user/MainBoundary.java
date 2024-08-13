@@ -73,6 +73,8 @@ public class MainBoundary implements Initializable {
     private Button btnOrders;
 
     @FXML
+    private Button btnPriceChange;
+    @FXML
     private Button btnReports;
 
     @FXML
@@ -243,6 +245,13 @@ public class MainBoundary implements Initializable {
     }
 
     @FXML
+    private void priceChangeWindows(ActionEvent event) {
+        showFXMLWindows(ConstantsPath.PRICE_CHANGE_VIEW);
+        setDisableButtons(event);
+    }
+
+
+    @FXML
     private void addUserWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.ORDERS_VIEW );
         setDisableButtons(event);
@@ -312,14 +321,14 @@ public class MainBoundary implements Initializable {
 
     private void tooltips() {
         Animations.tooltip(btnHome, tooltipHome);
-         Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
+        Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
         Animations.tooltip(btnEditScreenings, tooltipEditScreenings);
         Animations.tooltip(btnLog, tooltipExit);
         Animations.tooltip(btnOrders, tooltipOrders);
         Animations.tooltip(btnComplaints, tooltipComplaints);
         Animations.tooltip(btnReports, tooltipReports);
         Animations.tooltip(btnAbout, tooltipAbout);
-     }
+    }
 
 
 
@@ -443,6 +452,7 @@ public class MainBoundary implements Initializable {
         btnEditScreenings.setVisible(false);
         btnComplaints.setVisible(false);
         btnReports.setVisible(false);
+        btnPriceChange.setVisible(false);
 
 
         // Show common buttons
@@ -455,10 +465,11 @@ public class MainBoundary implements Initializable {
 
     private void updateUserBasedOnRole(String userId ) {
         // Disable all buttons by default
-         btnEditMovieList.setVisible(false);
+        btnEditMovieList.setVisible(false);
         btnEditScreenings.setVisible(false);
         btnComplaints.setVisible(false);
         btnReports.setVisible(false);
+        btnPriceChange.setVisible(false);
 
 
         // Show common buttons
@@ -469,7 +480,7 @@ public class MainBoundary implements Initializable {
         btnME.setVisible(true);
         btnOrders.setVisible(true);
 
-     }
+    }
 
 
     private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role ) {
@@ -479,6 +490,8 @@ public class MainBoundary implements Initializable {
         btnEditScreenings.setVisible(false);
         btnComplaints.setVisible(false);
         btnReports.setVisible(false);
+        btnPriceChange.setVisible(false);
+        btnOrders.setVisible(false);
 
 
         // Show common buttons
@@ -487,7 +500,6 @@ public class MainBoundary implements Initializable {
         btnSettings.setVisible(true);
         btnHome.setVisible(true);
         btnME.setVisible(true);
-        btnOrders.setVisible(true);
 
 
         switch (role) {
@@ -499,9 +511,7 @@ public class MainBoundary implements Initializable {
                 btnComplaints.setVisible(true);
                 break;
             case THEATER_MANAGER:
-                btnComplaints.setVisible(true);
-                btnEditMovieList.setVisible(true);
-                btnEditScreenings.setVisible(true);
+                btnPriceChange.setVisible(true);
                 btnReports.setVisible(true);
             case  COMPANY_MANAGER:
                 btnComplaints.setVisible(true);

@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message.MessageType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class MovieInstanceController {
@@ -77,6 +78,12 @@ public class MovieInstanceController {
     public static void requestMovieInstancesByName(String movieName) {
         // Create a request to get all movie instances by movie name
         MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_NAME, movieName);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
+    public static void requestMovieInstancesBetweenDates(LocalDate before, LocalDate after) {
+        // Create a request to get all movie instances by movie name
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCES_BETWEEN_DATES, before, after);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 }

@@ -42,6 +42,14 @@ public class PriceRequest implements Serializable {
         return newPrice;
     }
 
+    public String getEnglishName() {
+        return movie.getEnglishName();
+    }
+
+    public Movie.StreamingType getStreamingType() {
+        return type;
+    }
+
     public void setNewPrice(int newPrice) {
         this.newPrice = newPrice;
     }

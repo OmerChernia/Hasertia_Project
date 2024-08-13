@@ -10,6 +10,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.HallMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -87,29 +88,31 @@ public class DialogEditScreening implements Initializable {
     private void updateAvailableHours(LocalDate date) {
         cmbHour.getItems().clear();
 
-        // שליחת בקשה ל-HallController כדי להביא את הזמנים הפנויים לתאריך שנבחר
         Hall hall = movieInstance.getHall();
         HallController.requestAvailableTimes(hall, date);
     }
 
     @Subscribe
     public void onHallMessageReceived(HallMessage message) {
-        if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_DATES) {
-            cmbDate.getItems().clear();
-            List<LocalDate> availableDates = message.getAvailableDates();
-            cmbDate.getItems().addAll(availableDates);
+        Platform.runLater(() -> {
+            if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_DATES) {
+                cmbDate.getItems().clear();
+                List<LocalDate> availableDates = message.getAvailableDates();
+                cmbDate.getItems().addAll(availableDates);
 
-            if (!availableDates.isEmpty()) {
-                cmbDate.setValue(availableDates.get(0));  // Set default value to first available date
+                if (!availableDates.isEmpty()) {
+                    cmbDate.setValue(availableDates.get(0));  // Set default value to first available date
+                }
+            } else if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_TIMES) {
+                cmbHour.getItems().clear();
+                List<LocalTime> availableTimes = message.getAvailableTimes();
+                for (LocalTime time : availableTimes) {
+                    cmbHour.getItems().add(time.format(hourFormatter));
+                }
             }
-        } else if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_TIMES) {
-            cmbHour.getItems().clear();
-            List<LocalTime> availableTimes = message.getAvailableTimes();
-            for (LocalTime time : availableTimes) {
-                cmbHour.getItems().add(time.format(hourFormatter));
-            }
-        }
+        });
     }
+
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -122,6 +125,9 @@ public class DialogEditScreening implements Initializable {
     public void setDialog(String operation, MovieInstance movieInstance) {
         this.currentMode = operation;
         this.movieInstance = movieInstance;
+        txtHall.setText(String.valueOf(movieInstance.getHall().getId()) );
+        txtTheater.setText(movieInstance.getHall().getTheater().getLocation());
+        txtMovie.setText(movieInstance.getMovie().getEnglishName());
 
         Hall hall = movieInstance.getHall();
         HallController.requestAvailableDates(hall);  // Request available dates for the selected hall
@@ -143,7 +149,6 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void populateFieldsForEdit(Movie movie, LocalDateTime time) {
-        txtMovie.setText(movie.getEnglishName());
         cmbDate.setValue(time.toLocalDate());
         updateAvailableHours(time.toLocalDate());
         cmbHour.setValue(time.toLocalTime().format(hourFormatter));
@@ -153,7 +158,6 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void populateFieldsForView(Movie movie, LocalDateTime time) {
-        txtMovie.setText(movie.getEnglishName());
         cmbDate.setValue(time.toLocalDate());
         cmbHour.setValue(time.toLocalTime().format(hourFormatter));
 
@@ -177,37 +181,22 @@ public class DialogEditScreening implements Initializable {
         if (!validateInputs()) return;
 
         String movieName = txtMovie.getText();
+
+
         LocalDateTime dateTime = LocalDateTime.of(cmbDate.getValue(), LocalTime.parse(cmbHour.getValue(), hourFormatter));
 
         if ("add".equals(currentMode)) {
-            MovieInstanceController.addMovieInstance(movieMap.get(movieName), dateTime, movieInstance.getHall().getId());
+            MovieInstanceController.addMovieInstance(movieInstance.getId(), dateTime, movieInstance.getHall().getId());
         } else if ("edit".equals(currentMode)) {
-            MovieInstanceController.updateMovieInstance(screeningId, movieMap.get(movieName), dateTime, movieInstance.getHall().getId());
+            MovieInstanceController.updateMovieInstance(screeningId, movieInstance.getId(), dateTime, movieInstance.getHall().getId());
         }
 
         cleanControls();
-        closeDialog();
+
     }
 
-    @Subscribe
-    public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
-        switch (message.requestType) {
-            case UPDATE_MOVIE_INSTANCE:
-                showAlert("You have updated the screening for " + message.movies.get(0).getMovie().getEnglishName() + "!", AlertType.SUCCESS);
-                break;
-            case ADD_MOVIE_INSTANCE:
-                showAlert("You have added a new screening for " + message.movies.get(0).getMovie().getEnglishName() + "!", AlertType.SUCCESS);
-                break;
-            case DELETE_MOVIE_INSTANCE:
-                showAlert("You have removed the screening for " + message.movies.get(0).getMovie().getEnglishName() + "!", AlertType.SUCCESS);
-                break;
-            default:
-                showAlert("Failed to process the screening for " + message.movies.get(0).getMovie().getEnglishName() + ".", AlertType.ERROR);
-                break;
-        }
-    }
 
-    private void showAlert(String messageText, AlertType alertType) {
+    public void showAlert(String messageText, AlertType alertType) {
         AlertsBuilder.create(
                 alertType,
                 null,
@@ -216,6 +205,32 @@ public class DialogEditScreening implements Initializable {
                 messageText
         );
     }
+
+
+
+    @Subscribe
+    public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
+        Platform.runLater(() -> {
+            switch (message.requestType) {
+                case UPDATE_MOVIE_INSTANCE:
+                    showAlert("You have updated the screening for " + movieInstance.getMovie().getEnglishName() + "!", AlertType.SUCCESS);
+                    break;
+                case ADD_MOVIE_INSTANCE:
+                    showAlert("You have added a new screening for " + movieInstance.getMovie().getEnglishName()+ "!", AlertType.SUCCESS);
+                    break;
+                case DELETE_MOVIE_INSTANCE:
+                    showAlert("You have removed the screening for " + movieInstance.getMovie().getEnglishName() + "!", AlertType.SUCCESS);
+                    break;
+                default:
+                    showAlert("Failed to process the screening for " + movieInstance.getMovie().getEnglishName() + ".", AlertType.ERROR);
+                    break;
+            }
+            closeDialog();
+        });
+    }
+
+
+
 
     @FXML
     private void handleClose(ActionEvent event) {

@@ -260,7 +260,7 @@ public class DialogEditMovie implements Initializable {
         String genre = comboGenre.getSelectionModel().getSelectedItem();
         String streamingType = comboType.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();
-        String actors = String.join("", txtActors.getText().trim().split(", "));
+        List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
 
         // Check for changes in details
         boolean detailsChanged = !englishName.equals(movie.getEnglishName()) ||
@@ -284,10 +284,10 @@ public class DialogEditMovie implements Initializable {
 
         // If there are changes, proceed with the update
         if ("add".equals(currentMode)) {
-            MovieController.addMovie(hebrewName, description, producer, englishName, actors, "", Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
+            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "", Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
         } else {
             if (detailsChanged) {
-                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, actors, "", Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration), genre);
+                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors), "", Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration), genre);
             }
 
             // Create a price update request only if prices have changed
@@ -364,47 +364,45 @@ public class DialogEditMovie implements Initializable {
 
     @Subscribe
     public void onMovieMessageReceived(MovieMessage message) {
-        if (message.movies != null && !message.movies.isEmpty()) {
-            Movie movie = message.movies.get(0); // Assuming we're dealing with one movie in the list
 
-            String messageText = "";
-            AlertType alertType = AlertType.SUCCESS;
+        String messageText = "";
+        AlertType alertType = AlertType.SUCCESS;
 
-            switch (message.responseType) {
-                case MOVIE_UPDATED:
-                    messageText = "You have updated " + movie.getEnglishName() + "!";
-                    break;
-                case MOVIE_ADDED:
-                    messageText = "You have added " + movie.getEnglishName() + "!";
-                    break;
-                case MOVIE_DELETED:
-                    messageText = "You have deleted " + movie.getEnglishName() + "!";
-                    break;
-                case MOVIE_NOT_UPDATED:
-                    messageText = "Failed to update " + movie.getEnglishName() + ".";
-                    alertType = AlertType.ERROR;
-                    break;
-                case MOVIE_NOT_ADDED:
-                    messageText = "Failed to add " + movie.getEnglishName() + ".";
-                    alertType = AlertType.ERROR;
-                    break;
-                case MOVIE_NOT_DELETED:
-                    messageText = "Failed to delete " + movie.getEnglishName() + ".";
-                    alertType = AlertType.ERROR;
-                    break;
-                default:
-                    messageText = "An unknown response was received.";
-                    alertType = AlertType.WARNING;
-                    break;
-            }
-
-            AlertsBuilder.create(
-                    alertType,
-                    null,
-                    containerAddProduct,
-                    containerAddProduct,
-                    messageText
-            );
+        switch (message.responseType) {
+            case MOVIE_UPDATED:
+                messageText = "You have updated " + movie.getEnglishName() + "!";
+                break;
+            case MOVIE_ADDED:
+                messageText = "You have added " + movie.getEnglishName() + "!";
+                break;
+            case MOVIE_DELETED:
+                messageText = "You have deleted " + movie.getEnglishName() + "!";
+                break;
+            case MOVIE_NOT_UPDATED:
+                messageText = "Failed to update " + movie.getEnglishName() + ".";
+                alertType = AlertType.ERROR;
+                break;
+            case MOVIE_NOT_ADDED:
+                messageText = "Failed to add " + movie.getEnglishName() + ".";
+                alertType = AlertType.ERROR;
+                break;
+            case MOVIE_NOT_DELETED:
+                messageText = "Failed to delete " + movie.getEnglishName() + ".";
+                alertType = AlertType.ERROR;
+                break;
+            default:
+                messageText = "An unknown response was received.";
+                alertType = AlertType.WARNING;
+                break;
         }
+
+        AlertsBuilder.create(
+                alertType,
+                null,
+                containerAddProduct,
+                containerAddProduct,
+                messageText
+        );
     }
 }
+

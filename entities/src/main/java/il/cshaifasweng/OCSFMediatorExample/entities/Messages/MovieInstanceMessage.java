@@ -69,6 +69,14 @@ public class MovieInstanceMessage extends Message
         this.date = date;
     }
 
+    public MovieInstanceMessage(MessageType messageType, RequestType requestType, LocalDate before, LocalDate after)
+    {
+        super(messageType);
+        this.requestType = requestType;
+        this.beforeDate = before;
+        this.afterDate = after;
+    }
+
 
     public enum ResponseType
     {
