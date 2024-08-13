@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
@@ -21,7 +22,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,18 +79,155 @@ public class ReportsBoundary implements Initializable {
     @FXML
     private ToggleButton toggleComplaintStatusChartType;
 
+    @FXML
+    private ComboBox<Integer> TicketSalesyearComboBox;
+
+    @FXML
+    private ComboBox<String> TicketSalesmonthComboBox;
+
+    @FXML
+    private ComboBox<Integer> PackageSalesyearComboBox;
+
+    @FXML
+    private ComboBox<String> PackageSalesmonthComboBox;
+
+    @FXML
+    private ComboBox<Integer> MultiSalesyearComboBox;
+
+    @FXML
+    private ComboBox<String> MultiSalesmonthComboBox;
+
+    @FXML
+    private ComboBox<Integer> ComplaintsyearComboBox;
+
+    @FXML
+    private ComboBox<String> ComplaintsmonthComboBox;
+
+    private List<Purchase> purchases;
+    private List<Complaint> complaints;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialize ComboBoxes for each tab
+        initializeYearComboBox(TicketSalesyearComboBox);
+        initializeMonthComboBox(TicketSalesmonthComboBox);
+
+        initializeYearComboBox(PackageSalesyearComboBox);
+        initializeMonthComboBox(PackageSalesmonthComboBox);
+
+        initializeYearComboBox(MultiSalesyearComboBox);
+        initializeMonthComboBox(MultiSalesmonthComboBox);
+
+        initializeYearComboBox(ComplaintsyearComboBox);
+        initializeMonthComboBox(ComplaintsmonthComboBox);
+
+        // Add listeners to update the charts when selection changes
+        addComboBoxListeners();
+
         EventBus.getDefault().register(this);
         ReportsPageController.requestAllPurchases();
         ReportsPageController.requestAllComplaints();
+    }
+
+    private void initializeYearComboBox(ComboBox<Integer> yearComboBox) {
+        int currentYear = LocalDate.now().getYear();
+        for (int i = currentYear; i >= currentYear - 10; i--) {
+            yearComboBox.getItems().add(i);
+        }
+        yearComboBox.setValue(currentYear); // Set default value to current year
+    }
+
+    private void initializeMonthComboBox(ComboBox<String> monthComboBox) {
+        for (Month month : Month.values()) {
+            monthComboBox.getItems().add(month.getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+        }
+        monthComboBox.setValue(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH)); // Set default value to current month
+    }
+
+    private void addComboBoxListeners() {
+        TicketSalesyearComboBox.setOnAction(e -> updateFilteredData());
+        TicketSalesmonthComboBox.setOnAction(e -> updateFilteredData());
+
+        PackageSalesyearComboBox.setOnAction(e -> updateFilteredData());
+        PackageSalesmonthComboBox.setOnAction(e -> updateFilteredData());
+
+        MultiSalesyearComboBox.setOnAction(e -> updateFilteredData());
+        MultiSalesmonthComboBox.setOnAction(e -> updateFilteredData());
+
+        ComplaintsyearComboBox.setOnAction(e -> updateFilteredData());
+        ComplaintsmonthComboBox.setOnAction(e -> updateFilteredData());
+    }
+
+    private void updateFilteredData() {
+        if (purchases == null || purchases.isEmpty()) {
+            System.out.println("Purchases list is empty or not initialized.");
+            clearCharts();
+            return;
+        }
+
+        // Ticket Sales
+        int ticketSalesYear = TicketSalesyearComboBox.getValue();
+        int ticketSalesMonth = TicketSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
+
+        List<Purchase> filteredTicketSales = purchases.stream()
+                .filter(purchase -> purchase.getPurchaseDate().getYear() == ticketSalesYear &&
+                        purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth)
+                .collect(Collectors.toList());
+
+        // Package Sales
+        int packageSalesYear = PackageSalesyearComboBox.getValue();
+        int packageSalesMonth = PackageSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
+
+        List<Purchase> filteredPackageSales = purchases.stream()
+                .filter(purchase -> purchase instanceof HomeViewingPackageInstance &&
+                        purchase.getPurchaseDate().getYear() == packageSalesYear &&
+                        purchase.getPurchaseDate().getMonthValue() == packageSalesMonth)
+                .collect(Collectors.toList());
+
+        // Multi-Entry Ticket Sales
+        int multiEntrySalesYear = MultiSalesyearComboBox.getValue();
+        int multiEntrySalesMonth = MultiSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
+
+        List<Purchase> filteredMultiEntrySales = purchases.stream()
+                .filter(purchase -> purchase instanceof MultiEntryTicket &&
+                        purchase.getPurchaseDate().getYear() == multiEntrySalesYear &&
+                        purchase.getPurchaseDate().getMonthValue() == multiEntrySalesMonth)
+                .collect(Collectors.toList());
+
+        // Complaints
+        if (complaints != null) {
+            int complaintsYear = ComplaintsyearComboBox.getValue();
+            int complaintsMonth = ComplaintsmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
+
+            List<Complaint> filteredComplaints = complaints.stream()
+                    .filter(complaint -> complaint.getCreationDate().getYear() == complaintsYear &&
+                            complaint.getCreationDate().getMonthValue() == complaintsMonth)
+                    .collect(Collectors.toList());
+
+            createComplaintReports(filteredComplaints);
+        }
+
+        // Update the reports with the filtered data
+        createSalesReports(filteredTicketSales, filteredPackageSales, filteredMultiEntrySales);
+    }
+
+
+    private void clearCharts() {
+        ticketSalesBarChart.getData().clear();
+        packageSalesBarChart.getData().clear();
+        multiEntryTicketSalesBarChart.getData().clear();
+        complaintStatusBarChart.getData().clear();
     }
 
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {
         Platform.runLater(() -> {
             if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
-                createSalesReports(message.purchases);
+                this.purchases = message.purchases; // Update the purchases list with the data received
+                System.out.println("Received " + purchases.size() + " purchases.");
+
+                // Automatically filter the data based on the currently selected year and month
+                updateFilteredData();
             }
         });
     }
@@ -95,63 +236,71 @@ public class ReportsBoundary implements Initializable {
     public void onComplaintMessageReceived(ComplaintMessage message) {
         Platform.runLater(() -> {
             if (message.responseType == ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST) {
-                createComplaintReports(message.compliants);
+                this.complaints = message.compliants; // Store the complaints data
+                updateFilteredData(); // Update the reports based on the currently selected filters
             }
         });
     }
 
-    private void createSalesReports(List<Purchase> purchases) {
-        // Creating and setting Ticket Sales Report
-        Map<String, Map<String, Integer>> ticketSalesByCinemaAndDay = organizeSalesData(purchases, MovieTicket.class);
-        TicketSalesReportConfiguration ticketSalesConfig = new TicketSalesReportConfiguration(purchases);
-        ticketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("TicketSales", ticketSalesConfig).generateReport()).getData());
-
-        // Creating and setting Package Sales Report
-        Map<String, Map<String, Integer>> packageSalesByCinemaAndDay = organizeSalesData(purchases, HomeViewingPackageInstance.class);
-        TicketSalesReportConfiguration packageSalesConfig = new TicketSalesReportConfiguration(purchases);
-        packageSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("HomeViewSales", packageSalesConfig).generateReport()).getData());
-
-        // Creating and setting Multi-Entry Ticket Sales Report
-        Map<String, Map<String, Integer>> multiEntryTicketSalesByCinemaAndDay = organizeSalesData(purchases, MultiEntryTicket.class);
-        TicketSalesReportConfiguration multiEntryTicketSalesConfig = new TicketSalesReportConfiguration(purchases);
-        multiEntryTicketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("MultiEntrySales", multiEntryTicketSalesConfig).generateReport()).getData());
-
-//        // Optionally, create pie charts based on the same data
-//        setPieChartDataFromNestedMap(ticketSalesPieChart, ticketSalesByCinemaAndDay);
-//        setPieChartDataFromNestedMap(packageSalesPieChart, packageSalesByCinemaAndDay);
-//        setPieChartDataFromNestedMap(multiEntryTicketSalesPieChart, multiEntryTicketSalesByCinemaAndDay);
-    }
-
-    private Map<String, Map<String, Integer>> organizeSalesData(List<Purchase> purchases, Class<? extends Purchase> purchaseType) {
-        Map<String, Map<String, Integer>> salesByCinemaAndDay = new HashMap<>();
-
-        for (Purchase purchase : purchases) {
-            if (purchase instanceof MovieTicket) {
-                MovieTicket temp_movie_ticket = (MovieTicket) purchase;
-                String cinema = temp_movie_ticket.getMovieInstance().getHall().getTheater().getLocation();
-                String day = temp_movie_ticket.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
-                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
-                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
-                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
-            }
-//            else if (purchase instanceof MovieTicket) {
-//                String cinema = purchaseType.cast(purchase).getOwner().getName();
-//                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
-//                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
-//                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
-//                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
-//            }
-            //            else if (purchase instanceof MovieTicket) {
-//                String cinema = purchaseType.cast(purchase).getOwner().getName();
-//                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
-//                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
-//                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
-//                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
-//            }
+    private void createSalesReports(List<Purchase> filteredTicketSales, List<Purchase> filteredPackageSales, List<Purchase> filteredMultiEntrySales) {
+        if (filteredTicketSales.isEmpty()) {
+            System.out.println("No Ticket Sales to display for the selected period.");
+            ticketSalesBarChart.getData().clear();
+        } else {
+            System.out.println("Creating Ticket Sales report with " + filteredTicketSales.size() + " purchases.");
+            TicketSalesReportConfiguration ticketSalesConfig = new TicketSalesReportConfiguration(filteredTicketSales);
+            ticketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("TicketSales", ticketSalesConfig).generateReport()).getData());
         }
 
-        return salesByCinemaAndDay;
+        if (filteredPackageSales.isEmpty()) {
+            System.out.println("No Package Sales to display for the selected period.");
+            packageSalesBarChart.getData().clear();
+        } else {
+            System.out.println("Creating Package Sales report with " + filteredPackageSales.size() + " purchases.");
+            TicketSalesReportConfiguration packageSalesConfig = new TicketSalesReportConfiguration(filteredPackageSales);
+            packageSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("HomeViewSales", packageSalesConfig).generateReport()).getData());
+        }
+
+        if (filteredMultiEntrySales.isEmpty()) {
+            System.out.println("No Multi-Entry Ticket Sales to display for the selected period.");
+            multiEntryTicketSalesBarChart.getData().clear();
+        } else {
+            System.out.println("Creating Multi-Entry Ticket Sales report with " + filteredMultiEntrySales.size() + " purchases.");
+            TicketSalesReportConfiguration multiEntryTicketSalesConfig = new TicketSalesReportConfiguration(filteredMultiEntrySales);
+            multiEntryTicketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("MultiEntrySales", multiEntryTicketSalesConfig).generateReport()).getData());
+        }
     }
+
+//    private Map<String, Map<String, Integer>> organizeSalesData(List<Purchase> purchases, Class<? extends Purchase> purchaseType) {
+//        Map<String, Map<String, Integer>> salesByCinemaAndDay = new HashMap<>();
+//
+////        for (Purchase purchase : purchases) {
+////            if (purchase instanceof MovieTicket) {
+////                MovieTicket temp_movie_ticket = (MovieTicket) purchase;
+////                String cinema = temp_movie_ticket.getMovieInstance().getHall().getTheater().getLocation();
+////                String day = temp_movie_ticket.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
+////                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
+////                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
+////                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
+////            }
+////            else if (purchase instanceof MultiEntryTicket) {
+////                String cinema = purchaseType.cast(purchase).getOwner().getName();
+////                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
+////                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
+////                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
+////                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
+////            }
+////            else if (purchase instanceof HomeViewingPackageInstance) {
+////                String cinema = purchaseType.cast(purchase).getOwner().getName();
+////                String day = purchase.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd"));
+////                salesByCinemaAndDay.putIfAbsent(cinema, new HashMap<>());
+////                Map<String, Integer> salesByDay = salesByCinemaAndDay.get(cinema);
+////                salesByDay.put(day, salesByDay.getOrDefault(day, 0) + 1);
+////            }
+////        }
+//
+//        return salesByCinemaAndDay;
+//    }
 
     private ReportConfiguration createBarChartReportConfig(String title, String xAxisLabel, String yAxisLabel, Map<String, Map<String, Integer>> salesData) {
         return new ReportConfiguration(
@@ -163,19 +312,15 @@ public class ReportsBoundary implements Initializable {
         );
     }
 
-    private void createComplaintReports(List<Complaint> complaints) {
-        Map<String, Integer> complaintsByDay = complaints.stream().collect(
-                Collectors.groupingBy(complaint -> complaint.getCreationDate().format(DateTimeFormatter.ofPattern("dd")), Collectors.summingInt(c -> 1))
-        );
-        System.out.println("Comp MaP" + complaintsByDay);
-
-        // Creating and setting Complaint Status Report
-        ComplaintReportConfiguration complaintStatusConfig = new ComplaintReportConfiguration(complaints);
-
-        complaintStatusBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("Complaint", complaintStatusConfig).generateReport()).getData());
-
-        // Optionally, create histograms or pie charts for complaints
-//        setPieChartData(complaintStatusPieChart, complaintsByDay);
+    private void createComplaintReports(List<Complaint> filteredComplaints) {
+        if (filteredComplaints.isEmpty()) {
+            System.out.println("No Complaints to display for the selected period.");
+            complaintStatusBarChart.getData().clear();
+        } else {
+            System.out.println("Creating Complaint report with " + filteredComplaints.size() + " complaints.");
+            ComplaintReportConfiguration complaintStatusConfig = new ComplaintReportConfiguration(filteredComplaints);
+            complaintStatusBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("Complaint", complaintStatusConfig).generateReport()).getData());
+        }
     }
 
 //    private void setPieChartDataFromNestedMap(PieChart pieChart, Map<String, Map<String, Integer>> salesData) {
