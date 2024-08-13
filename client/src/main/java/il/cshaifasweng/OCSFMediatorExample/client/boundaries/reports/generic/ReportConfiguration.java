@@ -22,11 +22,15 @@ public class ReportConfiguration {
         this.dataValues = dataValues;
     }
 
-
     public ReportConfiguration(String reportTitle, List<Complaint> complaints) {
         this.reportTitle = reportTitle;
         this.complaints = complaints;
     }
+
+//    public ReportConfiguration(String reportTitle, List<Purchase> purchases) {
+//        this.reportTitle = reportTitle;
+//        this.purchases = purchases;
+//    }
 
     // Getters
     public String getReportTitle() {

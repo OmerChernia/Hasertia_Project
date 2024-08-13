@@ -81,7 +81,6 @@ public class HomeBoundary implements Initializable {
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
         SetTheaterCombo();
-
         TheaterController.getAllTheaters();
     }
 
@@ -118,7 +117,22 @@ public class HomeBoundary implements Initializable {
             });
         }
     }
+    public void setDateListeners ()
+    {
+        endDate.valueProperty().addListener((observable, oldDate, newDate) -> {
+            if (newDate != null) {
+                System.out.println("Selected date: " + newDate);
+                //handleDateChange(newDate);
+            }
+        });
 
+        startDate.valueProperty().addListener((observable, oldDate, newDate) -> {
+            if (newDate != null) {
+                System.out.println("Selected date: " + newDate);
+                //handleDateChange(newDate);
+            }
+        });
+    }
     public void setItems(List<Movie> movies) throws IOException {
         this.items = movies;
         Platform.runLater(() -> {

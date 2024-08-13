@@ -41,7 +41,13 @@ public class MovieInstanceHandler extends MessageHandler
             case GET_ALL_MOVIE_INSTANCES_BY_NAME -> get_all_movie_instances_by_name();
             case GET_MOVIE_INSTANCE_AFTER_SELECTION -> get_movie_instance_after_selection();
             case GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME -> get_all_movie_instances_by_theater_name();
+            case GET_MOVIE_INSTANCES_BETWEEN_DATES -> getMovieInstancesBetweenDates();
+
         }
+    }
+
+    private void getMovieInstancesBetweenDates() {
+
     }
 
     private void get_all_movie_instances_by_theater_name() {

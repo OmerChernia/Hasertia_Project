@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="stckPriceChange" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.theaterManager.PriceChangeBoundary">
+    <children>
+        <AnchorPane fx:id="rootPriceChange" prefHeight="565.0" prefWidth="930.0">
+            <TableView fx:id="tblPriceRequest" layoutX="26.0" layoutY="73.0" prefHeight="482.0" prefWidth="864.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="73.0">
+                <columns>
+                    <TableColumn fx:id="colId" maxWidth="1500.0" prefWidth="70.0" text="Id" />
+                    <TableColumn fx:id="colMovieName" prefWidth="97.0" text="Movie Name" />
+                    <TableColumn fx:id="colStreamingType" prefWidth="97.0" text="Streaming Type" />
+                    <TableColumn fx:id="colStatus" prefWidth="123.0" text="Status" />
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
+            </TableView>
+        </AnchorPane>
+    </children>
+</StackPane>
