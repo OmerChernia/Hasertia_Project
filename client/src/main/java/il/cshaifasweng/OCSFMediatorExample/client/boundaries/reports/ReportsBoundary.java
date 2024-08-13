@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
@@ -160,7 +161,6 @@ public class ReportsBoundary implements Initializable {
 
     private void updateFilteredData() {
         if (purchases == null || purchases.isEmpty()) {
-            System.out.println("Purchases list is empty or not initialized.");
             clearCharts();
             return;
         }
@@ -224,8 +224,6 @@ public class ReportsBoundary implements Initializable {
         Platform.runLater(() -> {
             if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
                 this.purchases = message.purchases; // Update the purchases list with the data received
-                System.out.println("Received " + purchases.size() + " purchases.");
-
                 // Automatically filter the data based on the currently selected year and month
                 updateFilteredData();
             }
@@ -244,28 +242,22 @@ public class ReportsBoundary implements Initializable {
 
     private void createSalesReports(List<Purchase> filteredTicketSales, List<Purchase> filteredPackageSales, List<Purchase> filteredMultiEntrySales) {
         if (filteredTicketSales.isEmpty()) {
-            System.out.println("No Ticket Sales to display for the selected period.");
             ticketSalesBarChart.getData().clear();
         } else {
-            System.out.println("Creating Ticket Sales report with " + filteredTicketSales.size() + " purchases.");
             TicketSalesReportConfiguration ticketSalesConfig = new TicketSalesReportConfiguration(filteredTicketSales);
             ticketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("TicketSales", ticketSalesConfig).generateReport()).getData());
         }
 
         if (filteredPackageSales.isEmpty()) {
-            System.out.println("No Package Sales to display for the selected period.");
             packageSalesBarChart.getData().clear();
         } else {
-            System.out.println("Creating Package Sales report with " + filteredPackageSales.size() + " purchases.");
             TicketSalesReportConfiguration packageSalesConfig = new TicketSalesReportConfiguration(filteredPackageSales);
             packageSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("HomeViewSales", packageSalesConfig).generateReport()).getData());
         }
 
         if (filteredMultiEntrySales.isEmpty()) {
-            System.out.println("No Multi-Entry Ticket Sales to display for the selected period.");
             multiEntryTicketSalesBarChart.getData().clear();
         } else {
-            System.out.println("Creating Multi-Entry Ticket Sales report with " + filteredMultiEntrySales.size() + " purchases.");
             TicketSalesReportConfiguration multiEntryTicketSalesConfig = new TicketSalesReportConfiguration(filteredMultiEntrySales);
             multiEntryTicketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("MultiEntrySales", multiEntryTicketSalesConfig).generateReport()).getData());
         }
@@ -316,11 +308,54 @@ public class ReportsBoundary implements Initializable {
         if (filteredComplaints.isEmpty()) {
             System.out.println("No Complaints to display for the selected period.");
             complaintStatusBarChart.getData().clear();
-        } else {
-            System.out.println("Creating Complaint report with " + filteredComplaints.size() + " complaints.");
-            ComplaintReportConfiguration complaintStatusConfig = new ComplaintReportConfiguration(filteredComplaints);
-            complaintStatusBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("Complaint", complaintStatusConfig).generateReport()).getData());
+            return;
         }
+
+        // Map to hold complaints data by cinema or category
+        Map<String, Integer> complaintsByCinema = new HashMap<>();
+
+        for (Complaint complaint : filteredComplaints) {
+            String category;
+
+            if (complaint.getPurchase() != null) {
+                Purchase purchase = complaint.getPurchase();
+                if (purchase instanceof MovieTicket) {
+                    MovieTicket movieTicket = (MovieTicket) purchase;
+                    category = movieTicket.getMovieInstance().getHall().getTheater().getLocation();
+                } else if (purchase instanceof HomeViewingPackageInstance) {
+                    category = "Home Viewing";
+                } else if (purchase instanceof MultiEntryTicket) {
+                    category = "Multi-Entry";
+                } else {
+                    category = "Other Related Complaints";
+                }
+            } else {
+                category = "No Cinema"; // Complaints not related to any cinema
+            }
+
+            complaintsByCinema.put(category, complaintsByCinema.getOrDefault(category, 0) + 1);
+        }
+
+        // Create the bar chart series for complaints
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Complaints");
+
+        for (Map.Entry<String, Integer> entry : complaintsByCinema.entrySet()) {
+            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
+        }
+
+        complaintStatusBarChart.getData().clear();  // Clear existing data
+        complaintStatusBarChart.getData().add(series);  // Add new data
+    }
+
+    private Purchase getPurchaseById(int purchaseId) {
+        // Implement this method to retrieve the Purchase object from your data source
+        // using the purchase_id from the Complaint object.
+        // This could involve querying a database or searching through the list of purchases.
+        return purchases.stream()
+                .filter(purchase -> purchase.getId() == purchaseId)
+                .findFirst()
+                .orElse(null);
     }
 
 //    private void setPieChartDataFromNestedMap(PieChart pieChart, Map<String, Map<String, Integer>> salesData) {
