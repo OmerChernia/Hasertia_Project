@@ -58,4 +58,9 @@ public class MovieController {
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.GET_MOVIES_FILTERED_BY_SCREENING_TYPE_AND_GENRE, screening, Genre);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
+    public static void getUpcomingMovies()
+    {
+        MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.GET_UPCOMING_MOVIES);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
 }

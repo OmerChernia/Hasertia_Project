@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
@@ -44,8 +45,10 @@ public class MovieInstanceHandler extends MessageHandler
     }
 
     private void get_all_movie_instances_by_theater_name() {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location= :theater", MovieInstance.class);
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location= :theater and movie.available =: available", MovieInstance.class);
         query.setParameter("theater",message.key);
+        query.setParameter("available",Movie.Availability.AVAILABLE);
+
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
@@ -72,9 +75,10 @@ public class MovieInstanceHandler extends MessageHandler
 
     private void get_all_movie_instances_by_movie_id_and_theater_name()
     {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and hall.theater.location= :theater", MovieInstance.class);
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and hall.theater.location= :theater and movie.available =:available", MovieInstance.class);
         query.setParameter("movie",message.id);
         query.setParameter("theater",message.theaterName);
+        query.setParameter("available", Movie.Availability.AVAILABLE);
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }

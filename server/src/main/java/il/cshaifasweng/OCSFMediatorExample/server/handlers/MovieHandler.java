@@ -30,6 +30,31 @@ public class MovieHandler extends MessageHandler
             case GET_MOVIES_PRESENTED_IN_THEATER -> getMoviesPresentedInTheater();
             case GET_MOVIES_PRESENTED_IN_HOME_VIEWING -> getMoviesPresentedInHomeViewing();
             case GET_MOVIES_FILTERED_BY_SCREENING_TYPE_AND_GENRE -> getMoviesFilteredByScreeningTypeAndGenre();
+            case GET_UPCOMING_MOVIES -> getUpcomingMovies();
+        }
+    }
+
+    private void getUpcomingMovies() {
+        try {
+            // Create an HQL query to fetch movies with streamingType THEATER_VIEWING or BOTH
+            Query<Movie> query = session.createQuery(
+                    "FROM Movie WHERE  available = :available",
+                    Movie.class
+            );
+            query.setParameter("available", Movie.Availability.COMING_SOON);
+
+            // Execute the query and get the result list
+            message.movies = query.getResultList();
+
+            // Set the response type
+            message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
         }
     }
 

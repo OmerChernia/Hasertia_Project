@@ -215,8 +215,10 @@ public class HomeBoundary implements Initializable {
             TheaterFilters.setDisable(false);
         else
             TheaterFilters.setDisable(true);
-
-        FilterByScreeningTypeAndGenre(event);
+        if(currentScreeningFilter.equals("View Upcoming Movies"))
+            MovieController.getUpcomingMovies();
+        else
+             FilterByScreeningTypeAndGenre(event);
     }
 
     @FXML
