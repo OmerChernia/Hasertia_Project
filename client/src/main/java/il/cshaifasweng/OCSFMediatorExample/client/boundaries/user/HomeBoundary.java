@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MovieSmallBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
@@ -21,7 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -81,7 +80,7 @@ public class HomeBoundary implements Initializable {
         EventBus.getDefault().register(this);
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
-
+        SetTheaterCombo();
 
         TheaterController.getAllTheaters();
     }
@@ -241,10 +240,24 @@ public class HomeBoundary implements Initializable {
     }
 
     @FXML
-    void FilterByTheater(ActionEvent event) {
+    void SetTheaterCombo() {
+        cmbTheater.setCellFactory(comboBox -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String location, boolean empty) {
+                super.updateItem(location, empty);
+                setText(empty || location == null ? null : location);
+            }
+        });
+
+        cmbTheater.setButtonCell(new ListCell<String>() {
+            @Override
+            protected void updateItem(String location, boolean empty) {
+                super.updateItem(location, empty);
+                setText(empty || location == null ? null : location);
+            }
+        });
         cmbTheater.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if (newValue != null) {
-                System.out.println("blblblblblb");
                 MovieInstanceController.requestMovieInstancesByTheaterName(newValue);
             }
         });
@@ -253,6 +266,9 @@ public class HomeBoundary implements Initializable {
     @FXML
     void Reset(ActionEvent event) {
         MovieController.getMoviesPresentedInTheater();
+        cmbTheater.setValue(null);
+        startDate.setValue(null);
+        endDate.setValue(null);
     }
     private void populateTheatersComboBox(List<Theater> theatersList) {
         Set<String> theaterLocations = theatersList.stream()
