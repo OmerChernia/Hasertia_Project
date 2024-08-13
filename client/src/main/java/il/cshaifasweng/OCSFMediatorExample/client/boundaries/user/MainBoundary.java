@@ -38,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import il.cshaifasweng.OCSFMediatorExample.server.handlers.EmployeeHandler;
 
 public class MainBoundary implements Initializable {
 
@@ -503,16 +504,17 @@ public class MainBoundary implements Initializable {
                 btnEditMovieList.setVisible(true);
                 btnEditScreenings.setVisible(true);
                 btnReports.setVisible(true);
+                System.out.println("THEATER_MANAGER" + EmployeeHandler.getEmployeeById());
             case  COMPANY_MANAGER:
                 btnComplaints.setVisible(true);
                 btnEditMovieList.setVisible(true);
                 btnEditScreenings.setVisible(true);
                 btnReports.setVisible(true);
                 break;
-
         }
-
     }
+
+
 
 
     @FXML
