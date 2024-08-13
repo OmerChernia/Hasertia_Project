@@ -209,6 +209,16 @@ public class ReportsBoundary implements Initializable {
 
         // Update the reports with the filtered data
         createSalesReports(filteredTicketSales, filteredPackageSales, filteredMultiEntrySales);
+
+        // Apply layout updates to ensure proper rendering
+        ticketSalesBarChart.applyCss();
+        ticketSalesBarChart.layout();
+        packageSalesBarChart.applyCss();
+        packageSalesBarChart.layout();
+        multiEntryTicketSalesBarChart.applyCss();
+        multiEntryTicketSalesBarChart.layout();
+        complaintStatusBarChart.applyCss();
+        complaintStatusBarChart.layout();
     }
 
 
@@ -346,6 +356,7 @@ public class ReportsBoundary implements Initializable {
 
         complaintStatusBarChart.getData().clear();  // Clear existing data
         complaintStatusBarChart.getData().add(series);  // Add new data
+
     }
 
     private Purchase getPurchaseById(int purchaseId) {

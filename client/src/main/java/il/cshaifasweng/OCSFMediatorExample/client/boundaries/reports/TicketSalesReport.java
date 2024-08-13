@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.Report;
 import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieTicket;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
