@@ -53,36 +53,33 @@ public class MovieInstanceHandler extends MessageHandler
                 "FROM MovieInstance WHERE movie.available = :available"
         );
 
-        // Convert LocalDate to LocalDateTime
         LocalDateTime startDateTime = null;
         LocalDateTime endDateTime = null;
 
-        if (message.beforeDate != null) {
-            startDateTime = message.beforeDate.atStartOfDay(); // Convert to the start of the day
-            queryString.append(" AND time >= :beforeDateTime");
+        if (message.afterDate != null) {
+            startDateTime = message.afterDate.atStartOfDay(); // Start of the afterDate
+            queryString.append(" AND time >= :startDateTime");
         }
 
-        if (message.afterDate != null) {
-            endDateTime = message.afterDate.atTime(LocalTime.MAX); // Convert to the end of the day
-            queryString.append(" AND time <= :afterDateTime");
+        if (message.beforeDate != null) {
+            endDateTime = message.beforeDate.plusDays(1).atStartOfDay(); // Start of the day after beforeDate
+            queryString.append(" AND time < :endDateTime");
         }
 
         Query<MovieInstance> query = session.createQuery(queryString.toString(), MovieInstance.class);
         query.setParameter("available", Movie.Availability.AVAILABLE);
 
         if (startDateTime != null) {
-            query.setParameter("beforeDateTime", endDateTime);
+            query.setParameter("startDateTime",startDateTime );
         }
 
         if (endDateTime != null) {
-            query.setParameter("afterDateTime", startDateTime);
+            query.setParameter("endDateTime",endDateTime );
         }
 
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
-
-
 
 
     private void get_all_movie_instances_by_theater_name() {
