@@ -1,8 +1,13 @@
 
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import com.sun.javafx.scene.control.Properties;
 import org.hibernate.cfg.Configuration;
+
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -157,9 +162,12 @@ public class MainBoundary implements Initializable {
     @FXML
     private ImageView image;
 
-    private String loggedInUserId;
+    private static String loggedInUserId;
     private Employee.EmployeeType loggedInEmploeeId;
 
+    public static String getLoggedInUserId() {
+        return loggedInUserId;
+    }
 
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
@@ -530,28 +538,36 @@ public class MainBoundary implements Initializable {
 
     }
 
-    public static String getTheaterLocationByManagerId(int id) {
-        // Create a SessionFactory and a Session
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+    public static String getTheaterLocationByManagerId(int idNumber) {
+        Configuration configuration = new Configuration();
+
+        try {
+            java.util.Properties properties = new java.util.Properties();
+            InputStream inputStream = MainBoundary.class.getClassLoader().getResourceAsStream("hibernate.properties");
+            if (inputStream != null) {
+                properties.load(inputStream); // Corrected line
+                configuration.addProperties(properties);
+                inputStream.close();
+            } else {
+                throw new FileNotFoundException("Property file 'hibernate.properties' not found in the classpath");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.openSession();
         String location = null;
 
         try {
-            // Start a transaction
             session.beginTransaction();
-
-            // Create and execute the HQL query
-            String hql = "SELECT t.location FROM TheaterManager tm JOIN tm.theater t WHERE tm.id = :id";
-            Query query = session.createQuery(hql);
-            query.setParameter("id", id);
-            List result = query.list();
-
-            // If the TheaterManager entity exists, get the first (and only) result
-            if (!result.isEmpty()) {
-                location = (String) result.get(0);
-            }
-
-            // Commit the transaction
+            String sql = "SELECT t.location FROM theater_managers tm " +
+                    "JOIN employees e ON tm.id = e.id " +
+                    "JOIN theaters t ON tm.theater = t.id " +
+                    "WHERE e.id_number = :idNumber";
+            Query query = session.createSQLQuery(sql);
+            query.setParameter("idNumber", idNumber);
+            location = (String) query.uniqueResult();
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -559,8 +575,8 @@ public class MainBoundary implements Initializable {
                 session.getTransaction().rollback();
             }
         } finally {
-            // Close the Session
             session.close();
+            sessionFactory.close();
         }
 
         return location;
