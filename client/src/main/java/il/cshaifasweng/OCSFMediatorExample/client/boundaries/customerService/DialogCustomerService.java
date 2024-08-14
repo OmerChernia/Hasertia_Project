@@ -228,7 +228,7 @@ public class DialogCustomerService {
     }
 
     private boolean isSeatTaken(Seat seat) {
-        return !seat.getMovies().isEmpty();
+        return !seat.getMoviesIds().isEmpty();
     }
 
     private void handleSeatSelection(Seat seat) {

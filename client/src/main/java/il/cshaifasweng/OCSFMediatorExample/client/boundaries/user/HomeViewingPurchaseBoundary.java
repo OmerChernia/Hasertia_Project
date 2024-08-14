@@ -346,23 +346,6 @@ public class HomeViewingPurchaseBoundary {
         // Set movie instance details here
     }
 
-    // Relevant requests for additional actions
-    @FXML
-    public void reserveSeat() {
-        if (currentMovieInstance != null) {
-            SeatController.reserveSeat(currentMovieInstance);
-            System.out.println("Seat reservation requested.");
-        }
-    }
-
-    @FXML
-    public void cancelSeatReservation() {
-        if (currentMovieInstance != null) {
-            SeatController.cancelSeatReservation(currentMovieInstance);
-            System.out.println("Seat reservation cancellation requested.");
-        }
-    }
-
     @FXML
     public void loadTheaters() {
         TheaterController.getAllTheaters();

@@ -162,7 +162,7 @@ public class GenerateDB {
         List<Movie> movies = session.createQuery("from Movie", Movie.class).list();
         if (movies.isEmpty()) {
             movies = List.of(
-                    new Movie( "קפטן אמריקה", "Steve Rogers, a rejected military soldier transforms into Captain America after taking a dose of a 'Super-Soldier serum'.", "Marvel Studios", "Captain America", "Chris Evans_Sebastian Stan_Hayley Atwell", "captainamerica.jpg", Movie.StreamingType.HOME_VIEWING, 124, 50, 60, "action",Movie.Availability.COMING_SOON),
+                    new Movie( "קפטן אמריקה", "Steve Rogers, a rejected military soldier transforms into Captain America after taking a dose of a 'Super-Soldier serum'.", "Marvel Studios", "Captain America", "Chris Evans_Sebastian Stan_Hayley Atwell", "captainamerica.jpg", Movie.StreamingType.THEATER_VIEWING, 124, 50, 60, "action",Movie.Availability.AVAILABLE),
                     new Movie( "צ'לנג'רס", "A drama centered around three friends, their ambitions, and the competitive tennis circuit.", "MGM", "Challengers", "Zendaya_Mike Faist_Josh O'Connor", "challengers.jpg", Movie.StreamingType.THEATER_VIEWING, 120, 50, 60, "drama",Movie.Availability.AVAILABLE),
                     new Movie( "דדפול וולברין", "Deadpool teams up with Wolverine for a new mission that involves time travel.", "Marvel Studios", "Deadpool & Wolverine", "Ryan Reynolds_Hugh Jackman_Morena Baccarin", "deadpool-wolverine.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "action",Movie.Availability.AVAILABLE),
                     new Movie( "גלדיאטור 2", "The story continues with Maximus's son seeking revenge against the Roman Empire.", "Universal Pictures", "Gladiator II", "Russell Crowe_Joaquin Phoenix_Connie Nielsen", "gladiator_ii.jpg", Movie.StreamingType.BOTH, 155, 50, 60, "action",Movie.Availability.AVAILABLE),
@@ -181,7 +181,7 @@ public class GenerateDB {
                     new Movie( "סיפור צעצוע 4", "The adventures of Woody, Buzz Lightyear, and the gang as they encounter new toys.", "Pixar Animation Studios", "Toy Story 4", "Tom Hanks_Tim Allen_Annie Potts", "toy_story4.jpg", Movie.StreamingType.BOTH, 100, 50, 60, "animation",Movie.Availability.AVAILABLE),
                     new Movie( "וונדר וומן ", "Diana, princess of the Amazons, discovers her full powers and true destiny as Wonder Woman.", "Warner Bros.", "Wonder Woman", "Gal Gadot_Chris Pine_Robin Wright", "wonder_woman2017.jpg", Movie.StreamingType.BOTH, 141, 50, 60, "action",Movie.Availability.AVAILABLE),
                     new Movie( "המיניונים: עלייתו של גרו", "The untold story of one twelve-year-old's dream to become the world's greatest supervillain.", "Universal Pictures", "Minions: The Rise of Gru", "Steve Carell_Pierre Coffin_Taraji P. Henson", "minions_the_rise_of_gru.jpg", Movie.StreamingType.BOTH, 90, 50, 60, "animation",Movie.Availability.AVAILABLE),
-                    new Movie( "הג'וקר 2", "A dark origin story about the Joker's transformation from struggling comedian to a criminal mastermind.", "Warner Bros.", "The Joker 2", "Joaquin Phoenix_Robert De Niro_Lady Gaga", "the_joker2024.jpg", Movie.StreamingType.BOTH, 122, 50, 60, "drama",Movie.Availability.AVAILABLE)
+                    new Movie( "הג'וקר 2", "A dark origin story about the Joker's transformation from struggling comedian to a criminal mastermind.", "Warner Bros.", "The Joker 2", "Joaquin Phoenix_Robert De Niro_Lady Gaga", "the_joker2024.jpg", Movie.StreamingType.BOTH, 122, 50, 60, "drama",Movie.Availability.COMING_SOON)
             );
 
             Transaction transaction = session.beginTransaction();
@@ -357,7 +357,7 @@ public class GenerateDB {
 
                 // Add the movie instance to the taken list of the seat
                 Seat seat = movieTicket.getSeat();
-                seat.addMovieInstance(movieTicket.getMovieInstance());
+                seat.addMovieInstanceId(movieTicket.getMovieInstance());
                 session.update(seat);
 
 

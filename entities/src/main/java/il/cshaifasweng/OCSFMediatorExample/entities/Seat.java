@@ -21,13 +21,10 @@ public class Seat implements Serializable {
     @ManyToOne
     Hall hall;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "seats_movie_instances",
-            joinColumns = @JoinColumn(name = "seat_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_instance_id")
-    )
-    List<MovieInstance> taken;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "taken_seats", joinColumns = @JoinColumn(name = "entity_id"))
+    @Column(name = "seat_number")
+    List<Integer> taken;
 
     public Seat() {
     }
@@ -64,13 +61,18 @@ public class Seat implements Serializable {
         this.col = col;
     }
 
-    public List<MovieInstance> getMovies() {
+    public List<Integer> getMoviesIds() {
         return taken;
     }
 
-    public void addMovieInstance(MovieInstance movie) {
-        this.taken.add(movie);
+    public void addMovieInstanceId(MovieInstance movie) {
+        this.taken.add(movie.getId());
     }
+    public void deleteMovieInstance(MovieInstance movieInstance) {
+        Integer movieInstanceId = movieInstance.getId();
+        this.taken.remove(movieInstanceId);
+    }
+
 
     public void setHall(Hall hall) {
         this.hall = hall;

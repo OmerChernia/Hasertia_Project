@@ -1,43 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="800" prefWidth="1000" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MEPurchaseBoundary">
-   <!-- Top section with tabs and package details -->
+<BorderPane prefHeight="800" prefWidth="1000" stylesheets="@../../css/me-purchase.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MEPurchaseBoundary">
    <top>
-      <HBox alignment="CENTER" spacing="10" style="-fx-background-color: #161438; -fx-padding: 10px;">
-         <Label fx:id="step1Label" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="1" />
-         <Label fx:id="step1Text" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="Select Package" />
-         <Label fx:id="step2Label" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="2" />
-         <Label fx:id="step2Text" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="Payment Details" />
-         <Button onAction="#closeApplication" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 20 0 20;" text="X" visible="false" />
+      <HBox alignment="CENTER" spacing="20" styleClass="step-indicator">
+         <Label fx:id="step1Label" styleClass="step-label" text="1" />
+         <Label fx:id="step1Text" styleClass="step-text" text="Select Package" />
+         <Label fx:id="step2Label" styleClass="step-label" text="2" />
+         <Label fx:id="step2Text" styleClass="step-text" text="Payment Details" />
+         <Button onAction="#closeApplication" styleClass="close-button" text="X" visible="false" />
       </HBox>
    </top>
 
-   <!-- Center section with stack pane for different steps -->
    <center>
-      <StackPane fx:id="stackPane">
-         <!-- Step 1: Package Selection -->
-         <VBox fx:id="packageSelectionPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px; -fx-background-color: #cae8fb;">
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #e72241;" text="Select Package" />
-            <GridPane alignment="CENTER" hgap="10" style="-fx-background-radius: 10;" vgap="10">
-               <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10px; -fx-border-radius: 10px;">
-                  <Label style="-fx-font-size: 18px;" text="Subscription card (20 movie tickets)" />
-                  <GridPane hgap="10" vgap="10">
-                     <Label text="Type" GridPane.columnIndex="0" />
-                     <Label text="VIP" GridPane.columnIndex="1" />
+      <ScrollPane fitToHeight="true" fitToWidth="true">
+         <StackPane fx:id="stackPane">
+            <!-- Package Selection Pane -->
+            <VBox fx:id="packageSelectionPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
+               <Label styleClass="section-title" text="Select Package" />
+               <VBox alignment="CENTER" spacing="20" styleClass="package-container" maxWidth="420">
+                  <Label styleClass="package-title" text="Subscription card (20 movie tickets)" />
+                  <GridPane hgap="15" styleClass="package-details" vgap="10">
+                     <Label text="Type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                     <Label styleClass="highlight-text" text="VIP" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                      <Label text="Price" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                     <Label text="₪290.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <Label styleClass="highlight-text" text="₪290.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
+               </VBox>
+               <Button onAction="#goToPaymentDetails" styleClass="button-primary" text="Next" />
+            </VBox>
+
+            <!-- Payment Details Pane -->
+            <VBox fx:id="paymentDetailsPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
+               <Label styleClass="section-title" text="Payment Details" />
+               <Label fx:id="timerLabel" styleClass="timer-label" text="10:00" visible="false" />
+               <GridPane alignment="CENTER" hgap="15" styleClass="form-grid" vgap="15">
+                  <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <TextField fx:id="firstNameTF" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <TextField fx:id="lastNameTF" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label text="ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <TextField fx:id="idNumberTF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Confirm ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <TextField fx:id="confirmIdNumberTF" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <TextField fx:id="emailTF" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Label text="Confirm Email:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  <TextField fx:id="confirmEmailTF" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+               </GridPane>
+               <HBox alignment="CENTER" spacing="20">
+                  <Button onAction="#goToPackageSelection" styleClass="button-secondary" text="Back" />
+                  <Button onAction="#showCreditCardFields" styleClass="button-primary" text="Pay with Credit Card" />
+               </HBox>
+
+               <VBox fx:id="creditCardPane" alignment="CENTER" spacing="20" styleClass="sub-pane" visible="false">
+                  <Label styleClass="sub-title" text="Credit Card Details" />
+                  <GridPane alignment="CENTER" hgap="15" styleClass="form-grid" vgap="15">
+                     <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                     <TextField fx:id="cardNumberField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                     <Label text="Expiration Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                     <TextField fx:id="expirationDateField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <Label text="CVV:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                     <TextField fx:id="cvvField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      <columnConstraints>
                         <ColumnConstraints />
                         <ColumnConstraints />
@@ -48,91 +95,22 @@
                         <RowConstraints />
                      </rowConstraints>
                   </GridPane>
+                  <HBox alignment="CENTER" spacing="20">
+                     <Button onAction="#cancelPayment" styleClass="button-secondary" text="Cancel" />
+                     <Button onAction="#submitPayment" styleClass="button-primary" text="Submit" />
+                  </HBox>
                </VBox>
-               <columnConstraints>
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-               </rowConstraints>
-            </GridPane>
-            <Button onAction="#goToPaymentDetails" style="-fx-background-color: #f3bc00;" text="Next" />
-         </VBox>
-
-         <!-- Step 2: Payment Details -->
-         <VBox fx:id="paymentDetailsPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px; -fx-background-color: #cae8fb;">
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #e72241;" text="Payment Details" />
-            <Label fx:id="timerLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: black;" text="10:00" visible="false" />
-            <GridPane alignment="CENTER" hgap="10" vgap="10">
-               <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-               <TextField fx:id="firstNameTF" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-               <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-               <TextField fx:id="lastNameTF" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               <Label text="ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-               <TextField fx:id="idNumberTF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-               <Label text="Confirm ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-               <TextField fx:id="confirmIdNumberTF" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-               <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-               <TextField fx:id="emailTF" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-               <Label text="Confirm Email:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-               <TextField fx:id="confirmEmailTF" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
-            </GridPane>
-            <Button onAction="#showCreditCardFields" style="-fx-background-color: #f3bc00;" text="Pay with Credit Card" />
-            <Button onAction="#goToPackageSelection" style="-fx-background-color: gray;" text="Back" />
-
-            <!-- Credit Card Fields -->
-            <VBox fx:id="creditCardPane" alignment="CENTER" prefHeight="235.0" prefWidth="960.0" spacing="10.0" style="-fx-background-color: transparent;" visible="false">
-               <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Credit Card Details" />
-               <GridPane alignment="CENTER" hgap="10" vgap="10">
-                  <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                  <TextField fx:id="cardNumberField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                  <Label text="Expiration Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                  <TextField fx:id="expirationDateField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label text="CVV:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                  <TextField fx:id="cvvField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <columnConstraints>
-                     <ColumnConstraints />
-                     <ColumnConstraints />
-                  </columnConstraints>
-                  <rowConstraints>
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                  </rowConstraints>
-               </GridPane>
-               <Button onAction="#submitPayment" style="-fx-background-color: #f3bc00;" text="Submit" />
-               <Button onAction="#cancelPayment" style="-fx-background-color: gray;" text="Cancel" />
             </VBox>
-         </VBox>
 
-         <!-- Step 3: Package Confirmation -->
-         <VBox fx:id="packageConfirmationPane" alignment="TOP_CENTER" spacing="20" style="-fx-padding: 20px; -fx-background-color: #cae8fb;">
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: green;" text="Package Confirmation" />
-            <ImageView fx:id="confirmationPackageImage" fitHeight="100" fitWidth="100" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="confirmationDetails" style="-fx-font-size: 18px;" />
-            <Label fx:id="pricePaidLabel" style="-fx-font-size: 18px;" />
-            <Button onAction="#closeApplication" style="-fx-background-color: gray;" text="Close" />
-         </VBox>
-      </StackPane>
+            <!-- Package Confirmation Pane -->
+            <VBox fx:id="packageConfirmationPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
+               <Label styleClass="section-title, confirmation-title" text="Package Confirmation" />
+               <ImageView fx:id="confirmationPackageImage" fitHeight="150" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
+               <Label fx:id="confirmationDetails" styleClass="confirmation-details" />
+               <Label fx:id="pricePaidLabel" styleClass="confirmation-price" />
+               <Button onAction="#closeApplication" styleClass="button-primary" text="Close" />
+            </VBox>
+         </StackPane>
+      </ScrollPane>
    </center>
-
-   <!-- Bottom section with navigation buttons -->
-   <bottom>
-      <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10px; -fx-background-color: #cae8fb;">
-         <Button onAction="#goToNextStep" style="-fx-background-color: #f3bc00;" text="Next" visible="false" />
-         <Button onAction="#goToPreviousStep" style="-fx-background-color: gray;" text="Back" visible="false" />
-      </HBox>
-   </bottom>
 </BorderPane>

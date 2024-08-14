@@ -2,7 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.entities.Seat;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Query;
@@ -25,8 +27,8 @@ public class SeatHandler extends MessageHandler
     {
         switch (message.requestType)
         {
-            case SEAT_RESERVED -> seat_reserved();
-            case SEAT_CANCELATION -> seat_cancellation();
+            case SEATS_RESERVED -> seat_reserved();
+            case SEATS_CANCELATION -> seat_cancellation();
             case GET_ALL_SEAT_BY_HALL -> get_all_seat_by_hall();
         }
     }
@@ -38,36 +40,56 @@ public class SeatHandler extends MessageHandler
 
     private void seat_reserved() {
         try {
-            MovieInstance movieInstance = message.movieInstance;
-            Seat seat = (Seat) session.get(Seat.class, message.movieInstance.getId());
-            if (seat != null) {
-                seat.addMovieInstance(movieInstance);
-                session.saveOrUpdate(seat);
-                session.flush();
-                message.responseType = SeatMessage.ResponseType.SEAT_WAS_RESERVED;
-            } else {
-                message.responseType = SeatMessage.ResponseType.SEAT_IS_NOW_AVAILABLE;
+            for(Seat seat : message.hallSeats)
+            {
+                if (seat.getMoviesIds().contains(message.movieInstance.getId()))
+                {
+                    message.responseType = SeatMessage.ResponseType.SEATS_IS_ALREADY_TAKEN;
+                    break;
+                }
             }
-        } catch (Exception e) {
+            if(message.responseType != SeatMessage.ResponseType.SEATS_IS_ALREADY_TAKEN)
+            {
+                for(Seat seat : message.hallSeats)
+                {
+                    Query<Seat> query = session.createQuery("FROM Seat WHERE id = :id", Seat.class);
+                    query.setParameter("id", seat.getId());
+
+                    Seat found = query.uniqueResult();
+                    found.addMovieInstanceId(message.movieInstance);
+
+                    session.update(found);
+                    session.flush();
+                }
+                message.responseType = SeatMessage.ResponseType.SEATS_WAS_RESERVED;
+            }
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
-            message.responseType = SeatMessage.ResponseType.SEAT_IS_NOW_AVAILABLE;
+            message.responseType = SeatMessage.ResponseType.MESSAGE_FAIL;
         }
     }
     private void seat_cancellation() {
         try {
-            MovieInstance movieInstance = message.movieInstance;
-            Seat seat = (Seat) session.get(Seat.class, message.movieInstance.getId());
-            if (seat != null) {
-                seat.getMovies().remove(movieInstance);
-                session.saveOrUpdate(seat);
+            for (Seat seat : message.hallSeats) {
+                // Fetch the seat from the database
+                Query<Seat> query = session.createQuery("FROM Seat WHERE id = :id", Seat.class);
+                query.setParameter("id", seat.getId());
+                Seat found = query.uniqueResult();
+
+                // Remove the movie instance from the seat
+                found.deleteMovieInstance(message.movieInstance);
+
+                // Update the seat in the database
+                session.update(found);
                 session.flush();
-                message.responseType = SeatMessage.ResponseType.SEAT_IS_NOW_AVAILABLE;
-            } else {
-                message.responseType = SeatMessage.ResponseType.SEAT_WAS_RESERVED;
             }
+
+            message.responseType = SeatMessage.ResponseType.SEATS_HAS_BEEN_CANCELED;
         } catch (Exception e) {
             e.printStackTrace();
-            message.responseType = SeatMessage.ResponseType.SEAT_WAS_RESERVED;
+            message.responseType = SeatMessage.ResponseType.MESSAGE_FAIL;
         }
     }
 
@@ -80,7 +102,7 @@ public class SeatHandler extends MessageHandler
             message.responseType = SeatMessage.ResponseType.SEATS_LIST;
         } catch (Exception e) {
             e.printStackTrace();
-            message.responseType = SeatMessage.ResponseType.SEAT_IS_NOW_AVAILABLE;
+            message.responseType = SeatMessage.ResponseType.MESSAGE_FAIL;
         }
     }
 }

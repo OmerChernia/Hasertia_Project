@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 
 public class PurchaseController
 {
-    public static void AddMovieTicket(int customerId, LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat)
+    public static void AddMovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat)
     {
         MovieTicket newTicket = new MovieTicket(purchaseDate, owner, purchaseValidation, movieInstance, seat);
-        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,customerId);
+        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

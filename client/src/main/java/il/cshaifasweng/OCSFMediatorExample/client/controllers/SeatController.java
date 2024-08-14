@@ -4,6 +4,9 @@ import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message.MessageType;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.Seat;
+
+import java.util.List;
 
 public class SeatController {
 
@@ -12,13 +15,13 @@ public class SeatController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-     public static void reserveSeat(MovieInstance movieInstance) {
-        SeatMessage requestMessage = new SeatMessage(movieInstance, MessageType.REQUEST, SeatMessage.RequestType.SEAT_RESERVED);
+     public static void reserveSeats(List<Seat> seats, MovieInstance movieInstance) {
+        SeatMessage requestMessage = new SeatMessage(movieInstance, MessageType.REQUEST, SeatMessage.RequestType.SEATS_RESERVED , seats);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-     public static void cancelSeatReservation(MovieInstance movieInstance) {
-        SeatMessage requestMessage = new SeatMessage(movieInstance, MessageType.REQUEST, SeatMessage.RequestType.SEAT_CANCELATION);
+     public static void cancelSeatReservation(List<Seat> seats, MovieInstance movieInstance) {
+        SeatMessage requestMessage = new SeatMessage(movieInstance, MessageType.REQUEST, SeatMessage.RequestType.SEATS_CANCELATION, seats);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 }

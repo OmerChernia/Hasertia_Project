@@ -4,22 +4,25 @@ import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Seat;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SeatMessage extends Message
 {
-    public ArrayList<Seat> hallSeats;
+    public List<Seat> hallSeats;
     public RequestType requestType;
     public ResponseType responseType;
     public MovieInstance movieInstance;
     public int hallId;
 
-    public SeatMessage(MovieInstance movieInstance, MessageType messageType, RequestType requestType)
+    public SeatMessage(MovieInstance movieInstance, MessageType messageType, RequestType requestType, List<Seat> seats)
     {
-        //SEAT_RESERVED , SEAT_CANCELATION
+        //SEATS_RESERVED , SEATS_CANCELATION
 
         super(messageType);
         this.movieInstance = movieInstance;
         this.requestType = requestType;
+        hallSeats = seats;
+
     }
     public SeatMessage(int hall,MessageType messageType, RequestType requestType)
     {
@@ -31,14 +34,16 @@ public class SeatMessage extends Message
 
     public enum ResponseType
     {
-        SEAT_WAS_RESERVED,
-        SEAT_IS_NOW_AVAILABLE,
-        SEATS_LIST
+        SEATS_WAS_RESERVED,
+        SEATS_HAS_BEEN_CANCELED,
+        SEATS_LIST,
+        SEATS_IS_ALREADY_TAKEN,
+        MESSAGE_FAIL
     }
     public enum RequestType
     {
-        SEAT_RESERVED,
-        SEAT_CANCELATION,
+        SEATS_RESERVED,
+        SEATS_CANCELATION,
         GET_ALL_SEAT_BY_HALL
     }
 }
