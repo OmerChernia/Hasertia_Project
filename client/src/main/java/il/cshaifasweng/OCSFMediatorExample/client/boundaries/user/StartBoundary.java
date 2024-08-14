@@ -7,11 +7,13 @@ import java.util.ResourceBundle;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ConnectionMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -48,11 +50,9 @@ public class StartBoundary {
     private Button btnAutoConnect;
 
 
-
     @FXML
     private void connect() {
         try {
-
             SimpleClient.port = Integer.parseInt(portField.getText());
             SimpleClient.host = ipField.getText();
 
@@ -62,7 +62,7 @@ public class StartBoundary {
             messageField.setText("Client created, host: " + SimpleClient.host + ", port: " + SimpleClient.port);
             NotificationsBuilder.create(NotificationType.SUCCESS, "Welcome to the system!");
 
-            SimpleClient.getClient().sendRequest(new ConnectionMessage(Message.MessageType.REQUEST,ConnectionMessage.RequestType.FIRST_CONNECTION));
+            SimpleClient.getClient().sendRequest(new ConnectionMessage(Message.MessageType.REQUEST, ConnectionMessage.RequestType.FIRST_CONNECTION));
 
             scene = new Scene(loadFXML("MainView"));
             Stage stage = new Stage(); // Create a new Stage instance
@@ -71,6 +71,18 @@ public class StartBoundary {
 
             stage.setScene(scene);
             stage.show();
+
+            // Add this to handle closing the application when the stage is closed
+            stage.setOnCloseRequest(event -> {
+                MainBoundary.sendLogoutRequest();
+                Platform.exit();
+                System.exit(0);
+            });
+
+            // Close the current window
+            Stage currentStage = (Stage) connectButton.getScene().getWindow();
+            currentStage.close();
+
             ipField.clear();
             portField.clear();
         } catch (NumberFormatException e) {
@@ -83,8 +95,8 @@ public class StartBoundary {
             messageField.setText("Failed to connect: " + e.getMessage());
             System.err.println("Failed to connect: " + e.getMessage());
         }
-
     }
+
 
     @FXML
     public void AutoConnect(ActionEvent actionEvent) {

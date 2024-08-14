@@ -283,7 +283,7 @@ public class MovieSmallBoundary {
 
     private void populateDatesComboBox(List<MovieInstance> movieInstances) {
         Set<String> dates = movieInstances.stream()
-                .map(instance -> instance.getTime().toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .map(instance -> instance.getTime().minusHours(3).toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toSet());
 
         cmbDate.getItems().setAll(dates);

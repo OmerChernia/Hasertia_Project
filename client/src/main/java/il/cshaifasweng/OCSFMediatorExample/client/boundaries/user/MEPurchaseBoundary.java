@@ -225,11 +225,7 @@ public class MEPurchaseBoundary {
         });
     }
 
-    @FXML
-    private void closeApplication()
-    {
-        EventBus.getDefault().unregister(this);
-    }
+
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }

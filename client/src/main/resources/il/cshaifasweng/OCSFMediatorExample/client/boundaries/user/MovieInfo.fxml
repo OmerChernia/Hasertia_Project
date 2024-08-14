@@ -17,7 +17,6 @@
          <children>
             <Pane prefHeight="460.0" prefWidth="798.0" style="-fx-background-color: #daeefc;">
                <children>
-                  <Button fx:id="btnGenre" layoutX="48.0" layoutY="89.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="124.0" text="Button" />
                   <Pane fx:id="paneContainer" layoutX="486.0" layoutY="45.0" prefHeight="365.0" prefWidth="268.0">
                      <cursor>
                         <Cursor fx:constant="HAND" />

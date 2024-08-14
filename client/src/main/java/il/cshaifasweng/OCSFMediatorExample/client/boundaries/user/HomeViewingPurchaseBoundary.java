@@ -312,8 +312,8 @@ public class HomeViewingPurchaseBoundary {
             System.out.println("Package purchased successfully.");
             stopTimer();
             confirmationDetails.setText(
-                    "Movie: " + movieTitle.getText() + "\n" +
-                            "Available on " + homeViewingPackageInstance.getViewingDate() + "\n" +
+                    "Movie: " + movieTitle.getText() + ", " +
+                            "Available on " + homeViewingPackageInstance.getViewingDate() + ", " +
                             "Price Paid: ₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice()
             ) ;
 
@@ -325,10 +325,9 @@ public class HomeViewingPurchaseBoundary {
     }
 
     @FXML
-    private void closeApplication() {
+    private void cleanup() {
         EventBus.getDefault().unregister(this);
-        Stage stage = (Stage) stackPane.getScene().getWindow();
-        stage.close();
+
     }
 
     public void setCurrentMovie(Movie movie) {

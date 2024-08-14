@@ -280,8 +280,8 @@ public class GenerateDB {
             }
 
             // Set the time to include only up to minutes, with seconds and nanoseconds set to 0
-            LocalDateTime startDate = LocalDateTime.of(2024, 8, 18, 12, 0).plusHours(3);
-
+            LocalDateTime startDate = LocalDateTime.of(2024, 8, 18, 12, 0);
+            //.plusHours(3)
             movieInstances = List.of(
                     new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0)),
                     new MovieInstance(movies.get(1), startDate.plusDays(1).plusHours(2), halls.get(1)),
@@ -337,9 +337,12 @@ public class GenerateDB {
             for (int i = 0; i < 150; i++) {
                 RegisteredUser user = users.get(i % users.size());
 
+                // Generate a different date and time for each purchase
+                LocalDateTime purchaseTime = LocalDateTime.of(2024, 6 + (i % 3), 1 + (i % 30), 0, 0);
+
                 if (i < 40) {
                     HomeViewingPackageInstance homePackage = new HomeViewingPackageInstance(
-                            LocalDateTime.now(),
+                            purchaseTime,
                             user,
                             "validation" + i,
                             movies.get(i % movies.size()),
@@ -348,14 +351,14 @@ public class GenerateDB {
                     session.save(homePackage);
                 } else if (i < 60) {
                     MultiEntryTicket multiEntryTicket = new MultiEntryTicket(
-                            LocalDateTime.now(),
+                            purchaseTime,
                             user,
                             "validation" + i
                     );
                     session.save(multiEntryTicket);
                 } else {
                     MovieTicket movieTicket = new MovieTicket(
-                            LocalDateTime.now(),
+                            purchaseTime,
                             user,
                             "validation" + i,
                             movieInstances.get(i % movieInstances.size()),
@@ -395,18 +398,29 @@ public class GenerateDB {
             return;
         }
 
-        List<Purchase> purchases = session.createQuery("from Purchase", Purchase.class).list();
-        if (purchases.isEmpty()) {
-            System.out.println("No purchases found.");
+        List<MovieTicket> movieTickets = session.createQuery("from MovieTicket", MovieTicket.class).list();
+        List<HomeViewingPackageInstance> homePackages = session.createQuery("from HomeViewingPackageInstance", HomeViewingPackageInstance.class).list();
+        List<MultiEntryTicket> multiEntryTickets = session.createQuery("from MultiEntryTicket", MultiEntryTicket.class).list();
+
+        if (movieTickets.isEmpty() || homePackages.isEmpty() || multiEntryTickets.isEmpty()) {
+            System.out.println("No movie tickets, home viewing packages, or multi-entry tickets found.");
             return;
         }
 
         Transaction transaction = session.beginTransaction();
 
         try {
-            for (int i = 0; i < 50; i++) { // Increase the limit here
-                Purchase purchase = purchases.get(i % purchases.size());
-                RegisteredUser user = purchase.getOwner();  // Get the user who made the purchase
+            for (int i = 0; i < 30; i++) { // Increase the limit here
+                RegisteredUser user = users.get(i % users.size());
+                Purchase purchase;
+
+                if (i < 10) {
+                    purchase = movieTickets.get(i);
+                } else if (i < 20) {
+                    purchase = homePackages.get(i - 10);
+                } else {
+                    purchase = multiEntryTickets.get(i - 20);
+                }
 
                 Complaint complaint = new Complaint(
                         "Complaint info " + i,
@@ -421,7 +435,7 @@ public class GenerateDB {
             }
 
             transaction.commit();
-            System.out.println("50 complaints have been created and associated with registered users and purchases.");
+            System.out.println("30 complaints have been created and associated with registered users and purchases.");
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -430,7 +444,6 @@ public class GenerateDB {
             e.printStackTrace();
         }
     }
-
 
 
 }

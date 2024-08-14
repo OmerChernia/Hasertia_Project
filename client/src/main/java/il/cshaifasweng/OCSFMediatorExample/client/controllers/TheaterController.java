@@ -17,4 +17,10 @@ public class TheaterController {
         TheaterMessage requestMessage = new TheaterMessage(Message.MessageType.REQUEST,theaterId, TheaterMessage.RequestType.GET_ALL_THEATERS);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
+
+    public static void getTheaterNameByTheaterManagerID (String managerID)
+    {
+        TheaterMessage requestMessage = new TheaterMessage(Message.MessageType.REQUEST,managerID, TheaterMessage.RequestType.GET_THEATER_BY_MANAGER_ID);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
 }

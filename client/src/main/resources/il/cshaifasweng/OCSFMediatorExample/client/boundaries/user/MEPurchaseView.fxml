@@ -11,8 +11,7 @@
          <Label fx:id="step1Text" styleClass="step-text" text="Select Package" />
          <Label fx:id="step2Label" styleClass="step-label" text="2" />
          <Label fx:id="step2Text" styleClass="step-text" text="Payment Details" />
-         <Button onAction="#closeApplication" styleClass="close-button" text="X" visible="false" />
-      </HBox>
+       </HBox>
    </top>
 
    <center>

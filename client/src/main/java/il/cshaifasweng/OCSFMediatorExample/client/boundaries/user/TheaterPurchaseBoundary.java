@@ -220,7 +220,7 @@ public class TheaterPurchaseBoundary {
                 selectedSeats.add(seat);
                 numberOfTickets--;
                 seatButton.setStyle("-fx-background-color: #e72241;");
-                resetTimer(); // איפוס הסטופר בבחירת כיסא אחר
+                resetTimer();
             } else
                 NotificationsBuilder.create(NotificationType.ERROR, "You can't select more seats!.");
         }
@@ -490,14 +490,8 @@ public class TheaterPurchaseBoundary {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);
 
-        EventBus.getDefault().unregister(this);
     }
 
-    @FXML
-    private void closeApplication() {
-        Stage stage = (Stage) stackPane.getScene().getWindow();
-        stage.close();
-    }
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);

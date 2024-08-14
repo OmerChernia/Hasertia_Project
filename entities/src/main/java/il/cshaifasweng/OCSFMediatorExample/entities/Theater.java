@@ -2,11 +2,12 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "theaters")
-public class Theater implements Serializable {
+public class Theater extends ArrayList<Theater> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

@@ -11,6 +11,8 @@ import java.lang.reflect.InvocationTargetException;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
@@ -153,8 +155,8 @@ public class MainBoundary implements Initializable {
     @FXML
     private ImageView image;
 
-    private String loggedInUserId;
-    private Employee.EmployeeType loggedInEmploeeId;
+    private static String loggedInUserId;
+    private static Employee.EmployeeType loggedInEmploeeId;
 
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -187,83 +189,64 @@ public class MainBoundary implements Initializable {
         txtPassword.clear();
     }
 
-    @FXML
-    private void setDisableButtons(ActionEvent event) {
-        setDisableButtons(event, btnHome);
-        setDisableButtons(event, btnComplaints);
 
-        setDisableButtons(event, btnAbout);
-//        setDisableButtons(event, btnSettings);
-//        setDisableButtons(event, btnExit);
-    }
 
     public void homeWindowsInitialize() {
-        btnHome.setDisable(true);
-        showFXMLWindows(ConstantsPath.HOME_VIEW);
+         showFXMLWindows(ConstantsPath.HOME_VIEW);
     }
 
     @FXML
     private void homeWindows(ActionEvent event) {
-        btnHome.setDisable(true);
-        showFXMLWindows(ConstantsPath.HOME_VIEW );
-        setDisableButtons(event);
-    }
+         showFXMLWindows(ConstantsPath.HOME_VIEW );
+     }
 
     @FXML
     private void EditMovieScreeningsWindows(ActionEvent event) {
+
         showFXMLWindows(ConstantsPath.CONTENT_SCREENINGS_VIEW );
-        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void CustomerServiceWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.CUSTOMER_SERVICE_VIEW );
-        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void settingsWindows(ActionEvent event) {
         showFXMLWindows( ConstantsPath.COMPLAINT_VIEW );
-//        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void statisticsWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.COMPANY_MANAGER_VIEW );
-        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void aboutWindows(ActionEvent event) {
         showFXMLWindows( ConstantsPath.ABOUT_VIEW  ) ;
-        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void productsWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.CONTENT_MOVIES_VIEW );
-        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void priceChangeWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.PRICE_CHANGE_VIEW);
-        setDisableButtons(event);
-    }
+     }
 
 
     @FXML
     private void addUserWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.ORDERS_VIEW );
-        setDisableButtons(event);
-    }
+     }
 
     // choose package btn
     @FXML
     private void MEWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.ME_PURCHASE_VIEW);
-        setDisableButtons(event);
-    }
+     }
 
     @FXML
     private void closeLoginDialog() {
@@ -369,7 +352,6 @@ public class MainBoundary implements Initializable {
             Logger.getLogger(MainBoundary.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
     public Button getBtnStatistics() {
         return btnReports;
@@ -553,15 +535,17 @@ public class MainBoundary implements Initializable {
                 resetButtons();
                 clearTextFields();
                 closeLoginDialog();
+                homeWindowsInitialize();
                 AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
-            }, "Cancel",null);
+            }, null,null);
         } else {
             loginWindow();
         }
     }
 
 
-    private void sendLogoutRequest() {
+
+    public static void sendLogoutRequest() {
         if (loggedInUserId != null )
         {
             SimpleClient.user = ""; // Save the logged-in user ID

@@ -138,7 +138,7 @@ public class OrdersBoundary implements Initializable {
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {
         Platform.runLater(() -> {
-            if (message.requestType == PurchaseMessage.RequestType.GET_ALL_PURCHASES) {
+            if (message.requestType == PurchaseMessage.RequestType.GET_PURCHASES_BY_CUSTOMER_ID) {
                 listOrders.setAll(message.purchases);
                 tblOrders.setItems(listOrders);
             }

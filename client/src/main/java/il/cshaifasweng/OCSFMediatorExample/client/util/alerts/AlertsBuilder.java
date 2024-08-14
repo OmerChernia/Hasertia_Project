@@ -145,9 +145,9 @@ public class AlertsBuilder {
 
             case INFO:
                 title = "Information";
-                buttonStyle = "alert-info-button";
-                titleStyle = "alert-info-title";
-                bodyStyle = "alert-info-body";
+                buttonStyle = "alert-information-button";
+                titleStyle = "alert-information-title";
+                bodyStyle = "alert-information-body";
                 break;
         }
     }
