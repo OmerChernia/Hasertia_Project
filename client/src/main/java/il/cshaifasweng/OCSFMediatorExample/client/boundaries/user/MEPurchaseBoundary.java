@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
@@ -7,6 +8,9 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.Notificatio
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -17,6 +21,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,6 +32,9 @@ import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 public class MEPurchaseBoundary {
+
+    @FXML
+    private BorderPane ME_pane;
 
     @FXML
     private StackPane stackPane;
@@ -113,6 +121,9 @@ public class MEPurchaseBoundary {
     private ComboBox<Integer>quantityCB;
     private int quantity;
 
+    private RegisteredUser user=null;
+    private MultiEntryTicket ticket;
+
 
     // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -121,9 +132,21 @@ public class MEPurchaseBoundary {
     public void initialize() {
         EventBus.getDefault().register(this);
 
+        Platform.runLater(() -> {
+                    Stage stage = (Stage) ME_pane.getScene().getWindow();
+                    stage.setOnHiding(event -> {
+                        System.out.println("CLOSEEE");
+                        EventBus.getDefault().unregister(this);
+                    });
+                });
+
+
         stackPane.getChildren().clear();
         stackPane.getChildren().add(packageSelectionPane);
         highlightStep(1);
+
+        if(!SimpleClient.user.isEmpty())
+            RegisteredUserController.getUserByID(SimpleClient.user);
     }
 
     private void highlightStep(int step) {
@@ -149,8 +172,16 @@ public class MEPurchaseBoundary {
         //quantity = (int)quantityCB.getValue();
         stackPane.getChildren().clear();
         initializePaymentDetails();
-        stackPane.getChildren().add(paymentDetailsPane);
         highlightStep(2);
+
+        if(user == null)
+            stackPane.getChildren().add(paymentDetailsPane);
+        else
+        {
+            stackPane.getChildren().add(creditCardPane);
+            creditCardPane.setVisible(true);
+        }
+
     }
 
     @FXML
@@ -167,25 +198,26 @@ public class MEPurchaseBoundary {
         showConfirmation();
     }
 
-    private String formatTime(int seconds) {
-        int minutes = seconds / 60;
-        int remainingSeconds = seconds % 60;
-        return String.format("%02d:%02d", minutes, remainingSeconds);
-    }
 
     @FXML
     private void showCreditCardFields()
     {
-        // if details are valid show the credit card pane
-        if(checkDetails())
+        if (checkDetails())
             creditCardPane.setVisible(true);
     }
 
     @FXML
     private void submitPayment() {
+
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
-        RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+
+        if(user == null)
+            RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+        else
+        {
+            RegisteredUserController.addNewUser(user.getId_number(),"","","");
+        }
     }
 
     @FXML
@@ -194,7 +226,13 @@ public class MEPurchaseBoundary {
         cardNumberField.clear();
         expirationDateField.clear();
         cvvField.clear();
-        creditCardPane.setVisible(false);
+
+        if(user == null) {
+            // Hide the credit card fields
+            creditCardPane.setVisible(false);
+        }
+        else
+            goToPackageSelection();
     }
 
     @FXML
@@ -213,19 +251,24 @@ public class MEPurchaseBoundary {
 
     private void showConfirmation() {
         Platform.runLater(() -> {
-
-            confirmationDetails.setText(
-                    "Package: " + "20 tickets" + "\n" +
-                            "Price Paid: 290₪"
-            );
+            String text =  "Package: " + "20 tickets" + "\n" +
+                    "Price Paid: 290₪";
+            confirmationDetails.setText(text);
             confirmationPackageImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE + "logo.png")));
             stackPane.getChildren().clear();
             stackPane.getChildren().add(packageConfirmationPane);
+            EmailSender.sendEmail(ticket.getOwner().getEmail(), "New Multi-Entry Ticket Purchase From Hasertia", text);
+            EmailSender.sendEmail("hasertiaproject@gmail.com", "New Multi-Entry Ticket Purchase From Hasertia", text);
             EventBus.getDefault().unregister(this);
         });
     }
 
+    @FXML
+    private void closeApplication()
+    {
 
+        //EventBus.getDefault().unregister(this);
+    }
     public void cleanup() {
         EventBus.getDefault().unregister(this);
     }
@@ -234,8 +277,14 @@ public class MEPurchaseBoundary {
     @Subscribe
     public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
     {
-        String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-        PurchaseController.AddMultiEntryTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation);
+        if(message.requestType == RegisteredUserMessage.RequestType.GET_USER_BY_ID)
+        {
+            user = message.registeredUser;
+        }
+        else {
+            String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+            PurchaseController.AddMultiEntryTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation);
+        }
     }
 
     @Subscribe
@@ -243,6 +292,7 @@ public class MEPurchaseBoundary {
     {
         if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED)
         {
+            ticket= (MultiEntryTicket) message.purchases.get(0);
             showConfirmation();
         }
     }

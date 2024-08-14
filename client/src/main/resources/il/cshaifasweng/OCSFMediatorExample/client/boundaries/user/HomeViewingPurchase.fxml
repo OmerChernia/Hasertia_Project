@@ -62,7 +62,6 @@
                 <!-- Payment Details Pane -->
                 <VBox fx:id="paymentDetailsPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
                     <Label styleClass="section-title" text="Payment Details" />
-                    <Label fx:id="timerLabel" styleClass="timer-label" text="10:00" />
                     <GridPane alignment="CENTER" hgap="15" vgap="15">
                         <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                         <TextField fx:id="firstNameTF" GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -125,7 +124,8 @@
                     <ImageView fx:id="confirmationMovieImage" fitHeight="150" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
                     <Label fx:id="confirmationDetails" styleClass="confirmation-details" />
                     <Label fx:id="pricePaidLabel" styleClass="confirmation-price" />
-                 </VBox>
+                    <Button onAction="#closeApplication" styleClass="button-primary" text="Close" />
+                </VBox>
             </StackPane>
         </ScrollPane>
     </center>

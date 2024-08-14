@@ -98,8 +98,14 @@
 			<artifactId>AnimateFX</artifactId>
 			<version>1.2.0</version>
 		</dependency>
+        <dependency>
+            <groupId>il.cshaifasweng.OCSFMediatorExample</groupId>
+            <artifactId>server</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>

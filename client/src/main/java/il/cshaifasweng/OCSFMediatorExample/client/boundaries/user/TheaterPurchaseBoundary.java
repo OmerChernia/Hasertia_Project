@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
@@ -8,13 +9,14 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -31,7 +33,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.regex.Pattern;
 
 public class TheaterPurchaseBoundary {
@@ -158,12 +159,20 @@ public class TheaterPurchaseBoundary {
 
     private int numberOfTickets;
 
+    private RegisteredUser user=null;
+
     @FXML
-    public void initialize() {
-        EventBus.getDefault().register(this);
+    public void initialize()
+    {
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
+
+        if(!SimpleClient.user.isEmpty())
+            RegisteredUserController.getUserByID(SimpleClient.user);
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
         ticketsSpinner.setValueFactory(valueFactory); // הגדרת טווח לבחירת מספר כרטיסים
@@ -220,20 +229,13 @@ public class TheaterPurchaseBoundary {
                 selectedSeats.add(seat);
                 numberOfTickets--;
                 seatButton.setStyle("-fx-background-color: #e72241;");
-                resetTimer();
-            } else
+            }
+            else
                 NotificationsBuilder.create(NotificationType.ERROR, "You can't select more seats!.");
         }
 
     }
 
-
-    private void resetTimer() {
-        if (timer != null) {
-            timer.stop();
-        }
-        startTimer();
-    }
 
     @FXML
     private void goToTicketSelection() {
@@ -246,7 +248,7 @@ public class TheaterPurchaseBoundary {
 
     private void initializeSeatSelection()
     {
-        timer.stop();
+        stopTimer();
         updateSeats();
         selectedSeats.clear();
     }
@@ -281,16 +283,19 @@ public class TheaterPurchaseBoundary {
             System.out.println(message.responseType);
 
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_IS_ALREADY_TAKEN)) {
-                System.out.println("enter here SEATS_IS_ALREADY_TAKEN");
                 NotificationsBuilder.create(NotificationType.ERROR, "Somebody ordered those tickets now, try again.");
                 initializeSeatSelection();
             }
 
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_WAS_RESERVED)) {
-                System.out.println("enter here SEATS_WAS_RESERVED");
                 stackPane.getChildren().clear();
-                stackPane.getChildren().add(paymentDetailsPane);
                 highlightStep(3);
+                startTimer();  //start the timer
+
+                if(user != null)
+                    showCreditCardFields();
+                else
+                    stackPane.getChildren().add(paymentDetailsPane);
             }
 
             if(message.responseType.equals(SeatMessage.ResponseType.SEATS_HAS_BEEN_CANCELED))
@@ -298,6 +303,7 @@ public class TheaterPurchaseBoundary {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(seatSelectionPane);
                 highlightStep(2);
+                stopTimer();  //stop the timer
             }
         });
     }
@@ -307,7 +313,6 @@ public class TheaterPurchaseBoundary {
     {
         if (stackPane.getChildren().contains(paymentDetailsPane))
         {
-            System.out.println(currentMovieInstance.getId());
             SeatController.cancelSeatReservation(selectedSeats, currentMovieInstance);
         }
         else
@@ -319,45 +324,14 @@ public class TheaterPurchaseBoundary {
         }
     }
 
-    @FXML
-    private void goToNextStep() {
-        if (stackPane.getChildren().contains(seatSelectionPane)) {
-            goToPaymentDetails();
-        } else if (stackPane.getChildren().contains(ticketSelectionPane)) {
-            goToSeatSelection();
-        }
-    }
 
-    @FXML
-    private void goToPreviousStep() {
-        if (stackPane.getChildren().contains(paymentDetailsPane)) {
-            goToSeatSelection();
-        } else if (stackPane.getChildren().contains(seatSelectionPane)) {
-            goToTicketSelection();
-        }
-    }
-/*
-    @FXML
-    private void purchaseTicket() {
-            if (selectedSeat != null) {
-                int ticketCount = ticketsSpinner.getValue();
-                String purchaseValidation = generatePurchaseValidation();
-                RegisteredUser loggedInUser = getLoggedInUser();
-                PurchaseController.AddMovieTicket(loggedInUser.getId(), LocalDateTime.now(), loggedInUser, purchaseValidation, currentMovieInstance, selectedSeat);
-                // יש לשנות את הבקשה כדי לטפל ברכישת מספר כרטיסים
-            } else {
-                System.out.println("Please select a seat.");
-            }
-
-    }
-*/
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {
+        System.out.println(message.responseType);
+
         Platform.runLater(() -> {
             if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED) {
                 System.out.println("Ticket purchased successfully!");
-                stopTimer();
-                showConfirmation();
             } else {
                 System.out.println("Failed to purchase ticket.");
             }
@@ -367,13 +341,20 @@ public class TheaterPurchaseBoundary {
     @Subscribe
     public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
     {
-        Platform.runLater(() -> {
-            String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-            for (Seat seat : selectedSeats) {
-                PurchaseController.AddMovieTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovieInstance, seat);
-            }
-            showConfirmation();
-        });
+        if(message.requestType == RegisteredUserMessage.RequestType.GET_USER_BY_ID)
+        {
+            user = message.registeredUser;
+        }
+        else {
+            Platform.runLater(() -> {
+                String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+                for (Seat seat : selectedSeats) {
+                    PurchaseController.AddMovieTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovieInstance, seat);
+                }
+                stopTimer();
+                showConfirmation();
+            });
+        }
     }
 
     private void startTimer() {
@@ -390,6 +371,7 @@ public class TheaterPurchaseBoundary {
 
             if (timeRemaining <= 0) {
                 timer.stop();
+                NotificationsBuilder.create(NotificationType.ERROR, "Timer has passed!, seats canceled, order again.");
                 System.out.println("Time is up! Please select a seat again.");
                 goToSeatSelection();
             }
@@ -413,23 +395,39 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void submitPayment() {
-        // יש לממש את הלוגיקה של תשלום
+
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
-        RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+        stopTimer(); // stop the time
+
+        if(user == null)
+            RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+        else
+        {
+            RegisteredUserController.addNewUser(user.getId_number(),"","","");
+        }
     }
 
     @FXML
     private void showCreditCardFields()
     {
-        if(checkDetails())
+        if(user != null)
+        {
+            stackPane.getChildren().add(creditCardPane);
+            creditCardPane.setVisible(true);
+        }
+        else if (checkDetails())
             creditCardPane.setVisible(true);
     }
 
 
     @FXML
     private void cancelPayment() {
-        creditCardPane.setVisible(false);
+        if(user == null)
+            creditCardPane.setVisible(false);
+        {
+            SeatController.cancelSeatReservation(selectedSeats, currentMovieInstance);
+        }
     }
 
     private void highlightStep(int step) {
@@ -484,14 +482,20 @@ public class TheaterPurchaseBoundary {
                         "Hall: " + currentMovieInstance.getHall().getId() + "\n" +
                         "Theater: " + currentMovieInstance.getHall().getTheater().getLocation() + "\n" +
                         seats_info +
-                        "Price Paid: ₪" + ticketPrice*selectedSeats.size()
+                        "Price Paid: ₪" + currentMovieInstance.getMovie().getTheaterPrice() *selectedSeats.size()
         );
         confirmationMovieImage.setImage(movieImage.getImage());
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);
 
+        EventBus.getDefault().unregister(this);
     }
 
+    @FXML
+    private void closeApplication() {
+        Stage stage = (Stage) stackPane.getScene().getWindow();
+        stage.close();
+    }
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);
@@ -500,7 +504,6 @@ public class TheaterPurchaseBoundary {
     // a method that checks if the details that the user given is valid , returns true if the details are valid
     private boolean checkDetails()
     {
-
         if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
                 || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
         {

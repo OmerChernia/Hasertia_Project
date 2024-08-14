@@ -13,6 +13,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -73,9 +74,6 @@ public class HomeViewingPurchaseBoundary {
     private Label movieLocation;
 
     @FXML
-    private Label timerLabel;
-
-    @FXML
     private TextField cardNumberField;
 
     @FXML
@@ -129,17 +127,17 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private TextField confirmIdNumberTF;
+    //end of user details
     private RegisteredUser user=null;
-    private HomeViewingPackageInstance homeViewingPackageInstance;
 
     // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     private LocalDateTime dateTime;
-    private Timeline timer;
-    private int timeRemaining;
+    private double packagePrice;
     private Movie currentMovie;
     private MovieInstance currentMovieInstance;
+    private HomeViewingPackageInstance homeViewingPackageInstance;
 
     @FXML
     public void initialize() {
@@ -183,11 +181,11 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private void goToPaymentDetails() {
-        startTimer();
         stackPane.getChildren().clear();
         if(user!=null)
         {
-            showCreditCardFields();
+            stackPane.getChildren().add(creditCardPane);
+            creditCardPane.setVisible(true);
         }
         else
             stackPane.getChildren().add(paymentDetailsPane);
@@ -199,51 +197,14 @@ public class HomeViewingPurchaseBoundary {
     private void goToTicketSelection() {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketSelectionPane);
-        stopTimer();
         highlightStep(1);
     }
 
 
-    private void startTimer() {
-        if (timer != null) {
-            timer.stop();
-        }
-
-        timeRemaining = 600; // 10 minutes in seconds
-        timerLabel.setText(formatTime(timeRemaining));
-
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            timeRemaining--;
-            timerLabel.setText(formatTime(timeRemaining));
-
-            if (timeRemaining <= 0) {
-                timer.stop();
-                System.out.println("Time is up! Please select a package again.");
-                goToTicketSelection();
-            }
-        }));
-        timer.setCycleCount(Timeline.INDEFINITE);
-        timer.play();
-    }
-
-    private void stopTimer() {
-        if (timer != null) {
-            timer.stop();
-            timer = null;
-        }
-    }
-
-    private String formatTime(int seconds) {
-        int minutes = seconds / 60;
-        int remainingSeconds = seconds % 60;
-        return String.format("%02d:%02d", minutes, remainingSeconds);
-    }
-
     @FXML
     private void showCreditCardFields()
     {
-        if(user != null || checkDetails()) {
-            stackPane.getChildren().add(creditCardPane);
+        if(checkDetails()) {
             creditCardPane.setVisible(true);
         }
     }
@@ -251,13 +212,17 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private void submitPayment()
     {
+
         // Implement payment submission logic
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
-        if(user==null)
+
+        if(user == null)
             RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
         else
-            createHomeViewing();
+        {
+            RegisteredUserController.addNewUser(user.getId_number(),"","","");
+        }
     }
 
     @Subscribe
@@ -267,14 +232,9 @@ public class HomeViewingPurchaseBoundary {
             user= message.registeredUser;
         else
         {
-            user = message.registeredUser;
-            createHomeViewing();
+            String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime);
         }
-    }
-    public void createHomeViewing()
-    {
-        String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-        PurchaseController.AddHomeViewing(LocalDateTime.now(), user, purchaseValidation, currentMovie, dateTime);
     }
 
     @Subscribe
@@ -288,9 +248,18 @@ public class HomeViewingPurchaseBoundary {
     }
 
     @FXML
-    private void cancelPayment() {
-        // Hide the credit card fields
-        creditCardPane.setVisible(false);
+    private void cancelPayment()
+    {
+        cardNumberField.clear();
+        expirationDateField.clear();
+        cvvField.clear();
+
+        if(user == null) {
+            // Hide the credit card fields
+            creditCardPane.setVisible(false);
+        }
+        else
+            goToTicketSelection();
     }
 
     @FXML
@@ -310,13 +279,15 @@ public class HomeViewingPurchaseBoundary {
     private void showConfirmation() {
         Platform.runLater(() -> {
             System.out.println("Package purchased successfully.");
-            stopTimer();
-            confirmationDetails.setText(
-                    "Movie: " + movieTitle.getText() + ", " +
-                            "Available on " + homeViewingPackageInstance.getViewingDate() + ", " +
-                            "Price Paid: ₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice()
-            ) ;
+            String text = "Movie: " + movieTitle.getText() + ", " +
+                    "Available on " + homeViewingPackageInstance.getViewingDate() + ", " +
+                    "Price Paid: ₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice() + ", " +
+                    "Valid until: " +homeViewingPackageInstance.getViewingDate().plusWeeks(1) + ", " +
+                    "Purchase link: https://hasertia.com/"+homeViewingPackageInstance.getOwner().getId()+"purchase"+homeViewingPackageInstance.getId();
 
+            confirmationDetails.setText(text);
+            EmailSender.sendEmail(homeViewingPackageInstance.getOwner().getEmail(), "New Home Viewing Purchase From Hasertia", text);
+            EmailSender.sendEmail("hasertiaproject@gmail.com", "New Home Viewing Purchase From Hasertia", text);
             confirmationMovieImage.setImage(movieImage.getImage());
             stackPane.getChildren().clear();
             stackPane.getChildren().add(ticketConfirmationPane);
@@ -325,10 +296,12 @@ public class HomeViewingPurchaseBoundary {
     }
 
     @FXML
-    private void cleanup() {
-        EventBus.getDefault().unregister(this);
-
+    private void closeApplication()
+    {
+        Stage stage = (Stage) stackPane.getScene().getWindow();
+        stage.close();
     }
+
 
     public void setCurrentMovie(Movie movie) {
         this.currentMovie = movie;

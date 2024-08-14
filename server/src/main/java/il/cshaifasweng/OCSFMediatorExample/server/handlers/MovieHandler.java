@@ -192,6 +192,11 @@ public class MovieHandler extends MessageHandler
         }
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+        notifyMultiEntryClients(message.movies.getFirst());
+    }
+    private void notifyMultiEntryClients(Movie movie)
+    {
+
     }
     private void deactivate_movie() {
         Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);
