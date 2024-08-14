@@ -25,9 +25,7 @@ public class CustomContextMenu {
 
         // Load the CSS file
         contextMenu.getStyleClass().add("context-menu");
-        contextMenu.getStyleClass().add(
-                Objects.requireNonNull(getClass().getResource("/il/cshaifasweng/OCSFMediatorExample/client/DialogStyle.css")).toExternalForm()
-        );
+
     }
 
     public void setActionEdit(EventHandler<ActionEvent> action) {

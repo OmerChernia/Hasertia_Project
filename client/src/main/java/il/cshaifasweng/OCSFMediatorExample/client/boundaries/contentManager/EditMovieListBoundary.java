@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
@@ -8,12 +10,16 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.PriceRequest;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,9 +37,12 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EditMovieListBoundary implements Initializable {
+
 
     private ObservableList<Movie> listProducts;
     private ObservableList<Movie> filterProducts;
@@ -59,6 +68,8 @@ public class EditMovieListBoundary implements Initializable {
     @FXML
     private Button btnNewProduct;
 
+    @FXML
+    private Button btnDelete;
     @FXML
     private TableView<Movie> tblProducts;
 
@@ -86,8 +97,7 @@ public class EditMovieListBoundary implements Initializable {
     @FXML
     private TableColumn<Movie, Button> colGenre;
 
-    @FXML
-    private TableColumn<Movie, String> colPriceRequestStatus;
+
 
     @FXML
     private AnchorPane containerAddProduct;
@@ -125,7 +135,7 @@ public class EditMovieListBoundary implements Initializable {
         });
 
         contextMenu.setActionDelete(ev -> {
-            showDialogDeleteProduct();
+            showDialogDeleteProduct() ;
             contextMenu.hide();
         });
         contextMenu.show();
@@ -139,7 +149,22 @@ public class EditMovieListBoundary implements Initializable {
 
     @Subscribe
     public void loadData(MovieMessage movieMessage) {
-        listProducts.setAll(movieMessage.movies);
+        System.out.println(movieMessage.responseType);
+        Platform.runLater(() -> {
+            if (movieMessage.responseType == MovieMessage.ResponseType.RETURN_MOVIES ) {
+                loadTableData(movieMessage.movies);
+            } else  if (movieMessage.responseType == MovieMessage.ResponseType.MOVIE_DELETED ) {
+
+                loadTableData(movieMessage.movies);
+            }
+            else {
+                MovieController.requestAllMovies();
+            }
+        });
+    }
+
+    private void loadTableData(List<Movie> movies) {
+        listProducts.setAll(movies);
         tblProducts.setItems(listProducts);
         tblProducts.setFixedCellSize(30);
 
@@ -149,173 +174,189 @@ public class EditMovieListBoundary implements Initializable {
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         colTheaterPrice.setCellValueFactory(new PropertyValueFactory<>("theaterPrice"));
         colHVPrice.setCellValueFactory(new PropertyValueFactory<>("homeViewingPrice"));
-        // colPriceRequestStatus.setCellValueFactory(new PropertyValueFactory<>("priceRequestStatus"));
 
         ButtonFactory.ButtonGenreCellValueFactory buttonGenreCellFactory = new ButtonFactory.ButtonGenreCellValueFactory();
         colGenre.setCellValueFactory(buttonGenreCellFactory);
 
         ButtonFactory.ButtonMovieTypeCellValueFactory buttonTypeCellFactory = new ButtonFactory.ButtonMovieTypeCellValueFactory();
         colStreamingType.setCellValueFactory(buttonTypeCellFactory);
-
     }
 
 
-    @Subscribe
-    public void onPriceRequestMessageReceived(PriceRequestMessage message) {
-        if (message.requests != null && !message.requests.isEmpty()) {
-            PriceRequest request = message.requests.get(0);
-            Movie movie = request.getMovie();
-
-            switch (message.responseType) {
-                case MOVIE_PRICE_CHANGED:
-                    System.out.println("Approved");
-                    break;
-                case MOVIE_PRICE_NOT_CHANGED:
-
-                    System.out.println("Not Approved");
-
-                    break;
-                default:
-                    break;
-            }
-            tblProducts.refresh();
-        }
-    }
 
     @FXML
-    private void showDialog(String operation) {
+    private void showDialog(String operation,Movie selectedMovie) {
         disableTable();
-        Movie selectedMovie = tblProducts.getSelectionModel().getSelectedItem();
 
-        if (selectedMovie == null) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, "No movie selected");
-            tblProducts.setDisable(false);
-            return;
-        }
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_MOVIE_VIEW));
-            AnchorPane moviePane = loader.load();
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_MOVIE_VIEW));
+                AnchorPane moviePane = loader.load();
 
-            DialogEditMovie dialogEditMovie = loader.getController();
-            dialogEditMovie.setEditMovieListBoundary(this);
-            dialogEditMovie.setDialog(operation, selectedMovie);
+                DialogEditMovie dialogEditMovie = loader.getController();
+                dialogEditMovie.setEditMovieListBoundary(this);
+                dialogEditMovie.setDialog(operation, selectedMovie);
 
-            containerAddProduct.getChildren().clear();
-            containerAddProduct.getChildren().add(moviePane);
-            containerAddProduct.setVisible(true);
+                containerAddProduct.getChildren().clear();
+                containerAddProduct.getChildren().add(moviePane);
+                containerAddProduct.setVisible(true);
 
-            dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
-            dialogAddProduct.show();
+                dialogAddProduct = new DialogTool(containerAddProduct, stckProducts);
+                dialogAddProduct.show();
 
-            dialogAddProduct.setOnDialogClosed(ev -> {
+                dialogAddProduct.setOnDialogClosed(ev -> {
+                    tblProducts.setDisable(false);
+                    rootProducts.setEffect(null);
+                    containerAddProduct.setVisible(false);
+                });
+
+                rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+
+            } catch (IOException e) {
+                e.printStackTrace();
                 tblProducts.setDisable(false);
-                rootProducts.setEffect(null);
-                containerAddProduct.setVisible(false);
-            });
-
-            rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            tblProducts.setDisable(false);
-        }
+            }
+        });
     }
+
+
+
+
 
     @FXML
     public void closeDialogAddProduct() {
         if (dialogAddProduct != null) {
-            dialogAddProduct.close();
+            Platform.runLater(dialogAddProduct::close);
+        }
+        if (dialogDeleteProduct !=null)
+        {
+            dialogDeleteProduct.close();
         }
     }
 
+
+
+
+
+    public void handleNewMovie(ActionEvent actionEvent) {
+
+        showDialog("add",null);
+    }
 
 
 
     @FXML
     private void showDialogDeleteProduct() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
+        Movie delete = tblProducts.getSelectionModel().getSelectedItem();
+        if (delete == null) {
             AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
             return;
         }
 
-        rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-        containerDeleteProducts.setVisible(true);
-        disableTable();
+        Platform.runLater(() -> {
+            rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+            containerDeleteProducts.setVisible(true);
+            disableTable();
 
-        dialogDeleteProduct = new DialogTool(containerDeleteProducts, stckProducts);
-        dialogDeleteProduct.show();
+            dialogDeleteProduct = new DialogTool(containerDeleteProducts, stckProducts);
 
-        dialogDeleteProduct.setOnDialogClosed(ev -> {
-            tblProducts.setDisable(false);
-            rootProducts.setEffect(null);
-            containerDeleteProducts.setVisible(false);
+
+            btnDelete.setOnAction(ev -> {
+
+                System.out.println(delete.getId());
+                MovieController.deleteMovie(delete.getId());
+                dialogDeleteProduct.close();
+            });
+
+            dialogDeleteProduct.show();
+
+            dialogDeleteProduct.setOnDialogClosed(ev -> {
+                tblProducts.setDisable(false);
+                rootProducts.setEffect(null);
+                containerDeleteProducts.setVisible(false);
+            });
         });
     }
+
+
+    private  void delete (int id)
+    {
+
+    }
+
 
     @FXML
     private void hideDialogDeleteProduct() {
         if (dialogDeleteProduct != null) {
-            dialogDeleteProduct.close();
+            Platform.runLater(dialogDeleteProduct::close);
         }
     }
 
     @FXML
     private void showDialogEditProduct() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
+        Movie selectedMovie = tblProducts.getSelectionModel().getSelectedItem();
+        if (selectedMovie==null) {
+            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED) ;
             return;
         }
 
-        showDialog("edit");
+        showDialog("edit",selectedMovie);
     }
 
     @FXML
     private void showDialogDetailsProduct() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
+        Movie selectedMovie = tblProducts.getSelectionModel().getSelectedItem();
+        if (selectedMovie==null) {
+            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED) ;
             return;
         }
-        showDialog("view");
+        showDialog("view",selectedMovie);
     }
 
     private void disableTable() {
-        tblProducts.setDisable(true);
+        tblProducts.setDisable(true) ;
     }
 
     @FXML
     private void filterNameProduct() {
-        String filterName = txtSearchProduct.getText().trim();
-        if (filterName.isEmpty()) {
-            tblProducts.setItems(listProducts);
-        } else {
-            filterProducts.clear();
-            for (Movie p : listProducts) {
-                if (p.getEnglishName().toLowerCase().contains(filterName.toLowerCase())) {
-                    filterProducts.add(p);
+        Platform.runLater(() -> {
+            String filterName = txtSearchProduct.getText().trim();
+            if (filterName.isEmpty()) {
+                tblProducts.setItems(listProducts);
+            } else {
+                filterProducts.clear();
+                for (Movie p : listProducts) {
+                    if (p.getEnglishName().toLowerCase().contains(filterName.toLowerCase())) {
+                        filterProducts.add(p);
+                    }
                 }
+                tblProducts.setItems(filterProducts);
             }
-            tblProducts.setItems(filterProducts);
-        }
+        });
     }
 
     @FXML
     private void filterCodeBar() {
-        String filterCodeBar = txtSearchBarCode.getText().trim();
-        if (filterCodeBar.isEmpty()) {
-            tblProducts.setItems(listProducts);
-        } else {
-            filterProducts.clear();
-            for (Movie p : listProducts) {
-                if (p.getEnglishName().toLowerCase().contains(filterCodeBar.toLowerCase())) {
-                    filterProducts.add(p);
+        Platform.runLater(() -> {
+            String filterCodeBar = txtSearchBarCode.getText().trim();
+            if (filterCodeBar.isEmpty()) {
+                tblProducts.setItems(listProducts);
+            } else {
+                filterProducts.clear();
+                for (Movie p : listProducts) {
+                    if (p.getEnglishName().toLowerCase().contains(filterCodeBar.toLowerCase())) {
+                        filterProducts.add(p);
+                    }
                 }
+                tblProducts.setItems(filterProducts);
             }
-            tblProducts.setItems(filterProducts);
-        }
+        });
     }
 
     public void cleanup() {
-        EventBus.getDefault().unregister(this);
+        Platform.runLater(() -> EventBus.getDefault().unregister(this));
     }
+
+
 }

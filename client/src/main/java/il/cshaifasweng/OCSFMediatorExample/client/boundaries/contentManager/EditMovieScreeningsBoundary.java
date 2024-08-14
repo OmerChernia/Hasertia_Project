@@ -1,15 +1,18 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import javafx.application.Platform;
@@ -23,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -100,19 +104,52 @@ public class EditMovieScreeningsBoundary implements Initializable {
     @Subscribe
     public void loadData(MovieInstanceMessage movieInstanceMessage) {
         Platform.runLater(() -> {
-            listTheater.setAll(movieInstanceMessage.movies);
-            tblProducts.setItems(listTheater);
-            tblProducts.setFixedCellSize(30);
-
-            colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
-            colEnglish.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getEnglishName()));
-            colHebrew.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getHebrewName()));
-            colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().toLocalDate().toString()));
-            colHour.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
-            colTheater.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getTheater().getLocation()));
-            colHall.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getHall().getId())));
+            System.out.println(movieInstanceMessage.responseType);
+            switch (movieInstanceMessage.responseType) {
+                case MOVIE_INSTANCE_UPDATED:
+                    MovieInstanceController.requestAllMovieInstances();
+                    showAlert("You have updated the screening!", AlertType.SUCCESS);
+                    break;
+                case  FILLTERD_LIST:
+                    loadTableData(movieInstanceMessage.movies);
+                    break;
+                default:
+                    showAlert("Failed to process the screening .", AlertType.ERROR);
+                    break;
+            }
         });
     }
+
+
+
+    public void showAlert(String messageText, AlertType alertType) {
+        AlertsBuilder.create(
+                alertType,
+                null,
+                stckProducts,
+                stckProducts,
+                messageText
+        );
+    }
+
+
+    private void loadTableData(List<MovieInstance> movies) {
+        listTheater.setAll(movies);
+        tblProducts.setItems(listTheater);
+        tblProducts.setFixedCellSize(30);
+
+        colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
+        colEnglish.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getEnglishName()));
+        colHebrew.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getHebrewName()));
+        colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().toLocalDate().toString()));
+        colHour.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
+        colTheater.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getTheater().getLocation()));
+        colHall.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getHall().getId())));
+    }
+
+
+
+
 
 
 
@@ -123,12 +160,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
             showDialogEdit();
             contextMenu.hide();
         });
-
-        contextMenu.setActionDelete(ev -> {
-            deleteProducts();
-            contextMenu.hide();
-        });
-
 
         contextMenu.show();
     }
@@ -208,19 +239,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
             dialogDelete.close();
         }
     }
-
-    @FXML
-    private void deleteProducts() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-            return;
-        }
-
-        listTheater.remove(tblProducts.getSelectionModel().getSelectedItem());
-        hideDialogDelete();
-        AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_DELETED);
-    }
-
 
 
     private void animateNodes() {

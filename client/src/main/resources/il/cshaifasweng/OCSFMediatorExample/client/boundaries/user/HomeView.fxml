@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<StackPane fx:id="stckHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" style="-fx-background-color: #1d1d48;" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.HomeBoundary">
+<StackPane fx:id="stckHome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" style="-fx-background-color: #1d1d48;" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.HomeBoundary">
    <children>
-      <BorderPane fx:id="rootHome" prefHeight="565.0" prefWidth="930.0">
+      <BorderPane fx:id="rootHome" prefHeight="565.0" prefWidth="930.0" style="-fx-background-color: #1d1d48;">
          <top>
             <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                <children>
                   <!-- VBox containing two rows of buttons -->
-                  <VBox alignment="CENTER" prefHeight="88.0" prefWidth="451.0">
-                     <HBox prefHeight="52.0" prefWidth="930.0" spacing="20">
+                  <VBox alignment="CENTER" prefHeight="88.0" prefWidth="451.0" spacing="10.0">
+                     <HBox alignment="CENTER" prefHeight="52.0" prefWidth="930.0" spacing="20">
                         <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Theater" />
                         <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Home Viewing" />
                         <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="View Upcoming Movies" />
                      </HBox>
-                     <HBox fx:id="TheaterFilters" prefHeight="52.0" prefWidth="930.0" spacing="20">
-                        <children>
-                           <ComboBox fx:id="cmbTheater" prefHeight="22.0" prefWidth="133.0" promptText="Filter By Theater" />
-                           <DatePicker fx:id="afterDate" prefHeight="25.0" prefWidth="150.0" promptText="Starts From" />
-                           <DatePicker fx:id="beforeDate" layoutX="163.0" layoutY="10.0" prefHeight="25.0" prefWidth="150.0" promptText="To" />
-                           <Button mnemonicParsing="false" onAction="#Reset" text="Reset" />
-                        </children>
-                     </HBox>
-                     <HBox spacing="20">
+                     <HBox alignment="CENTER" spacing="20">
                         <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="All" />
                         <Button onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Action" />
                         <Button onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Comedy" />
                         <Button onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Drama" />
                         <Button onAction="#FilterByGenre" style="-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px; -fx-padding: 10 20;" text="Sci-Fi" />
+                     </HBox>
+                     <HBox fx:id="TheaterFilters" alignment="CENTER" prefHeight="52.0" prefWidth="930.0" spacing="20" visible="false">
+                        <children>
+                           <ComboBox fx:id="cmbTheater" prefHeight="25.0" prefWidth="131.0" promptText="Filter By Theater" />
+                           <DatePicker fx:id="afterDate" prefHeight="25.0" prefWidth="131.0" promptText="Starts From" />
+                           <DatePicker fx:id="beforeDate" layoutX="163.0" layoutY="10.0" prefHeight="25.0" prefWidth="117.0" promptText="To" />
+                           <Button mnemonicParsing="false" onAction="#Reset" text="Reset" />
+                        </children>
+                        <VBox.margin>
+                           <Insets />
+                        </VBox.margin>
                      </HBox>
                   </VBox>
                </children>
@@ -49,7 +42,7 @@
          <center>
 
             <!-- ScrollPane with GridPane inside -->
-            <ScrollPane fitToWidth="true" onDragDetected="#FilterByScreeningType" prefHeight="363.0" prefWidth="914.0" style="-fx-background-color: #1d1d48;" BorderPane.alignment="CENTER">
+            <ScrollPane fitToWidth="true" onDragDetected="#FilterByScreeningType" prefHeight="405.0" prefWidth="930.0" style="-fx-background-color: #1d1d48;" BorderPane.alignment="CENTER">
                <content>
                   <GridPane fx:id="grid" hgap="100" style="-fx-background-color: #1d1d48;" vgap="10" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <columnConstraints>

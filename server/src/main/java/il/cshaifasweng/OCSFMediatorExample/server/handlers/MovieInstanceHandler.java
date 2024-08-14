@@ -157,15 +157,32 @@ public class MovieInstanceHandler extends MessageHandler
     {
         //?????
     }
-    private void update_movie_instance()
-    {
-        if(message.movies.getFirst()!=null)
-        {
-            session.update(message.movies.getFirst());
-            session.flush();
-            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
-        }
+    private void update_movie_instance() {
+        try {
+            // Get the ID from the incoming message
+            int screeningId = message.id;
+
+            // Retrieve the current persistent instance of the movie from the session
+            MovieInstance persistentMovieInstance = session.get(MovieInstance.class,screeningId);
+
+            if (persistentMovieInstance != null) {
+                // Update the persistent with the new values from the message
+                persistentMovieInstance.setTime(message.date);
+
+                // Save the changes
+                session.update(persistentMovieInstance);
+                session.flush();
+                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
+            } else {
+                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        }
     }
     private void get_all_movie_instances_by_movie_id()
     {

@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.lang.reflect.InvocationTargetException;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
@@ -333,18 +334,35 @@ public class MainBoundary implements Initializable {
 
 
 
+    private Object currentController;
+
     private void showFXMLWindows(String FXMLName) {
+
+        if (currentController != null) {
+            try {
+                currentController.getClass().getMethod("cleanup").invoke(currentController);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+
+            }
+        }
 
 
         rootContainer.getChildren().clear();
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLName));
             Parent root = loader.load();
+
+
+            currentController = loader.getController();
+
 
             AnchorPane.setBottomAnchor(root, 0.0);
             AnchorPane.setTopAnchor(root, 0.0);
             AnchorPane.setLeftAnchor(root, 0.0);
             AnchorPane.setRightAnchor(root, 0.0);
+
+
             rootContainer.getChildren().setAll(root);
 
         } catch (IOException ex) {
@@ -536,7 +554,7 @@ public class MainBoundary implements Initializable {
                 clearTextFields();
                 closeLoginDialog();
                 AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
-            }, "Cancel");
+            }, "Cancel",null);
         } else {
             loginWindow();
         }

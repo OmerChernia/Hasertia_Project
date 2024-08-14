@@ -13,6 +13,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,12 +31,13 @@ import javafx.scene.layout.StackPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.scene.control.ComboBox;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +80,8 @@ public class HomeBoundary implements Initializable {
 
     @FXML
     private DatePicker afterDate;
-
+    private Button lastSelectedScreeningButton;
+    private Button lastSelectedGenreButton;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieMessage events
@@ -91,6 +94,33 @@ public class HomeBoundary implements Initializable {
         animateNodes();
 
     }
+
+    private void animateNodes() {
+        // הוספת אנימציות טעינה רכות לרכיבים מרכזיים
+        Animations.fadeInUp(stckHome);
+        Animations.fadeInUp(grid);
+        Animations.fadeInUp(TheaterFilters);
+        Animations.fadeInUp(cmbTheater);
+        Animations.fadeInUp(beforeDate);
+        Animations.fadeInUp(afterDate);
+    }
+
+
+    private void toggleButtonState(Button clickedButton, Button lastSelectedButton) {
+        if (lastSelectedButton != null) {
+
+            lastSelectedButton.setEffect(null);
+            lastSelectedButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px;");
+        }
+        if (lastSelectedButton == clickedButton) {
+            lastSelectedButton = null;
+        } else {
+
+            clickedButton.setEffect(new DropShadow(10, Color.BLACK));
+            clickedButton.setStyle("-fx-background-color: #333366; -fx-text-fill: #ffffff; -fx-font-size: 18px;");
+        }
+    }
+
 
     @Subscribe
     public void onMovieMessageReceived(MovieMessage message) {
@@ -251,12 +281,18 @@ public class HomeBoundary implements Initializable {
     void FilterByScreeningType(ActionEvent event)           //THEATER / HOME VIEWING
     {
         Button clickedButton = (Button) event.getSource();
+        toggleButtonState(clickedButton, lastSelectedScreeningButton);
+        lastSelectedScreeningButton = clickedButton;
         currentScreeningFilter = clickedButton.getText();
         System.out.println("currentScreeningFilter = " + currentScreeningFilter);
-        if(currentScreeningFilter.equals("Theater"))
+        if (currentScreeningFilter.equals("Theater")) {
             TheaterFilters.setDisable(false);
-        else
+            TheaterFilters.setVisible(true);
+        } else {
             TheaterFilters.setDisable(true);
+            TheaterFilters.setVisible(false);
+
+        }
         if(currentScreeningFilter.equals("View Upcoming Movies"))
             MovieController.getUpcomingMovies();
         else
@@ -266,6 +302,8 @@ public class HomeBoundary implements Initializable {
     @FXML
     void FilterByGenre(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
+        toggleButtonState(clickedButton, lastSelectedGenreButton);
+        lastSelectedGenreButton = clickedButton;
         Genre = clickedButton.getText();
         Genre = Genre.toLowerCase();
         FilterByScreeningTypeAndGenre(event);

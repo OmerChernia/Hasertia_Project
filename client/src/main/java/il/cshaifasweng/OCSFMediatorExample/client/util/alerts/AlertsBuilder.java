@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -26,10 +27,10 @@ public class AlertsBuilder {
     private static String bodyStyle;
 
     public static void create(AlertType type, StackPane dialogContainer, Node nodeToBlur, Node nodeToDisable, String body) {
-        create(type, dialogContainer, nodeToBlur, nodeToDisable, body, "Okay", null, null);
+        create(type, dialogContainer, nodeToBlur, nodeToDisable, body, "Okay", null, null, null);
     }
 
-    public static void create(AlertType type, StackPane dialogContainer, Node nodeToBlur, Node nodeToDisable, String body, String primaryButtonText, Runnable primaryAction, String secondaryButtonText) {
+    public static void create(AlertType type, StackPane dialogContainer, Node nodeToBlur, Node nodeToDisable, String body, String primaryButtonText, Runnable primaryAction, String secondaryButtonText, Runnable secondaryAction) {
 
         setFunction(type);
 
@@ -42,18 +43,29 @@ public class AlertsBuilder {
 
         Button primaryButton = new Button(primaryButtonText);
         primaryButton.getStyleClass().add(buttonStyle);
+        primaryButton.setPrefWidth(180);
 
-        HBox buttonContainer = new HBox();
+        HBox buttonContainer = new HBox(10);
         buttonContainer.setLayoutY(115);
         buttonContainer.setPrefSize(390, 115);
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().add(primaryButton);
+        buttonContainer.setPadding(new Insets(20, 20, 20, 20));
 
         if (secondaryButtonText != null) {
             Button secondaryButton = new Button(secondaryButtonText);
-            secondaryButton.getStyleClass().add("alert-warning-button ");
-            buttonContainer.getChildren().add(secondaryButton);
-            secondaryButton.setOnMouseClicked(e -> alertStage.close());
+            secondaryButton.getStyleClass().add(buttonStyle);
+            secondaryButton.setPrefWidth(180);
+            buttonContainer.getChildren().addAll(primaryButton, secondaryButton);
+
+            // הוספת פעולה לכפתור המשני
+            secondaryButton.setOnMouseClicked(e -> {
+                if (secondaryAction != null) {
+                    secondaryAction.run();
+                }
+                alertStage.close();
+            });
+        } else {
+            buttonContainer.getChildren().add(primaryButton);
         }
 
         Text textTitle = new Text(title);
@@ -62,12 +74,16 @@ public class AlertsBuilder {
         Text textBody = new Text(body);
         textBody.getStyleClass().add(bodyStyle);
 
+        TextFlow textFlow = new TextFlow(textBody);
+        textFlow.setPrefWidth(350);
+        textFlow.setPadding(new Insets(0, 0, 0, 0)); // הוספת רווח לתוכן
+
         VBox textContainer = new VBox();
-        textContainer.setSpacing(5);
+        textContainer.setSpacing(10);
         textContainer.setPrefSize(390, 115);
         textContainer.setAlignment(Pos.CENTER_LEFT);
         textContainer.setPadding(new Insets(0, 0, 0, 30));
-        textContainer.getChildren().addAll(textTitle, textBody);
+        textContainer.getChildren().addAll(textTitle, textFlow);
         content.getChildren().addAll(buttonContainer, textContainer);
 
         StackPane root = new StackPane(content);

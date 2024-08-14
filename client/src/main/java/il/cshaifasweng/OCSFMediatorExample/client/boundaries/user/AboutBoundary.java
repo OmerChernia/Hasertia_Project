@@ -24,22 +24,13 @@ import javafx.util.Duration;
 public class AboutBoundary implements Initializable {
 
     @FXML
-    private ImageView estfx;
+    private ImageView MonkeyCode;
 
     @FXML
     private Text developer;
 
     @FXML
-    private ImageView laynezcode;
-
-    @FXML
     private ImageView github;
-
-    @FXML
-    private Text mark;
-
-    @FXML
-    private ImageView laynezcorporation;
 
     @FXML
     private Separator separator;
@@ -56,13 +47,11 @@ public class AboutBoundary implements Initializable {
     }
 
     private void setAnimations() {
-        transition(estfx, 0);
         transition(developer, 1);
-        transition(laynezcode, 1);
+        transition(MonkeyCode, 1);
         transition(separator, 1);
         transition(github, 1);
-        transition(mark, 1);
-        transition(laynezcorporation, 1);
+
     }
 
     private void transition(Node node, int duration) {

@@ -29,11 +29,18 @@ public class MovieInstanceController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void updateMovieInstance(int screeningId, int movieId, LocalDateTime dateTime, int hallId) {
-        // Similar to add, but for updating an existing movie instance
-        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE, screeningId);
+    public static void updateMovieInstance(int screeningId, LocalDateTime dateTime) {
+
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(
+                MessageType.REQUEST,
+                MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE,
+                screeningId
+        );
+
+
         requestMessage.date = dateTime;
-        requestMessage.key = movieId + ":" + hallId; // Combining movieId and hallId in the key
+
+
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
