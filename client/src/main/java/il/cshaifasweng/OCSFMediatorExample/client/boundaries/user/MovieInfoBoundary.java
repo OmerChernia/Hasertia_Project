@@ -17,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import net.bytebuddy.implementation.ToStringMethod;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,6 +43,12 @@ public class MovieInfoBoundary implements Initializable {
     @FXML
     private ImageView image;
 
+    @FXML
+    private Label homePrice;
+    @FXML
+    private Label theaterPrice;
+
+
     private HomeBoundary homeController;
 
     @FXML
@@ -58,7 +65,8 @@ public class MovieInfoBoundary implements Initializable {
         lblActors.setText(movie.getMainActors().toString().replace("[", "").replace("]", ""));
         lblName.setText(movie.getEnglishName() + "  |  " + movie.getHebrewName());
         lblProducer.setText(movie.getProducer());
-
+        homePrice.setText(String.valueOf((movie.getHomeViewingPrice()))+ " ₪");
+        theaterPrice.setText(String.valueOf((movie.getTheaterPrice()))+ " ₪");
         image.setImage(getImage(movie));
         image.setPreserveRatio(true);
         image.setFitWidth(250);

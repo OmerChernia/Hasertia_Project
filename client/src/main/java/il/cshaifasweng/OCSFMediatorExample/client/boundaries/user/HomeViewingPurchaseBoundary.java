@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
@@ -128,8 +129,8 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private TextField confirmIdNumberTF;
-    //end of user details
     private RegisteredUser user=null;
+    private HomeViewingPackageInstance homeViewingPackageInstance;
 
     // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -137,8 +138,6 @@ public class HomeViewingPurchaseBoundary {
     private LocalDateTime dateTime;
     private Timeline timer;
     private int timeRemaining;
-    private double packagePrice;
-    private RegisteredUser currentUser;
     private Movie currentMovie;
     private MovieInstance currentMovieInstance;
 
@@ -255,7 +254,10 @@ public class HomeViewingPurchaseBoundary {
         // Implement payment submission logic
         System.out.println("Payment submitted with card number: " + cardNumberField.getText());
         creditCardPane.setVisible(false);
-        RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+        if(user==null)
+            RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
+        else
+            createHomeViewing();
     }
 
     @Subscribe
@@ -265,9 +267,14 @@ public class HomeViewingPurchaseBoundary {
             user= message.registeredUser;
         else
         {
-            String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime);
+            user = message.registeredUser;
+            createHomeViewing();
         }
+    }
+    public void createHomeViewing()
+    {
+        String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+        PurchaseController.AddHomeViewing(LocalDateTime.now(), user, purchaseValidation, currentMovie, dateTime);
     }
 
     @Subscribe
@@ -275,11 +282,9 @@ public class HomeViewingPurchaseBoundary {
     {
         if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED)
         {
+            homeViewingPackageInstance = (HomeViewingPackageInstance)message.purchases.get(0);
             showConfirmation();
         }
-    }
-    @Subscribe
-    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) {
     }
 
     @FXML
@@ -308,11 +313,10 @@ public class HomeViewingPurchaseBoundary {
             stopTimer();
             confirmationDetails.setText(
                     "Movie: " + movieTitle.getText() + "\n" +
-                            "Time: " + movieTime.getText() + "\n" +
-                            "Hall: " + movieHall.getText() + "\n" +
-                            "Theater: " + movieLocation.getText() + "\n" +
-                            "Price Paid: ₪" + packagePrice
-            );
+                            "Available on " + homeViewingPackageInstance.getViewingDate() + "\n" +
+                            "Price Paid: ₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice()
+            ) ;
+
             confirmationMovieImage.setImage(movieImage.getImage());
             stackPane.getChildren().clear();
             stackPane.getChildren().add(ticketConfirmationPane);
@@ -325,10 +329,6 @@ public class HomeViewingPurchaseBoundary {
         EventBus.getDefault().unregister(this);
         Stage stage = (Stage) stackPane.getScene().getWindow();
         stage.close();
-    }
-
-    public void setCurrentUser(RegisteredUser user) {
-        this.currentUser = user;
     }
 
     public void setCurrentMovie(Movie movie) {

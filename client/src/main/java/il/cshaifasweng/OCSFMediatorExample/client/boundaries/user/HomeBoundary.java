@@ -88,6 +88,8 @@ public class HomeBoundary implements Initializable {
         SetTheaterCombo();
         setDateListeners();
         TheaterController.getAllTheaters();
+        animateNodes();
+
     }
 
     @Subscribe

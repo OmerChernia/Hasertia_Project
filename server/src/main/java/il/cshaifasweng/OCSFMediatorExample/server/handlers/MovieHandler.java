@@ -193,24 +193,21 @@ public class MovieHandler extends MessageHandler
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
     }
-    private void deactivate_movie()
-    {
-        Query<Movie> query = session.createQuery("FROM Movie where id= :_id", Movie.class);
+    private void deactivate_movie() {
+        Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);
         query.setParameter("_id", message.id);
 
         Movie movie = query.uniqueResult();
 
-        if(movie != null)
-        {
+        if (movie != null) {
+            System.out.println(movie.getId());
             movie.setActive(Movie.Availability.NOT_AVAILABLE);
-            session.update(message.movies.getFirst());
+            session.update(movie);
             session.flush();
             message.responseType = MovieMessage.ResponseType.MOVIE_UPDATED;
-        }
-        else
+        } else {
             message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
-
-
+        }
     }
     private void get_all_movies()
     {
