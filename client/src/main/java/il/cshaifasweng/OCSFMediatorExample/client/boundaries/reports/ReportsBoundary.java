@@ -173,42 +173,77 @@ public class ReportsBoundary implements Initializable {
         int ticketSalesYear = TicketSalesyearComboBox.getValue();
         int ticketSalesMonth = TicketSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
 
-        List<Purchase> filteredTicketSales = purchases.stream()
-                .filter(purchase -> purchase.getPurchaseDate().getYear() == ticketSalesYear &&
-                        purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth &&
-                        purchase instanceof MovieTicket &&
-                        ((MovieTicket) purchase).getMovieInstance().getHall().getTheater().getLocation().equals(theaterLocation))
-                .collect(Collectors.toList());
+        List<Purchase> filteredTicketSales;
+        if (this.theaterLocation == null) {
+            // Company Manager - Show all ticket sales
+            filteredTicketSales = purchases.stream()
+                    .filter(purchase -> purchase.getPurchaseDate().getYear() == ticketSalesYear &&
+                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth &&
+                            purchase instanceof MovieTicket)
+                    .collect(Collectors.toList());
+        } else {
+            // Theater Manager - Show only their theater's ticket sales
+            filteredTicketSales = purchases.stream()
+                    .filter(purchase -> purchase.getPurchaseDate().getYear() == ticketSalesYear &&
+                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth &&
+                            purchase instanceof MovieTicket &&
+                            ((MovieTicket) purchase).getMovieInstance().getHall().getTheater().getLocation().equals(theaterLocation))
+                    .collect(Collectors.toList());
+        }
 
         // Package Sales
-        int packageSalesYear = PackageSalesyearComboBox.getValue();
-        int packageSalesMonth = PackageSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
-
-        List<Purchase> filteredPackageSales = purchases.stream()
-                .filter(purchase -> purchase instanceof HomeViewingPackageInstance &&
-                        purchase.getPurchaseDate().getYear() == packageSalesYear &&
-                        purchase.getPurchaseDate().getMonthValue() == packageSalesMonth)
-                .collect(Collectors.toList());
+        List<Purchase> filteredPackageSales;
+        if (this.theaterLocation == null) {
+            // Company Manager - Show all package sales
+            filteredPackageSales = purchases.stream()
+                    .filter(purchase -> purchase instanceof HomeViewingPackageInstance &&
+                            purchase.getPurchaseDate().getYear() == ticketSalesYear &&
+                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth)
+                    .collect(Collectors.toList());
+        } else {
+            // Theater Manager - Do not show package sales
+            filteredPackageSales = Collections.emptyList();
+        }
 
         // Multi-Entry Ticket Sales
-        int multiEntrySalesYear = MultiSalesyearComboBox.getValue();
-        int multiEntrySalesMonth = MultiSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
-
-        List<Purchase> filteredMultiEntrySales = purchases.stream()
-                .filter(purchase -> purchase instanceof MultiEntryTicket &&
-                        purchase.getPurchaseDate().getYear() == multiEntrySalesYear &&
-                        purchase.getPurchaseDate().getMonthValue() == multiEntrySalesMonth)
-                .collect(Collectors.toList());
+        List<Purchase> filteredMultiEntrySales;
+        if (this.theaterLocation == null) {
+            // Company Manager - Show all multi-entry sales
+            filteredMultiEntrySales = purchases.stream()
+                    .filter(purchase -> purchase instanceof MultiEntryTicket &&
+                            purchase.getPurchaseDate().getYear() == ticketSalesYear &&
+                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth)
+                    .collect(Collectors.toList());
+        } else {
+            // Theater Manager - Do not show multi-entry sales
+            filteredMultiEntrySales = Collections.emptyList();
+        }
 
         // Complaints
         if (complaints != null) {
+            List<Complaint> filteredComplaints;
             int complaintsYear = ComplaintsyearComboBox.getValue();
             int complaintsMonth = ComplaintsmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
 
-            List<Complaint> filteredComplaints = complaints.stream()
-                    .filter(complaint -> complaint.getCreationDate().getYear() == complaintsYear &&
-                            complaint.getCreationDate().getMonthValue() == complaintsMonth)
-                    .collect(Collectors.toList());
+            if (this.theaterLocation == null) {
+                // Company Manager - Show all complaints
+                filteredComplaints = complaints.stream()
+                        .filter(complaint -> complaint.getCreationDate().getYear() == complaintsYear &&
+                                complaint.getCreationDate().getMonthValue() == complaintsMonth)
+                        .collect(Collectors.toList());
+            } else {
+                // Theater Manager - Show only complaints related to their theater
+                filteredComplaints = complaints.stream()
+                        .filter(complaint -> complaint.getCreationDate().getYear() == complaintsYear &&
+                                complaint.getCreationDate().getMonthValue() == complaintsMonth &&
+                                complaint.getPurchase() != null && (
+                                (complaint.getPurchase() instanceof MovieTicket &&
+                                        ((MovieTicket) complaint.getPurchase()).getMovieInstance().getHall().getTheater().getLocation().equals(theaterLocation)) ||
+                                        (complaint.getPurchase() instanceof MultiEntryTicket && "Multi-Entry".equals(theaterLocation)) ||
+                                        (complaint.getPurchase() instanceof HomeViewingPackageInstance && "Home Viewing".equals(theaterLocation)))
+                        )
+                        .collect(Collectors.toList());
+            }
 
             createComplaintReports(filteredComplaints);
         }
@@ -285,7 +320,6 @@ public class ReportsBoundary implements Initializable {
             return;
         }
 
-        // Map to hold complaints data by cinema or category
         Map<String, Integer> complaintsByCinema = new HashMap<>();
 
         for (Complaint complaint : filteredComplaints) {
