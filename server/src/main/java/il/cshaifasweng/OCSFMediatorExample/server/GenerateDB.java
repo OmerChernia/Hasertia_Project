@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import net.bytebuddy.implementation.ToStringMethod;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -346,14 +347,18 @@ public class GenerateDB {
                             user,
                             "validation" + i,
                             movies.get(i % movies.size()),
-                            LocalDateTime.now().plusDays(1)
+                            LocalDateTime.now().plusDays(1),
+                            true,
+                            "https://hasertia.com/dhbtdgt"+ i
                     );
                     session.save(homePackage);
                 } else if (i < 60) {
                     MultiEntryTicket multiEntryTicket = new MultiEntryTicket(
                             purchaseTime,
                             user,
-                            "validation" + i
+                            "validation" + i,
+                            true
+
                     );
                     session.save(multiEntryTicket);
                 } else {
@@ -362,7 +367,8 @@ public class GenerateDB {
                             user,
                             "validation" + i,
                             movieInstances.get(i % movieInstances.size()),
-                            seats.get(i % seats.size())
+                            seats.get(i % seats.size()),
+                            true
                     );
                     session.save(movieTicket);
 

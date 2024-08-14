@@ -12,14 +12,17 @@ public class HomeViewingPackageInstance extends Purchase{
 
     private LocalDateTime activationDate;
 
+    private String link;
+
 
     public HomeViewingPackageInstance() {
     }
 
-    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate) {
-        super(purchaseDate, owner, purchaseValidation);
+    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, boolean isActive, String link) {
+        super(purchaseDate, owner, purchaseValidation, isActive);
         this.movie = movie;
         this.activationDate = viewingDate;
+        this.link=link;
     }
 
     // Getters and setters
@@ -40,6 +43,14 @@ public class HomeViewingPackageInstance extends Purchase{
         this.activationDate = viewingDate;
     }
 
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getLink ()
+    {
+        return this.link;
+    }
 
     @Override
     protected String getPurchaseType() {

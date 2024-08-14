@@ -101,10 +101,18 @@ public class PurchaseHandler extends MessageHandler
 
     private void get_purchases_by_customer_id() {
         try {
-            Query<Purchase> query = session.createQuery("from Purchase where owner.id = :id", Purchase.class);
-            query.setParameter("id", message.key);
+            // Convert message.key to String if it is an Integer
+            String idNumber = String.valueOf(message.key);
+
+            // Create a query to fetch purchases based on the owner's id_number
+            Query<Purchase> query = session.createQuery("from Purchase where owner.id_number = :id", Purchase.class);
+            query.setParameter("id", idNumber);
+
+            // Execute the query and get the list of purchases
             List<Purchase> purchases = query.list();
-            message.purchases = (ArrayList<Purchase>) purchases;
+
+            // Set the purchases in the message
+            message.purchases = new ArrayList<>(purchases);
             message.responseType = PurchaseMessage.ResponseType.PURCHASES_LIST;
         } catch (Exception e) {
             e.printStackTrace();

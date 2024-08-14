@@ -9,6 +9,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -63,7 +64,7 @@ public class CustomerServiceBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
         setActionToggleButton();
-        ComplaintController.getAllComplaints();  // Request to load data from the server
+        Platform.runLater(() -> ComplaintController.getAllComplaints());  // Request to load data from the server
         animateNodes();
 
         tblComplaints.setRowFactory(tv -> {
@@ -71,7 +72,7 @@ public class CustomerServiceBoundary implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Complaint rowData = row.getItem();
-                    showDialogDetailsQuote();
+                    Platform.runLater(this::showDialogDetailsQuote);
                 }
             });
             return row;
@@ -81,94 +82,104 @@ public class CustomerServiceBoundary implements Initializable {
     @Subscribe
     public void onComplaintMessageReceived(ComplaintMessage message) {
         if (message.responseType == ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST) {
-            loadTableData(message.compliants);
+            Platform.runLater(() -> loadTableData(message.compliants));
         }
     }
 
     private void loadTableData(List<Complaint> complaints) {
-        listComplaints = FXCollections.observableArrayList(complaints);
-        tblComplaints.setItems(listComplaints);
-        tblComplaints.setFixedCellSize(30);
+        Platform.runLater(() -> {
+            listComplaints = FXCollections.observableArrayList(complaints);
+            tblComplaints.setItems(listComplaints);
+            tblComplaints.setFixedCellSize(30);
 
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("info"));
-        colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
-                cellData.getValue().getCreationDate().toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-        ));
-        colCustomerName.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
-                cellData.getValue().getRegisteredUser().getName()
-        ));
+            colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            colDescription.setCellValueFactory(new PropertyValueFactory<>("info"));
+            colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
+                    cellData.getValue().getCreationDate().toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            ));
+            colCustomerName.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
+                    cellData.getValue().getRegisteredUser().getName()
+            ));
 
-        ButtonFactory buttonFactory = new ButtonFactory();
-        colPurchase.setCellValueFactory(new ButtonFactory.ButtonTypeOrderCellValueFactory());
-        colStatus.setCellValueFactory(new ButtonFactory.ButtonExistsCellValueFactory());
+            ButtonFactory buttonFactory = new ButtonFactory();
+            colPurchase.setCellValueFactory(new ButtonFactory.ButtonTypeOrderCellValueFactory());
+            colStatus.setCellValueFactory(new ButtonFactory.ButtonExistsCellValueFactory());
+        });
     }
 
     private void animateNodes() {
-        Animations.fadeInUp(rootSearch);
-        Animations.fadeInUp(tblComplaints);
+        Platform.runLater(() -> {
+            Animations.fadeInUp(rootSearch);
+            Animations.fadeInUp(tblComplaints);
+        });
     }
 
     @FXML
     private void showDialogAddQuotes() {
-        disableTable();
-        Complaint selectedComplaint = tblComplaints.getSelectionModel().getSelectedItem();
-        if (selectedComplaint == null) {
-            AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, "No complaint selected");
-            tblComplaints.setDisable(false);
-            return;
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_CUSTOMER_SERVICE_VIEW));
-            AnchorPane ticketPane = loader.load();
-
-            DialogCustomerService dialogCustomerService = loader.getController();
-            dialogCustomerService.setCustomerServiceController(this);
-            dialogCustomerService.setComplaint(selectedComplaint);
-
-            containerHandleComplaint.getChildren().clear();
-            containerHandleComplaint.getChildren().add(ticketPane);
-            containerHandleComplaint.setVisible(true);
-
-            dialogAddProduct = new DialogTool(containerHandleComplaint, stckCustomerService);
-            dialogAddProduct.show();
-
-            dialogAddProduct.setOnDialogClosed(ev -> {
+        Platform.runLater(() -> {
+            disableTable();
+            Complaint selectedComplaint = tblComplaints.getSelectionModel().getSelectedItem();
+            if (selectedComplaint == null) {
+                AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, "No complaint selected");
                 tblComplaints.setDisable(false);
-                rootCustomerService.setEffect(null);
-                containerHandleComplaint.setVisible(false);
-            });
+                return;
+            }
 
-            rootCustomerService.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_CUSTOMER_SERVICE_VIEW));
+                AnchorPane ticketPane = loader.load();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            tblComplaints.setDisable(false);
-        }
+                DialogCustomerService dialogCustomerService = loader.getController();
+                dialogCustomerService.setCustomerServiceController(this);
+                dialogCustomerService.setComplaint(selectedComplaint);
+
+                containerHandleComplaint.getChildren().clear();
+                containerHandleComplaint.getChildren().add(ticketPane);
+                containerHandleComplaint.setVisible(true);
+
+                dialogAddProduct = new DialogTool(containerHandleComplaint, stckCustomerService);
+                dialogAddProduct.show();
+
+                dialogAddProduct.setOnDialogClosed(ev -> {
+                    tblComplaints.setDisable(false);
+                    rootCustomerService.setEffect(null);
+                    containerHandleComplaint.setVisible(false);
+                });
+
+                rootCustomerService.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                tblComplaints.setDisable(false);
+            }
+        });
     }
 
     @FXML
     public void closeDialogAddQuotes() {
         if (dialogAddProduct != null) {
-            dialogAddProduct.close();
+            dialogAddProduct.close() ;
         }
     }
 
     @FXML
     private void showDialogDetailsQuote() {
-        if (tblComplaints.getSelectionModel().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-            return;
-        }
-        showDialogAddQuotes();
-        selectedRecord();
+        Platform.runLater(() -> {
+            if (tblComplaints.getSelectionModel().isEmpty()) {
+                AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
+                return;
+            }
+            showDialogAddQuotes();
+            selectedRecord();
+        });
     }
 
     private void selectedRecord() {
         Complaint complaint = tblComplaints.getSelectionModel().getSelectedItem();
-        DialogCustomerService dialogCustomerService = new DialogCustomerService();
-        dialogCustomerService.setComplaint(complaint);
+        Platform.runLater(() -> {
+            DialogCustomerService dialogCustomerService = new DialogCustomerService();
+            dialogCustomerService.setComplaint(complaint);
+        });
     }
 
     @FXML
@@ -178,37 +189,43 @@ public class CustomerServiceBoundary implements Initializable {
 
     @FXML
     private void loadData() {
-        ComplaintController.getAllComplaints();  // Request to load data from the server
+        ComplaintController.getAllComplaints() ;  // Request to load data from the server
     }
 
     @FXML
     private void newQuote() {
-        loadData();
-        closeDialogAddQuotes();
-        AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
+        Platform.runLater(() -> {
+            loadData();
+            closeDialogAddQuotes();
+            AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
+        });
     }
 
     @FXML
     private void deleteQuotes() {
-        Complaint selectedQuote = tblComplaints.getSelectionModel().getSelectedItem();
-        if (selectedQuote != null) {
-            listComplaints.remove(selectedQuote);
-            tblComplaints.refresh();
-            loadData();
-            closeDialogDeleteQuote();
-            AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
-        }
+        Platform.runLater(() -> {
+            Complaint selectedQuote = tblComplaints.getSelectionModel().getSelectedItem();
+            if (selectedQuote != null) {
+                listComplaints.remove(selectedQuote);
+                tblComplaints.refresh();
+                loadData();
+                closeDialogDeleteQuote();
+                AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
+            }
+        });
     }
 
     @FXML
     private void updateQuotes() {
-        loadData();
-        closeDialogAddQuotes();
-        AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
+        Platform.runLater(() -> {
+            loadData();
+            closeDialogAddQuotes();
+            AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
+        });
     }
 
     private void disableTable() {
-        tblComplaints.setDisable(true);
+        Platform.runLater(() -> tblComplaints.setDisable(true));
     }
 
     @FXML

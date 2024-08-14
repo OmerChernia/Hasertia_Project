@@ -389,7 +389,9 @@ public class MainBoundary implements Initializable {
         else  handleCustomerLoginResponse(loginMessage);
     }
 
-
+    public static int getId(){
+        return Integer.parseInt(loggedInUserId);
+    }
 
 
 

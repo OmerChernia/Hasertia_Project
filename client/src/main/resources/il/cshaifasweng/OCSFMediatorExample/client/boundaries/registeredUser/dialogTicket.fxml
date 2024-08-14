@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="305.0" prefWidth="502.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-width: 2px; -fx-background-radius: 10px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.DialogTicketController">
+<AnchorPane id="AnchorPane" prefHeight="305.0" prefWidth="502.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-width: 2px; -fx-background-radius: 10px;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.DialogTicket">
    <children>
       <HBox fx:id="hboxTime" layoutX="250.0" layoutY="104.0" prefHeight="53.0" prefWidth="87.0">
          <children>

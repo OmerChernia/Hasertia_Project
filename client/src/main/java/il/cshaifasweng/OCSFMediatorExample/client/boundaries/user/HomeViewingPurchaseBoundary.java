@@ -27,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class HomeViewingPurchaseBoundary {
@@ -125,6 +126,8 @@ public class HomeViewingPurchaseBoundary {
     private TextField confirmIdNumberTF;
     //end of user details
     private RegisteredUser user=null;
+
+    private String link;
 
     // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -229,10 +232,24 @@ public class HomeViewingPurchaseBoundary {
         else
         {
             String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
-            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime);
+            link ="https://hasertia.com/"+ generateRandomString(10);
+            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime, link);
         }
     }
+    public static String generateRandomString(int length) {
+        // Define the characters that can be included in the random string
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder result = new StringBuilder();
+        Random random = new Random();
 
+        // Generate random characters from the 'characters' string
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            result.append(characters.charAt(index));
+        }
+
+        return result.toString();
+    }
     @Subscribe
     public void onPurchaseReceivedMessage(PurchaseMessage message)
     {
@@ -278,8 +295,8 @@ public class HomeViewingPurchaseBoundary {
             String text = "Movie: " + movieTitle.getText() + ", " +
                     "Available on " + homeViewingPackageInstance.getViewingDate() + ", " +
                     "Price Paid: ₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice() + ", " +
-                    "Valid until: " +homeViewingPackageInstance.getViewingDate().plusWeeks(1) + ", " +
-                    "Purchase link: https://hasertia.com/"+homeViewingPackageInstance.getOwner().getId()+"purchase"+homeViewingPackageInstance.getId();
+                    "Valid until: " + homeViewingPackageInstance.getViewingDate().plusWeeks(1) + ", " +
+                    "Purchase link: " + link;
 
             confirmationDetails.setText(text);
             EmailSender.sendEmail(homeViewingPackageInstance.getOwner().getEmail(), "New Home Viewing Purchase From Hasertia", text);

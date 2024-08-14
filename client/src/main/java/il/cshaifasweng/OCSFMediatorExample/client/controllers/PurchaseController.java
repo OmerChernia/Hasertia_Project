@@ -11,28 +11,28 @@ public class PurchaseController
 {
     public static void AddMovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat)
     {
-        MovieTicket newTicket = new MovieTicket(purchaseDate, owner, purchaseValidation, movieInstance, seat);
+        MovieTicket newTicket = new MovieTicket(purchaseDate, owner, purchaseValidation, movieInstance, seat,true);
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
     public static void AddMultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation)
     {
-        MultiEntryTicket newTicket = new MultiEntryTicket(purchaseDate, owner, purchaseValidation);
+        MultiEntryTicket newTicket = new MultiEntryTicket(purchaseDate, owner, purchaseValidation,true);
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void AddHomeViewing(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate)
+    public static void AddHomeViewing(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, String link)
     {
-        HomeViewingPackageInstance newTicket = new HomeViewingPackageInstance(purchaseDate, owner, purchaseValidation, movie, viewingDate);
+        HomeViewingPackageInstance newTicket = new HomeViewingPackageInstance(purchaseDate, owner, purchaseValidation, movie, viewingDate,true,link);
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void RemovePurchase(int purchaseID)
+    public static void RemovePurchase(Purchase purchase)
     {
-        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.REMOVE_PURCHASE,purchaseID);
+        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.REMOVE_PURCHASE,purchase, 0);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
     public static void GetPurchasesByCustomerID(int CustomerId)

@@ -21,31 +21,32 @@ public class ConstantsPath {
     /* USER_VIEWS */
     public static final String START_VIEW =  USER_PACKAGE + "StartView.fxml";
     public static final String ABOUT_VIEW =  USER_PACKAGE + "AboutView.fxml";
-    public static final String DIALOG_TICKET_VIEW =  USER_PACKAGE + "dialogTicket.fxml";
     public static final String HOME_VIEW =  USER_PACKAGE + "HomeView.fxml";
     public static final String ME_PURCHASE_VIEW =  USER_PACKAGE + "MEPurchaseView.fxml";
     public static final String HOME_VIEWING_PURCHASE_VIEW =  USER_PACKAGE + "HomeViewingPurchase.fxml";
     public static final String MOVIE_INFO_VIEW =  USER_PACKAGE + "MovieInfo.fxml";
     public static final String MOVIE_SMALL_VIEW =  USER_PACKAGE + "MovieSmall.fxml";
     public static final String THEATER_PURCHASE_VIEW =  USER_PACKAGE + "TheaterPurchaseView.fxml";
+    public static final String COMPLAINT_VIEW =  USER_PACKAGE + "ComplaintView.fxml";
 
 
     /* THEATER_MANAGER_VIEWS */
     public static final String PRICE_CHANGE_VIEW  =  THEATER_MANAGER_PACKAGE + "PriceChangeView.fxml";
 
 
-
-
     /* REGISTER_USER_VIEWS */
-    public static final String COMPLAINT_VIEW =  REGISTER_USER_PACKAGE + "ComplaintView.fxml";
     public static final String DIALOG_COMPLAINT_VIEW  =  REGISTER_USER_PACKAGE + "dialogComplaint.fxml";
     public static final String ORDERS_VIEW =  REGISTER_USER_PACKAGE + "OrdersView.fxml";
+    public static final String DIALOG_TICKET_VIEW =  REGISTER_USER_PACKAGE + "dialogTicket.fxml";
+
 
     /* CONTENT_MANAGER_VIEWS */
     public static final String CONTENT_MOVIES_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieListView.fxml";
     public static final String CONTENT_SCREENINGS_VIEW  =  CONTENT_MANAGER_PACKAGE + "EditMovieScreeningsView.fxml";
     public static final String DIALOG_MOVIE_VIEW  =  CONTENT_MANAGER_PACKAGE + "dialogEditMovie.fxml";
     public static final String DIALOG_SCREENING_VIEW  =  CONTENT_MANAGER_PACKAGE + "dialogEditScreening.fxml";
+
+
 
     /* CUSTOMER_MANAGER_VIEWS */
     public static final String CUSTOMER_SERVICE_VIEW  =  CUSTOMER_SERVICE_PACKAGE + "CustomerService.fxml";

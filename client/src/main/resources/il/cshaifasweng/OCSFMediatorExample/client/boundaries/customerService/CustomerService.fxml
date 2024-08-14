@@ -23,7 +23,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <AnchorPane fx:id="containerHandleComplaint" layoutX="42.0" layoutY="73.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="442.0" prefWidth="863.0" visible="false" />
+            <AnchorPane fx:id="containerHandleComplaint" layoutX="161.0" layoutY="133.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="376.0" prefWidth="579.0" visible="false" />
             <HBox fx:id="rootSearch" alignment="CENTER" layoutX="58.0" layoutY="20.0" prefHeight="45.0" prefWidth="691.0" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5;" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="181.0" AnchorPane.topAnchor="20.0">
                <padding>
                   <Insets bottom="20.0" left="5.0" />

@@ -10,8 +10,8 @@ public class MultiEntryTicket extends Purchase
     public MultiEntryTicket(){}
 
 
-    public MultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation) {
-        super(purchaseDate, owner, purchaseValidation);
+    public MultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, boolean isActive) {
+        super(purchaseDate, owner, purchaseValidation,isActive);
     }
 
     @Override

@@ -1,6 +1,5 @@
-package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
+package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieTicket;
 import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class DialogTicketController {
+public class DialogTicket {
 
     @FXML
     private HBox hboxPurchaseDay;
@@ -140,7 +139,7 @@ public class DialogTicketController {
         lblMin.setText(String.format("%02d", activeDate.getMinute()));
         lblPrice.setText(String.valueOf(movieTicket.getMovieInstance().getMovie().getTheaterPrice())+"₪");
         lblTheater.setText(movieTicket.getSeat().getHall().getTheater().getLocation());
-      //  lblHall.setText(movieTicket.getSeat().getHall().getName().replace("Hall", ""));
+        //  lblHall.setText(movieTicket.getSeat().getHall().getName().replace("Hall", ""));
         String seat = "row: " + movieTicket.getSeat().getRow() + ", seat: " + movieTicket.getSeat().getCol();
         lblSeat.setText(seat);
 
@@ -166,7 +165,7 @@ public class DialogTicketController {
         hboxTime.setVisible(false);
         lblActive.setVisible(false);
 
-     }
+    }
 
     public void setHomeViewingPackage() {
         lblTitle.setText(homeViewingPackage.getMovie().getEnglishName());
@@ -182,7 +181,7 @@ public class DialogTicketController {
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(true);
         vbxME.setVisible(false);
-         hboxPurchaseDay.setVisible(true);
+        hboxPurchaseDay.setVisible(true);
         hbxActiveDay.setVisible(true);
         hboxTime.setVisible(false);
         lblActive.setVisible(true);
@@ -193,7 +192,7 @@ public class DialogTicketController {
     @FXML
     private void closeDialogAddUser() {
         if (ordersController != null) {
-            ordersController.closeDialogAddUser();
+            ordersController.closeDialog();
         }
     }
 }
