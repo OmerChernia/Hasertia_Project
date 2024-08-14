@@ -11,10 +11,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessa
 import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;

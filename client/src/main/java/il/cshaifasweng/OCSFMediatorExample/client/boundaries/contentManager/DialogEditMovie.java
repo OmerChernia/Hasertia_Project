@@ -54,8 +54,6 @@ public class DialogEditMovie implements Initializable {
     @FXML
     private ComboBox<String> comboGenre;
 
-    @FXML
-    private ComboBox<String> comboType;
 
     @FXML
     private AnchorPane containerAddProduct;
@@ -104,6 +102,12 @@ public class DialogEditMovie implements Initializable {
     @FXML
     private Label txtTitle;
 
+    @FXML
+    private ComboBox<Movie.Availability> comboAvailable;
+
+    @FXML
+    private ComboBox<Movie.StreamingType> comboType;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeImageHoverEffect();
@@ -113,7 +117,9 @@ public class DialogEditMovie implements Initializable {
 
     private void initializeComboBoxAutoComplete() {
         AutocompleteComboBox.autoCompleteComboBoxPlus(comboGenre, (typedText, item) -> item.toLowerCase().contains(typedText.toLowerCase()));
-        AutocompleteComboBox.autoCompleteComboBoxPlus(comboType, (typedText, item) -> item.toLowerCase().contains(typedText.toLowerCase()));
+        comboAvailable.getItems().addAll(Movie.Availability.values());
+        comboType.getItems().addAll(Movie.StreamingType.values());
+
     }
 
     public void cleanup() {
@@ -161,7 +167,8 @@ public class DialogEditMovie implements Initializable {
         txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
         txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
         comboGenre.setValue(movie.getGenre());
-        comboType.setValue(movie.getStreamingType().toString());
+        comboType.setValue(movie.getStreamingType());
+        comboAvailable.setValue(movie.getAvailability());
         txtDescription.setText(movie.getInfo());
         txtActors.setText(String.join(", ", movie.getMainActors()));
         imageProduct.setImage(getImage(movie));
@@ -179,7 +186,8 @@ public class DialogEditMovie implements Initializable {
         txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
         txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
         comboGenre.setValue(movie.getGenre());
-        comboType.setValue(movie.getStreamingType().toString());
+        comboType.setValue(movie.getStreamingType());
+        comboAvailable.setValue(movie.getAvailability());
         txtDescription.setText(movie.getInfo());
         txtActors.setText(String.join(", ", movie.getMainActors()));
         imageProduct.setImage(getImage(movie));
@@ -262,10 +270,10 @@ public class DialogEditMovie implements Initializable {
         String theaterPrice = txtTheaterPrice.getText().trim();
         String hvPrice = txtHVPrice.getText().trim();
         String genre = comboGenre.getSelectionModel().getSelectedItem();
-        String streamingType = comboType.getSelectionModel().getSelectedItem();
+        Movie.StreamingType streaming = comboType.getSelectionModel().getSelectedItem();
+        Movie.Availability availability = comboAvailable.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();
         List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
-
 
 
         // Check for changes in details
@@ -274,7 +282,8 @@ public class DialogEditMovie implements Initializable {
                 !producer.equals(movie.getProducer()) ||
                 !description.equals(movie.getInfo()) ||
                 !genre.equals(movie.getGenre()) ||
-                !streamingType.equals(movie.getStreamingType().toString()) ||
+                !(streaming==movie.getStreamingType()) ||
+                !(availability==movie.getAvailability())||
                 !actors.equals(movie.getMainActors()) ||
                 Integer.parseInt(duration) != movie.getDuration();
 
@@ -290,10 +299,10 @@ public class DialogEditMovie implements Initializable {
 
         // If there are changes, proceed with the update
         if ("add".equals(currentMode)) {
-            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "", Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
+            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "", streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
         } else {
             if (detailsChanged) {
-                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors), "", Movie.StreamingType.valueOf(streamingType), Integer.parseInt(duration), genre);
+                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors), "", streaming, Integer.parseInt(duration), genre, availability);
             }
 
             // Create a price update request only if prices have changed

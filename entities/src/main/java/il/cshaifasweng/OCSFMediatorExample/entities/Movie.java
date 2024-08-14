@@ -10,16 +10,45 @@ import java.util.List;
 public class Movie implements Serializable {
 
     public enum StreamingType {
-        HOME_VIEWING,
-        THEATER_VIEWING,
-        BOTH
+        HOME_VIEWING {
+            @Override
+            public String toString() {
+                return "Home Viewing";
+            }
+        },
+        THEATER_VIEWING {
+            @Override
+            public String toString() {
+                return "Theater Viewing";
+            }
+        },
+        BOTH {
+            @Override
+            public String toString() {
+                return "Home and Theater Viewing";
+            }
+        }
     }
 
-    public enum Availability
-    {
-        NOT_AVAILABLE,
-        AVAILABLE,
-        COMING_SOON
+    public enum Availability {
+        NOT_AVAILABLE {
+            @Override
+            public String toString() {
+                return "Not Available";
+            }
+        },
+        AVAILABLE {
+            @Override
+            public String toString() {
+                return "Available";
+            }
+        },
+        COMING_SOON {
+            @Override
+            public String toString() {
+                return "Coming Soon";
+            }
+        }
     }
 
     @Id

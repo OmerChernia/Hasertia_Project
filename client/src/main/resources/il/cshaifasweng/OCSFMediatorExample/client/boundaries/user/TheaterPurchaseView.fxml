@@ -66,28 +66,7 @@
                </HBox>
                <VBox alignment="CENTER" spacing="15">
                   <Button onAction="#goToSeatSelection" styleClass="button-primary" text="Regular" />
-                  <Button onAction="#showIdPhoneFields" styleClass="button-secondary" text="Card Package" />
-               </VBox>
-               <VBox fx:id="idPhonePane" alignment="CENTER" spacing="20" styleClass="sub-pane" visible="false">
-                  <Label styleClass="label-large" text="Enter ID or Phone Number" />
-                  <GridPane alignment="CENTER" hgap="15" vgap="15">
-                     <Label text="ID Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                     <TextField fx:id="idField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                     <Label text="Phone Number:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                     <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                     <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
-                  </GridPane>
-                  <HBox alignment="CENTER" spacing="20">
-                     <Button onAction="#goToSeatSelection" styleClass="button-primary" text="Next" />
-                     <Button onAction="#hideIdPhoneFields" styleClass="button-secondary" text="Cancel" />
-                  </HBox>
+                  <Button fx:id="cardPackageBTN" onAction="#goToSeatSelectionWithCardPackage" styleClass="button-secondary" text="Card Package" visible="false" />
                </VBox>
             </VBox>
 

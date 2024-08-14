@@ -1,10 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
@@ -32,7 +29,22 @@ public class RegisteredUserHandler extends MessageHandler
         {
             case ADD_NEW_USER -> add_new_user();
             case GET_USER_BY_ID -> getUserByID();
+            case LOWER_CARD_PACKAGE_COUNT -> lowerCardPackageCount();
         }
+    }
+
+    private void lowerCardPackageCount()
+    {
+        Query<RegisteredUser> query = session.createQuery("FROM RegisteredUser where  id_number= :_id_number", RegisteredUser.class);
+        query.setParameter("_id_number", message.user_id);
+        // Execute the query and get the result list
+        RegisteredUser registeredUser = query.uniqueResult();
+
+        registeredUser.setTicket_counter(registeredUser.getTicket_counter() - message.number_to_lower);
+        session.update(registeredUser);
+        session.flush();
+
+        message.responseType = RegisteredUserMessage.ResponseType.CARD_PACKAGE_NUMBER_UPDATED;
     }
 
     private void getUserByID() {

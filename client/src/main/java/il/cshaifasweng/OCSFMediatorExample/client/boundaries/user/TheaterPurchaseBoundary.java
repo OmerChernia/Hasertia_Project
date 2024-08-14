@@ -12,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -149,6 +150,10 @@ public class TheaterPurchaseBoundary {
     @FXML
     private Spinner<Integer> ticketsSpinner; // רכיב לבחירת מספר כרטיסים
 
+    @FXML
+    private Button cardPackageBTN;
+
+
     private MovieInstance currentMovieInstance;
 
     private List<Seat> selectedSeats;
@@ -160,6 +165,7 @@ public class TheaterPurchaseBoundary {
     private int numberOfTickets;
 
     private RegisteredUser user=null;
+    private boolean isCardPackageOn;
 
     @FXML
     public void initialize()
@@ -170,6 +176,8 @@ public class TheaterPurchaseBoundary {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
+
+        isCardPackageOn= false;
 
         if(!SimpleClient.user.isEmpty())
             RegisteredUserController.getUserByID(SimpleClient.user);
@@ -264,7 +272,8 @@ public class TheaterPurchaseBoundary {
     }
 
     @FXML
-    private void goToPaymentDetails() {
+    private void goToPaymentDetails()
+    {
         if(numberOfTickets > 0)
         {
             NotificationsBuilder.create(NotificationType.ERROR,"You didn't selected all the seats you asked.");
@@ -290,12 +299,25 @@ public class TheaterPurchaseBoundary {
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_WAS_RESERVED)) {
                 stackPane.getChildren().clear();
                 highlightStep(3);
-                startTimer();  //start the timer
 
-                if(user != null)
-                    showCreditCardFields();
-                else
-                    stackPane.getChildren().add(paymentDetailsPane);
+                if(isCardPackageOn)
+                {
+                    String purchaseValidation = "Card Package";
+                    for (Seat seat : selectedSeats) {
+                        PurchaseController.AddMovieTicket(LocalDateTime.now(), user, purchaseValidation, currentMovieInstance, seat);
+                    }
+                    RegisteredUserController.lowerCardPackageOfUser(user.getId_number(),selectedSeats.size());
+                    showConfirmation();
+                }
+                else {
+
+                    startTimer();  //start the timer
+
+                    if (user != null)
+                        showCreditCardFields();
+                    else
+                        stackPane.getChildren().add(paymentDetailsPane);
+                }
             }
 
             if(message.responseType.equals(SeatMessage.ResponseType.SEATS_HAS_BEEN_CANCELED))
@@ -324,6 +346,23 @@ public class TheaterPurchaseBoundary {
         }
     }
 
+    @FXML
+    private void goToSeatSelectionWithCardPackage()
+    {
+        if(ticketsSpinner.getValue() > user.getTicket_counter())
+        {
+            NotificationsBuilder.create(NotificationType.ERROR, "You can't order more tickets then what you have in card package.");
+        }
+        else
+        {
+            isCardPackageOn = true;
+            numberOfTickets = ticketsSpinner.getValue();
+            stackPane.getChildren().clear();
+            stackPane.getChildren().add(seatSelectionPane);
+            highlightStep(2);
+        }
+    }
+
 
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {
@@ -344,8 +383,12 @@ public class TheaterPurchaseBoundary {
         if(message.requestType == RegisteredUserMessage.RequestType.GET_USER_BY_ID)
         {
             user = message.registeredUser;
+            if(user != null) {
+                cardPackageBTN.setVisible(true);
+                cardPackageBTN.setText("Card Package\nNumber of remaining tickets: " + user.getTicket_counter());
+            }
         }
-        else {
+        else if (message.requestType == RegisteredUserMessage.RequestType.ADD_NEW_USER){
             Platform.runLater(() -> {
                 String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
                 for (Seat seat : selectedSeats) {
@@ -474,16 +517,22 @@ public class TheaterPurchaseBoundary {
         {
             seats_info.append("Row: ").append(seat.getRow()).append(", Col: ").append(seat.getCol()).append("\n");
         }
-
-        confirmationDetails.setText(
-                "Movie: " + currentMovieInstance.getMovie().getHebrewName() + " | " + currentMovieInstance.getMovie().getEnglishName() + "\n" +
-                        "Date: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
-                        "Time: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")) + "\n" +
-                        "Hall: " + currentMovieInstance.getHall().getId() + "\n" +
-                        "Theater: " + currentMovieInstance.getHall().getTheater().getLocation() + "\n" +
-                        seats_info +
-                        "Price Paid: ₪" + currentMovieInstance.getMovie().getTheaterPrice() *selectedSeats.size()
-        );
+        String text = "Movie: " + currentMovieInstance.getMovie().getHebrewName() + " | " + currentMovieInstance.getMovie().getEnglishName() + "\n" +
+                "Date: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
+                "Time: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")) + "\n" +
+                "Hall: " + currentMovieInstance.getHall().getId() + "\n" +
+                "Theater: " + currentMovieInstance.getHall().getTheater().getLocation() + "\n" +
+                seats_info;
+        if(!isCardPackageOn)
+                text += "Price Paid: ₪" + currentMovieInstance.getMovie().getTheaterPrice() *selectedSeats.size();
+        String Email;
+        if(user!=null)
+            Email= user.getEmail();
+        else
+            Email = emailTF.getText();
+        EmailSender.sendEmail(Email, "New Movie Ticket Purchase From Hasertia", text);
+        EmailSender.sendEmail("hasertiaproject@gmail.com", "New Movie Ticket Purchase From Hasertia", text);
+        confirmationDetails.setText(text);
         confirmationMovieImage.setImage(movieImage.getImage());
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);

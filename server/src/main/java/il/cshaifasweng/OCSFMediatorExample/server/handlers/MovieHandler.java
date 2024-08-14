@@ -3,7 +3,9 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -171,32 +173,55 @@ public class MovieHandler extends MessageHandler
 
     private void add_movie()
     {
-        if(message.movies.getFirst() != null)
-        {
+        if(message.movies.getFirst() != null) {
             // Create an HQL query to fetch all complaints
             // Searching if the movie is existed in DB
             Query<Movie> query = session.createQuery("FROM Movie WHERE englishName = :_englishName or hebrewName = :_hebrewName", Movie.class);
             query.setParameter("_englishName", message.movies.getFirst().getEnglishName());
             query.setParameter("_hebrewName", message.movies.getFirst().getHebrewName());
 
-            List<Movie> movies = query.list();
+            List<Movie> movies = query.getResultList();
 
-            if(movies == null) {
-
+            if (movies.isEmpty()) {
                 session.save(message.movies.getFirst());
                 session.flush();
                 message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
-            }
-            else // if movie already existed , don't add it
+            } else
                 message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+
         }
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
-        notifyMultiEntryClients(message.movies.getFirst());
+        if(message.movies.getFirst().getAvailability()!= Movie.Availability.NOT_AVAILABLE)
+            notifyMultiEntryClients(message.movies.getFirst());
     }
     private void notifyMultiEntryClients(Movie movie)
     {
+        System.out.println("hello");
+        String text = "Dear Customer,\n\n" +
+                "We are excited to announce a new movie in our collection: " + movie.getEnglishName() + " (" + movie.getHebrewName() + ").\n" +
+                "Produced by " + movie.getProducer() + ", this " + movie.getGenre() + " film features an incredible cast including " + String.join(", ", movie.getMainActors()) + ".\n" +
+                "With a runtime of " + movie.getDuration() + " minutes, this movie is "+movie.getAvailability()+" for " + movie.getStreamingType() + ".\n";
 
+        if(movie.getStreamingType() == Movie.StreamingType.BOTH)
+         {
+            text += "Home Viewing Price: " + movie.getHomeViewingPrice() + " ILS\n" +"Theater Price: " + movie.getTheaterPrice() + " ILS\n\n";
+        }
+        if(movie.getStreamingType() == Movie.StreamingType.HOME_VIEWING)
+        {
+            text += "Home Viewing Price: " + movie.getHomeViewingPrice() + " ILS\n\n";
+        }
+        if(movie.getStreamingType() == Movie.StreamingType.THEATER_VIEWING)
+        {
+            text += "Theater Price: " + movie.getTheaterPrice() + " ILS\n\n";
+        }
+        text+=  "Don't miss out on this exciting release!\n" + "Best regards,\nHasertia Movie Team <3";
+        Query<RegisteredUser> query = session.createQuery("FROM RegisteredUser WHERE ticket_counter > 0", RegisteredUser.class);
+        List<RegisteredUser> users = query.getResultList();
+        for (RegisteredUser user : users) {
+            EmailSender.sendEmail(user.getEmail(), "New Movie in Hasertia", text);
+        }
+        EmailSender.sendEmail("hasertiaproject@gmail.com", "New Movie in Hasertia", text);
     }
     private void deactivate_movie() {
         Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);

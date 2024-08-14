@@ -21,7 +21,7 @@
             <!-- Package Selection Pane -->
             <VBox fx:id="packageSelectionPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
                <Label styleClass="section-title" text="Select Package" />
-               <VBox alignment="CENTER" spacing="20" styleClass="package-container" maxWidth="420">
+               <VBox alignment="CENTER" maxWidth="420" spacing="20" styleClass="package-container">
                   <Label styleClass="package-title" text="Subscription card (20 movie tickets)" />
                   <GridPane hgap="15" styleClass="package-details" vgap="10">
                      <Label text="Type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -108,7 +108,6 @@
                <ImageView fx:id="confirmationPackageImage" fitHeight="150" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
                <Label fx:id="confirmationDetails" styleClass="confirmation-details" />
                <Label fx:id="pricePaidLabel" styleClass="confirmation-price" />
-               <Button onAction="#closeApplication" styleClass="button-primary" text="Close" />
             </VBox>
          </StackPane>
       </ScrollPane>
