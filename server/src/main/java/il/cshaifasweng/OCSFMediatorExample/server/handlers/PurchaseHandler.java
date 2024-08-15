@@ -88,10 +88,18 @@ public class PurchaseHandler extends MessageHandler
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
             if (purchase != null) {
                 purchase.setisActive(false); // purchase is now not active anymore
+
+                if(purchase instanceof MovieTicket) // if the purchase is a seat release it
+                {
+                    Seat seat = session.get(Seat.class, ((MovieTicket) purchase).getSeat().getId());
+                    seat.deleteMovieInstance(((MovieTicket) purchase).getMovieInstance());
+                    session.update(seat);
+                }
+
                 session.update(purchase);
+
                 session.flush();
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_REMOVED;
-
                 message.purchases.add(purchase);
 
             } else {
