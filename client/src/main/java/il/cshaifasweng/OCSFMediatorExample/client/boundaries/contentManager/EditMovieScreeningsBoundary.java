@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
@@ -95,11 +96,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
         tblProducts.setRowFactory(tv -> {
             TableRow<MovieInstance> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                    showDialogDetails();
-                }
-            });
             return row;
         });
 
@@ -116,7 +112,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
                         MovieInstanceController.requestAllMovieInstances();
                         showAlert("You have updated the screening!", AlertType.SUCCESS);
                         break;
-                    case  FILLTERD_LIST:
+                    case FILLTERD_LIST:
                         loadTableData(movieInstanceMessage.movies);
                         break;
                     default:
@@ -159,7 +155,11 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
 
 
+    @FXML
+    public void createNewScreening()
+    {
 
+    }
 
 
 
@@ -170,12 +170,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
             showDialogEdit();
             contextMenu.hide();
         });
-
-        contextMenu.setActionDetails(ev -> {
-            showDialogDetails();
-            contextMenu.hide();
-        });
-
         contextMenu.setActionDelete(ev -> {
             showDialogDelete();
             contextMenu.hide();
@@ -250,7 +244,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
             deleteButton.setOnAction(ev -> {
                 MovieInstance selectedMovieInstance = tblProducts.getSelectionModel().getSelectedItem();
-                MovieInstanceController.deleteMovieInstance(selectedMovieInstance.getId());
+                MovieInstanceController.deleteMovieInstance(selectedMovieInstance.getId());   //working!
                 dialogDelete.close();
             });
 
@@ -266,15 +260,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
     private void disableTable() {
         tblProducts.setDisable(true);
-    }
-
-    @FXML
-    private void showDialogDetails() {
-        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-            return;
-        }
-        showDialog("view");
     }
 
     @FXML
@@ -305,6 +290,11 @@ public class EditMovieScreeningsBoundary implements Initializable {
         if (stage != null) {
             stage.hide();
         }
+    }
+
+    public void cleanup()
+    {
+        EventBus.getDefault().unregister(this);
     }
 
 

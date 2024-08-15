@@ -69,6 +69,8 @@ public class SimpleServer extends AbstractServer
 					messageHandler = new ConnectionHandler((ConnectionMessage) msg , client, session ,clients);
 				} else if (msg instanceof RegisteredUserMessage) {
 					messageHandler = new RegisteredUserHandler((RegisteredUserMessage)msg , client, session);
+				} else if(msg instanceof HallMessage) {
+					messageHandler = new HallHandler((HallMessage) msg, client, session);
 				}
 
 				if (messageHandler != null) {

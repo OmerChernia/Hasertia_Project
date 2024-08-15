@@ -110,7 +110,7 @@
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Label>
-                  <Button fx:id="Close" layoutX="767.0" layoutY="9.0" mnemonicParsing="false" onAction="#handleClose" prefHeight="20.0" prefWidth="25.0" styleClass="button-close" stylesheets="@../../cssTemplate/fullpackstyling.css" text="X" textFill="WHITE">
+                  <Button fx:id="Close" layoutX="767.0" layoutY="9.0" mnemonicParsing="false" onAction="#handleClose" prefHeight="20.0" prefWidth="25.0" styleClass="button-close"  text="X" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>

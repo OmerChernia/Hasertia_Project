@@ -4,14 +4,13 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Hall;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.HallMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.hibernate.Hibernate;
 
 public class HallHandler extends MessageHandler {
     private HallMessage message;
@@ -23,8 +22,8 @@ public class HallHandler extends MessageHandler {
 
     public void handleMessage() {
         switch (message.requestType) {
-            case GET_AVAILABLE_DATES -> getAvailableDates();
-            case GET_AVAILABLE_TIMES -> getAvailableTimes();
+            case GET_AVAILABLE_DATES -> get_available_dates();
+            case GET_AVAILABLE_TIMES -> get_available_times();
         }
     }
 
@@ -33,26 +32,24 @@ public class HallHandler extends MessageHandler {
         message.messageType = HallMessage.MessageType.RESPONSE;
     }
 
-    private void getAvailableDates() {
+    private void get_available_dates() {
         try {
-            Hall hall = message.getHall();
-            // Initialize movieInstances collection
-            Hibernate.initialize(hall.getMovieInstances());
-            List<LocalDate> availableDates = getAvailableDatesForHall(hall);
+            Hall hall = session.get(Hall.class, message.getHall().getId());
+            List<LocalDate> availableDates = get_available_dates_for_hall(hall);
             message.setAvailableDates(availableDates);
         } catch (Exception e) {
             e.printStackTrace();
+            // Handle transaction rollback if necessary
         }
     }
 
-    private List<LocalDate> getAvailableDatesForHall(Hall hall) {
-        // Initialize movieInstances if null
+    private List<LocalDate> get_available_dates_for_hall(Hall hall) {
         if (hall.getMovieInstances() == null) {
-            hall.setMovieInstances(new ArrayList<>());  // or handle the null case appropriately
+            hall.setMovieInstances(new ArrayList<>());
         }
 
         LocalDate today = LocalDate.now();
-        LocalDate endDate = today.plusWeeks(2);  // Assuming we're checking the next 2 weeks
+        LocalDate endDate = today.plusWeeks(2);
 
         return today.datesUntil(endDate)
                 .filter(date -> hall.getMovieInstances().stream().noneMatch(
@@ -61,14 +58,25 @@ public class HallHandler extends MessageHandler {
                 .collect(Collectors.toList());
     }
 
-    private List<LocalTime> getAvailableTimesForHall(Hall hall, LocalDate date) {
-        // Initialize movieInstances if null
+    private void get_available_times() {
+        try {
+            Hall hall = session.get(Hall.class, message.getHall().getId());
+            LocalDate date = message.getDate();
+            List<LocalTime> availableTimes = get_available_times_for_hall(hall, date);
+            message.setAvailableTimes(availableTimes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle transaction rollback if necessary
+        }
+    }
+
+    private List<LocalTime> get_available_times_for_hall(Hall hall, LocalDate date) {
         if (hall.getMovieInstances() == null) {
-            hall.setMovieInstances(new ArrayList<>());  // or handle the null case appropriately
+            hall.setMovieInstances(new ArrayList<>());
         }
 
         LocalTime startTime = LocalTime.of(12, 0);
-        LocalTime endTime = LocalTime.MIDNIGHT;  // Assuming end time is at midnight
+        LocalTime endTime = LocalTime.MIDNIGHT;
 
         List<LocalTime> availableTimes = new ArrayList<>();
 
@@ -85,20 +93,4 @@ public class HallHandler extends MessageHandler {
 
         return availableTimes;
     }
-
-
-    private void getAvailableTimes() {
-        try {
-            Hall hall = message.getHall();
-            LocalDate date = message.getDate();
-            // Initialize movieInstances collection
-            Hibernate.initialize(hall.getMovieInstances());
-            List<LocalTime> availableTimes = getAvailableTimesForHall(hall, date);
-            message.setAvailableTimes(availableTimes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }
