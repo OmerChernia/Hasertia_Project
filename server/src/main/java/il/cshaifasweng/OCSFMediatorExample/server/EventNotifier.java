@@ -50,15 +50,14 @@ public class EventNotifier extends Thread {
 
         // Start the transaction
         SimpleServer.session.beginTransaction();
-
+        System.out.println("local time " + LocalDateTime.now().minusDays(1));
         try {
             // Query to find unhandled complaints
             Query<Complaint> query = SimpleServer.session.createQuery(
-                    "from Complaint where isClosed = false and creationDate > :date", Complaint.class
+                    "from Complaint where isClosed = false and creationDate < :date", Complaint.class
             );
             query.setParameter("date", LocalDateTime.now().minusDays(1).plusHours(3));
             List<Complaint> complaints = query.list();
-
             for (Complaint complaint : complaints) {
                 // Prepare the email text
                 String text = "Dear " + complaint.getPurchase().getOwner().getName() + ",\n\n" +

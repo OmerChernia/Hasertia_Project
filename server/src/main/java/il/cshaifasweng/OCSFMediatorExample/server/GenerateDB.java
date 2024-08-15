@@ -414,11 +414,12 @@ public class GenerateDB {
     }
 
     private void generateComplaints() {
-        List<Complaint> existingComplaints = session.createQuery("from Complaint ", Complaint.class).list();
+        List<Complaint> existingComplaints = session.createQuery("from Complaint", Complaint.class).list();
         if (!existingComplaints.isEmpty()) {
             System.out.println("Complaints table is already populated.");
             return;
         }
+
         List<RegisteredUser> users = session.createQuery("from RegisteredUser", RegisteredUser.class).list();
         if (users.isEmpty()) {
             System.out.println("No registered users found.");
@@ -449,9 +450,19 @@ public class GenerateDB {
                     purchase = multiEntryTickets.get(i - 20);
                 }
 
+                // Determine the date for the complaint
+                LocalDateTime complaintDate;
+                if (i < 5) {
+                    // 5 complaints with date 2 days ago
+                    complaintDate = LocalDateTime.now().minusDays(2);
+                } else {
+                    // The rest with today's date
+                    complaintDate = LocalDateTime.now();
+                }
+
                 Complaint complaint = new Complaint(
                         "Complaint info " + i,
-                        LocalDateTime.now(),
+                        complaintDate,
                         purchase,
                         false,
                         user
@@ -471,6 +482,7 @@ public class GenerateDB {
             e.printStackTrace();
         }
     }
+
 
 
 }
