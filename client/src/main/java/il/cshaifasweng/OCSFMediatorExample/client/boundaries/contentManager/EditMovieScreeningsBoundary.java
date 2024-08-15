@@ -20,6 +20,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -54,7 +55,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
     private CustomContextMenu contextMenu;
 
     @FXML
-    private TableColumn<MovieInstance, String> colDate, colEnglish, colHall, colHebrew, colHour, colTheater;
+    private TableColumn<MovieInstance, String> colDate, colEnglish, colHall, colHebrew, colHour, colTheater, colActive;
 
     @FXML
     private TableColumn<MovieInstance, Integer> colId;
@@ -67,6 +68,9 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
     @FXML
     private Button btnNewScrenning;
+
+    @FXML
+    private Button deleteButton;
 
     @FXML
     private StackPane stckProducts;
@@ -104,18 +108,23 @@ public class EditMovieScreeningsBoundary implements Initializable {
     @Subscribe
     public void loadData(MovieInstanceMessage movieInstanceMessage) {
         Platform.runLater(() -> {
-            System.out.println(movieInstanceMessage.responseType);
-            switch (movieInstanceMessage.responseType) {
-                case MOVIE_INSTANCE_UPDATED:
-                    MovieInstanceController.requestAllMovieInstances();
-                    showAlert("You have updated the screening!", AlertType.SUCCESS);
-                    break;
-                case  FILLTERD_LIST:
-                    loadTableData(movieInstanceMessage.movies);
-                    break;
-                default:
-                    showAlert("Failed to process the screening .", AlertType.ERROR);
-                    break;
+            if (movieInstanceMessage.responseType != null) {
+                System.out.println(movieInstanceMessage.responseType);
+                switch (movieInstanceMessage.responseType) {
+                    case MOVIE_INSTANCE_UPDATED:
+                    case MOVIE_INSTANCE_REMOVED:
+                        MovieInstanceController.requestAllMovieInstances();
+                        showAlert("You have updated the screening!", AlertType.SUCCESS);
+                        break;
+                    case  FILLTERD_LIST:
+                        loadTableData(movieInstanceMessage.movies);
+                        break;
+                    default:
+                        showAlert("Failed to process the screening .", AlertType.ERROR);
+                        break;
+                }
+            } else {
+                System.out.println("ResponseType is null");
             }
         });
     }
@@ -145,6 +154,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
         colHour.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
         colTheater.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getTheater().getLocation()));
         colHall.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getHall().getId())));
+        colActive.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIsActive())));
     }
 
 
@@ -161,8 +171,17 @@ public class EditMovieScreeningsBoundary implements Initializable {
             contextMenu.hide();
         });
 
+        contextMenu.setActionDetails(ev -> {
+            showDialogDetails();
+            contextMenu.hide();
+        });
+
+        contextMenu.setActionDelete(ev -> {
+            showDialogDelete();
+            contextMenu.hide();
+        });
         contextMenu.show();
-    }
+        }
 
 
 
@@ -214,6 +233,39 @@ public class EditMovieScreeningsBoundary implements Initializable {
         }
 
         showDialog("edit");
+    }
+
+    private void showDialogDelete(){
+        if (tblProducts.getSelectionModel().getSelectedItems().isEmpty()) {
+            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
+            return;
+        }
+
+        Platform.runLater(() -> {
+            rootProducts.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
+            containerDelete.setVisible(true);
+            disableTable();
+
+            dialogDelete = new DialogTool(containerDelete, stckProducts);
+
+            deleteButton.setOnAction(ev -> {
+                MovieInstance selectedMovieInstance = tblProducts.getSelectionModel().getSelectedItem();
+                MovieInstanceController.deleteMovieInstance(selectedMovieInstance);
+                dialogDelete.close();
+            });
+
+            dialogDelete.show();
+
+            dialogDelete.setOnDialogClosed(ev -> {
+                tblProducts.setDisable(false);
+                rootProducts.setEffect(null);
+                containerDelete.setVisible(false);
+            });
+        });
+    }
+
+    private void disableTable() {
+        tblProducts.setDisable(true);
     }
 
     @FXML

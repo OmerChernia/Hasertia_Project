@@ -47,9 +47,9 @@ public class MovieInstanceController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void deleteMovieInstance(int id) {
+    public static void deleteMovieInstance(MovieInstance movieInstance) {
         // Create a request to delete a movie instance by ID
-        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE, id);
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE, movieInstance);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

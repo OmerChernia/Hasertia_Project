@@ -155,8 +155,14 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void delete_movie_instance()
     {
-        //?????
+        System.out.println("print for baruh");
+        message.movies.getFirst().setIsActive(false);
+        System.out.println(message.movies.getFirst().getIsActive());
+        session.update(message.movies.getFirst());
+        session.flush();
+        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
+
     private void update_movie_instance() {
         try {
             // Get the ID from the incoming message
@@ -200,6 +206,7 @@ public class MovieInstanceHandler extends MessageHandler
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
+
     private void get_all_movie_instances()
     {
         try {
@@ -219,6 +226,7 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
+
     private void get_all_movie_instances_by_movie_theater_id_and_date() {
         get_all_movie_instances_by_movie_id_and_theater_name();
         if (message.movies == null) {

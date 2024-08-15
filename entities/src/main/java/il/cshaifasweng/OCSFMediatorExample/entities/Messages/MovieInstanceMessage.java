@@ -23,7 +23,6 @@ public class MovieInstanceMessage extends Message
     public MovieInstanceMessage(MessageType messageType, RequestType requestType , MovieInstance movieInstance)
     {
         //ADD_MOVIE_INSTANCE,UPDATE_MOVIE_INSTANCE
-
         super(messageType);
         movies.add(movieInstance);
         //this.theater_name = movieInstance.getTheater();
