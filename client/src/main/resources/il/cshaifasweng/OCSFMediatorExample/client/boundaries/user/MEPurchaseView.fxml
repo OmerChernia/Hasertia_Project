@@ -76,29 +76,37 @@
                   <Button onAction="#showCreditCardFields" styleClass="button-primary" text="Pay with Credit Card" />
                </HBox>
 
-               <VBox fx:id="creditCardPane" alignment="CENTER" spacing="20" styleClass="sub-pane" visible="false">
-                  <Label styleClass="sub-title" text="Credit Card Details" />
-                  <GridPane alignment="CENTER" hgap="15" styleClass="form-grid" vgap="15">
-                     <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                     <TextField fx:id="cardNumberField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                     <Label text="Expiration Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                     <TextField fx:id="expirationDateField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                     <Label text="CVV:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                     <TextField fx:id="cvvField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                     <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
-                  </GridPane>
-                  <HBox alignment="CENTER" spacing="20">
-                     <Button onAction="#cancelPayment" styleClass="button-secondary" text="Cancel" />
-                     <Button onAction="#submitPayment" styleClass="button-primary" text="Submit" />
-                  </HBox>
+               <VBox alignment="CENTER">
+                  <VBox fx:id="creditCardPane" alignment="CENTER" spacing="20" styleClass="sub-pane" visible="false" maxWidth="400">
+                     <Label styleClass="label-large" text="Credit Card Payment" />
+                     <GridPane alignment="CENTER" hgap="15" vgap="15">
+                        <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <TextField fx:id="cardNumberField" promptText="1234-5678-9012-3456" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                        <Label text="Expiration Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <ComboBox fx:id="expirationMonthCombo" promptText="MM" />
+                           <ComboBox fx:id="expirationYearCombo" promptText="YYYY" />
+                        </HBox>
+
+                        <Label text="CVV:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="cvvField" promptText="123" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <columnConstraints>
+                           <ColumnConstraints halignment="RIGHT" />
+                           <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+                        <rowConstraints>
+                           <RowConstraints />
+                           <RowConstraints />
+                           <RowConstraints />
+                        </rowConstraints>
+                     </GridPane>
+                     <HBox alignment="CENTER" spacing="20">
+                        <Button onAction="#cancelPayment" styleClass="button-secondary" text="Cancel" />
+                        <Button onAction="#submitPayment" styleClass="button-primary" text="Pay Now" />
+                     </HBox>
+                  </VBox>
                </VBox>
             </VBox>
 

@@ -360,6 +360,9 @@ public class MovieSmallBoundary {
             TheaterPurchaseBoundary purchaseController = loader.getController();
             purchaseController.setMovieInstance(movieInstance);
             homeController.setRoot(root);
+
+            MainBoundary.setCurrentController(purchaseController); //set the last controller for cleanup
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -375,6 +378,9 @@ public class MovieSmallBoundary {
             purchaseController.setCurrentMovie(movie);
             purchaseController.setCurrentdateTime(dateTime);
             homeController.setRoot(root);
+
+            MainBoundary.setCurrentController(purchaseController);  //set the last controller for cleanup
+
         } catch (Exception e) {
             e.printStackTrace();
         }

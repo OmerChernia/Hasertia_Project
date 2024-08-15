@@ -26,6 +26,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.regex.Pattern;
 
 public class MEPurchaseBoundary {
@@ -70,7 +72,10 @@ public class MEPurchaseBoundary {
     private TextField cardNumberField;
 
     @FXML
-    private TextField expirationDateField;
+    private ComboBox<String> expirationMonthCombo;
+
+    @FXML
+    private ComboBox<String> expirationYearCombo;
 
     @FXML
     private TextField cvvField;
@@ -129,21 +134,28 @@ public class MEPurchaseBoundary {
     public void initialize() {
         EventBus.getDefault().register(this);
 
-        Platform.runLater(() -> {
-                    Stage stage = (Stage) ME_pane.getScene().getWindow();
-                    stage.setOnHiding(event -> {
-                        System.out.println("CLOSEEE");
-                        EventBus.getDefault().unregister(this);
-                    });
-                });
-
-
         stackPane.getChildren().clear();
         stackPane.getChildren().add(packageSelectionPane);
         highlightStep(1);
 
         if(!SimpleClient.user.isEmpty())
             RegisteredUserController.getUserByID(SimpleClient.user);
+
+        populateExpirationMonths();
+        populateExpirationYears();
+    }
+
+    private void populateExpirationMonths() {
+        for (int i = 1; i <= 12; i++) {
+            expirationMonthCombo.getItems().add(String.format("%02d", i));
+        }
+    }
+
+    private void populateExpirationYears() {
+        int currentYear = Year.now().getValue();
+        for (int i = 0; i < 10; i++) {
+            expirationYearCombo.getItems().add(String.valueOf(currentYear + i));
+        }
     }
 
     private void highlightStep(int step) {
@@ -206,14 +218,17 @@ public class MEPurchaseBoundary {
     @FXML
     private void submitPayment() {
 
-        System.out.println("Payment submitted with card number: " + cardNumberField.getText());
-        creditCardPane.setVisible(false);
-
-        if(user == null)
-            RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
-        else
+        // check if card info is in the right format
+        if(isValidCreditCardInfo())
         {
-            RegisteredUserController.addNewUser(user.getId_number(),"","","");
+            System.out.println("Payment submitted with card number: " + cardNumberField.getText());
+            creditCardPane.setVisible(false);
+
+            if (user == null)
+                RegisteredUserController.addNewUser(idNumberTF.getText(), firstNameTF.getText(), lastNameTF.getText(), emailTF.getText());
+            else {
+                RegisteredUserController.addNewUser(user.getId_number(), "", "", "");
+            }
         }
     }
 
@@ -221,7 +236,6 @@ public class MEPurchaseBoundary {
     private void cancelPayment()
     {
         cardNumberField.clear();
-        expirationDateField.clear();
         cvvField.clear();
 
         if(user == null) {
@@ -256,17 +270,16 @@ public class MEPurchaseBoundary {
             stackPane.getChildren().add(packageConfirmationPane);
             EmailSender.sendEmail(ticket.getOwner().getEmail(), "New Multi-Entry Ticket Purchase From Hasertia", text);
             EmailSender.sendEmail("hasertiaproject@gmail.com", "New Multi-Entry Ticket Purchase From Hasertia", text);
-            EventBus.getDefault().unregister(this);
         });
     }
 
     @FXML
     private void closeApplication()
     {
-
         //EventBus.getDefault().unregister(this);
     }
     public void cleanup() {
+        System.out.println("cleanup");
         EventBus.getDefault().unregister(this);
     }
 
@@ -279,7 +292,7 @@ public class MEPurchaseBoundary {
             user = message.registeredUser;
         }
         else {
-            String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+            String purchaseValidation = cardNumberField.getText() + " " + expirationMonthCombo.getValue()+"/"+expirationYearCombo.getValue() + " " + cvvField.getText();
             PurchaseController.AddMultiEntryTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation);
         }
     }
@@ -365,9 +378,82 @@ public class MEPurchaseBoundary {
         confirmIdNumberTF.clear();
 
         cardNumberField.clear();
-        expirationDateField.clear();
         cvvField.clear();
         creditCardPane.setVisible(false);
+    }
+
+    // a method that checks if the details that the user given is valid , returns true if the details are valid
+    public boolean isValidCreditCardInfo() {
+        String cardNumber = cardNumberField.getText().replaceAll("\\s", "");
+        String expirationMonth = expirationMonthCombo.getValue();
+        String expirationYear = expirationYearCombo.getValue();
+        String cvv = cvvField.getText();
+
+        // Check if all fields are filled
+        if (cardNumber.isEmpty() || expirationMonth == null || expirationYear == null || cvv.isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled");
+            return false;
+        }
+
+        // Validate card number (using Luhn algorithm)
+        if (!isValidCardNumber(cardNumber)) {
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number");
+            return false;
+        }
+
+        // Validate expiration date
+        if (!isValidExpirationDate(expirationMonth, expirationYear)) {
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date");
+            return false;
+        }
+
+        // Validate CVV
+        if (!isValidCVV(cvv)) {
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV");
+            return false;
+        }
+
+        return true;
+    }
+    private boolean isValidCardNumber(String cardNumber) {
+        // Remove any spaces from the card number
+        cardNumber = cardNumber.replaceAll("\\s", "");
+
+        // Check if the card number contains only digits and hyphens
+        if (!cardNumber.matches("[0-9-]+")) {
+            return false;
+        }
+
+        // Remove hyphens for further processing
+        String digitsOnly = cardNumber.replaceAll("-", "");
+
+        // Check if there are exactly 16 digits
+        if (digitsOnly.length() != 16) {
+            return false;
+        }
+
+        // Check if the digits are in groups of 4, separated by hyphens (if hyphens are present)
+        if (cardNumber.contains("-")) {
+            String pattern = "\\d{4}-\\d{4}-\\d{4}-\\d{4}";
+            return cardNumber.matches(pattern);
+        }
+
+        // If no hyphens, it's valid as long as it's 16 digits
+        return true;
+    }
+
+    private boolean isValidExpirationDate(String month, String year) {
+        YearMonth expirationDate = YearMonth.of(Integer.parseInt(year), Integer.parseInt(month));
+        YearMonth currentDate = YearMonth.now();
+        return expirationDate.isAfter(currentDate);
+    }
+
+    private boolean isValidCVV(String cvv) {
+        // Check if the cvv number contains only digits
+        if (!cvv.matches("[0-9]+")) {
+            return false;
+        }
+        return cvv.matches("\\d{3,4}");
     }
 
 }

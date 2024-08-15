@@ -123,3 +123,26 @@
 .scroll-bar:vertical .thumb {
     -fx-background-color: #1d1d48;
 }
+
+
+.text-field, .combo-box {
+    -fx-pref-width: 180px;
+}
+
+.text-field, .combo-box {
+    -fx-font-size: 14px;
+}
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 3px;
+}
+
+#expirationMonthCombo, #expirationYearCombo {
+    -fx-pref-width: 85px;
+}
+
+.check-box {
+    -fx-padding: 10 0 10 0;
+}

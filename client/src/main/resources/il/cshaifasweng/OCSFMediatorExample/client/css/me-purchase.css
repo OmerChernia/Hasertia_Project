@@ -127,3 +127,29 @@
 .scroll-bar:vertical .thumb {
     -fx-background-color: #6c757d;
 }
+
+.text-field, .combo-box {
+    -fx-pref-width: 180px;
+}
+
+.text-field, .combo-box {
+    -fx-font-size: 14px;
+}
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 3px;
+}
+
+#expirationMonthCombo, #expirationYearCombo {
+    -fx-pref-width: 85px;
+}
+
+.check-box {
+    -fx-padding: 10 0 10 0;
+}
+.label-large {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}

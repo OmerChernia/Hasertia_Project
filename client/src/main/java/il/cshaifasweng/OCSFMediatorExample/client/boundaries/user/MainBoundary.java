@@ -2,6 +2,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -314,21 +315,21 @@ public class MainBoundary implements Initializable {
         Animations.tooltip(btnAbout, tooltipAbout);
     }
 
+    private static Object currentController;
 
+    //to set Controllers that cant be reached by rootContainer: TheaterPurchaseBoundary and HomeViewingPurchaseBoundary
+    public static void setCurrentController(Object new_currentController)
+    {
+        currentController = new_currentController;
+    }
 
-
-    private Object currentController;
-
-    private void showFXMLWindows(String FXMLName) {
+    private void showFXMLWindows(String FXMLName)  {
 
         if (currentController != null) {
             try {
                 currentController.getClass().getMethod("cleanup").invoke(currentController);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-
-            }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {}
         }
-
 
         rootContainer.getChildren().clear();
 
@@ -378,6 +379,9 @@ public class MainBoundary implements Initializable {
             System.out.println("SEND EMPLOYEE Login");
 
         }
+        resetButtons();
+        clearTextFields();
+        homeWindowsInitialize();
     }
 
     @Subscribe

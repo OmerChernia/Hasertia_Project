@@ -31,6 +31,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +90,6 @@ public class TheaterPurchaseBoundary {
     @FXML
     private TextField cardNumberField;
 
-    @FXML
-    private TextField expirationDateField;
 
     @FXML
     private TextField cvvField;
@@ -120,6 +120,12 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private Label confirmationDetails;
+
+    @FXML
+    private ComboBox<String> expirationMonthCombo;
+
+    @FXML
+    private ComboBox<String> expirationYearCombo;
 
     @FXML
     private Label pricePaidLabel;
@@ -160,12 +166,11 @@ public class TheaterPurchaseBoundary {
 
     private Timeline timer;
     private int timeRemaining;
-    private double ticketPrice;
-
     private int numberOfTickets;
 
     private RegisteredUser user=null;
     private boolean isCardPackageOn;
+    private boolean isReserved;
 
     @FXML
     public void initialize()
@@ -178,12 +183,29 @@ public class TheaterPurchaseBoundary {
         highlightStep(1);
 
         isCardPackageOn= false;
+        isReserved = false;
 
         if(!SimpleClient.user.isEmpty())
             RegisteredUserController.getUserByID(SimpleClient.user);
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
         ticketsSpinner.setValueFactory(valueFactory); // הגדרת טווח לבחירת מספר כרטיסים
+
+        populateExpirationMonths();
+        populateExpirationYears();
+    }
+
+    private void populateExpirationMonths() {
+        for (int i = 1; i <= 12; i++) {
+            expirationMonthCombo.getItems().add(String.format("%02d", i));
+        }
+    }
+
+    private void populateExpirationYears() {
+        int currentYear = Year.now().getValue();
+        for (int i = 0; i < 10; i++) {
+            expirationYearCombo.getItems().add(String.valueOf(currentYear + i));
+        }
     }
 
     public void setMovieInstance(MovieInstance movieInstance) {
@@ -297,6 +319,9 @@ public class TheaterPurchaseBoundary {
             }
 
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_WAS_RESERVED)) {
+
+                isReserved = true; // flag is now says the seats been reserved
+
                 stackPane.getChildren().clear();
                 highlightStep(3);
 
@@ -322,6 +347,7 @@ public class TheaterPurchaseBoundary {
 
             if(message.responseType.equals(SeatMessage.ResponseType.SEATS_HAS_BEEN_CANCELED))
             {
+                isReserved = false;
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(seatSelectionPane);
                 highlightStep(2);
@@ -390,7 +416,7 @@ public class TheaterPurchaseBoundary {
         }
         else if (message.requestType == RegisteredUserMessage.RequestType.ADD_NEW_USER){
             Platform.runLater(() -> {
-                String purchaseValidation = cardNumberField.getText() + " " + expirationDateField.getText() + " " + cvvField.getText();
+                String purchaseValidation = cardNumberField.getText() + " " + expirationMonthCombo.getValue() + "/" + expirationYearCombo.getValue() + " " + cvvField.getText();
                 for (Seat seat : selectedSeats) {
                     PurchaseController.AddMovieTicket(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovieInstance, seat);
                 }
@@ -439,15 +465,17 @@ public class TheaterPurchaseBoundary {
     @FXML
     private void submitPayment() {
 
-        System.out.println("Payment submitted with card number: " + cardNumberField.getText());
-        creditCardPane.setVisible(false);
-        stopTimer(); // stop the time
-
-        if(user == null)
-            RegisteredUserController.addNewUser(idNumberTF.getText(),firstNameTF.getText(),lastNameTF.getText(),emailTF.getText());
-        else
+        if(isValidCreditCardInfo())
         {
-            RegisteredUserController.addNewUser(user.getId_number(),"","","");
+            System.out.println("Payment submitted with card number: " + cardNumberField.getText());
+            creditCardPane.setVisible(false);
+            stopTimer(); // stop the time
+
+            if (user == null)
+                RegisteredUserController.addNewUser(idNumberTF.getText(), firstNameTF.getText(), lastNameTF.getText(), emailTF.getText());
+            else {
+                RegisteredUserController.addNewUser(user.getId_number(), "", "", "");
+            }
         }
     }
 
@@ -466,8 +494,12 @@ public class TheaterPurchaseBoundary {
 
     @FXML
     private void cancelPayment() {
+        cardNumberField.clear();
+        cvvField.clear();
+
         if(user == null)
             creditCardPane.setVisible(false);
+        else
         {
             SeatController.cancelSeatReservation(selectedSeats, currentMovieInstance);
         }
@@ -512,6 +544,7 @@ public class TheaterPurchaseBoundary {
     }
 
     private void showConfirmation() {
+        isReserved = false;
         StringBuilder seats_info= new StringBuilder("Seats:\n");
         for(Seat seat : selectedSeats)
         {
@@ -536,8 +569,6 @@ public class TheaterPurchaseBoundary {
         confirmationMovieImage.setImage(movieImage.getImage());
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);
-
-        EventBus.getDefault().unregister(this);
     }
 
     @FXML
@@ -546,8 +577,15 @@ public class TheaterPurchaseBoundary {
         stage.close();
     }
 
-    public void cleanup() {
+    public void cleanup()
+    {
         EventBus.getDefault().unregister(this);
+        System.out.println("cleanup: is reserved-> "+isReserved);
+        if (isReserved)
+        {
+            stopTimer();
+            SeatController.cancelSeatReservation(selectedSeats, currentMovieInstance);
+        }
     }
 
     // a method that checks if the details that the user given is valid , returns true if the details are valid
@@ -609,5 +647,78 @@ public class TheaterPurchaseBoundary {
         return true;
     }
 
+    // a method that checks if the details that the user given is valid , returns true if the details are valid
+    public boolean isValidCreditCardInfo() {
+        String cardNumber = cardNumberField.getText().replaceAll("\\s", "");
+        String expirationMonth = expirationMonthCombo.getValue();
+        String expirationYear = expirationYearCombo.getValue();
+        String cvv = cvvField.getText();
+
+        // Check if all fields are filled
+        if (cardNumber.isEmpty() || expirationMonth == null || expirationYear == null || cvv.isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled");
+            return false;
+        }
+
+        // Validate card number (using Luhn algorithm)
+        if (!isValidCardNumber(cardNumber)) {
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number");
+            return false;
+        }
+
+        // Validate expiration date
+        if (!isValidExpirationDate(expirationMonth, expirationYear)) {
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date");
+            return false;
+        }
+
+        // Validate CVV
+        if (!isValidCVV(cvv)) {
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV");
+            return false;
+        }
+
+        return true;
+    }
+    private boolean isValidCardNumber(String cardNumber) {
+        // Remove any spaces from the card number
+        cardNumber = cardNumber.replaceAll("\\s", "");
+
+        // Check if the card number contains only digits and hyphens
+        if (!cardNumber.matches("[0-9-]+")) {
+            return false;
+        }
+
+        // Remove hyphens for further processing
+        String digitsOnly = cardNumber.replaceAll("-", "");
+
+        // Check if there are exactly 16 digits
+        if (digitsOnly.length() != 16) {
+            return false;
+        }
+
+        // Check if the digits are in groups of 4, separated by hyphens (if hyphens are present)
+        if (cardNumber.contains("-")) {
+            String pattern = "\\d{4}-\\d{4}-\\d{4}-\\d{4}";
+            return cardNumber.matches(pattern);
+        }
+
+        // If no hyphens, it's valid as long as it's 16 digits
+        return true;
+    }
+
+    private boolean isValidExpirationDate(String month, String year) {
+        YearMonth expirationDate = YearMonth.of(Integer.parseInt(year), Integer.parseInt(month));
+        YearMonth currentDate = YearMonth.now();
+        return expirationDate.isAfter(currentDate);
+    }
+
+    private boolean isValidCVV(String cvv) {
+        // Check if the cvv number contains only digits
+        if (!cvv.matches("[0-9]+")) {
+            return false;
+        }
+        return cvv.matches("\\d{3,4}");
+    }
 
 }
