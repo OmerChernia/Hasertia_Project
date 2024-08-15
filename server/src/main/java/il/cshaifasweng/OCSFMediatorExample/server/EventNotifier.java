@@ -50,7 +50,6 @@ public class EventNotifier extends Thread {
 
         // Start the transaction
         SimpleServer.session.beginTransaction();
-        System.out.println("local time " + LocalDateTime.now().minusDays(1));
         try {
             // Query to find unhandled complaints
             Query<Complaint> query = SimpleServer.session.createQuery(

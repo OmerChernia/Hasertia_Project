@@ -21,6 +21,7 @@ public class CustomContextMenu {
     public CustomContextMenu(Node node) {
         this.node = node;
         contextMenu = new ContextMenu();
+        contextMenu.getItems().addAll(getContent());
 
         // Load the CSS file
         contextMenu.getStyleClass().add("context-menu");
@@ -87,7 +88,6 @@ public class CustomContextMenu {
 
         return new MenuItem[]{edit, delete, details};
     }
-
 
     private void style(MenuItem menuItem) {
         menuItem.getStyleClass().add("menu-item-context-menu");
