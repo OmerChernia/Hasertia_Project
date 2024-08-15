@@ -1,8 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client.controllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.entities.Hall;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message.MessageType;
+import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,5 +95,11 @@ public class MovieInstanceController {
         // Create a request to get all movie instances by movie name
         MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCES_BETWEEN_DATES, before, after);
         SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
+    public static void addMovieInstance (Movie movie, LocalDateTime time, Hall hall)
+    {
+        MovieInstance movieInstance = new MovieInstance(movie, time, hall, true);
+
     }
 }

@@ -48,6 +48,8 @@ public class ComplaintHandler extends MessageHandler
         else
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
     }
+
+
     private void answer_compliant()
     {
 

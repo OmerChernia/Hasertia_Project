@@ -6,8 +6,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GenerateDB {
 
@@ -284,18 +286,18 @@ public class GenerateDB {
             LocalDateTime startDate = LocalDateTime.of(2024, 8, 18, 12, 0);
             //.plusHours(3)
             movieInstances = List.of(
-                    new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0)),
-                    new MovieInstance(movies.get(1), startDate.plusDays(1).plusHours(2), halls.get(1)),
-                    new MovieInstance(movies.get(2), startDate.plusDays(2).plusHours(4), halls.get(2)),
-                    new MovieInstance(movies.get(3), startDate.plusDays(3).plusHours(2), halls.get(3)),
-                    new MovieInstance(movies.get(4), startDate.plusDays(4).plusHours(1), halls.get(4)),
-                    new MovieInstance(movies.get(5), startDate.plusDays(5).plusHours(6), halls.get(5)),
-                    new MovieInstance(movies.get(6), startDate.plusDays(6).plusHours(8), halls.get(6)),
-                    new MovieInstance(movies.get(7), startDate.plusDays(7).plusHours(10), halls.get(7)),
-                    new MovieInstance(movies.get(8), startDate.plusDays(8).plusHours(4), halls.get(8)),
-                    new MovieInstance(movies.get(9), startDate.plusDays(9).plusHours(10), halls.get(9)),
-                    new MovieInstance(movies.get(0), startDate.plusDays(2).plusHours(8), halls.get(0)),
-                    new MovieInstance(movies.get(0), startDate.plusDays(3).plusHours(6), halls.get(8))
+                    new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0),true),
+                    new MovieInstance(movies.get(1), startDate.plusDays(1).plusHours(2), halls.get(1),true),
+                    new MovieInstance(movies.get(2), startDate.plusDays(2).plusHours(4), halls.get(2),true),
+                    new MovieInstance(movies.get(3), startDate.plusDays(3).plusHours(2), halls.get(3),true),
+                    new MovieInstance(movies.get(4), startDate.plusDays(4).plusHours(1), halls.get(4),true),
+                    new MovieInstance(movies.get(5), startDate.plusDays(5).plusHours(6), halls.get(5),true),
+                    new MovieInstance(movies.get(6), startDate.plusDays(6).plusHours(8), halls.get(6),true),
+                    new MovieInstance(movies.get(7), startDate.plusDays(7).plusHours(10), halls.get(7),true),
+                    new MovieInstance(movies.get(8), startDate.plusDays(8).plusHours(4), halls.get(8),true),
+                    new MovieInstance(movies.get(9), startDate.plusDays(9).plusHours(10), halls.get(9),true),
+                    new MovieInstance(movies.get(0), startDate.plusDays(2).plusHours(8), halls.get(0),true),
+                    new MovieInstance(movies.get(0), startDate.plusDays(3).plusHours(6), halls.get(8),true)
             );
 
             Transaction transaction = session.beginTransaction();
@@ -309,7 +311,6 @@ public class GenerateDB {
             System.out.println("Movie Instances table is already populated.");
         }
     }
-
 
     private void generatePurchases() {
         List<Purchase> existingPurchases = session.createQuery("from Purchase", Purchase.class).list();
@@ -333,34 +334,42 @@ public class GenerateDB {
         }
 
         Transaction transaction = session.beginTransaction();
+        Random rand = new Random();
 
         try {
             for (int i = 0; i < 150; i++) {
                 RegisteredUser user = users.get(i % users.size());
 
-                // Generate a different date and time for each purchase
-                LocalDateTime purchaseTime = LocalDateTime.of(2024, 6 + (i % 3), 1 + (i % 30), 0, 0);
+                // Generate a different date for each purchase and a random hour, minute, and second
+                int randomHour = rand.nextInt(24);
+                int randomMinute = rand.nextInt(60);
+                int randomSecond = rand.nextInt(60);
+                LocalDateTime purchaseTime = LocalDateTime.of(2024, 6 + (i % 3), 1 + (i % 30), randomHour, randomMinute, randomSecond);
+
+                // Add a week to the purchase time and round up to the nearest hour for the activation date
+                LocalDateTime activationDate = purchaseTime.plusWeeks(1);
+                if (activationDate.getMinute() != 0 || activationDate.getSecond() != 0) {
+                    activationDate = activationDate.plusHours(1);
+                }
+                activationDate = activationDate.truncatedTo(ChronoUnit.HOURS);
 
                 if (i < 40) {
-                    HomeViewingPackageInstance homePackage = new HomeViewingPackageInstance(
-                            purchaseTime,
-                            user,
-                            "validation" + i,
-                            movies.get(i % movies.size()),
-                            LocalDateTime.now().plusDays(1),
-                            true,
-                            "https://hasertia.com/dhbtdgt"+ i
-                    );
-                    session.save(homePackage);
+                    // Create a HomeViewingPackageInstance with the activation date
+                    // Generate a random hour between 12 and 23 for the activation date
+                    int randomActivationHour = 12 + rand.nextInt(12);
+                    activationDate = activationDate.withHour(randomActivationHour);
+                    HomeViewingPackageInstance homeViewingPackageInstance = new HomeViewingPackageInstance(purchaseTime, user, "purchaseValidation", movies.get(i % movies.size()), activationDate, true, "https://hasertia.com/dhbtdgt"+ i);
+                    session.save(homeViewingPackageInstance);
+                    session.flush();
                 } else if (i < 60) {
                     MultiEntryTicket multiEntryTicket = new MultiEntryTicket(
                             purchaseTime,
                             user,
                             "validation" + i,
                             true
-
                     );
                     session.save(multiEntryTicket);
+                    session.flush();
                 } else {
                     MovieTicket movieTicket = new MovieTicket(
                             purchaseTime,

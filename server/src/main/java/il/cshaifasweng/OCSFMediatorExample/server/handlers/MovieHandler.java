@@ -192,8 +192,6 @@ public class MovieHandler extends MessageHandler
         }
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
-        if(message.movies.getFirst().getAvailability()!= Movie.Availability.NOT_AVAILABLE)
-            notifyMultiEntryClients(message.movies.getFirst());
     }
     private void notifyMultiEntryClients(Movie movie)
     {

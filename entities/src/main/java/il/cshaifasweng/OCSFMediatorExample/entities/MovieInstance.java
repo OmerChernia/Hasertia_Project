@@ -19,13 +19,17 @@ public class MovieInstance implements Serializable {
     @ManyToOne
     private Hall hall;
 
+    private boolean isActive;
+
     public MovieInstance() {
     }
 
-    public MovieInstance(Movie movie, LocalDateTime time, Hall hall) {
+    public MovieInstance(Movie movie, LocalDateTime time, Hall hall, boolean isActive) {
         this.movie = movie;
         this.time = time;
-        this.hall = hall;}
+        this.hall = hall;
+        this.isActive = isActive;
+    }
 
     // Getters and setters
 
@@ -58,5 +62,11 @@ public class MovieInstance implements Serializable {
         return id;
     }
 
+    public boolean getIsActive() {
+        return isActive;
+    }
 
+    public void setIsActive(boolean active) {
+        isActive = active;
+    }
 }
