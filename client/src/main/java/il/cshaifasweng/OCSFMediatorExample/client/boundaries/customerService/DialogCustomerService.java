@@ -1,38 +1,42 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.customerService;
 
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextFlow;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
+import java.net.URL;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ResourceBundle;
 
-public class DialogCustomerService {
+public class DialogCustomerService implements Initializable {
+
+    @FXML
+    private Label numTicketsLabel;
+
+    @FXML
+    private Label complaintDetailsLabel;
+
+    @FXML
+    private Label movieNameLabel;
+
+    @FXML
+    private Label viewingDateLabel;
+
+    @FXML
+    private Label complainantNameLabel;
 
     @FXML
     private ComboBox<String> actionComboBox;
 
     @FXML
     private VBox compensateFinanciallyBox;
-
-    @FXML
-    private ComboBox<String> dateComboBox;
 
     @FXML
     private ComboBox<String> employeeResponseComboBox;
@@ -44,16 +48,9 @@ public class DialogCustomerService {
     private ScrollPane finalResponseScrollPane;
 
     @FXML
-    private VBox issueNewTicketBox;
-
-    @FXML
-    private ComboBox<String> movieComboBox;
-
-    @FXML
     private AnchorPane pnEmployeeArea;
 
-    @FXML
-    private TextField purchaseDateField;
+
 
     @FXML
     private Label purchaseTypeField;
@@ -61,8 +58,7 @@ public class DialogCustomerService {
     @FXML
     private TextField refundAmountField;
 
-    @FXML
-    private ComboBox<String> timeComboBox;
+
 
     @FXML
     private Button btnSend;
@@ -71,20 +67,17 @@ public class DialogCustomerService {
 
     private MovieTicket selectedMovieTicket;
     private MovieInstance selectedMovieInstance;
-    private HomeViewingPackageInstance selectedHomeViewingPackageInstance;
-    private MultiEntryTicket multiEntryTicket;
+    private HomeViewingPackageInstance homeViewingPackageInstance;
     private Complaint myComplaint;
+    private int price;
 
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         compensateFinanciallyBox.setVisible(false);
         compensateFinanciallyBox.setManaged(false);
-        issueNewTicketBox.setVisible(false);
-        issueNewTicketBox.setManaged(false);
 
-       // EventBus.getDefault().register(this);
         // Listen for changes to update the final response preview
         refundAmountField.textProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
-        movieComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
         employeeResponseComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
     }
 
@@ -92,36 +85,48 @@ public class DialogCustomerService {
         this.customerServiceController = customerServiceController;
     }
 
-
-
     public void setComplaint(Complaint selectedComplaint) {
         this.myComplaint = selectedComplaint;
+
+        // Populate labels with data
+        complaintDetailsLabel.setText(selectedComplaint.getInfo());
+        complainantNameLabel.setText(selectedComplaint.getRegisteredUser().getName());
+
         if (selectedComplaint.getPurchase() instanceof MovieTicket) {
             setMovieTicket(selectedComplaint);
-        } else if (selectedComplaint.getPurchase() instanceof HomeViewingPackageInstance) {
-            setHomeViewingTicket(selectedComplaint);
         } else if (selectedComplaint.getPurchase() instanceof MultiEntryTicket) {
             setMultiEntryTicket(selectedComplaint);
+        }
+        else if (selectedComplaint.getPurchase() instanceof HomeViewingPackageInstance) {
+            setHomeViewing(selectedComplaint);
         }
     }
 
     private void setMovieTicket(Complaint selectedComplaint) {
         this.selectedMovieInstance = ((MovieTicket) selectedComplaint.getPurchase()).getMovieInstance();
         this.selectedMovieTicket = (MovieTicket) selectedComplaint.getPurchase();
+        this.price = selectedMovieTicket.getMovieInstance().getMovie().getTheaterPrice();
+
+        movieNameLabel.setText(selectedMovieInstance.getMovie().getEnglishName());
+        viewingDateLabel.setText(selectedMovieTicket.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        numTicketsLabel.setText("1");
         purchaseTypeField.setText("Movie Ticket");
-        purchaseDateField.setText(selectedMovieTicket.getPurchaseDate().toString());
     }
 
-    private void setHomeViewingTicket(Complaint selectedComplaint) {
-        HomeViewingPackageInstance viewingPackage = (HomeViewingPackageInstance) selectedComplaint.getPurchase();
-        purchaseTypeField.setText("Home Viewing Package");
-        purchaseDateField.setText(viewingPackage.getPurchaseDate().toString());
+    private void setHomeViewing(Complaint selectedComplaint) {
+        this.homeViewingPackageInstance = (HomeViewingPackageInstance) selectedComplaint.getPurchase();
+        this.price = homeViewingPackageInstance.getMovie().getHomeViewingPrice();
+
+        movieNameLabel.setText(homeViewingPackageInstance.getMovie().getEnglishName());
+        viewingDateLabel.setText(homeViewingPackageInstance.getPurchaseDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        numTicketsLabel.setText("1");
+        purchaseTypeField.setText("Home Viewing Ticket");
     }
+
 
     private void setMultiEntryTicket(Complaint selectedComplaint) {
-        MultiEntryTicket multiEntryTicket = (MultiEntryTicket) selectedComplaint.getPurchase();
         purchaseTypeField.setText("Multi-Entry Ticket");
-        purchaseDateField.setText(multiEntryTicket.getPurchaseDate().toString());
+        numTicketsLabel.setText(String.valueOf(selectedComplaint.getPurchase().getOwner().getTicket_counter()));
     }
 
     @FXML
@@ -130,32 +135,27 @@ public class DialogCustomerService {
 
         compensateFinanciallyBox.setVisible(false);
         compensateFinanciallyBox.setManaged(false);
-        issueNewTicketBox.setVisible(false);
-        issueNewTicketBox.setManaged(false);
 
-        if (selectedAction.equals("Compensate Financially")) {
+        if (selectedAction.equals("Compensate Financially") || selectedAction.equals("Ticket refund")) {
             compensateFinanciallyBox.setVisible(true);
             compensateFinanciallyBox.setManaged(true);
-        } else if (selectedAction.equals("Issue New Ticket")) {
-            issueNewTicketBox.setVisible(true);
-            issueNewTicketBox.setManaged(true);
-
         }
 
         updateFinalResponsePreview();
     }
 
-
     @FXML
     public void handleSubmitFinalResponse() {
         String finalResponseText = getFinalResponseText();
 
-        if (finalResponseText.contains("Ticket has been refunded")) {
-
+        if (finalResponseText.contains("Ticket refund")) {
             PurchaseController.RemovePurchase(this.myComplaint.getPurchase());
         }
+        EmailSender.sendEmail(myComplaint.getPurchase().getOwner().getEmail(), "Customer Service: Complain num"+ myComplaint.getId() , finalResponseText);
+        customerServiceController.closeDialogAddQuotes();
 
     }
+
 
 
     private String getFinalResponseText() {
@@ -168,19 +168,18 @@ public class DialogCustomerService {
         return finalResponse.toString();
     }
 
-
     private void updateFinalResponsePreview() {
         finalResponsePreviewArea.getChildren().clear();
 
-        String selectedAction = actionComboBox.getValue();
-        if (selectedAction.equals("Compensate Financially")) {
-            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("Ticket has been refunded.\nAmount: " + refundAmountField.getText() + "₪\n"));
-        } else if (selectedAction.equals("Issue New Ticket")) {
-            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("New ticket has been issued for: " + movieComboBox.getValue() + "\n"));
-        }
-
         if (employeeResponseComboBox.getValue() != null && !employeeResponseComboBox.getValue().isEmpty()) {
             finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("Employee Response: " + employeeResponseComboBox.getValue() + "\n"));
+        }
+        String selectedAction = actionComboBox.getValue();
+        if (selectedAction.equals("Compensate Financially")) {
+            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("\nAmount: " + refundAmountField.getText() + "₪\n"));
+        }
+        if (selectedAction.equals("Ticket refund")) {
+            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("\nAmount: " + refundAmountField.getText() + "₪\n"));
         }
     }
 
@@ -189,7 +188,5 @@ public class DialogCustomerService {
         customerServiceController.closeDialogAddQuotes();
     }
 
-    public void cleanup() {
-        EventBus.getDefault().unregister(this);
-    }
+
 }

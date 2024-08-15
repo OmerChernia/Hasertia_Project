@@ -47,8 +47,6 @@ public class OrdersBoundary implements Initializable {
     @FXML
     private AnchorPane OrderContainer;
 
-
-
     @FXML
     private TableColumn<Purchase, Integer> colId;
 
@@ -124,11 +122,6 @@ public class OrdersBoundary implements Initializable {
         Platform.runLater(() -> {  if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
             loadTableData(message.purchases) ;
         }else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED) {
-            if(message.purchases.get(0) instanceof MovieTicket)
-            {
-                //if the purchase was a movie ticket we need to cancel the seat associated with
-                SeatController.cancelSeatReservation(List.of(((MovieTicket) message.purchases.get(0)).getSeat()),((MovieTicket) message.purchases.get(0)).getMovieInstance());
-            }
             PurchaseController.GetPurchasesByCustomerID(id);
         }
         else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED) {
@@ -174,7 +167,7 @@ public class OrdersBoundary implements Initializable {
                 }
                 else {
                     // Check if the purchase is active or not
-                    if (param.getValue().getIsActive()) { // Assuming `isActive()` is a method in your Purchase class
+                    if (param.getValue().getIsActive()) { // Assuming isActive() is a method in your Purchase class
                         button.setText("Available");
                         button.getStyleClass().addAll("button-green", "table-row-cell");
                     } else {

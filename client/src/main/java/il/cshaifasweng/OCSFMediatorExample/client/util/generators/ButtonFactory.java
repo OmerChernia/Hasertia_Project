@@ -35,16 +35,21 @@ public class ButtonFactory {
 
             if (item.getPurchase() instanceof MultiEntryTicket) {
                 text = "Multi-Entry Card";
-                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-two-tickets.png";
                 styleClass = "button-green";
             } else if (item.getPurchase() instanceof MovieTicket) {
-                text = "Movie Ticket";
-                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png";
+                text = "Theater Ticket";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-movie-theater.png";
                 styleClass = "button-blue";
-            } else {
-                text = "Home Viewing Package";
-                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png";
+            } else if (item.getPurchase() instanceof HomeViewingPackageInstance) {
+                text = "Home Viewing";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/online-movie.png";
                 styleClass = "button-purple";
+            }
+            else {
+                imagePath =  ConstantsPath.MEDIA_PACKAGE + "icons/icons8-more-info.png";
+                text = "Unregistered";
+                styleClass = "button-red";
             }
 
             return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
@@ -57,7 +62,7 @@ public class ButtonFactory {
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Complaint, Button> param) {
             Complaint item = param.getValue();
             String text = item.isClosed() ? "CLOSE" : "OPEN";
-            String styleClass = item.isClosed() ? "button-yes" : "button-no";
+            String styleClass = item.isClosed() ? "button-green" : "button-red";
 
             return new SimpleObjectProperty<>(createButton(text, "", styleClass));
         }

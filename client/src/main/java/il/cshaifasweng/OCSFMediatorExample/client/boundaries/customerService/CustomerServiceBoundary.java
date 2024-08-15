@@ -93,7 +93,7 @@ public class CustomerServiceBoundary implements Initializable {
         System.out.println("onPurchaseMessage");
         if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED)
         {
-           // String finalResponseText = getFinalResponseText();
+            // String finalResponseText = getFinalResponseText();
             String finalResponseText = "test";
             EmailSender.sendEmail(purchaseMessage.purchases.get(0).getOwner().getEmail() ,"A new customer service response from Hasertia has received!", finalResponseText);
             EmailSender.sendEmail("hasertiaproject@gmail.com","A new customer service response from Hasertia has received!", finalResponseText);
@@ -122,9 +122,12 @@ public class CustomerServiceBoundary implements Initializable {
             colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
                     cellData.getValue().getCreationDate().toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
             ));
-            colCustomerName.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
-                    cellData.getValue().getRegisteredUser().getName()
-            ));
+            colCustomerName.setCellValueFactory(cellData -> {
+                // Check if the registeredUser is null, and return an empty string if it is
+                String customerName = (cellData.getValue().getRegisteredUser() != null) ?
+                        cellData.getValue().getRegisteredUser().getName() : "UnRegistered User";
+                return new SimpleObjectProperty<>(customerName);
+            });
 
             ButtonFactory buttonFactory = new ButtonFactory();
             colPurchase.setCellValueFactory(new ButtonFactory.ButtonTypeOrderCellValueFactory());

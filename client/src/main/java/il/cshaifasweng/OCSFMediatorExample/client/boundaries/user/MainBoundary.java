@@ -535,15 +535,18 @@ public class MainBoundary implements Initializable {
     private void logout() {
         if (loggedInUserId != null || loggedInEmploeeId != null) {
             AlertsBuilder.create(AlertType.WARNING, stckMain, stckMain, stckMain, "Are you sure you want to log out?", "Yes", () -> {
-                sendLogoutRequest();
-                loggedInUserId = null;
-                loggedInEmploeeId = null;
-                resetButtons();
-                clearTextFields();
-                closeLoginDialog();
-                homeWindowsInitialize();
-                AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
-            }, null,null);
+                        sendLogoutRequest();
+                        loggedInUserId = null;
+                        loggedInEmploeeId = null;
+                        resetButtons();
+                        clearTextFields();
+                        closeLoginDialog();
+                        homeWindowsInitialize();
+                        AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
+                    } , "No", () -> {
+                        AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "Have A nice Stay in 'Hasretia' :)");
+                    }
+            );
         } else {
             loginWindow();
         }
