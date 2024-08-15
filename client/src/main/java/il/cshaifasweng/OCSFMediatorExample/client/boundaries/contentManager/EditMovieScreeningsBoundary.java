@@ -250,7 +250,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
             deleteButton.setOnAction(ev -> {
                 MovieInstance selectedMovieInstance = tblProducts.getSelectionModel().getSelectedItem();
-                MovieInstanceController.deleteMovieInstance(selectedMovieInstance);
+                MovieInstanceController.deleteMovieInstance(selectedMovieInstance.getId());
                 dialogDelete.close();
             });
 

@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;

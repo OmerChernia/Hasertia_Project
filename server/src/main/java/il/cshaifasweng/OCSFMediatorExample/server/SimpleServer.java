@@ -34,6 +34,8 @@ public class SimpleServer extends AbstractServer
 		session = getSessionFactory(password).openSession();
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
+		EventNotifier eventNotifier = new EventNotifier();//nodifier of 1 houre erlier
+		eventNotifier.start(); // Starts the thread
 	}
 
 	@Override

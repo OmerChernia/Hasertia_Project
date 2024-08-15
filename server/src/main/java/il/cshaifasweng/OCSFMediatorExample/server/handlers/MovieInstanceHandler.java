@@ -4,13 +4,17 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieTicket;
+import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Iterator;
+import java.util.List;
 
 public class MovieInstanceHandler extends MessageHandler
 {
@@ -162,10 +166,12 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void delete_movie_instance()
     {
-        message.movies.getFirst().setIsActive(false);
-        System.out.println(message.movies.getFirst().getIsActive());
-        session.update(message.movies.getFirst());
-        session.flush();
+        // Create an HQL query to fetch all complaints
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where id = :id", MovieInstance.class);
+        query.setParameter("id", message.id);
+        MovieInstance movieInstance = query.uniqueResult();
+        movieInstance.setIsActive(false);
+        session.update(movieInstance);
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
     private void update_movie_instance() {

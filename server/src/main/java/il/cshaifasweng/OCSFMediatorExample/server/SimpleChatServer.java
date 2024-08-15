@@ -16,7 +16,5 @@ public class SimpleChatServer
         server = new SimpleServer(3000,password);
         System.out.println("server is listening");
         server.listen();
-        EventNotifier eventNotifier = new EventNotifier();//nodifier of 1 houre erlier
-        eventNotifier.start(); // Starts the thread
     }
 }

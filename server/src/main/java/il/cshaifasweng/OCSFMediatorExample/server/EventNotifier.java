@@ -28,7 +28,8 @@ public class EventNotifier extends Thread {
                    AlertNewMoviesForSubscribers();
                 }
 
-                //checkForUnhandledComplaints();
+                checkForUnhandledComplaints();
+
 
                     start = end;
                 end = start.plusHours(1);
@@ -44,15 +45,47 @@ public class EventNotifier extends Thread {
         }
     }
 
-//    private void checkForUnhandledComplaints()
-//    {
-//        Query<Complaint> query = SimpleServer.session.createQuery(
-//                "from Complaint where isClosed= false and creationDate > :date ", Complaint.class
-//        );
-//        query.setParameter("date", LocalDate.now().minusDays(1));
-//        List<Complaint> complaints = query.list();
-//
-//    }
+    private void checkForUnhandledComplaints() {
+        System.out.println("checkForUnhandledComplaints");
+
+        // Start the transaction
+        SimpleServer.session.beginTransaction();
+
+        try {
+            // Query to find unhandled complaints
+            Query<Complaint> query = SimpleServer.session.createQuery(
+                    "from Complaint where isClosed = false and creationDate > :date", Complaint.class
+            );
+            query.setParameter("date", LocalDateTime.now().minusDays(1).plusHours(3));
+            List<Complaint> complaints = query.list();
+
+            for (Complaint complaint : complaints) {
+                // Prepare the email text
+                String text = "Dear " + complaint.getPurchase().getOwner().getName() + ",\n\n" +
+                        "We would like to inform you that your recent complaint has been reviewed and addressed. We appreciate your patience during this process.\n\n" +
+                        "As part of the resolution, we have arranged for a compensation of 30 shekels. This amount will be processed and credited to your account as per our standard procedures.\n\n" +
+                        "Should you have any further questions or require additional assistance, please do not hesitate to reach out.\n\n" +
+                        "Thank you for your understanding and cooperation.\n\n" +
+                        "Best regards,\nHasertia Movies Team <3";
+                complaint.setClosed(true);
+                SimpleServer.session.update(complaint);
+                EmailSender.sendEmail(complaint.getPurchase().getOwner().getEmail(),
+                        "Complaint Answered Automatically From Hasertia", text);
+            }
+            if (!complaints.isEmpty()) {
+                String summaryText = "Automated process has handled " + complaints.size() + " complaints.";
+                EmailSender.sendEmail("hasertiaproject@gmail.com",
+                        "Complaints Automatically Handled by Hasertia", summaryText);
+            }
+            SimpleServer.session.flush();
+            SimpleServer.session.getTransaction().commit();
+
+        } catch (Exception e) {
+            SimpleServer.session.getTransaction().rollback();
+            e.printStackTrace();
+        }
+    }
+
 
     private void AlertNewMoviesForSubscribers()
     {
