@@ -16,7 +16,7 @@ public class MovieController {
     }
 
     public static void addMovie(String hebrewName, String info, String producer, String englishName,String mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre) {
-        Movie movie = new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, Movie.Availability.AVAILABLE);
+        Movie movie = new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, Movie.Availability.AVAILABLE,false);
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, movie, RequestType.ADD_MOVIE);
         SimpleClient.getClient().sendRequest(requestMessage);
     }

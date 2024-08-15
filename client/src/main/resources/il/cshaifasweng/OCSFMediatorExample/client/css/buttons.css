@@ -233,3 +233,8 @@
     -fx-pref-width: 200px; /* דוגמה להגדלת רוחב לכפתור INFO ספציפי */
 
 }
+.button-gray {
+    -fx-background-color: gray; /* Gray background color */
+    -fx-text-fill: white;       /* White text color */
+    -fx-pref-width: 200px;      /* Preferred width for the button */
+}

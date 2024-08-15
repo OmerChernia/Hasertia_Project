@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stckUsers" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary">
+<StackPane fx:id="stckUsers" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary">
    <children>
       <AnchorPane fx:id="rootUsers" prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -33,16 +26,15 @@
                   <Insets bottom="20.0" left="5.0" />
                </padding>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="TICKET COUNTER">
+                  <Text fx:id="ticketCounterT" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="txtCounter" prefHeight="25.0" prefWidth="145.0" />
                </children>
             </HBox>
             <AnchorPane fx:id="deleteUserContainer" layoutX="279.0" layoutY="206.0" prefHeight="246.0" prefWidth="392.0" visible="false">
-               <Button fx:id="btnDelete" layoutX="208.0" layoutY="207.0"   prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
+               <Button fx:id="btnDelete" layoutX="208.0" layoutY="207.0" prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
                   <font>
                      <Font name="System Bold" size="12.0" />
                   </font>

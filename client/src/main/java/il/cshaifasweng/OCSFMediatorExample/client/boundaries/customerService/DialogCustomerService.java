@@ -81,7 +81,7 @@ public class DialogCustomerService {
         issueNewTicketBox.setVisible(false);
         issueNewTicketBox.setManaged(false);
 
-        EventBus.getDefault().register(this);
+       // EventBus.getDefault().register(this);
         // Listen for changes to update the final response preview
         refundAmountField.textProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
         movieComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
@@ -153,30 +153,6 @@ public class DialogCustomerService {
         if (finalResponseText.contains("Ticket has been refunded")) {
 
             PurchaseController.RemovePurchase(this.myComplaint.getPurchase());
-        }
-
-    }
-
-
-
-    @Subscribe
-    private void onPurchaseMessage(PurchaseMessage purchaseMessage) {
-        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED)
-        {
-            String finalResponseText = getFinalResponseText();
-
-            EmailSender.sendEmail(myComplaint.getPurchase().getOwner().getEmail() ,"A new customer service response from Hasertia has received!", finalResponseText);
-            EmailSender.sendEmail("hasertiaproject@gmail.com","A new customer service response from Hasertia has received!", finalResponseText);
-            customerServiceController.closeDialogAddQuotes();
-        }
-
-        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
-        {
-            AlertsBuilder.create(AlertType.ERROR, null, null, null, "Try Again!");
-        }
-        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
-        {
-            AlertsBuilder.create(AlertType.ERROR, null, null, null, "Try Again!");
         }
 
     }

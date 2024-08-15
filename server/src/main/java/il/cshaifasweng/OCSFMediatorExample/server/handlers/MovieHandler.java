@@ -193,34 +193,7 @@ public class MovieHandler extends MessageHandler
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
     }
-    private void notifyMultiEntryClients(Movie movie)
-    {
-        System.out.println("hello");
-        String text = "Dear Customer,\n\n" +
-                "We are excited to announce a new movie in our collection: " + movie.getEnglishName() + " (" + movie.getHebrewName() + ").\n" +
-                "Produced by " + movie.getProducer() + ", this " + movie.getGenre() + " film features an incredible cast including " + String.join(", ", movie.getMainActors()) + ".\n" +
-                "With a runtime of " + movie.getDuration() + " minutes, this movie is "+movie.getAvailability()+" for " + movie.getStreamingType() + ".\n";
 
-        if(movie.getStreamingType() == Movie.StreamingType.BOTH)
-         {
-            text += "Home Viewing Price: " + movie.getHomeViewingPrice() + " ILS\n" +"Theater Price: " + movie.getTheaterPrice() + " ILS\n\n";
-        }
-        if(movie.getStreamingType() == Movie.StreamingType.HOME_VIEWING)
-        {
-            text += "Home Viewing Price: " + movie.getHomeViewingPrice() + " ILS\n\n";
-        }
-        if(movie.getStreamingType() == Movie.StreamingType.THEATER_VIEWING)
-        {
-            text += "Theater Price: " + movie.getTheaterPrice() + " ILS\n\n";
-        }
-        text+=  "Don't miss out on this exciting release!\n" + "Best regards,\nHasertia Movie Team <3";
-        Query<RegisteredUser> query = session.createQuery("FROM RegisteredUser WHERE ticket_counter > 0", RegisteredUser.class);
-        List<RegisteredUser> users = query.getResultList();
-        for (RegisteredUser user : users) {
-            EmailSender.sendEmail(user.getEmail(), "New Movie in Hasertia", text);
-        }
-        EmailSender.sendEmail("hasertiaproject@gmail.com", "New Movie in Hasertia", text);
-    }
     private void deactivate_movie() {
         Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);
         query.setParameter("_id", message.id);

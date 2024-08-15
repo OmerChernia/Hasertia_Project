@@ -23,7 +23,6 @@ public class MovieInstanceMessage extends Message
     public MovieInstanceMessage(MessageType messageType, RequestType requestType , MovieInstance movieInstance)
     {
         //ADD_MOVIE_INSTANCE,UPDATE_MOVIE_INSTANCE
-
         super(messageType);
         movies.add(movieInstance);
         //this.theater_name = movieInstance.getTheater();
@@ -52,7 +51,7 @@ public class MovieInstanceMessage extends Message
         this.theaterName= theaterName;
         this.date = date;
     }
-    
+
     public MovieInstanceMessage(MessageType messageType, RequestType requestType, String key)
     {
         // GET_ALL_MOVIE_INSTANCES , GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME, GET_ALL_MOVIE_INSTANCES_BY_GENRE , GET_ALL_MOVIE_INSTANCES_BY_NAME
@@ -86,7 +85,7 @@ public class MovieInstanceMessage extends Message
         MOVIE_INSTANCE_UPDATED,
         MOVIE_INSTANCE,
         MOVIE_INSTANCE_MESSAGE_FAILED
-        
+
     }
     public enum RequestType
     {

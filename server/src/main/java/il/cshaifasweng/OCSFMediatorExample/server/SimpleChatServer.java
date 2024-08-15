@@ -6,8 +6,8 @@ import java.util.Scanner;
 
 public class SimpleChatServer
 {
-	
-	private static SimpleServer server;
+
+    private static SimpleServer server;
     public static void main( String[] args ) throws IOException
     {
         Scanner scanner = new Scanner(System.in);
@@ -16,5 +16,7 @@ public class SimpleChatServer
         server = new SimpleServer(3000,password);
         System.out.println("server is listening");
         server.listen();
+        EventNotifier eventNotifier = new EventNotifier();//nodifier of 1 houre erlier
+        eventNotifier.start(); // Starts the thread
     }
 }

@@ -87,9 +87,13 @@ public class PurchaseHandler extends MessageHandler
         try {
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
             if (purchase != null) {
-                session.delete(purchase);
+                purchase.setisActive(false); // purchase is now not active anymore
+                session.update(purchase);
                 session.flush();
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_REMOVED;
+
+                message.purchases.add(purchase);
+
             } else {
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_NOT_FOUND;
             }
@@ -134,7 +138,6 @@ public class PurchaseHandler extends MessageHandler
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
         }
     }
-
 
 
 

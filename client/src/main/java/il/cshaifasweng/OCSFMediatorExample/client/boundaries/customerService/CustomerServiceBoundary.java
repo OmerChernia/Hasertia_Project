@@ -9,6 +9,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -84,6 +86,29 @@ public class CustomerServiceBoundary implements Initializable {
         if (message.responseType == ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST) {
             Platform.runLater(() -> loadTableData(message.compliants));
         }
+    }
+
+    @Subscribe
+    private void onPurchaseMessage(PurchaseMessage purchaseMessage) {
+        System.out.println("onPurchaseMessage");
+        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED)
+        {
+           // String finalResponseText = getFinalResponseText();
+            String finalResponseText = "test";
+            EmailSender.sendEmail(purchaseMessage.purchases.get(0).getOwner().getEmail() ,"A new customer service response from Hasertia has received!", finalResponseText);
+            EmailSender.sendEmail("hasertiaproject@gmail.com","A new customer service response from Hasertia has received!", finalResponseText);
+            closeDialogAddQuotes();
+        }
+
+        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
+        {
+            AlertsBuilder.create(AlertType.ERROR, null, null, null, "Try Again!");
+        }
+        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
+        {
+            AlertsBuilder.create(AlertType.ERROR, null, null, null, "Try Again!");
+        }
+
     }
 
     private void loadTableData(List<Complaint> complaints) {

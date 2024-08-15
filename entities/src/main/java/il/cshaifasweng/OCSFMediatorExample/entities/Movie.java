@@ -91,12 +91,15 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private Availability available;
 
+    @Column(nullable = false)
+    private boolean notificationSent;
+
     public Movie()
     {
 
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability available) {
+    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability available, boolean notificationSent) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -109,6 +112,7 @@ public class Movie implements Serializable {
         this.theaterPrice = theaterPrice;
         this.genre = genre;
         this.available = available;
+        this.notificationSent = notificationSent;
     }
 
     // Getters and setters
@@ -211,6 +215,14 @@ public class Movie implements Serializable {
 
     public Availability getAvailability() {return available;}
 
+    public void setNotificationSent(boolean notificationSent) {
+        this.notificationSent = notificationSent;
+    }
+
+    public boolean getNotificationSent ()
+    {
+        return this.notificationSent;
+    }
 
     public void setActive(Availability available) {this.available=available;}
 

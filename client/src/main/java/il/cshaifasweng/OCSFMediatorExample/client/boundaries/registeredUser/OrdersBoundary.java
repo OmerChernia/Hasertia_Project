@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
@@ -12,6 +13,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -60,7 +62,7 @@ public class OrdersBoundary implements Initializable {
     private TableColumn<Purchase, String> colpurchaseDate;
 
     @FXML
-    private TextField txtCounter;
+    private Text ticketCounterT;
     @FXML
     private AnchorPane deleteUserContainer;
 
@@ -94,6 +96,8 @@ public class OrdersBoundary implements Initializable {
 
     private int id;
 
+    private double refundPrice;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         listOrders = FXCollections.observableArrayList();
@@ -115,11 +119,17 @@ public class OrdersBoundary implements Initializable {
     public void onPurchaseMessageReceived(PurchaseMessage message) {
         System.out.println(message.responseType);
 
+        ticketCounterT.setText("Multi-Entry-Ticket amount: " +message.purchases.get(0).getOwner().getTicket_counter());
+
         Platform.runLater(() -> {  if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
             loadTableData(message.purchases) ;
         }else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED) {
-
-            loadTableData(message.purchases) ;
+            if(message.purchases.get(0) instanceof MovieTicket)
+            {
+                //if the purchase was a movie ticket we need to cancel the seat associated with
+                SeatController.cancelSeatReservation(List.of(((MovieTicket) message.purchases.get(0)).getSeat()),((MovieTicket) message.purchases.get(0)).getMovieInstance());
+            }
+            PurchaseController.GetPurchasesByCustomerID(id);
         }
         else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED) {
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "Cannot Cancell purchase selected!");
@@ -154,9 +164,24 @@ public class OrdersBoundary implements Initializable {
             ButtonFactory buttonFactory = new ButtonFactory();
             colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
             colStatus.setCellValueFactory(param -> {
-                Button button = new Button("Available");
+                Button button = new Button();
                 button.setPrefWidth(100);
-                button.getStyleClass().addAll("button-green", "table-row-cell");
+
+                if(param.getValue() instanceof MultiEntryTicket)
+                {
+                    button.setText("");
+                    button.getStyleClass().addAll("button-gray", "table-row-cell");
+                }
+                else {
+                    // Check if the purchase is active or not
+                    if (param.getValue().getIsActive()) { // Assuming `isActive()` is a method in your Purchase class
+                        button.setText("Available");
+                        button.getStyleClass().addAll("button-green", "table-row-cell");
+                    } else {
+                        button.setText("Not Available");
+                        button.getStyleClass().addAll("button-red", "table-row-cell"); // You can use a different style for "Not Available"
+                    }
+                }
                 return new SimpleObjectProperty<>(button);
             });
         });
@@ -308,6 +333,12 @@ public class OrdersBoundary implements Initializable {
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "You cannot cancel multi-entry tickets!");
             return;
         }
+
+        if(!delete.getIsActive())
+        {
+            AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "You cannot cancel a purchase that is not active!");
+            return;
+        }
         txtRefund.setText(processRefund(delete));
 
         Platform.runLater(() -> {
@@ -319,7 +350,7 @@ public class OrdersBoundary implements Initializable {
 
 
             btnDelete.setOnAction(ev -> {
-
+                handleRefund(delete);
                 PurchaseController.RemovePurchase(delete);
                 dialogDelete.close();
             });
@@ -335,30 +366,49 @@ public class OrdersBoundary implements Initializable {
         });
     }
     @FXML
-    private void handleRefund(Purchase delete) {
+    private void handleRefund(Purchase purchase) {
 
-        String refundDetails = processRefund(delete);
-        txtRefund.setText(refundDetails);
+        String purchaseType;
+        if(purchase instanceof MovieTicket)
+            purchaseType = ((MovieTicket) purchase).getMovieInstance().getMovie().getEnglishName() + " ticket";
+        else
+            purchaseType = ((HomeViewingPackageInstance) purchase).getMovie().getEnglishName() + " home viewing package";
 
-        AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, refundDetails);
+        String confirmation = "Dear " + purchase.getOwner().getName() + ",\n\n" +
+                "I hope this message finds you well.\n\n" +
+                "We wanted to confirm that your recent purchase of "+purchaseType+" has been successfully canceled. " +
+                "If you have any questions or require further assistance, please don't hesitate to reach out to us.\n\n" +
+                "Thank you for your understanding.\n\n" +
+                "Best regards";
+
+        //txtRefund.setText(refundPrice+"");
+        if(refundPrice==0)
+            AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have not been refunded.");
+        else
+            AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have been refunded for: " +refundPrice);
+        EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Canceled Purchase from Hasertia.", confirmation);
+        EmailSender.sendEmail("hasertiaproject@gmail.com", "A purchase has been canceled.", confirmation);
     }
 
     private String processRefund(Purchase purchase) {
         if (purchase instanceof MovieTicket) {
             MovieTicket movieTicket = (MovieTicket) purchase;
-            int price = movieTicket.getMovieInstance().getMovie().getTheaterPrice();
+            refundPrice = movieTicket.getMovieInstance().getMovie().getTheaterPrice();
             LocalDateTime screeningTime = purchase.getPurchaseDate();
             long hoursUntilScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime);
             if (hoursUntilScreening > 3) {
-                return "You will refund Full Price Ticket: " + price + "₪";
+                return "You will refund Full Price Ticket: " + refundPrice + "₪";
             } else if (hoursUntilScreening > 1) {
-                return "You will refund 50% of the Price Ticket: " + price * 0.5 + "₪";
+                refundPrice *= 0.5;
+                return "You will refund 50% of the Price Ticket: " + refundPrice + "₪";
             } else {
+                refundPrice = 0;
                 return "You won't be refunded!";
             }
         } else {
             HomeViewingPackageInstance movieTicket = (HomeViewingPackageInstance) purchase;
-            return "You will refund 50% of the Price Ticket: " + movieTicket.getMovie().getHomeViewingPrice() * 0.5 + "₪";
+            refundPrice =  movieTicket.getMovie().getHomeViewingPrice() * 0.5;
+            return "You will refund 50% of the Price Ticket: " + refundPrice + "₪";
         }
     }
 

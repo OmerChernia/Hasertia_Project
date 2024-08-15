@@ -25,6 +25,7 @@ public class PurchaseController
 
     public static void AddHomeViewing(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, String link)
     {
+        viewingDate.plusHours(3);//time difference
         HomeViewingPackageInstance newTicket = new HomeViewingPackageInstance(purchaseDate, owner, purchaseValidation, movie, viewingDate,true,link);
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);

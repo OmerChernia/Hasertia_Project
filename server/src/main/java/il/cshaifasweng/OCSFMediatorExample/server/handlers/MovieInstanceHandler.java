@@ -128,9 +128,16 @@ public class MovieInstanceHandler extends MessageHandler
             session.save(message.movies.getFirst());
             session.flush();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_ADDED;
+            if(!message.movies.getFirst().getMovie().getNotificationSent())
+            {
+                message.movies.getFirst().getMovie().setNotificationSent(true);
+                session.update(message.movies.getFirst().getMovie());
+                session.flush();
+            }
         }
         else
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+
     }
     private void get_movie_instance_by_id()
     {
@@ -155,7 +162,11 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void delete_movie_instance()
     {
-        //?????
+        message.movies.getFirst().setIsActive(false);
+        System.out.println(message.movies.getFirst().getIsActive());
+        session.update(message.movies.getFirst());
+        session.flush();
+        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
     private void update_movie_instance() {
         try {

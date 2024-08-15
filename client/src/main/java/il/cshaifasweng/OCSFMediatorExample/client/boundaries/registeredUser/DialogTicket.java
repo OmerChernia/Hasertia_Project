@@ -176,7 +176,7 @@ public class DialogTicket {
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
 
-        lblLink.setText("link");
+        lblLink.setText(homeViewingPackage.getLink());
 
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(true);

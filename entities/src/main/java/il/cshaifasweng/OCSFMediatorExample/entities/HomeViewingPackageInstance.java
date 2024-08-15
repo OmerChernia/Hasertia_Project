@@ -52,6 +52,16 @@ public class HomeViewingPackageInstance extends Purchase{
         return this.link;
     }
 
+    public LocalDateTime getActivationDate()
+    {
+        return this.activationDate;
+    }
+
+    public void setActivationDate (LocalDateTime dateTime)
+    {
+        this.activationDate = dateTime;
+    }
+
     @Override
     protected String getPurchaseType() {
         return "HomeViewingPackageInstance";
