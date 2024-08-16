@@ -112,6 +112,7 @@ public class DialogEditMovie implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeImageHoverEffect();
         initializeComboBoxAutoComplete();
+
         EventBus.getDefault().register(this);
     }
 

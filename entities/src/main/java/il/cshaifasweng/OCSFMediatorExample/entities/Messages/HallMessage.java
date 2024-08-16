@@ -4,67 +4,39 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Hall;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HallMessage extends Message {
-    private Hall hall;
-    private List<LocalDate> availableDates;
-    private List<LocalTime> availableTimes;
-    private LocalDate date;
+    public List<Hall> halls =new ArrayList<>();
+    public List<LocalTime> availableTimes;
+    public LocalDate date;
     public RequestType requestType;
     public ResponseType responseType;
+    public int id;
 
-    public HallMessage(MessageType messageType, Hall hall) {
+    public HallMessage(MessageType messageType, RequestType requestType, Hall hall, LocalDate date) {
         super(messageType);
-        this.hall = hall;
+        this.halls.add(hall);
+        this.requestType = requestType;
+        this.date=date;
     }
-
-    public HallMessage(MessageType messageType, RequestType requestType, Hall hall) {
+    public HallMessage(MessageType messageType, RequestType requestType, int id) {
         super(messageType);
-        this.hall = hall;
+        this.id = id;
         this.requestType = requestType;
     }
 
-    public Hall getHall() {
-        return hall;
-    }
-
-    public void setHall(Hall hall) {
-        this.hall = hall;
-    }
-
-    public List<LocalDate> getAvailableDates() {
-        return availableDates;
-    }
-
-    public void setAvailableDates(List<LocalDate> availableDates) {
-        this.availableDates = availableDates;
-    }
-
-    public List<LocalTime> getAvailableTimes() {
-        return availableTimes;
-    }
-
-    public void setAvailableTimes(List<LocalTime> availableTimes) {
-        this.availableTimes = availableTimes;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public enum RequestType {
-        GET_AVAILABLE_DATES,
-        GET_AVAILABLE_TIMES
+        GET_AVAILABLE_TIMES,
+        GET_ALL_HALLS_BY_THEATER_ID
     }
 
     public enum ResponseType {
-        AVAILABLE_TIMES,
-        ALL_AVAILABLE_TIMES
+        ALL_AVAILABLE_TIMES,
+        RETURN_HALLS_BY_ID,
+        RETURN_HALLS_FAILED,
+        RETURN_TIMES_FAILED
     }
 
 

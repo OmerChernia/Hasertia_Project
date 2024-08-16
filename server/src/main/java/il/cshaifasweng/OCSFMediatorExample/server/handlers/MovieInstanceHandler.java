@@ -175,23 +175,8 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void update_movie_instance() {
         try {
-            // Get the ID from the incoming message
-            int screeningId = message.id;
-
-            // Retrieve the current persistent instance of the movie from the session
-            MovieInstance persistentMovieInstance = session.get(MovieInstance.class,screeningId);
-
-            if (persistentMovieInstance != null) {
-                // Update the persistent with the new values from the message
-                persistentMovieInstance.setTime(message.date);
-
-                // Save the changes
-                session.update(persistentMovieInstance);
-                session.flush();
-                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
-            } else {
-                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
-            }
+            MovieInstance mergedInstance = (MovieInstance) session.merge(message.movies.getFirst());
+            session.flush();
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
@@ -220,7 +205,7 @@ public class MovieInstanceHandler extends MessageHandler
     {
         try {
             // Create an HQL query to fetch all complaints
-            Query<MovieInstance> query = session.createQuery("FROM MovieInstance ", MovieInstance.class);
+            Query<MovieInstance> query = session.createQuery("FROM MovieInstance where isActive = true", MovieInstance.class);
             // Execute the query and get the result list
             message.movies = query.getResultList();
 

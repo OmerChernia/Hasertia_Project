@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "theaters")
-public class Theater extends ArrayList<Theater> implements Serializable {
+public class Theater implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -64,6 +64,11 @@ public class Theater extends ArrayList<Theater> implements Serializable {
 
     public void setManager(TheaterManager manager) {
         this.manager = manager;
+    }
+
+    @Override
+    public String toString() {
+        return this.getLocation();
     }
 
 }

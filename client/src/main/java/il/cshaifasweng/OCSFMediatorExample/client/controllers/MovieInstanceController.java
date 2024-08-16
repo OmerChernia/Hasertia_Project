@@ -32,18 +32,9 @@ public class MovieInstanceController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void updateMovieInstance(int screeningId, LocalDateTime dateTime) {
+    public static void updateMovieInstance(MovieInstance movieInstance) {
 
-        MovieInstanceMessage requestMessage = new MovieInstanceMessage(
-                MessageType.REQUEST,
-                MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE,
-                screeningId
-        );
-
-
-        requestMessage.date = dateTime;
-
-
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE, movieInstance);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
@@ -100,6 +91,7 @@ public class MovieInstanceController {
     public static void addMovieInstance (Movie movie, LocalDateTime time, Hall hall)
     {
         MovieInstance movieInstance = new MovieInstance(movie, time, hall, true);
-
+        MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE, movieInstance);
+        SimpleClient.getClient().sendRequest(requestMessage);
     }
 }

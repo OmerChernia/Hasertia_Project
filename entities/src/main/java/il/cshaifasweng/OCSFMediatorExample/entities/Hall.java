@@ -84,6 +84,11 @@ public class Hall implements Serializable {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
 
-
+    public String toString() {
+        return this.getName();
+    }
 }
