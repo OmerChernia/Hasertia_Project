@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.*;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
@@ -170,7 +171,7 @@ public class TheaterPurchaseBoundary {
     private RegisteredUser user=null;
     private boolean isCardPackageOn;
     private boolean isReserved;
-    private Hall hall;
+    private Hall hall;;
 
     @FXML
     public void initialize()
@@ -217,7 +218,7 @@ public class TheaterPurchaseBoundary {
     private void updateMovieDetails() {
         movieTitle.setText(currentMovieInstance.getMovie().getHebrewName() + " | " + currentMovieInstance.getMovie().getEnglishName());
         movieDate.setText("Date: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        movieTime.setText("Time: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        movieTime.setText("Time: " + currentMovieInstance.getTime().minusHours(3).format(DateTimeFormatter.ofPattern("HH:mm")));
         movieHall.setText("Hall: " + currentMovieInstance.getHall().getId());
         movieLocation.setText("Theater: " + currentMovieInstance.getHall().getTheater().getLocation());
         movieImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MOVIE_PACKAGE + currentMovieInstance.getMovie().getImage())));
@@ -235,7 +236,8 @@ public class TheaterPurchaseBoundary {
         Platform.runLater(this::updateSeatsGrid);
     }
 
-        private void updateSeatsGrid() {
+
+    private void updateSeatsGrid() {
         seatGrid.getChildren().clear();
         List<Seat> seats = hall.getSeats();
         for (Seat seat : seats)
@@ -261,8 +263,12 @@ public class TheaterPurchaseBoundary {
     {
         if(movieInstanceCanceledEvent.movieInstance.getId()==currentMovieInstance.getId())
         {
-            //AlertsBuilder.create(AlertType.INFO,);
-            //need to add how to go to home
+            AlertsBuilder.create(AlertType.CANCELLATION, stackPane, stackPane, stackPane, "The selected screening has been canceled/modified, Please choose a new screening");
+            Platform.runLater(() -> {
+                SimpleChatClient.mainBoundary.showFXMLWindows(ConstantsPath.HOME_VIEW);
+            });
+
+
         }
     }
 

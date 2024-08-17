@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import java.lang.reflect.InvocationTargetException;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
@@ -182,6 +183,7 @@ public class MainBoundary implements Initializable {
         homeWindowsInitialize();
         resetButtons();
         tooltips();
+        SimpleChatClient.mainBoundary=this;
     }
 
     private void clearTextFields() {
@@ -323,7 +325,7 @@ public class MainBoundary implements Initializable {
         currentController = new_currentController;
     }
 
-    private void showFXMLWindows(String FXMLName)  {
+    public void showFXMLWindows(String FXMLName)  {
 
         if (currentController != null) {
             try {

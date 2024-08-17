@@ -27,7 +27,7 @@ public class SimpleChatClient extends Application {
     public static Scene scene;
     public static SimpleClient client;
     private static Stage primaryStage;
-    private static MainBoundary mainBoundary;
+    public static MainBoundary mainBoundary;
 
 
     @Override

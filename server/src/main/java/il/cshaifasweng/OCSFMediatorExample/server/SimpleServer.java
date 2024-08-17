@@ -79,8 +79,10 @@ public class SimpleServer extends AbstractServer
 					session.getTransaction().commit();          // save changes in DB
 					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
 
-					if(msg instanceof MovieInstanceMessage &&
-							((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE)
+					if(msg instanceof MovieInstanceMessage &&(
+							((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE
+							||((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE
+							||((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE))
 					{
 						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
 					}

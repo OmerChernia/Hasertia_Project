@@ -272,20 +272,17 @@ public class MovieSmallBoundary {
         });
     }
 
-    //need to finish!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @Subscribe
     public void onMovieInstanceEvent(MovieInstanceCanceledEvent movieInstanceCanceledEvent)
     {
         Platform.runLater(() -> {
-        if(movie.equals(movieInstanceCanceledEvent.movieInstance.getMovie())) {
-            //disableAndResetComboBox(cmbCinema);
-            //disableAndResetComboBox(cmbDate);
-            //disableAndResetComboBox(cmbHour);
+        if(movie.getId()==movieInstanceCanceledEvent.movieInstance.getMovie().getId()) {
             MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
         }});
     }
 
     private void populateCinemasComboBox(List<MovieInstance> movieInstances) {
+        cmbCinema.setDisable(false);
         Set<String> cinemas = movieInstances.stream()
                 .filter(MovieInstance::getIsActive) // Filter by isActive attribute
                 .map(instance -> instance.getHall().getTheater().getLocation())
