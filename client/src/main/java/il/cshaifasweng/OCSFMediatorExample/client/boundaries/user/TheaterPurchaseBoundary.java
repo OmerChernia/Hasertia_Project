@@ -265,7 +265,7 @@ public class TheaterPurchaseBoundary {
         {
             AlertsBuilder.create(AlertType.CANCELLATION, stackPane, stackPane, stackPane, "The selected screening has been canceled/modified, Please choose a new screening");
             Platform.runLater(() -> {
-                SimpleChatClient.mainBoundary.showFXMLWindows(ConstantsPath.HOME_VIEW);
+                SimpleChatClient.mainBoundary.homeWindowsInitialize();
             });
 
 

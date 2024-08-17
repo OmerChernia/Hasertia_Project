@@ -1,15 +1,14 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.customerService;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -18,7 +17,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -62,11 +64,15 @@ public class CustomerServiceBoundary implements Initializable {
     @FXML
     private TableView<Complaint> tblComplaints;
 
+    public String customerServiceAnswer;
+    public int complaintId;
+    public Complaint complaint;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
-        setActionToggleButton();
-        Platform.runLater(() -> ComplaintController.getAllComplaints());  // Request to load data from the server
+        ComplaintController.getOpenComplaints();
+
         animateNodes();
 
         tblComplaints.setRowFactory(tv -> {
@@ -74,78 +80,83 @@ public class CustomerServiceBoundary implements Initializable {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Complaint rowData = row.getItem();
-                    Platform.runLater(this::showDialogDetailsQuote);
+                    showDialog();
                 }
             });
             return row;
         });
     }
 
-    @Subscribe
-    public void onComplaintMessageReceived(ComplaintMessage message) {
-        if (message.responseType == ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST) {
-            Platform.runLater(() -> loadTableData(message.compliants));
-        }
+    private void animateNodes() {
+        Animations.fadeInUp(rootSearch);
+        Animations.fadeInUp(tblComplaints);
     }
 
     @Subscribe
-    private void onPurchaseMessage(PurchaseMessage purchaseMessage) {
-        System.out.println("onPurchaseMessage");
-        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED)
-        {
-            // String finalResponseText = getFinalResponseText();
-            String finalResponseText = "test";
-            EmailSender.sendEmail(purchaseMessage.purchases.get(0).getOwner().getEmail() ,"A new customer service response from Hasertia has received!", finalResponseText);
-            EmailSender.sendEmail("hasertiaproject@gmail.com","A new customer service response from Hasertia has received!", finalResponseText);
-            closeDialogAddQuotes();
+    public void onComplaintMessageReceived(ComplaintMessage message) {
+        switch (message.responseType) {
+            case FILTERED_COMPLAINTS_LIST:
+                loadTableData(message.compliants);
+                break; // Add break to avoid fall-through
+            case COMPLIANT_ADDED:
+                Platform.runLater(ComplaintController::getOpenComplaints);
+                break;
+            case COMPLIANT_WAS_ANSWERED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "Complaint Handled!");
+                    EmailSender.sendEmail(complaint.getPurchase().getOwner().getEmail(), "Customer Service: Complain num " + complaintId, customerServiceAnswer);
+                    ComplaintController.getOpenComplaints();
+                });
+                break;
+            case COMPLIANT_MESSAGE_FAILED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, rootCustomerService, "Complaint wasn't Handled!");
+                });
+                break;
         }
-
-        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
-        {
-            AlertsBuilder.create(AlertType.ERROR, null, null, null, "Try Again!");
-        }
-        if (purchaseMessage.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
-        {
-            AlertsBuilder.create(AlertType.ERROR, null, null, null, "Try Again!");
-        }
-
     }
 
     private void loadTableData(List<Complaint> complaints) {
-        Platform.runLater(() -> {
-            listComplaints = FXCollections.observableArrayList(complaints);
-            tblComplaints.setItems(listComplaints);
-            tblComplaints.setFixedCellSize(30);
+        if (complaints == null || complaints.isEmpty()) {
+            return; // Handle the case where the list is null or empty
+        }
 
-            colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colDescription.setCellValueFactory(new PropertyValueFactory<>("info"));
-            colDate.setCellValueFactory(cellData -> new SimpleObjectProperty<>(
-                    cellData.getValue().getCreationDate().toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-            ));
-            colCustomerName.setCellValueFactory(cellData -> {
-                // Check if the registeredUser is null, and return an empty string if it is
-                String customerName = (cellData.getValue().getRegisteredUser() != null) ?
-                        cellData.getValue().getRegisteredUser().getName() : "UnRegistered User";
-                return new SimpleObjectProperty<>(customerName);
-            });
-
-            ButtonFactory buttonFactory = new ButtonFactory();
-            colPurchase.setCellValueFactory(new ButtonFactory.ButtonTypeOrderCellValueFactory());
-            colStatus.setCellValueFactory(new ButtonFactory.ButtonExistsCellValueFactory());
+        complaints.sort((c1, c2) -> {
+            long hoursLeft1 = 24 - java.time.Duration.between(c1.getCreationDate(), java.time.LocalDateTime.now()).toHours();
+            long hoursLeft2 = 24 - java.time.Duration.between(c2.getCreationDate(), java.time.LocalDateTime.now()).toHours();
+            return Long.compare(hoursLeft1, hoursLeft2);
         });
-    }
 
-    private void animateNodes() {
-        Platform.runLater(() -> {
-            Animations.fadeInUp(rootSearch);
-            Animations.fadeInUp(tblComplaints);
+        listComplaints = FXCollections.observableArrayList(complaints);
+        tblComplaints.setItems(listComplaints);
+        tblComplaints.setFixedCellSize(30);
+
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("info"));
+        colDate.setCellValueFactory(cellData -> {
+            if (cellData.getValue() != null && cellData.getValue().getCreationDate() != null) {
+                return new SimpleObjectProperty<>(
+                        cellData.getValue().getCreationDate().toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                );
+            } else {
+                return new SimpleObjectProperty<>("");
+            }
         });
+
+        colCustomerName.setCellValueFactory(cellData -> {
+            String customerName = (cellData.getValue().getRegisteredUser() != null) ?
+                    cellData.getValue().getRegisteredUser().getName() : "General Complaint";
+            return new SimpleObjectProperty<>(customerName);
+        });
+
+        colPurchase.setCellValueFactory(new ButtonFactory.ButtonTypeOrderCellValueFactory());
+        colStatus.setCellFactory(new ButtonFactory.ButtonUrgencyCellFactory());
     }
 
     @FXML
-    private void showDialogAddQuotes() {
+    private void showDialog() {
         Platform.runLater(() -> {
-            disableTable();
+            tblComplaints.setDisable(true);
             Complaint selectedComplaint = tblComplaints.getSelectionModel().getSelectedItem();
             if (selectedComplaint == null) {
                 AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, "No complaint selected");
@@ -159,6 +170,8 @@ public class CustomerServiceBoundary implements Initializable {
 
                 DialogCustomerService dialogCustomerService = loader.getController();
                 dialogCustomerService.setCustomerServiceController(this);
+                this.complaint = selectedComplaint;
+                this.complaintId = complaint.getId();
                 dialogCustomerService.setComplaint(selectedComplaint);
 
                 containerHandleComplaint.getChildren().clear();
@@ -186,78 +199,7 @@ public class CustomerServiceBoundary implements Initializable {
     @FXML
     public void closeDialogAddQuotes() {
         if (dialogAddProduct != null) {
-            dialogAddProduct.close() ;
+            dialogAddProduct.close();
         }
-    }
-
-    @FXML
-    private void showDialogDetailsQuote() {
-        Platform.runLater(() -> {
-            if (tblComplaints.getSelectionModel().isEmpty()) {
-                AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
-                return;
-            }
-            showDialogAddQuotes();
-            selectedRecord();
-        });
-    }
-
-    private void selectedRecord() {
-        Complaint complaint = tblComplaints.getSelectionModel().getSelectedItem();
-        Platform.runLater(() -> {
-            DialogCustomerService dialogCustomerService = new DialogCustomerService();
-            dialogCustomerService.setComplaint(complaint);
-        });
-    }
-
-    @FXML
-    private void setActionToggleButton() {
-        // Implement action handling for toggle buttons if necessary
-    }
-
-    @FXML
-    private void loadData() {
-        ComplaintController.getAllComplaints() ;  // Request to load data from the server
-    }
-
-    @FXML
-    private void newQuote() {
-        Platform.runLater(() -> {
-            loadData();
-            closeDialogAddQuotes();
-            AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
-        });
-    }
-
-    @FXML
-    private void deleteQuotes() {
-        Platform.runLater(() -> {
-            Complaint selectedQuote = tblComplaints.getSelectionModel().getSelectedItem();
-            if (selectedQuote != null) {
-                listComplaints.remove(selectedQuote);
-                tblComplaints.refresh();
-                loadData();
-                closeDialogDeleteQuote();
-                AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
-            }
-        });
-    }
-
-    @FXML
-    private void updateQuotes() {
-        Platform.runLater(() -> {
-            loadData();
-            closeDialogAddQuotes();
-            AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, tblComplaints, ConstantsPath.MESSAGE_ADDED);
-        });
-    }
-
-    private void disableTable() {
-        Platform.runLater(() -> tblComplaints.setDisable(true));
-    }
-
-    @FXML
-    private void closeDialogDeleteQuote() {
-        // Implement close dialog logic here
     }
 }

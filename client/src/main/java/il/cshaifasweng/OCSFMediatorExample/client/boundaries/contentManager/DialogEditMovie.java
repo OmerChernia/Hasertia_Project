@@ -113,8 +113,7 @@ public class DialogEditMovie implements Initializable {
         initializeImageHoverEffect();
         initializeComboBoxAutoComplete();
 
-        EventBus.getDefault().register(this);
-    }
+     }
 
     private void initializeComboBoxAutoComplete() {
         AutocompleteComboBox.autoCompleteComboBoxPlus(comboGenre, (typedText, item) -> item.toLowerCase().contains(typedText.toLowerCase()));
@@ -123,9 +122,6 @@ public class DialogEditMovie implements Initializable {
 
     }
 
-    public void cleanup() {
-        EventBus.getDefault().unregister(this);
-    }
 
     public void setEditMovieListBoundary(EditMovieListBoundary editMovieListBoundary) {
         this.editMovieListBoundary = editMovieListBoundary;
@@ -205,6 +201,7 @@ public class DialogEditMovie implements Initializable {
                 .forEach(field -> field.setEditable(false));
         comboGenre.setDisable(true);
         comboType.setDisable(true);
+        comboAvailable.setDisable(true);
     }
 
     private void enableEditControls() {
@@ -212,6 +209,8 @@ public class DialogEditMovie implements Initializable {
                 .forEach(field -> field.setEditable(true));
         comboGenre.setDisable(false);
         comboType.setDisable(false);
+        comboAvailable.setDisable(false);
+
     }
 
     private void expandImage(Movie movie, String title) {
@@ -330,8 +329,7 @@ public class DialogEditMovie implements Initializable {
 
     private void closeDialog() {
         editMovieListBoundary.closeDialogAddProduct();
-        cleanup();
-    }
+     }
 
     private boolean validateInputs() {
         if (txtEnglishName.getText().trim().isEmpty()) {
@@ -378,47 +376,6 @@ public class DialogEditMovie implements Initializable {
         imageProduct.setImage(new Image(ConstantsPath.NO_IMAGE_AVAILABLE));
     }
 
-    @Subscribe
-    public void onMovieMessageReceived(MovieMessage message) {
 
-        String messageText = "";
-        AlertType alertType = AlertType.SUCCESS;
-
-        switch (message.responseType) {
-            case MOVIE_UPDATED:
-                messageText = "You have updated " + movie.getEnglishName() + "!";
-                break;
-            case MOVIE_ADDED:
-                messageText = "You have added " + movie.getEnglishName() + "!";
-                break;
-            case MOVIE_DELETED:
-                messageText = "You have deleted " + movie.getEnglishName() + "!";
-                break;
-            case MOVIE_NOT_UPDATED:
-                messageText = "Failed to update " + movie.getEnglishName() + ".";
-                alertType = AlertType.ERROR;
-                break;
-            case MOVIE_NOT_ADDED:
-                messageText = "Failed to add " + movie.getEnglishName() + ".";
-                alertType = AlertType.ERROR;
-                break;
-            case MOVIE_NOT_DELETED:
-                messageText = "Failed to delete " + movie.getEnglishName() + ".";
-                alertType = AlertType.ERROR;
-                break;
-            default:
-                messageText = "An unknown response was received.";
-                alertType = AlertType.WARNING;
-                break;
-        }
-
-        AlertsBuilder.create(
-                alertType,
-                null,
-                containerAddProduct,
-                containerAddProduct,
-                messageText
-        );
-    }
 }
 

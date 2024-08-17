@@ -297,7 +297,7 @@ public class ReportsBoundary implements Initializable {
     @Subscribe
     public void onComplaintMessageReceived(ComplaintMessage message) {
         Platform.runLater(() -> {
-            if (message.responseType == ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST) {
+            if (message.responseType == ComplaintMessage.ResponseType.FILTERED_COMPLAINTS_LIST) {
                 this.complaints = message.compliants; // Store the complaints data
                 updateFilteredData(); // Update the reports based on the currently selected filters
             }

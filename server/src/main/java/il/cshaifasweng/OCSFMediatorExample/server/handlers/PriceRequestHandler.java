@@ -60,40 +60,42 @@ public class PriceRequestHandler extends MessageHandler
         message.requests = session.createQuery("FROM PriceRequest", PriceRequest.class).list();
         message.responseType = PriceRequestMessage.ResponseType.ALL_REQUESTS;
     }
-    private void approve_price_request()
-    {
+    private void approve_price_request() {
         Query<Movie> query = session.createQuery("FROM Movie where id = :_id", Movie.class);
-        query.setParameter("_id",message.requests.getFirst().getMovie().getId());
+        query.setParameter("_id", message.requests.getFirst().getMovie().getId());
 
         Movie movie = query.uniqueResult();
 
-        if(movie != null)
-        {
-            switch (message.requests.getFirst().getType())
-            {
-                case Movie.StreamingType.THEATER_VIEWING ->
-                {
+        if (movie != null) {
+            switch (message.requests.getFirst().getType()) {
+                case Movie.StreamingType.THEATER_VIEWING -> {
                     movie.setTheaterPrice(message.requests.getFirst().getNewPrice());
                     session.update(movie);
                 }
-                case Movie.StreamingType.HOME_VIEWING ->
-                {
+                case Movie.StreamingType.HOME_VIEWING -> {
                     movie.setHomeViewingPrice(message.requests.getFirst().getNewPrice());
                     session.update(movie);
                 }
-                case Movie.StreamingType.BOTH ->
-                {
+                case Movie.StreamingType.BOTH -> {
                     movie.setTheaterPrice(message.requests.getFirst().getNewPrice());
                     movie.setHomeViewingPrice(message.requests.getFirst().getNewPrice());
                     session.update(movie);
                 }
             }
+
             session.flush();
             message.responseType = PriceRequestMessage.ResponseType.MOVIE_PRICE_CHANGED;
-        }
-        else
-            message.responseType = PriceRequestMessage.ResponseType.PRICE_REQUEST_MESSAGE_FAILED;
 
+            session.clear();
+            PriceRequest request = session.get(PriceRequest.class, message.requests.getFirst().getId());
+            if (request != null) {
+                session.delete(request);
+                session.flush();
+            }
+
+        } else {
+            message.responseType = PriceRequestMessage.ResponseType.PRICE_REQUEST_MESSAGE_FAILED;
+        }
     }
     private void decline_price_request()
     {

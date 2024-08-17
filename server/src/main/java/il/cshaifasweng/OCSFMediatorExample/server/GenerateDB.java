@@ -438,42 +438,43 @@ public class GenerateDB {
         Transaction transaction = session.beginTransaction();
 
         try {
-            for (int i = 0; i < 30; i++) { // Increase the limit here
+            for (int i = 0; i < 100; i++) { // Increase the limit to 100
                 RegisteredUser user = users.get(i % users.size());
                 Purchase purchase;
 
-                if (i < 10) {
-                    purchase = movieTickets.get(i);
-                } else if (i < 20) {
-                    purchase = homePackages.get(i - 10);
+                if (i % 3 == 0) {
+                    purchase = movieTickets.get(i % movieTickets.size());
+                } else if (i % 3 == 1) {
+                    purchase = homePackages.get(i % homePackages.size());
                 } else {
-                    purchase = multiEntryTickets.get(i - 20);
+                    purchase = multiEntryTickets.get(i % multiEntryTickets.size());
                 }
 
-                // Determine the date for the complaint
                 LocalDateTime complaintDate;
-                if (i < 5) {
-                    // 5 complaints with date 2 days ago
-                    complaintDate = LocalDateTime.now().minusDays(2);
+                boolean isClosed;
+
+                if (i < 50) {
+                    complaintDate = LocalDateTime.now().minusHours(24 - (i % 24));
+                    isClosed = false;
                 } else {
-                    // The rest with today's date
-                    complaintDate = LocalDateTime.now();
+                    complaintDate = LocalDateTime.now().minusDays(1).minusHours(i % 24);
+                    isClosed = true;
                 }
 
                 Complaint complaint = new Complaint(
                         "Complaint info " + i,
                         complaintDate,
                         purchase,
-                        false,
+                        isClosed,
                         user
                 );
                 session.save(complaint);
                 session.flush();
-                System.out.println("Saved complaint: " + complaint.getId());
+                System.out.println("Saved complaint: " + complaint.getId() + " (Closed: " + isClosed + ")");
             }
 
             transaction.commit();
-            System.out.println("30 complaints have been created and associated with registered users and purchases.");
+            System.out.println("100 complaints have been created and associated with registered users and purchases.");
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();

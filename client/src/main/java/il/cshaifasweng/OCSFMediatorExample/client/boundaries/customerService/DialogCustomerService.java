@@ -1,8 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.customerService;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,15 +53,11 @@ public class DialogCustomerService implements Initializable {
     @FXML
     private AnchorPane pnEmployeeArea;
 
-
-
     @FXML
     private Label purchaseTypeField;
 
     @FXML
     private TextField refundAmountField;
-
-
 
     @FXML
     private Button btnSend;
@@ -76,11 +75,15 @@ public class DialogCustomerService implements Initializable {
         compensateFinanciallyBox.setVisible(false);
         compensateFinanciallyBox.setManaged(false);
 
-        // Listen for changes to update the final response preview
-        refundAmountField.textProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
-        employeeResponseComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
-    }
+        employeeResponseComboBox.setDisable(true);
 
+        actionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> handleActionSelection());
+        employeeResponseComboBox.valueProperty().addListener((observable, oldValue, newValue) -> checkIfCanSend());
+
+        refundAmountField.textProperty().addListener((observable, oldValue, newValue) -> updateFinalResponsePreview());
+
+        btnSend.setDisable(true);
+    }
     public void setCustomerServiceController(CustomerServiceBoundary customerServiceController) {
         this.customerServiceController = customerServiceController;
     }
@@ -88,17 +91,17 @@ public class DialogCustomerService implements Initializable {
     public void setComplaint(Complaint selectedComplaint) {
         this.myComplaint = selectedComplaint;
 
-        // Populate labels with data
-        complaintDetailsLabel.setText(selectedComplaint.getInfo());
-        complainantNameLabel.setText(selectedComplaint.getRegisteredUser().getName());
+        if (selectedComplaint != null) {
+            complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
+            complainantNameLabel.setText(selectedComplaint.getRegisteredUser().getName() == null ? "" : selectedComplaint.getRegisteredUser().getName());
 
-        if (selectedComplaint.getPurchase() instanceof MovieTicket) {
-            setMovieTicket(selectedComplaint);
-        } else if (selectedComplaint.getPurchase() instanceof MultiEntryTicket) {
-            setMultiEntryTicket(selectedComplaint);
-        }
-        else if (selectedComplaint.getPurchase() instanceof HomeViewingPackageInstance) {
-            setHomeViewing(selectedComplaint);
+            if (selectedComplaint.getPurchase() instanceof MovieTicket) {
+                setMovieTicket(selectedComplaint);
+            } else if (selectedComplaint.getPurchase() instanceof MultiEntryTicket) {
+                setMultiEntryTicket(selectedComplaint);
+            } else if (selectedComplaint.getPurchase() instanceof HomeViewingPackageInstance) {
+                setHomeViewing(selectedComplaint);
+            }
         }
     }
 
@@ -123,7 +126,6 @@ public class DialogCustomerService implements Initializable {
         purchaseTypeField.setText("Home Viewing Ticket");
     }
 
-
     private void setMultiEntryTicket(Complaint selectedComplaint) {
         purchaseTypeField.setText("Multi-Entry Ticket");
         numTicketsLabel.setText(String.valueOf(selectedComplaint.getPurchase().getOwner().getTicket_counter()));
@@ -136,27 +138,56 @@ public class DialogCustomerService implements Initializable {
         compensateFinanciallyBox.setVisible(false);
         compensateFinanciallyBox.setManaged(false);
 
-        if (selectedAction.equals("Compensate Financially") || selectedAction.equals("Ticket refund")) {
+        if (selectedAction != null && (selectedAction.equals("Compensate Financially"))) {
             compensateFinanciallyBox.setVisible(true);
             compensateFinanciallyBox.setManaged(true);
         }
 
+
+        employeeResponseComboBox.setDisable(selectedAction == null);
+
         updateFinalResponsePreview();
+
+        checkIfCanSend();
+    }
+
+    private void checkIfCanSend() {
+        boolean canSend = actionComboBox.getValue() != null && employeeResponseComboBox.getValue() != null;
+        btnSend.setDisable(!canSend);
+
+        updateFinalResponsePreview();
+    }
+
+    private void updateFinalResponsePreview() {
+        finalResponsePreviewArea.getChildren().clear();
+
+        if (employeeResponseComboBox.getValue() != null) {
+            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("Employee Response: " + employeeResponseComboBox.getValue() + "\n"));
+        }
+
+        String selectedAction = actionComboBox.getValue();
+        if (selectedAction != null && selectedAction.equals("Compensate Financially")) {
+            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("\nAmount: " + refundAmountField.getText() + "₪\n"));
+        }
+
     }
 
     @FXML
     public void handleSubmitFinalResponse() {
+
+        if (btnSend.isDisable()) {
+            NotificationsBuilder.create(NotificationType.ERROR, "You must select an action and a response before sending.");
+            return;
+        }
+
         String finalResponseText = getFinalResponseText();
 
-        if (finalResponseText.contains("Ticket refund")) {
-            PurchaseController.RemovePurchase(this.myComplaint.getPurchase());
-        }
-        EmailSender.sendEmail(myComplaint.getPurchase().getOwner().getEmail(), "Customer Service: Complain num"+ myComplaint.getId() , finalResponseText);
+        customerServiceController.customerServiceAnswer = finalResponseText;
+        customerServiceController.complaintId = (myComplaint.getId());
+        customerServiceController.complaint = myComplaint;
+        ComplaintController.answerComplaint(myComplaint);
         customerServiceController.closeDialogAddQuotes();
-
     }
-
-
 
     private String getFinalResponseText() {
         StringBuilder finalResponse = new StringBuilder();
@@ -168,25 +199,8 @@ public class DialogCustomerService implements Initializable {
         return finalResponse.toString();
     }
 
-    private void updateFinalResponsePreview() {
-        finalResponsePreviewArea.getChildren().clear();
-
-        if (employeeResponseComboBox.getValue() != null && !employeeResponseComboBox.getValue().isEmpty()) {
-            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("Employee Response: " + employeeResponseComboBox.getValue() + "\n"));
-        }
-        String selectedAction = actionComboBox.getValue();
-        if (selectedAction.equals("Compensate Financially")) {
-            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("\nAmount: " + refundAmountField.getText() + "₪\n"));
-        }
-        if (selectedAction.equals("Ticket refund")) {
-            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("\nAmount: " + refundAmountField.getText() + "₪\n"));
-        }
-    }
-
     @FXML
     public void closeEmployeeArea(ActionEvent actionEvent) {
         customerServiceController.closeDialogAddQuotes();
     }
-
-
 }

@@ -23,10 +23,10 @@ public class ComplaintHandler extends MessageHandler
         {
             case ADD_COMPLIANT -> add_complaint();
             case ANSWER_COMPLIANT -> answer_compliant();
-            case GET_ALL_COMPLIANTS -> get_all_complaints();
-            case GET_COMPLIANTS_BY_THEATER -> get_complaints_by_theater();
-            case GET_COMPLIANTS_BY_CUSTOMER_ID -> get_complaints_by_customer_id();
-            case GET_OPEN_COMPLIANTS -> get_open_complaints();
+            case GET_ALL_COMPLAINTS -> get_all_complaints();
+            case GET_COMPLAINTS_BY_THEATER -> get_complaints_by_theater();
+            case GET_COMPLAINTS_BY_CUSTOMER_ID -> get_complaints_by_customer_id();
+            case GET_OPEN_COMPLAINTS -> get_open_complaints();
         }
     }
 
@@ -65,7 +65,7 @@ public class ComplaintHandler extends MessageHandler
             complaint.setInfo(message.compliants.getFirst().getInfo());
             session.update(complaint);
             session.flush();
-            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WES_ANSWERED;
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WAS_ANSWERED;
         }
         else
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
@@ -79,7 +79,7 @@ public class ComplaintHandler extends MessageHandler
             // Execute the query and get the result list
             message.compliants = query.getResultList();
             // Set the response type
-            message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+            message.responseType = ComplaintMessage.ResponseType.FILTERED_COMPLAINTS_LIST;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,7 +128,7 @@ public class ComplaintHandler extends MessageHandler
 
             // Execute the query and get the result list
             message.compliants = query_compliants.getResultList();
-            message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+            message.responseType = ComplaintMessage.ResponseType.FILTERED_COMPLAINTS_LIST;
         }
         else
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
@@ -141,6 +141,6 @@ public class ComplaintHandler extends MessageHandler
 
         // Execute the query and get the result list
         message.compliants = query.getResultList();
-        message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
+        message.responseType = ComplaintMessage.ResponseType.FILTERED_COMPLAINTS_LIST;
     }
 }

@@ -110,10 +110,6 @@ public class AlertsBuilder {
                 if (primaryAction != null) {
                     primaryAction.run();
                 }
-                if (type == AlertType.CANCELLATION) { // Load home page
-                        alertStage.close();
-                        return;
-                }
                 alertStage.close();
             });
 

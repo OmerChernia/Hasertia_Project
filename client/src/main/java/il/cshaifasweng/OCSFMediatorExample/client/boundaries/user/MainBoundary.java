@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import java.lang.reflect.InvocationTargetException;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
@@ -46,6 +45,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class MainBoundary implements Initializable {
 
+    @FXML
+    private Label lblWelcome;
     private ObservableList<MovieInstance> listProducts;
 
     private ObservableList<MovieInstance> filterProducts;
@@ -118,11 +119,10 @@ public class MainBoundary implements Initializable {
     @FXML
     private AnchorPane tooltipEditMovieList;
 
-    @FXML
-    private AnchorPane tooltipEditScreenings;
+
 
     @FXML
-    private AnchorPane tooltipExit;
+    private AnchorPane tooltipEditScreening;
 
     @FXML
     private AnchorPane tooltipHome;
@@ -132,6 +132,9 @@ public class MainBoundary implements Initializable {
 
     @FXML
     private AnchorPane tooltipOrders;
+
+    @FXML
+    private AnchorPane tooltipPrice;
 
     @FXML
     private AnchorPane tooltipReports;
@@ -183,73 +186,72 @@ public class MainBoundary implements Initializable {
         homeWindowsInitialize();
         resetButtons();
         tooltips();
-        SimpleChatClient.mainBoundary=this;
     }
 
     private void clearTextFields() {
         txtUser.clear();
         txtEmploee.clear();
         txtPassword.clear();
+        lblWelcome.setText("Welcome to 'Hasretia'!");
     }
 
 
 
     public void homeWindowsInitialize() {
-         showFXMLWindows(ConstantsPath.HOME_VIEW);
+        showFXMLWindows(ConstantsPath.HOME_VIEW);
     }
 
     @FXML
     private void homeWindows(ActionEvent event) {
-         showFXMLWindows(ConstantsPath.HOME_VIEW );
-     }
+        showFXMLWindows(ConstantsPath.HOME_VIEW );
+    }
 
     @FXML
     private void EditMovieScreeningsWindows(ActionEvent event) {
 
         showFXMLWindows(ConstantsPath.CONTENT_SCREENINGS_VIEW );
-     }
+    }
 
     @FXML
     private void CustomerServiceWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.CUSTOMER_SERVICE_VIEW );
-     }
+    }
 
     @FXML
     private void settingsWindows(ActionEvent event) {
         showFXMLWindows( ConstantsPath.COMPLAINT_VIEW );
-     }
+    }
 
     @FXML
     private void statisticsWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.COMPANY_MANAGER_VIEW );
-     }
+    }
 
     @FXML
     private void aboutWindows(ActionEvent event) {
         showFXMLWindows( ConstantsPath.ABOUT_VIEW  ) ;
-     }
+    }
 
     @FXML
     private void productsWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.CONTENT_MOVIES_VIEW );
-     }
+    }
 
     @FXML
     private void priceChangeWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.PRICE_CHANGE_VIEW);
-     }
+    }
 
 
     @FXML
     private void addUserWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.ORDERS_VIEW );
-     }
+    }
 
-    // choose package btn
     @FXML
     private void MEWindows(ActionEvent event) {
         showFXMLWindows(ConstantsPath.ME_PURCHASE_VIEW);
-     }
+    }
 
     @FXML
     private void closeLoginDialog() {
@@ -309,12 +311,15 @@ public class MainBoundary implements Initializable {
     private void tooltips() {
         Animations.tooltip(btnHome, tooltipHome);
         Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
-        Animations.tooltip(btnEditScreenings, tooltipEditScreenings);
-        Animations.tooltip(btnLog, tooltipExit);
+        Animations.tooltip(btnEditScreenings, tooltipEditScreening);
+        Animations.tooltip(btnSettings, tooltipSettings);
         Animations.tooltip(btnOrders, tooltipOrders);
+        Animations.tooltip(btnPriceChange, tooltipPrice);
         Animations.tooltip(btnComplaints, tooltipComplaints);
         Animations.tooltip(btnReports, tooltipReports);
         Animations.tooltip(btnAbout, tooltipAbout);
+        Animations.tooltip(btnME, tooltipMe);
+
     }
 
     private static Object currentController;
@@ -325,13 +330,14 @@ public class MainBoundary implements Initializable {
         currentController = new_currentController;
     }
 
-    public void showFXMLWindows(String FXMLName)  {
+    private void showFXMLWindows(String FXMLName)  {
 
         if (currentController != null) {
             try {
                 currentController.getClass().getMethod("cleanup").invoke(currentController);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {}
         }
+
 
         rootContainer.getChildren().clear();
 
@@ -390,10 +396,30 @@ public class MainBoundary implements Initializable {
     public void handleLoginResponse(LoginMessage loginMessage) {
         if (loginMessage instanceof EmployeeLoginMessage) {
 
-            handleEmployeeLoginResponse((EmployeeLoginMessage)loginMessage);
+            handleEmployeeLoginResponse((EmployeeLoginMessage) loginMessage);
+            String role = "";
+            switch (((EmployeeLoginMessage) loginMessage).employeeType) {
+                case THEATER_MANAGER:
+                    role = "Theater Manager";
+                    break;
+                case COMPANY_MANAGER:
+                    role = "Company Manager";
+                    break;
+                case CUSTOMER_SERVICE:
+                    role = "Customer Service";
+                    break;
+                case CONTENT_MANAGER:
+                    role = "Content Manager";
+                    break;
+            }
+
+            String finalRole = role;
+            Platform.runLater(() -> lblWelcome.setText("Welcome " + finalRole + "!"));
+        } else {
+            Platform.runLater(() -> handleCustomerLoginResponse(loginMessage));
         }
-        else  handleCustomerLoginResponse(loginMessage);
     }
+
 
     public static int getId(){
         return Integer.parseInt(loggedInUserId);
@@ -406,10 +432,12 @@ public class MainBoundary implements Initializable {
         Platform.runLater(() -> {
             if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL)
             {
+                lblWelcome.setText("Nice to see you again in 'Hasretia'!");
+
                 SimpleClient.user = loginMessage.id; // Save the logged-in user ID
 
                 this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
-                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User" + loginMessage.id + "Logged in!");
+                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User " + loginMessage.id + " Logged in!");
 
                 // Update the UI based on the user's role
                 updateUserBasedOnRole(loginMessage.id);
@@ -435,6 +463,7 @@ public class MainBoundary implements Initializable {
 
                 this.loggedInUserId = loginMessage.id; // Save the logged-in employee ID
                 this.loggedInEmploeeId = loginMessage.employeeType; // Save the logged-in employee type
+
 
                 // Update the UI based on the user's role
                 updateEmployeeBasedOnRole(loginMessage.id, loginMessage.employeeType);
@@ -492,7 +521,6 @@ public class MainBoundary implements Initializable {
 
 
     private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role ) {
-
         // Disable all buttons by default
         btnEditMovieList.setVisible(false);
         btnEditScreenings.setVisible(false);
@@ -519,13 +547,10 @@ public class MainBoundary implements Initializable {
                 btnComplaints.setVisible(true);
                 break;
             case THEATER_MANAGER:
-                btnPriceChange.setVisible(true);
                 btnReports.setVisible(true);
             case  COMPANY_MANAGER:
-                btnComplaints.setVisible(true);
-                btnEditMovieList.setVisible(true);
-                btnEditScreenings.setVisible(true);
                 btnReports.setVisible(true);
+                btnPriceChange.setVisible(true);
                 break;
 
         }

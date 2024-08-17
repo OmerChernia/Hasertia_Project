@@ -149,18 +149,44 @@ public class EditMovieListBoundary implements Initializable {
 
     @Subscribe
     public void loadData(MovieMessage movieMessage) {
-        System.out.println(movieMessage.responseType);
-        Platform.runLater(() -> {
-            if (movieMessage.responseType == MovieMessage.ResponseType.RETURN_MOVIES ) {
-                loadTableData(movieMessage.movies);
-            } else  if (movieMessage.responseType == MovieMessage.ResponseType.MOVIE_DELETED ) {
-
-                loadTableData(movieMessage.movies);
-            }
-            else {
-                MovieController.requestAllMovies();
-            }
-        });
+        switch (movieMessage.responseType) {
+            case MOVIE_UPDATED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, rootProducts, "updated movie!");
+                    MovieController.requestAllMovies();
+                });
+                break;
+            case MOVIE_ADDED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, rootProducts, "new movie added!");
+                    MovieController.requestAllMovies();
+                });
+                break;
+            case MOVIE_DELETED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.SUCCESS, stckProducts, rootProducts, rootProducts, "movie has been deleted!");
+                    MovieController.requestAllMovies();
+                });
+                break;
+            case MOVIE_NOT_UPDATED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, rootProducts, "Failed to update movie.");
+                });
+                break;
+            case MOVIE_NOT_ADDED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, rootProducts, "Failed to add movie.");
+                });
+                break;
+            case MOVIE_NOT_DELETED:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, rootProducts, "Failed to delete movie.");
+                });
+                break;
+            case RETURN_MOVIES:
+                Platform.runLater(() -> loadTableData(movieMessage.movies));
+                break;
+        }
     }
 
     private void loadTableData(List<Movie> movies) {

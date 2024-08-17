@@ -67,20 +67,20 @@ public class PriceChangeBoundary implements Initializable {
 
     @Subscribe
     public void onPriceChangeMessageReceived(PriceRequestMessage message) {
-        Platform.runLater(() -> {
-            if (message.responseType == PriceRequestMessage.ResponseType.ALL_REQUESTS) {
-                loadTableData(message.requests);
-            } else if (message.responseType == PriceRequestMessage.ResponseType.MOVIE_PRICE_CHANGED) {
-                PriceRequestController.requestAllPriceRequests();
-            }
-            else if (message.responseType == PriceRequestMessage.ResponseType.MOVIE_PRICE_NOT_CHANGED) {
-                PriceRequestController.requestAllPriceRequests();
-            }
-            if (message.responseType == PriceRequestMessage.ResponseType.NEW_REQUEST) {
-                PriceRequestController.requestAllPriceRequests();
 
-            }
-        });
+        if (message.responseType == PriceRequestMessage.ResponseType.ALL_REQUESTS) {
+            Platform.runLater(() -> {  loadTableData(message.requests);});
+        } else if (message.responseType == PriceRequestMessage.ResponseType.MOVIE_PRICE_CHANGED) {
+            PriceRequestController.requestAllPriceRequests();
+        }
+        else if (message.responseType == PriceRequestMessage.ResponseType.MOVIE_PRICE_NOT_CHANGED) {
+            PriceRequestController.requestAllPriceRequests();
+        }
+        if (message.responseType == PriceRequestMessage.ResponseType.NEW_REQUEST) {
+            PriceRequestController.requestAllPriceRequests();
+
+        }
+
     }
 
     private void loadTableData(List<PriceRequest> priceRequests) {
@@ -108,7 +108,7 @@ public class PriceChangeBoundary implements Initializable {
 
     }
     private void animateNodes() {
-        Platform.runLater(() -> Animations.fadeInUp(tblPriceRequest));
+        Animations.fadeInUp(tblPriceRequest) ;
     }
 
     private void setActionToggleButton() {
@@ -124,7 +124,7 @@ public class PriceChangeBoundary implements Initializable {
         }
 
         String text = "Are you sure you want to Change Price of "
-                + selectedPriceRequest.getMovie().getEnglishName() + " in " + selectedPriceRequest.getType() + " format" +
+                + selectedPriceRequest.getMovie().getEnglishName() + " in " + selectedPriceRequest.getType() +
                 " from: " + oldPrice +
                 " to: " + selectedPriceRequest.getNewPrice();
 
