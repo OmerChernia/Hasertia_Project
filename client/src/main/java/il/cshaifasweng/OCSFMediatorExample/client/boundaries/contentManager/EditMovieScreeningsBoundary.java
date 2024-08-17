@@ -167,7 +167,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
 
     private void setContextMenu() {
-        contextMenu = new CustomContextMenu(tblProducts);
+        contextMenu = new CustomContextMenu(tblProducts,3);
 
         contextMenu.setActionEdit(ev -> {
             showDialogEdit();

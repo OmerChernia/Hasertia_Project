@@ -2,12 +2,15 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.*;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -191,7 +194,6 @@ public class TheaterPurchaseBoundary {
         populateExpirationMonths();
         populateExpirationYears();
     }
-
     private void populateExpirationMonths() {
         for (int i = 1; i <= 12; i++) {
             expirationMonthCombo.getItems().add(String.format("%02d", i));
@@ -250,6 +252,17 @@ public class TheaterPurchaseBoundary {
 
             seatButton.setOnAction(event -> selectSeat(seat, seatButton));
             seatGrid.add(seatButton, seat.getCol(), seat.getRow());
+        }
+    }
+
+    //need to finish!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    @Subscribe
+    public void onMovieInstanceEvent(MovieInstanceCanceledEvent movieInstanceCanceledEvent)
+    {
+        if(movieInstanceCanceledEvent.movieInstance.getId()==currentMovieInstance.getId())
+        {
+            //AlertsBuilder.create(AlertType.INFO,);
+            //need to add how to go to home
         }
     }
 

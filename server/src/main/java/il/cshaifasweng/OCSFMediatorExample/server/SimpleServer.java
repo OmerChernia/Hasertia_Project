@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
@@ -78,8 +79,17 @@ public class SimpleServer extends AbstractServer
 					session.getTransaction().commit();          // save changes in DB
 					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
 
+					if(msg instanceof MovieInstanceMessage &&
+							((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE)
+					{
+						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
+					}
 					System.out.println("message handled");
-					client.sendToClient(msg);
+
+					if(msg instanceof ConnectionMessage && ((ConnectionMessage) msg).requestType == ConnectionMessage.RequestType.DELETE_CONNECTION)
+						return;
+
+					client.sendToClient(msg);					//send the message to the client
 					System.out.println("message sent");
 				}
 			}
@@ -120,8 +130,11 @@ public class SimpleServer extends AbstractServer
 
 		return configuration.buildSessionFactory(serviceRegistry);
 	}
-	public void sendToAllClients(Message message) {
+
+	@Override
+	public void sendToAllClients(Object message) {
 		try {
+			System.out.println("size: "+ clients.size());
 			for (SubscribedClient SubscribedClient : clients) {
 				SubscribedClient.getClient().sendToClient(message);
 			}

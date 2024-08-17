@@ -128,7 +128,7 @@ public class EditMovieListBoundary implements Initializable {
     }
 
     private void setContextMenu() {
-        contextMenu = new CustomContextMenu(tblProducts);
+        contextMenu = new CustomContextMenu(tblProducts,1);
         contextMenu.setActionEdit(ev -> {
             showDialogEditProduct();
             contextMenu.hide();

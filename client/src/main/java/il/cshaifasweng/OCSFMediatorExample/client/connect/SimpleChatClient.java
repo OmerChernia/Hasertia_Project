@@ -3,6 +3,8 @@ package il.cshaifasweng.OCSFMediatorExample.client.connect;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ConnectionMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -70,20 +72,35 @@ public class SimpleChatClient extends Application {
 
     @Override
     public void stop() throws Exception {
+        // Unregister from EventBus
         EventBus.getDefault().unregister(this);
         if (mainBoundary != null) {
             EventBus.getDefault().unregister(mainBoundary);
         }
-        //if there is a user that login, we need to log him out
-        if(SimpleClient.user !=null)
-        {
-            if(!SimpleClient.user.isEmpty())
-            {
-                LoginPageController.requestUserLogOut(SimpleClient.user);
-                LoginPageController.requestEmployeeLogOut(SimpleClient.user); // maybe we can do it better
+
+        //// Log out the user if logged in
+        //if (SimpleClient.user != null && !SimpleClient.user.isEmpty()) {
+        //    LoginPageController.requestUserLogOut(SimpleClient.user);
+        //    LoginPageController.requestEmployeeLogOut(SimpleClient.user); // Consider improving this logic
+        //}
+
+        // Close the client connection
+        if (SimpleChatClient.client != null) {
+
+            // Send a request to delete the connection
+            ConnectionMessage message = new ConnectionMessage(Message.MessageType.REQUEST, ConnectionMessage.RequestType.DELETE_CONNECTION);
+            SimpleClient.getClient().sendRequest(message);
+
+            try {
+                SimpleChatClient.client.closeConnection();
+                System.out.println("Client connection closed successfully.");
+            } catch (IOException e) {
+                System.err.println("Failed to close client connection: " + e.getMessage());
             }
         }
-        System.out.println("Stop was successful");
+
+        System.out.println("Application stopped successfully.");
+
         super.stop();
     }
 

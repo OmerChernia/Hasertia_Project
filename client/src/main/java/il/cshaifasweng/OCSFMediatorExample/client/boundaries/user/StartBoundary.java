@@ -76,7 +76,6 @@ public class StartBoundary {
             stage.setOnCloseRequest(event -> {
                 MainBoundary.sendLogoutRequest();
                 Platform.exit();
-                System.exit(0);
             });
 
             // Close the current window

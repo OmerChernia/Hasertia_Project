@@ -28,7 +28,7 @@ public class EventNotifier extends Thread {
                    AlertNewMoviesForSubscribers();
                 }
 
-                checkForUnhandledComplaints();
+                //checkForUnhandledComplaints();
 
 
                     start = end;

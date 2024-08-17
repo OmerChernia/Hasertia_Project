@@ -186,7 +186,7 @@ public class OrdersBoundary implements Initializable {
 
 
     private void setContextMenu() {
-        CustomContextMenu contextMenu = new CustomContextMenu(tblOrders);
+        CustomContextMenu contextMenu = new CustomContextMenu(tblOrders,2);
         contextMenu.setActionDetails(ev -> {
             showDialogOrder();
             contextMenu.hide();

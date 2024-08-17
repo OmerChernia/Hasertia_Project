@@ -18,10 +18,11 @@ public class CustomContextMenu {
     private MenuItem delete;
     private MenuItem details;
 
-    public CustomContextMenu(Node node) {
+
+    public CustomContextMenu(Node node,int num) {
         this.node = node;
         contextMenu = new ContextMenu();
-        contextMenu.getItems().addAll(getContent());
+        contextMenu.getItems().addAll(getContent(num));
 
         // Load the CSS file
         contextMenu.getStyleClass().add("context-menu");
@@ -76,17 +77,31 @@ public class CustomContextMenu {
         details.setText(text);
     }
 
-    private MenuItem[] getContent() {
-        edit = new MenuItem("Edit");
-        style(edit);
-
-        delete = new MenuItem("Delete");
-        style(delete);
-
-        details = new MenuItem("Details");
-        style(details);
-
-        return new MenuItem[]{edit, delete, details};
+    private MenuItem[] getContent(int num) {
+        switch (num)
+        {
+            case 1:
+                edit = new MenuItem("Edit Movie");
+                delete = new MenuItem("Cancel Movie");
+                style(edit);
+                style(delete);
+                return new MenuItem[]{edit, delete};
+            case 2:
+                edit = new MenuItem("Submit a complaint");
+                delete = new MenuItem("Cancel Purchase");
+                details = new MenuItem("Details");
+                style(edit);
+                style(delete);
+                style(details);
+                return new MenuItem[]{edit, delete, details};
+            case 3:
+                edit = new MenuItem("Edit Screening");
+                delete = new MenuItem("Cancel Screening");
+                style(edit);
+                style(delete);
+                return new MenuItem[]{edit, delete};
+        }
+        return null;
     }
 
     private void style(MenuItem menuItem) {

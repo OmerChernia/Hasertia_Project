@@ -10,6 +10,7 @@ import org.hibernate.query.Query;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,44 +159,55 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
-    private void delete_movie_instance()
-    {
-        // Create an HQL query to fetch all complaints
+    private void delete_movie_instance() {
+        // Load the movie instance
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where id = :id", MovieInstance.class);
         query.setParameter("id", message.id);
 
         MovieInstance movieInstance = query.uniqueResult();
         movieInstance.setIsActive(false);
         session.update(movieInstance);
-        session.flush();
 
-        // need to set the status of all tickets to not active
+        message.movies.add(movieInstance);
+
+        // Fetch all tickets for the movie instance
         Query<MovieTicket> queryMovieTickets = session.createQuery("FROM MovieTicket where movieInstance = :movie", MovieTicket.class);
         queryMovieTickets.setParameter("movie", movieInstance);
 
         List<MovieTicket> movieTickets = queryMovieTickets.list();
 
-        for(MovieTicket movieTicket : movieTickets)
-        {
-            //setting movie ticket to not be active anymore
+        // Prepare the list of emails to be sent
+        List<Runnable> emailTasks = new ArrayList<>();
+
+        for (MovieTicket movieTicket : movieTickets) {
+            // Setting movie ticket to not be active anymore
             movieTicket.setisActive(false);
             session.update(movieTicket);
-            session.flush();
 
-            //lower taken array in seat
+            // Lower taken array in seat
             Seat seat = session.get(Seat.class, movieTicket.getSeat().getId());
             seat.deleteMovieInstance(movieInstance);
             session.update(seat);
-            session.flush();
 
-            //Email to all owners of canceled tickets
-            EmailSender.sendEmail(movieTicket.getOwner().getEmail(),"Canceled ticket from Hasertia",
-                    String.format("Dear %s, your ticket for the movie '%s' has been canceled. We apologize for the inconvenience.",
-                    movieTicket.getOwner().getName(),
-                    movieInstance.getMovie().getEnglishName()));
+            // Prepare the email task
+            emailTasks.add(() -> {
+                EmailSender.sendEmail(movieTicket.getOwner().getEmail(), "Canceled ticket from Hasertia",
+                        String.format("Dear %s, your ticket for the movie '%s' has been canceled. We apologize for the inconvenience.",
+                                movieTicket.getOwner().getName(),
+                                movieInstance.getMovie().getEnglishName()));
+            });
         }
+
+        // Flush all updates at once
+        session.flush();
+
+        // Execute email tasks asynchronously
+        for (Runnable task : emailTasks) {
+            new Thread(task).start(); // You can use an ExecutorService for more controlled async processing
+        }
+
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
-    }
+        }
     private void update_movie_instance() {
         try {
             //need to implement what to do with the seats associated with the movie instance: delete them or change them???

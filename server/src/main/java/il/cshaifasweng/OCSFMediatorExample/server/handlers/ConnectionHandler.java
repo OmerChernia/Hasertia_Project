@@ -37,11 +37,18 @@ public class ConnectionHandler extends MessageHandler
     {
         SubscribedClient connection = new SubscribedClient(client);
         clients.add(connection);
-        System.out.println("client added successfully");
+        System.out.println("client added successfully, the size of SubscribedClients are: " + clients.size());
     }
     public void delete_connection()
     {
-        // ???? d'ont know if we need to implament
+        for(int i = 0; i < clients.size(); i++)
+            if(clients.get(i).getClient().equals(client))
+            {
+                clients.remove(i);
+                System.out.println("client deleted successfully, the size of SubscribedClients are: " + clients.size());
+                return;
+            }
+        System.out.println("client did not delete successfully");
     }
 
 

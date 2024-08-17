@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -269,6 +270,19 @@ public class MovieSmallBoundary {
                     break;
             }
         });
+    }
+
+    //need to finish!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    @Subscribe
+    public void onMovieInstanceEvent(MovieInstanceCanceledEvent movieInstanceCanceledEvent)
+    {
+        Platform.runLater(() -> {
+        if(movie.equals(movieInstanceCanceledEvent.movieInstance.getMovie())) {
+            //disableAndResetComboBox(cmbCinema);
+            //disableAndResetComboBox(cmbDate);
+            //disableAndResetComboBox(cmbHour);
+            MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
+        }});
     }
 
     private void populateCinemasComboBox(List<MovieInstance> movieInstances) {
