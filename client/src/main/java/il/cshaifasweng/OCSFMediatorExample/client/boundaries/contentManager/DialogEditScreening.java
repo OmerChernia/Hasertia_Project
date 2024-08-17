@@ -1,15 +1,20 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.HallController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.Hall;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.HallMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
+import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
+import il.cshaifasweng.OCSFMediatorExample.server.handlers.HallHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,6 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -24,11 +30,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DialogEditScreening implements Initializable {
 
@@ -41,13 +45,19 @@ public class DialogEditScreening implements Initializable {
     private AnchorPane containerAddProduct;
 
     @FXML
-    private Text txtMovie;
+    private DatePicker datePicker;
 
     @FXML
-    private ComboBox<LocalDate> cmbDate;  // Changed to ComboBox for dates
+    private ComboBox<LocalTime> cmbHour;
 
     @FXML
-    private ComboBox<String> cmbHour;
+    private ComboBox<Hall> cmbHall;
+
+    @FXML
+    private ComboBox<Theater> cmbTheater;
+
+    @FXML
+    private ComboBox<Movie> cmbMovies;
 
     @FXML
     private Text txtHall;
@@ -71,48 +81,185 @@ public class DialogEditScreening implements Initializable {
 
     private MovieInstance movieInstance;
 
-    private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private Theater theater;
+
+    private Movie movie;
+
+    private Hall hall;
+
+    private LocalTime time;
+
+    //private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
+        MovieController.getMoviesPresentedInTheater();
+        TheaterController.getAllTheaters();
+        setupComboBoxes();
+    }
+    private void setupComboBoxes() {
+        disableAndResetDatePicker(datePicker);
+        disableAndResetComboBox(cmbHour);
+        disableAndResetComboBox(cmbHall);
 
-        // Listener to update available hours when date changes
-        cmbDate.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                updateAvailableHours(newValue);
+        cmbMovies.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue == null) {
+                disableAndResetDatePicker(datePicker);
+                disableAndResetComboBox(cmbHour);
+                disableAndResetComboBox(cmbHall);
+            } else {
+                movie=newValue;
+
+            }
+        });
+
+        cmbTheater.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue == null) {
+                disableAndResetDatePicker(datePicker);
+                disableAndResetComboBox(cmbHour);
+            } else {
+                cmbHall.setValue(null);
+                datePicker.setValue(null);
+                cmbHour.setValue(null);
+                theater = newValue;
+                HallController.requestHallsByTheaterID(theater.getId());
+
+            }
+        });
+
+
+        cmbHall.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue == null) {
+                disableAndResetDatePicker(datePicker);
+                disableAndResetComboBox(cmbHour);
+            } else {
+                hall=newValue;
+                datePicker.setDisable(false);
+                datePicker.setValue(null);
+                cmbHour.setValue(null);
+            }
+        });
+
+        datePicker.valueProperty().addListener((observable, oldDate, newDate) -> {
+            if (newDate == null) {
+                disableAndResetComboBox(cmbHour);
+            }
+            else{
+                datePicker.setValue(newDate);
+                if(datePicker.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
+                    AlertsBuilder.create(AlertType.ERROR, null, containerAddProduct, containerAddProduct, "Can't choose a Date that passed");
+                else {
+                    HallController.requestAvailableTimes(hall, datePicker.getValue());
+                    cmbHour.setValue(null);
+                }
+            }
+        });
+
+        cmbHour.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if(newValue!=null) {
+                time = cmbHour.getValue();
+            }
+        });
+    }
+    private void populateTheatersComboBox(List<Theater> theaters) {
+        cmbTheater.getItems().setAll(theaters);
+
+        // Custom cell factory to display the location in the ComboBox
+        cmbTheater.setCellFactory(lv -> new ListCell<Theater>() {
+            @Override
+            protected void updateItem(Theater theater, boolean empty) {
+                super.updateItem(theater, empty);
+                setText(empty ? "" : theater.getLocation());
+            }
+        });
+
+        // Custom button cell to display the selected item's location
+        cmbTheater.setButtonCell(new ListCell<Theater>() {
+            @Override
+            protected void updateItem(Theater theater, boolean empty) {
+                super.updateItem(theater, empty);
+                setText(empty || theater == null ? "" : theater.getLocation());
             }
         });
     }
 
-    private void updateAvailableHours(LocalDate date) {
-        cmbHour.getItems().clear();
+    private void populateMoviesComboBox(List<Movie> movies) {
+        cmbMovies.getItems().setAll(movies);
 
-        Hall hall = movieInstance.getHall();
-        HallController.requestAvailableTimes(hall, date);
+        // Custom cell factory to display the EnglishName in the ComboBox
+        cmbMovies.setCellFactory(lv -> new ListCell<Movie>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
+                setText(empty ? "" : movie.getEnglishName());
+            }
+        });
+
+        // Custom button cell to display the selected item's EnglishName
+        cmbMovies.setButtonCell(new ListCell<Movie>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
+                setText(empty || movie == null ? "" : movie.getEnglishName());
+            }
+        });
     }
+
+    private void populateHallsComboBox(List<Hall> halls) {
+        cmbHall.setDisable(false);
+        cmbHall.getItems().setAll(halls);
+
+        // Custom cell factory to display the Hall name in the ComboBox
+        cmbHall.setCellFactory(lv -> new ListCell<Hall>() {
+            @Override
+            protected void updateItem(Hall hall, boolean empty) {
+                super.updateItem(hall, empty);
+                setText(empty ? "" : hall.getName());
+            }
+        });
+
+        // Custom button cell to display the selected item's Hall name
+        cmbHall.setButtonCell(new ListCell<Hall>() {
+            @Override
+            protected void updateItem(Hall hall, boolean empty) {
+                super.updateItem(hall, empty);
+                setText(empty || hall == null ? "" : hall.getName());
+            }
+        });
+    }
+
 
     @Subscribe
     public void onHallMessageReceived(HallMessage message) {
         Platform.runLater(() -> {
-            if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_DATES) {
-                cmbDate.getItems().clear();
-                List<LocalDate> availableDates = message.getAvailableDates();
+            if (message.responseType == HallMessage.ResponseType.ALL_AVAILABLE_TIMES) {
+                cmbHour.getItems().clear();
+                List<LocalTime> availableDates = message.availableTimes;
 
                 if (availableDates != null && !availableDates.isEmpty()) {
-                    cmbDate.getItems().addAll(availableDates);
-                    cmbDate.setValue(availableDates.get(0));  // Set default value to first available date
+                    cmbHour.setDisable(false);
+                    cmbHour.getItems().addAll(availableDates);
                 }
-            } else if (message.requestType == HallMessage.RequestType.GET_AVAILABLE_TIMES) {
-                cmbHour.getItems().clear();
-                List<LocalTime> availableTimes = message.getAvailableTimes();
-
-                if (availableTimes != null && !availableTimes.isEmpty()) {
-                    for (LocalTime time : availableTimes) {
-                        cmbHour.getItems().add(time.format(hourFormatter));
-                    }
-                }
+            } else if (message.requestType == HallMessage.RequestType.GET_ALL_HALLS_BY_THEATER_ID) {
+                populateHallsComboBox(message.halls);
             }
+        });
+    }
+
+    @Subscribe
+    public void onTheaterMessageReceived(TheaterMessage message) {
+        Platform.runLater(() -> {
+            if (message.requestType == TheaterMessage.RequestType.GET_ALL_THEATERS)
+                populateTheatersComboBox(message.theaterList);
+        });
+    }
+
+    @Subscribe
+    public void onMoviesMessageReceived(MovieMessage message) {
+        Platform.runLater(() -> {
+            if (message.requestType == MovieMessage.RequestType.GET_MOVIES_PRESENTED_IN_THEATER)
+                populateMoviesComboBox(message.movies);
         });
     }
 
@@ -127,79 +274,61 @@ public class DialogEditScreening implements Initializable {
 
     public void setDialog(String operation, MovieInstance movieInstance) {
         this.currentMode = operation;
-        this.movieInstance = movieInstance;
-        txtHall.setText(String.valueOf(movieInstance.getHall().getId()) );
-        txtTheater.setText(movieInstance.getHall().getTheater().getLocation());
-        txtMovie.setText(movieInstance.getMovie().getEnglishName());
-
-
-        Hall hall = movieInstance.getHall();
-        HallController.requestAvailableDates(hall);  // Request available dates for the selected hall
-
-        if ("view".equals(operation)) {
-            populateFieldsForView(movieInstance.getMovie(), movieInstance.getTime());
-        } else if ("add".equals(operation)) {
+        if ("add".equals(operation))
             prepareForNewScreening();
-        } else if ("edit".equals(operation)) {
-            populateFieldsForEdit(movieInstance.getMovie(), movieInstance.getTime());
+        else if ("edit".equals(operation)) {
+            this.movieInstance = movieInstance;
+            populateFieldsForEdit();
         }
     }
 
     private void prepareForNewScreening() {
         cleanControls();
-        enableEditControls();
         txtAddProduct.setText("Add Screening");
         btnSaveProduct.setVisible(true);
     }
 
-    private void populateFieldsForEdit(Movie movie, LocalDateTime time) {
-        cmbDate.setValue(time.toLocalDate());
-        updateAvailableHours(time.toLocalDate());
-        cmbHour.setValue(time.toLocalTime().format(hourFormatter));
-
+    private void populateFieldsForEdit() {
         txtAddProduct.setText("Update Screening");
-        enableEditControls();
+        cmbTheater.setDisable(false);
+        cmbHall.setDisable(false);
+        Platform.runLater(() -> {
+            cmbTheater.getSelectionModel().select(movieInstance.getHall().getTheater());
+            cmbHall.getSelectionModel().select(movieInstance.getHall());
+            cmbMovies.getSelectionModel().select(movieInstance.getMovie());
+        });
     }
 
-    private void populateFieldsForView(Movie movie, LocalDateTime time) {
-        cmbDate.setValue(time.toLocalDate());
-        cmbHour.setValue(time.toLocalTime().format(hourFormatter));
-
-        txtAddProduct.setText("View Screening");
-        disableEditControls();
-        btnSaveProduct.setVisible(false);
-    }
-
-    private void disableEditControls() {
-        cmbDate.setDisable(true);
-        cmbHour.setDisable(true);
-    }
-
-    private void enableEditControls() {
-        cmbDate.setDisable(false);
-        cmbHour.setDisable(false);
-    }
 
     @FXML
     private void handleSave(ActionEvent event) {
         if (!validateInputs()) return;
-
-        String movieName = txtMovie.getText();
-
-
-        LocalDateTime dateTime = LocalDateTime.of(cmbDate.getValue(), LocalTime.parse(cmbHour.getValue(), hourFormatter));
-
-        screeningId = movieInstance.getId();
-        MovieInstanceController.updateMovieInstance(screeningId,  dateTime);
-
-
+        if(currentMode.equals("add"))
+        {
+            MovieInstanceController.addMovieInstance(cmbMovies.getValue(), LocalDateTime.of(datePicker.getValue(), cmbHour.getValue().plusHours(3)),cmbHall.getValue());
+        }
+        else if(currentMode.equals("edit")) {
+            movieInstance.setHall(cmbHall.getValue());
+            movieInstance.setMovie(cmbMovies.getValue());
+            movieInstance.setTime( LocalDateTime.of(datePicker.getValue(), cmbHour.getValue().plusHours(3)));
+            MovieInstanceController.updateMovieInstance(movieInstance);
+        }
         cleanControls();
         closeDialog();
 
     }
+    private void disableAndResetComboBox(ComboBox<?> comboBox) {
+        comboBox.setDisable(true);
+        comboBox.getItems().clear();
+        comboBox.setStyle("");
+    }
 
-
-
+    private void disableAndResetDatePicker(DatePicker datePicker) {
+        datePicker.setDisable(true);
+        datePicker.setValue(null);
+        datePicker.getEditor().clear();
+        datePicker.setStyle("");
+    }
 
     @FXML
     private void handleClose(ActionEvent event) {
@@ -211,18 +340,29 @@ public class DialogEditScreening implements Initializable {
         editMovieScreeningsBoundary.closeDialog();
     }
 
-    private boolean validateInputs() {
-
-        if (cmbDate.getValue() == null) {
-            showErrorAndFocus(cmbDate);
-            return false;
+    private boolean validateInputs()
+    {
+        boolean valid = true;
+        if (datePicker.getValue() == null) {
+            showErrorAndFocus(datePicker);
+            valid = false;
         }
-        if (cmbHour.getValue() == null || cmbHour.getValue().isEmpty()) {
+        if (cmbHour.getValue() == null ) {
             showErrorAndFocus(cmbHour);
-            return false;
+            valid = false;
         }
-        return true;
+        if (cmbTheater.getValue() == null ) {
+            showErrorAndFocus(cmbTheater);
+            valid = false;
+        }
+        if (cmbMovies.getValue() == null ) {
+            showErrorAndFocus(cmbMovies);
+            valid = false;
+        }
+
+        return valid;
     }
+
 
     private void showErrorAndFocus(Control field) {
         field.requestFocus();
@@ -230,7 +370,7 @@ public class DialogEditScreening implements Initializable {
     }
 
     private void cleanControls() {
-        cmbDate.setValue(null);
+        datePicker.setValue(null);
         cmbHour.setValue(null);
     }
 }

@@ -9,17 +9,17 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 public class ReportsPageController {
 
     public static void requestAllComplaints() {
-        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, ComplaintMessage.RequestType.GET_ALL_COMPLIANTS);
+        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, ComplaintMessage.RequestType.GET_ALL_COMPLAINTS);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
     public static void requestComplaintsByCustomerId(String customerId) {
-        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLIANTS_BY_CUSTOMER_ID, customerId);
+        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLAINTS_BY_CUSTOMER_ID, customerId);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
     public static void requestComplaintsByTheater(Theater theater) {
-        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLIANTS_BY_THEATER, theater);
+        ComplaintMessage requestMessage = new ComplaintMessage(MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLAINTS_BY_THEATER, theater);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

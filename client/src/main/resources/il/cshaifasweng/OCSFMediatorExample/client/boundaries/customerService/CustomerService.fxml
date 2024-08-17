@@ -24,7 +24,7 @@
                   <TableColumn fx:id="colPurchase" prefWidth="97.0" text="Purchase" />
                   <TableColumn fx:id="colDate" prefWidth="173.0" text="Complaint date" />
                   <TableColumn fx:id="colDescription" prefWidth="261.0" text="Description" />
-                  <TableColumn fx:id="colStatus" prefWidth="123.0" text="Status" />
+                  <TableColumn fx:id="colStatus" prefWidth="123.0" text="Urgency" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -39,12 +39,12 @@
             </HBox>
             <AnchorPane fx:id="containerDeleteComplaint" layoutX="279.0" layoutY="206.0" prefHeight="246.0" prefWidth="392.0" visible="false">
                <children>
-                  <Button layoutX="208.0" layoutY="201.0" onMouseClicked="#deleteQuotes" prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
+                  <Button layoutX="208.0" layoutY="201.0"  prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Button>
-                  <Button layoutX="57.0" layoutY="201.0" onMouseClicked="#closeDialogDeleteQuote" prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
+                  <Button layoutX="57.0" layoutY="201.0"  prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -60,7 +60,7 @@
                         <Text fill="#bebec2" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h5" text="Information cannot be retrieved" />
                      </children>
                   </VBox>
-                  <Button contentDisplay="CENTER" layoutX="360.0" onMouseClicked="#closeDialogDeleteQuote" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" " />
+                  <Button contentDisplay="CENTER" layoutX="360.0"  prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text=" " />
                </children>
             </AnchorPane>
          </children>

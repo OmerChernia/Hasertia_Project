@@ -23,10 +23,10 @@ public class ComplaintHandler extends MessageHandler
         {
             case ADD_COMPLIANT -> add_complaint();
             case ANSWER_COMPLIANT -> answer_compliant();
-            case GET_ALL_COMPLIANTS -> get_all_complaints();
-            case GET_COMPLIANTS_BY_THEATER -> get_complaints_by_theater();
-            case GET_COMPLIANTS_BY_CUSTOMER_ID -> get_complaints_by_customer_id();
-            case GET_OPEN_COMPLIANTS -> get_open_complaints();
+            case GET_ALL_COMPLAINTS -> get_all_complaints();
+            case GET_COMPLAINTS_BY_THEATER -> get_complaints_by_theater();
+            case GET_COMPLAINTS_BY_CUSTOMER_ID -> get_complaints_by_customer_id();
+            case GET_OPEN_COMPLAINTS -> get_open_complaints();
         }
     }
 
@@ -50,26 +50,30 @@ public class ComplaintHandler extends MessageHandler
     }
 
 
-    private void answer_compliant()
-    {
 
-        // Create an HQL query to fetch all complaints
+    private void answer_compliant() {
+
+        // יצירת שאילתת HQL לשליפת התלונה לפי ID
         Query<Complaint> query = session.createQuery("FROM Complaint WHERE id = :id_compliant", Complaint.class);
         query.setParameter("id_compliant", message.compliants.getFirst().getId());
 
-
         Complaint complaint = query.uniqueResult();
 
-        if(complaint != null)
-        {
+        if (complaint != null) {
+            // עדכון המידע של התלונה
             complaint.setInfo(message.compliants.getFirst().getInfo());
+
+            // סגירת התלונה על ידי קביעת השדה isClosed ל-true
+            complaint.setClosed(true);
+
             session.update(complaint);
             session.flush();
-            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WES_ANSWERED;
-        }
-        else
+            message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WAS_ANSWERED;
+        } else {
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
+        }
     }
+
     private void get_all_complaints() {
 
         try {

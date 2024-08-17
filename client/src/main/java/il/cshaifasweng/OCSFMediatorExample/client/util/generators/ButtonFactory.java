@@ -5,13 +5,13 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
 public class ButtonFactory {
-
 
     private static Button createButton(String text, String imagePath, String styleClass) {
         Button button = new Button(text);
@@ -24,6 +24,59 @@ public class ButtonFactory {
         }
         button.getStyleClass().addAll(styleClass, "table-row-cell");
         return button;
+    }
+
+    // פונקציה ליצירת כפתור עם סגנון בהתאם לזמן שנותר
+    public static Button createUrgencyButton(long hoursLeft) {
+        Button statusButton = new Button(getTextForHoursLeft(hoursLeft));
+        statusButton.setStyle(getStyleForHoursLeft(hoursLeft) + "; -fx-text-fill: white;");
+        return statusButton;
+    }
+
+    // סגנון בהתאם לזמן שנותר
+    private static String getStyleForHoursLeft(long hoursLeft) {
+        if (hoursLeft <= 6) {
+            return "-fx-background-color: red;";
+        } else if (hoursLeft <= 12) {
+            return "-fx-background-color: #ffc107;";
+        } else {
+            return "-fx-background-color: green;";
+        }
+    }
+
+    // טקסט בהתאם לזמן שנותר
+    private static String getTextForHoursLeft(long hoursLeft) {
+        if (hoursLeft <= 6) {
+            return "High";
+        } else if (hoursLeft <= 12) {
+            return "Med";
+        } else {
+            return "Low";
+        }
+    }
+
+    // מחלקה פנימית שמטפלת בהצגה של הכפתור בעמודת הסטטוס
+    public static class ButtonUrgencyCell extends TableCell<Complaint, Button> {
+        @Override
+        protected void updateItem(Button item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                setGraphic(null);
+            } else {
+                Complaint complaint = getTableRow().getItem();
+                long hoursLeft = 24 - java.time.Duration.between(complaint.getCreationDate(), java.time.LocalDateTime.now()).toHours();
+                Button urgencyButton = createUrgencyButton(hoursLeft);
+                setGraphic(urgencyButton);
+            }
+        }
+    }
+
+    // מחלקת Callback ליצירת ה-TableCell עבור עמודת הסטטוס
+    public static class ButtonUrgencyCellFactory implements Callback<TableColumn<Complaint, Button>, TableCell<Complaint, Button>> {
+        @Override
+        public TableCell<Complaint, Button> call(TableColumn<Complaint, Button> param) {
+            return new ButtonUrgencyCell();
+        }
     }
 
     public static class ButtonTypeOrderCellValueFactory implements Callback<TableColumn.CellDataFeatures<Complaint, Button>, ObservableValue<Button>> {
@@ -45,9 +98,8 @@ public class ButtonFactory {
                 text = "Home Viewing";
                 imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/online-movie.png";
                 styleClass = "button-purple";
-            }
-            else {
-                imagePath =  ConstantsPath.MEDIA_PACKAGE + "icons/icons8-more-info.png";
+            } else {
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-more-info.png";
                 text = "Unregistered";
                 styleClass = "button-red";
             }
@@ -67,7 +119,6 @@ public class ButtonFactory {
             return new SimpleObjectProperty<>(createButton(text, "", styleClass));
         }
     }
-
 
     public static class ButtonRequestCellValueFactory implements Callback<TableColumn.CellDataFeatures<PriceRequest, Button>, ObservableValue<Button>> {
 

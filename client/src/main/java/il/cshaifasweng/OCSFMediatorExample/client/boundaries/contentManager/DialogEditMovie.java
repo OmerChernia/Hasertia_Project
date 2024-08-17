@@ -22,12 +22,16 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.*;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +40,7 @@ import java.util.ResourceBundle;
 public class DialogEditMovie implements Initializable {
 
     private static final Stage stage = new Stage();
-    private File imageFile;
+     private File imageFile;
     private Movie movie;
     private String currentMode;
 
@@ -53,7 +57,6 @@ public class DialogEditMovie implements Initializable {
 
     @FXML
     private ComboBox<String> comboGenre;
-
 
     @FXML
     private AnchorPane containerAddProduct;
@@ -97,10 +100,6 @@ public class DialogEditMovie implements Initializable {
     @FXML
     private Label lblPathImage;
 
-    private EditMovieListBoundary editMovieListBoundary;
-
-    @FXML
-    private Label txtTitle;
 
     @FXML
     private ComboBox<Movie.Availability> comboAvailable;
@@ -108,18 +107,23 @@ public class DialogEditMovie implements Initializable {
     @FXML
     private ComboBox<Movie.StreamingType> comboType;
 
+
+
+    @FXML
+    private Label lblImageName;
+
+    private EditMovieListBoundary editMovieListBoundary;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeImageHoverEffect();
         initializeComboBoxAutoComplete();
-        EventBus.getDefault().register(this);
     }
 
     private void initializeComboBoxAutoComplete() {
         AutocompleteComboBox.autoCompleteComboBoxPlus(comboGenre, (typedText, item) -> item.toLowerCase().contains(typedText.toLowerCase()));
         comboAvailable.getItems().addAll(Movie.Availability.values());
         comboType.getItems().addAll(Movie.StreamingType.values());
-
     }
 
     public void cleanup() {
@@ -204,14 +208,14 @@ public class DialogEditMovie implements Initializable {
                 .forEach(field -> field.setEditable(false));
         comboGenre.setDisable(true);
         comboType.setDisable(true);
-    }
+     }
 
     private void enableEditControls() {
         Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
                 .forEach(field -> field.setEditable(true));
         comboGenre.setDisable(false);
         comboType.setDisable(false);
-    }
+     }
 
     private void expandImage(Movie movie, String title) {
         paneContainer.hoverProperty().addListener((o, oldV, newV) -> {
@@ -257,7 +261,6 @@ public class DialogEditMovie implements Initializable {
 
 
 
-
     @FXML
     private void handleSave(ActionEvent event) {
 
@@ -275,6 +278,11 @@ public class DialogEditMovie implements Initializable {
         String description = txtDescription.getText().trim();
         List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
 
+        // Handle image file save
+        String imageFileName = null;
+        if (imageFile != null) {
+            imageFileName = saveImageFile(imageFile);
+        }
 
         // Check for changes in details
         boolean detailsChanged = !englishName.equals(movie.getEnglishName()) ||
@@ -282,8 +290,8 @@ public class DialogEditMovie implements Initializable {
                 !producer.equals(movie.getProducer()) ||
                 !description.equals(movie.getInfo()) ||
                 !genre.equals(movie.getGenre()) ||
-                !(streaming==movie.getStreamingType()) ||
-                !(availability==movie.getAvailability())||
+                !(streaming == movie.getStreamingType()) ||
+                !(availability == movie.getAvailability()) ||
                 !actors.equals(movie.getMainActors()) ||
                 Integer.parseInt(duration) != movie.getDuration();
 
@@ -292,17 +300,17 @@ public class DialogEditMovie implements Initializable {
                 Integer.parseInt(hvPrice) != movie.getHomeViewingPrice();
 
         // If no changes detected, do nothing
-        if (!detailsChanged && !priceChanged) {
+        if (!detailsChanged && !priceChanged && imageFileName == null) {
             NotificationsBuilder.create(NotificationType.INFORMATION, "No changes detected, nothing was saved.");
             return;
         }
 
         // If there are changes, proceed with the update
         if ("add".equals(currentMode)) {
-            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "", streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
+            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), imageFileName, streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
         } else {
-            if (detailsChanged) {
-                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors), "", streaming, Integer.parseInt(duration), genre, availability);
+            if (detailsChanged || imageFileName != null) {
+                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors), imageFileName, streaming, Integer.parseInt(duration), genre, availability);
             }
 
             // Create a price update request only if prices have changed
@@ -316,11 +324,23 @@ public class DialogEditMovie implements Initializable {
                 }
             }
         }
+        closeDialog();
 
         cleanControls();
-        closeDialog();
     }
 
+    private String saveImageFile(File file) {
+        String newFileName = "movie_" + System.currentTimeMillis() + "_" + file.getName();
+        File destFile = new File(ConstantsPath.MOVIE_PACKAGE + newFileName);
+        try {
+            Files.copy(file.toPath(), destFile.toPath());
+            return newFileName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            NotificationsBuilder.create(NotificationType.ERROR, "Failed to save image file.");
+            return null;
+        }
+    }
 
     @FXML
     private void handleClose(ActionEvent event) {
@@ -329,8 +349,7 @@ public class DialogEditMovie implements Initializable {
 
     private void closeDialog() {
         editMovieListBoundary.closeDialogAddProduct();
-        cleanup();
-    }
+     }
 
     private boolean validateInputs() {
         if (txtEnglishName.getText().trim().isEmpty()) {
@@ -357,7 +376,7 @@ public class DialogEditMovie implements Initializable {
             showErrorAndFocus(txtDescription);
             return false;
         }
-        if (imageFile != null) {
+        if (imageFile != null && imageFile.length() > ConstantsPath.MAX_IMAGE_SIZE) {
             Animations.shake(imageContainer);
             NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE);
             return false;
@@ -372,52 +391,9 @@ public class DialogEditMovie implements Initializable {
 
     private void cleanControls() {
         imageFile = null;
+        lblImageName.setText("");
         Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
                 .forEach(TextInputControl::clear);
         imageProduct.setImage(new Image(ConstantsPath.NO_IMAGE_AVAILABLE));
     }
-
-    @Subscribe
-    public void onMovieMessageReceived(MovieMessage message) {
-
-        String messageText = "";
-        AlertType alertType = AlertType.SUCCESS;
-
-        switch (message.responseType) {
-            case MOVIE_UPDATED:
-                messageText = "You have updated " + movie.getEnglishName() + "!";
-                break;
-            case MOVIE_ADDED:
-                messageText = "You have added " + movie.getEnglishName() + "!";
-                break;
-            case MOVIE_DELETED:
-                messageText = "You have deleted " + movie.getEnglishName() + "!";
-                break;
-            case MOVIE_NOT_UPDATED:
-                messageText = "Failed to update " + movie.getEnglishName() + ".";
-                alertType = AlertType.ERROR;
-                break;
-            case MOVIE_NOT_ADDED:
-                messageText = "Failed to add " + movie.getEnglishName() + ".";
-                alertType = AlertType.ERROR;
-                break;
-            case MOVIE_NOT_DELETED:
-                messageText = "Failed to delete " + movie.getEnglishName() + ".";
-                alertType = AlertType.ERROR;
-                break;
-            default:
-                messageText = "An unknown response was received.";
-                alertType = AlertType.WARNING;
-                break;
-        }
-
-        AlertsBuilder.create(
-                alertType,
-                null,
-                containerAddProduct,
-                containerAddProduct,
-                messageText
-        );
-    }
 }
-

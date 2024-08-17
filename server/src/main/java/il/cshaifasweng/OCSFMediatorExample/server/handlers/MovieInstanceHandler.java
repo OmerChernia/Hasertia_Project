@@ -1,16 +1,18 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
-import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class MovieInstanceHandler extends MessageHandler
 {
@@ -141,12 +143,9 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void get_movie_instance_by_id()
     {
-        try {
-            // Create an HQL query to fetch all complaints
-            Query<MovieInstance> query = session.createQuery("FROM MovieInstance where id = :id", MovieInstance.class);
-            query.setParameter("id", message.id);
-            // Execute the query and get the result list
-            MovieInstance movieInstance = query.uniqueResult();
+        try
+        {
+            MovieInstance movieInstance = session.get(MovieInstance.class, message.id);
             message.movies.add(movieInstance);
 
             // Set the response type
@@ -160,38 +159,61 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
-    private void delete_movie_instance()
-    {
-        // Create an HQL query to fetch all complaints
+    private void delete_movie_instance() {
+        // Load the movie instance
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where id = :id", MovieInstance.class);
         query.setParameter("id", message.id);
 
         MovieInstance movieInstance = query.uniqueResult();
-
         movieInstance.setIsActive(false);
         session.update(movieInstance);
+
+        // Fetch all tickets for the movie instance
+        Query<MovieTicket> queryMovieTickets = session.createQuery("FROM MovieTicket where movieInstance = :movie", MovieTicket.class);
+        queryMovieTickets.setParameter("movie", movieInstance);
+
+        List<MovieTicket> movieTickets = queryMovieTickets.list();
+
+        // Prepare the list of emails to be sent
+        List<Runnable> emailTasks = new ArrayList<>();
+
+        for (MovieTicket movieTicket : movieTickets) {
+            // Setting movie ticket to not be active anymore
+            movieTicket.setisActive(false);
+            session.update(movieTicket);
+
+            // Lower taken array in seat
+            Seat seat = session.get(Seat.class, movieTicket.getSeat().getId());
+            seat.deleteMovieInstance(movieInstance);
+            session.update(seat);
+
+            // Prepare the email task
+            emailTasks.add(() -> {
+                EmailSender.sendEmail(movieTicket.getOwner().getEmail(), "Canceled ticket from Hasertia",
+                        String.format("Dear %s, your ticket for the movie '%s' has been canceled. We apologize for the inconvenience.",
+                                movieTicket.getOwner().getName(),
+                                movieInstance.getMovie().getEnglishName()));
+            });
+        }
+
+        // Flush all updates at once
         session.flush();
+
+        // Execute email tasks asynchronously
+        for (Runnable task : emailTasks) {
+            new Thread(task).start(); // You can use an ExecutorService for more controlled async processing
+        }
+
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
+
     private void update_movie_instance() {
         try {
-            // Get the ID from the incoming message
-            int screeningId = message.id;
+            //need to implement what to do with the seats associated with the movie instance: delete them or change them???
 
-            // Retrieve the current persistent instance of the movie from the session
-            MovieInstance persistentMovieInstance = session.get(MovieInstance.class,screeningId);
-
-            if (persistentMovieInstance != null) {
-                // Update the persistent with the new values from the message
-                persistentMovieInstance.setTime(message.date);
-
-                // Save the changes
-                session.update(persistentMovieInstance);
-                session.flush();
-                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
-            } else {
-                message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
-            }
+            MovieInstance mergedInstance = (MovieInstance) session.merge(message.movies.getFirst());
+            session.flush();
+            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
@@ -220,7 +242,7 @@ public class MovieInstanceHandler extends MessageHandler
     {
         try {
             // Create an HQL query to fetch all complaints
-            Query<MovieInstance> query = session.createQuery("FROM MovieInstance ", MovieInstance.class);
+            Query<MovieInstance> query = session.createQuery("FROM MovieInstance where isActive = true", MovieInstance.class);
             // Execute the query and get the result list
             message.movies = query.getResultList();
 

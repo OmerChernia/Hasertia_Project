@@ -73,15 +73,15 @@ public class ComplaintMessage extends Message
         FILLTERD_COMPLIANTS_LIST,
         COMPLIANT_ADDED,
         COMPLIANT_MESSAGE_FAILED,
-        COMPLIANT_WES_ANSWERED,
+        COMPLIANT_WAS_ANSWERED,
     }
     public enum RequestType
     {
-        GET_ALL_COMPLIANTS,
-        GET_COMPLIANTS_BY_CUSTOMER_ID,
-        GET_COMPLIANTS_BY_THEATER,
+        GET_ALL_COMPLAINTS,
+        GET_COMPLAINTS_BY_CUSTOMER_ID,
+        GET_COMPLAINTS_BY_THEATER,
         ADD_COMPLIANT,
         ANSWER_COMPLIANT,
-        GET_OPEN_COMPLIANTS
+        GET_OPEN_COMPLAINTS
     }
 }

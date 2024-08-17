@@ -33,7 +33,7 @@ public class PurchaseController
 
     public static void RemovePurchase(Purchase purchase)
     {
-        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.REMOVE_PURCHASE,purchase, 0);
+        PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.REMOVE_PURCHASE,purchase, purchase.getOwner().getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
     public static void GetPurchasesByCustomerID(int CustomerId)

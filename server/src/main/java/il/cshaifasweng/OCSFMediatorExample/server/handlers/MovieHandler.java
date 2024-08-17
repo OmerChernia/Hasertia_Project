@@ -206,7 +206,7 @@ public class MovieHandler extends MessageHandler
             movie.setActive(Movie.Availability.NOT_AVAILABLE);
             session.update(movie);
             session.flush();
-            message.responseType = MovieMessage.ResponseType.MOVIE_UPDATED;
+            message.responseType = MovieMessage.ResponseType.MOVIE_DELETED;
         } else {
             message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
         }
@@ -214,13 +214,9 @@ public class MovieHandler extends MessageHandler
     private void get_all_movies()
     {
         try {
-            // Create an HQL query to fetch all complaints
             Query<Movie> query = session.createQuery("FROM Movie where available= :_available", Movie.class);
             query.setParameter("_available", Movie.Availability.AVAILABLE);
-            // Execute the query and get the result list
             message.movies = query.getResultList();
-
-            // Set the response type
             message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;
 
         } catch (Exception e) {

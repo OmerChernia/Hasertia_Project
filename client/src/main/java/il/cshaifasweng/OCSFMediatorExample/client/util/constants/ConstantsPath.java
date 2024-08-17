@@ -94,9 +94,8 @@ public class ConstantsPath {
     public static final String MESSAGE_UPDATED = "Record updated successfully";
     public static final String MESSAGE_DELETED = "Record deleted successfully";
 
+    public static final long MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
-    public static final String REALIZED = "Realized";
-    public static final String NOT_REALIZED = "Not realized";
 
 
     public static final BoxBlur BOX_BLUR_EFFECT = new BoxBlur(3, 3, 3);

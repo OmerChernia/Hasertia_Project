@@ -25,12 +25,11 @@ public class DialogTool {
 
         root = new StackPane(region);
 
-        // Create the scene with transparent fill
         Scene scene = new Scene(root);
-        scene.setFill(null); // Transparent background for the scene
+        scene.setFill(null);
 
-        // Add the stylesheet if necessary
-        scene.getStylesheets().add(getClass().getResource(ConstantsPath.CSS_LIGHT_THEME).toExternalForm()); // Ensure this path is correct
+
+        scene.getStylesheets().add(getClass().getResource(ConstantsPath.CSS_LIGHT_THEME).toExternalForm());
         dialogStage.setScene(scene);
     }
 

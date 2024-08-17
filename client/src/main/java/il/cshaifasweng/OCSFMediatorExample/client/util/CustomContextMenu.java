@@ -23,7 +23,6 @@ public class CustomContextMenu {
         contextMenu = new ContextMenu();
         contextMenu.getItems().addAll(getContent());
 
-        // Load the CSS file
         contextMenu.getStyleClass().add("context-menu");
 
     }

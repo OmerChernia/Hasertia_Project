@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class ComplaintController {
 
      public static void getAllComplaints() {
-        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_ALL_COMPLIANTS);
+        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_ALL_COMPLAINTS);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
@@ -25,17 +25,17 @@ public class ComplaintController {
     }
 
      public static void getComplaintsByTheater(Theater theater) {
-        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLIANTS_BY_THEATER, theater);
+        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLAINTS_BY_THEATER, theater);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
      public static void getComplaintsByCustomerId(String customerId) {
-        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLIANTS_BY_CUSTOMER_ID, customerId);
+        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_COMPLAINTS_BY_CUSTOMER_ID, customerId);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
      public static void getOpenComplaints() {
-        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_OPEN_COMPLIANTS);
+        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.GET_OPEN_COMPLAINTS);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 

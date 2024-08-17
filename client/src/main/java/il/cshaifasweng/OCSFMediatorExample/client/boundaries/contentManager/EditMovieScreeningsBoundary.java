@@ -101,6 +101,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
 
     }
 
+
     @Subscribe
     public void loadData(MovieInstanceMessage movieInstanceMessage) {
         Platform.runLater(() -> {
@@ -114,6 +115,10 @@ public class EditMovieScreeningsBoundary implements Initializable {
                         break;
                     case FILLTERD_LIST:
                         loadTableData(movieInstanceMessage.movies);
+                        break;
+                    case MOVIE_INSTANCE_ADDED:
+                        showAlert("You have added the screening!", AlertType.SUCCESS);
+                        MovieInstanceController.requestAllMovieInstances();
                         break;
                     default:
                         showAlert("Failed to process the screening .", AlertType.ERROR);
@@ -146,19 +151,17 @@ public class EditMovieScreeningsBoundary implements Initializable {
         colId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         colEnglish.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getEnglishName()));
         colHebrew.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMovie().getHebrewName()));
-        colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().toLocalDate().toString()));
-        colHour.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
+        colDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().minusHours(3).toLocalDate().toString()));
+        colHour.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTime().minusHours(3).format(DateTimeFormatter.ofPattern("HH:mm"))));
         colTheater.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getHall().getTheater().getLocation()));
         colHall.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getHall().getId())));
-        colActive.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getIsActive())));
     }
 
 
 
     @FXML
-    public void createNewScreening()
-    {
-
+    public void createNewScreening() throws IOException {
+        showDialog("add");
     }
 
 
@@ -175,7 +178,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
             contextMenu.hide();
         });
         contextMenu.show();
-        }
+    }
 
 
 
@@ -184,16 +187,10 @@ public class EditMovieScreeningsBoundary implements Initializable {
         tblProducts.setDisable(true);
         MovieInstance selectedMovieInstance = tblProducts.getSelectionModel().getSelectedItem();
 
-        if (selectedMovieInstance == null) {
-            AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, "No movie selected");
-            tblProducts.setDisable(false);
-            return;
-        }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_SCREENING_VIEW));
             AnchorPane moviePane = loader.load();
-
             DialogEditScreening dialogEditScreening = loader.getController();
             dialogEditScreening.setEditScreeningListBoundary(this);
             dialogEditScreening.setDialog(operation, selectedMovieInstance);
@@ -225,7 +222,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
             AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, tblProducts, ConstantsPath.MESSAGE_NO_RECORD_SELECTED);
             return;
         }
-
         showDialog("edit");
     }
 
