@@ -29,14 +29,16 @@ public class HallMessage extends Message {
 
     public enum RequestType {
         GET_AVAILABLE_TIMES,
-        GET_ALL_HALLS_BY_THEATER_ID
+        GET_ALL_HALLS_BY_THEATER_ID,
+        GET_HALL_BY_ID
     }
 
     public enum ResponseType {
         ALL_AVAILABLE_TIMES,
         RETURN_HALLS_BY_ID,
         RETURN_HALLS_FAILED,
-        RETURN_TIMES_FAILED
+        RETURN_TIMES_FAILED,
+        REQUESTED_HALL
     }
 
 

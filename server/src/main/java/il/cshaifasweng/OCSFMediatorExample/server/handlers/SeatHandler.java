@@ -42,27 +42,26 @@ public class SeatHandler extends MessageHandler
         try {
             for(Seat seat : message.hallSeats)
             {
-                if (seat.getMoviesIds().contains(message.movieInstance.getId()))
+                Query<Seat> query = session.createQuery("FROM Seat WHERE id = :id", Seat.class);
+                query.setParameter("id", seat.getId());
+                Seat found = query.uniqueResult();
+
+                if (found.getMoviesIds().contains(message.movieInstance.getId()))
                 {
                     message.responseType = SeatMessage.ResponseType.SEATS_IS_ALREADY_TAKEN;
-                    break;
+                    return;
                 }
             }
-            if(message.responseType != SeatMessage.ResponseType.SEATS_IS_ALREADY_TAKEN)
+            for(Seat seat : message.hallSeats)
             {
-                for(Seat seat : message.hallSeats)
-                {
-                    Query<Seat> query = session.createQuery("FROM Seat WHERE id = :id", Seat.class);
-                    query.setParameter("id", seat.getId());
-
-                    Seat found = query.uniqueResult();
-                    found.addMovieInstanceId(message.movieInstance);
-
-                    session.update(found);
-                    session.flush();
-                }
-                message.responseType = SeatMessage.ResponseType.SEATS_WAS_RESERVED;
+                Query<Seat> query = session.createQuery("FROM Seat WHERE id = :id", Seat.class);
+                query.setParameter("id", seat.getId());
+                Seat found = query.uniqueResult();
+                found.addMovieInstanceId(message.movieInstance);
+                session.update(found);
+                session.flush();
             }
+            message.responseType = SeatMessage.ResponseType.SEATS_WAS_RESERVED;
         }
         catch (Exception e)
         {

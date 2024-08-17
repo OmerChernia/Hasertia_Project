@@ -114,18 +114,21 @@ public class OrdersBoundary implements Initializable {
 
 
     @Subscribe
-    public void onPurchaseMessageReceived(PurchaseMessage message) {
-        System.out.println(message.responseType);
-
-        ticketCounterT.setText("Multi-Entry-Ticket amount: " +message.purchases.get(0).getOwner().getTicket_counter());
-
-        Platform.runLater(() -> {  if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
+    public void onPurchaseMessageReceived(PurchaseMessage message)
+    {
+        Platform.runLater(() -> {
+            ticketCounterT.setText("Multi-Entry-Ticket amount: " +message.purchases.get(0).getOwner().getTicket_counter());
+        if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST)
+        {
             loadTableData(message.purchases) ;
-        }else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED) {
+        }
+        else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED)
+        {
             PurchaseController.GetPurchasesByCustomerID(id);
         }
-        else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED) {
-            AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "Cannot Cancell purchase selected!");
+        else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
+        {
+            AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "Cannot Cancel purchase selected!");
         }
         else {
             MovieController.requestAllMovies();

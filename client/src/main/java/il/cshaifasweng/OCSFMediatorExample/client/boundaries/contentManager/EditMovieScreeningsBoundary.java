@@ -116,6 +116,10 @@ public class EditMovieScreeningsBoundary implements Initializable {
                     case FILLTERD_LIST:
                         loadTableData(movieInstanceMessage.movies);
                         break;
+                    case MOVIE_INSTANCE_ADDED:
+                        showAlert("You have added the screening!", AlertType.SUCCESS);
+                        MovieInstanceController.requestAllMovieInstances();
+                        break;
                     default:
                         showAlert("Failed to process the screening .", AlertType.ERROR);
                         break;

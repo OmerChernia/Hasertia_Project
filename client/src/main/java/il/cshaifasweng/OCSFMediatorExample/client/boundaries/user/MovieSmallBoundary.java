@@ -252,7 +252,7 @@ public class MovieSmallBoundary {
     @Subscribe
     public void onMovieInstanceMessageReceived(MovieInstanceMessage message) {
         Platform.runLater(() -> {
-            System.out.println("testtttttttttttttt");
+            System.out.println(message.requestType);
             switch (message.requestType) {
                 case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID:
                     populateCinemasComboBox(message.movies);
@@ -273,6 +273,7 @@ public class MovieSmallBoundary {
 
     private void populateCinemasComboBox(List<MovieInstance> movieInstances) {
         Set<String> cinemas = movieInstances.stream()
+                .filter(MovieInstance::getIsActive) // Filter by isActive attribute
                 .map(instance -> instance.getHall().getTheater().getLocation())
                 .collect(Collectors.toSet());
 
@@ -283,6 +284,7 @@ public class MovieSmallBoundary {
 
     private void populateDatesComboBox(List<MovieInstance> movieInstances) {
         Set<String> dates = movieInstances.stream()
+                .filter(MovieInstance::getIsActive) // Filter by isActive attribute
                 .map(instance -> instance.getTime().minusHours(3).toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
                 .collect(Collectors.toSet());
 
@@ -292,6 +294,7 @@ public class MovieSmallBoundary {
 
     private void populateHoursComboBox(List<MovieInstance> movieInstances) {
         Set<String> hours = movieInstances.stream()
+                .filter(MovieInstance::getIsActive) // Filter by isActive attribute
                 .map(instance -> instance.getTime().toLocalTime().minusHours(3).format(DateTimeFormatter.ofPattern("HH:mm")))
                 .collect(Collectors.toSet());
 

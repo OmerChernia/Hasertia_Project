@@ -19,4 +19,9 @@ public class HallController {
         HallMessage requestMessage = new HallMessage(HallMessage.MessageType.REQUEST, HallMessage.RequestType.GET_ALL_HALLS_BY_THEATER_ID, theaterID);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
+    public static void requestHallByID(int hallID) {
+        HallMessage requestMessage = new HallMessage(HallMessage.MessageType.REQUEST, HallMessage.RequestType.GET_HALL_BY_ID, hallID);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
 }

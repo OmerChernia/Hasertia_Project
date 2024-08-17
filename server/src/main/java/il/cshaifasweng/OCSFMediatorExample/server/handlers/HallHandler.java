@@ -28,7 +28,14 @@ public class HallHandler extends MessageHandler {
         switch (message.requestType) {
             case GET_AVAILABLE_TIMES -> get_available_times_for_hall_and_date();
             case GET_ALL_HALLS_BY_THEATER_ID -> get_all_halls_by_theater_id();
+            case GET_HALL_BY_ID -> get_hall_by_id();
         }
+    }
+
+    private void get_hall_by_id() {
+        Hall hall = session.get(Hall.class,message.id);
+        message.halls.add(hall);
+        message.responseType = HallMessage.ResponseType.REQUESTED_HALL;
     }
 
     @Override

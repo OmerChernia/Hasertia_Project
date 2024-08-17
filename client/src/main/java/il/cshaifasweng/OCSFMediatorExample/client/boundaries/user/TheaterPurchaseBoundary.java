@@ -1,17 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.*;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.SeatMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -171,6 +167,7 @@ public class TheaterPurchaseBoundary {
     private RegisteredUser user=null;
     private boolean isCardPackageOn;
     private boolean isReserved;
+    private Hall hall;
 
     @FXML
     public void initialize()
@@ -212,7 +209,7 @@ public class TheaterPurchaseBoundary {
         this.currentMovieInstance = movieInstance;
         selectedSeats = new ArrayList<>();
         updateMovieDetails();
-        updateSeats();
+        //updateSeats();
     }
 
     private void updateMovieDetails() {
@@ -224,9 +221,21 @@ public class TheaterPurchaseBoundary {
         movieImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MOVIE_PACKAGE + currentMovieInstance.getMovie().getImage())));
     }
 
-    private void updateSeats() {
+    //send a message to get an updated movie instance
+    private void updateSeats()
+    {
+        HallController.requestHallByID(currentMovieInstance.getHall().getId());
+    }
+
+    @Subscribe
+    public void onHallMessage(HallMessage hallMessage) {
+        hall = hallMessage.halls.get(0);
+        Platform.runLater(this::updateSeatsGrid);
+    }
+
+        private void updateSeatsGrid() {
         seatGrid.getChildren().clear();
-        List<Seat> seats = currentMovieInstance.getHall().getSeats();
+        List<Seat> seats = hall.getSeats();
         for (Seat seat : seats)
         {
             Button seatButton = new Button(String.valueOf(seat.getCol()));
@@ -281,16 +290,7 @@ public class TheaterPurchaseBoundary {
         stopTimer();
         updateSeats();
         selectedSeats.clear();
-    }
-
-    @FXML
-    private void showIdPhoneFields() {
-        idPhonePane.setVisible(true);
-    }
-
-    @FXML
-    private void hideIdPhoneFields() {
-        idPhonePane.setVisible(false);
+        numberOfTickets = ticketsSpinner.getValue();
     }
 
     @FXML
@@ -365,6 +365,7 @@ public class TheaterPurchaseBoundary {
         }
         else
         {
+            updateSeats();
             numberOfTickets = ticketsSpinner.getValue();
             stackPane.getChildren().clear();
             stackPane.getChildren().add(seatSelectionPane);
@@ -381,6 +382,7 @@ public class TheaterPurchaseBoundary {
         }
         else
         {
+            updateSeats();
             isCardPackageOn = true;
             numberOfTickets = ticketsSpinner.getValue();
             stackPane.getChildren().clear();

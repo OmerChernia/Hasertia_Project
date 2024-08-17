@@ -45,7 +45,7 @@ public class MovieInstanceController {
     }
 
     public static void requestMovieInstancesByMovieId(int id) {
-        // Create a request to get a movie instance by ID
+        // Create a request to get a movie instance by movie ID
         MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID, id);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
@@ -93,5 +93,10 @@ public class MovieInstanceController {
         MovieInstance movieInstance = new MovieInstance(movie, time, hall, true);
         MovieInstanceMessage requestMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE, movieInstance);
         SimpleClient.getClient().sendRequest(requestMessage);
+    }
+    public static void getMovieInstanceById(int id)
+    {
+        MovieInstanceMessage movieInstanceMessage = new MovieInstanceMessage(MessageType.REQUEST, MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCE, id);
+        SimpleClient.getClient().sendRequest(movieInstanceMessage);
     }
 }
