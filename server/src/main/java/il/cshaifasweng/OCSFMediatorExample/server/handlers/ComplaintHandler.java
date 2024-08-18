@@ -63,6 +63,7 @@ public class ComplaintHandler extends MessageHandler
         if(complaint != null)
         {
             complaint.setInfo(message.compliants.getFirst().getInfo());
+            complaint.setClosed(true);
             session.update(complaint);
             session.flush();
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WAS_ANSWERED;

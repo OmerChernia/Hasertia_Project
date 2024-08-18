@@ -183,6 +183,7 @@ public class DialogCustomerService implements Initializable {
         String finalResponseText = getFinalResponseText();
 
         customerServiceController.customerServiceAnswer = finalResponseText;
+        myComplaint.setInfo(myComplaint.getInfo() + "\nCustomer Service answer: "+finalResponseText);
         customerServiceController.complaintId = (myComplaint.getId());
         customerServiceController.complaint = myComplaint;
         ComplaintController.answerComplaint(myComplaint);
