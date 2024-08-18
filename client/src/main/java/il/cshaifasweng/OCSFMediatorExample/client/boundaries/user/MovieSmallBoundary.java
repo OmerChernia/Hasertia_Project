@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
@@ -256,6 +257,12 @@ public class MovieSmallBoundary {
             System.out.println(message.requestType);
             switch (message.requestType) {
                 case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID:
+                    if(message.movies.isEmpty()) {
+                        SimpleChatClient.mainBoundary.homeWindowsInitialize();
+                        return;
+                    }
+                    for(MovieInstance movieInstance : message.movies)
+                        System.out.println(movieInstance.getId());
                     populateCinemasComboBox(message.movies);
                     break;
                 case GET_ALL_MOVIE_INSTANCES_BY_MOVIE_ID_AND_THEATER_NAME:

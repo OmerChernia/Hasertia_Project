@@ -28,7 +28,10 @@ public class EventNotifier extends Thread {
                    AlertNewMoviesForSubscribers();
                 }
 
-                //checkForUnhandledComplaints();
+                if(LocalDateTime.now().getMinute() == 0)
+                    deactivatePassedScreenings();
+
+                checkForUnhandledComplaints();
 
 
                     start = end;
@@ -42,6 +45,31 @@ public class EventNotifier extends Thread {
                 e.printStackTrace();
                 // Log exception or handle it as necessary
             }
+        }
+    }
+
+    private void deactivatePassedScreenings() {
+        System.out.println("deactivate Passed Screenings");
+
+        // Start the transaction
+        SimpleServer.session.beginTransaction();
+        try {
+            // Query to find unhandled complaints
+            Query<MovieInstance> query = SimpleServer.session.createQuery(
+                    "from MovieInstance where time <=  :current_time", MovieInstance.class
+            );
+            query.setParameter("current_time", LocalDateTime.now().plusHours(3));
+            List<MovieInstance> movieInstances = query.list();
+            for (MovieInstance movieInstance : movieInstances) {
+                movieInstance.setIsActive(false);
+                SimpleServer.session.update(movieInstance);
+            }
+            SimpleServer.session.flush();
+            SimpleServer.session.getTransaction().commit();
+
+        } catch (Exception e) {
+            SimpleServer.session.getTransaction().rollback();
+            e.printStackTrace();
         }
     }
 

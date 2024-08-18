@@ -4,13 +4,17 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
+import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MovieHandler extends MessageHandler
 {
@@ -142,16 +146,16 @@ public class MovieHandler extends MessageHandler
     private void getMoviesPresentedInTheater() {
         try {
             // Create an HQL query to fetch movies with streamingType THEATER_VIEWING or BOTH
-            Query<Movie> query = session.createQuery(
-                    "FROM Movie WHERE (streamingType = :theater OR streamingType = :both) AND available = :available",
-                    Movie.class
-            );
-            query.setParameter("theater", Movie.StreamingType.THEATER_VIEWING);
-            query.setParameter("both", Movie.StreamingType.BOTH);
-            query.setParameter("available", Movie.Availability.AVAILABLE);
 
-            // Execute the query and get the result list
-            message.movies = query.getResultList();
+            Query<MovieInstance> query = session.createQuery(
+                    "FROM MovieInstance WHERE isActive = true",
+                    MovieInstance.class
+            );
+            List<MovieInstance> movieInstances =  query.getResultList();
+            Set<Movie> uniqueMovies = movieInstances.stream()
+                    .map(MovieInstance::getMovie)
+                    .collect(Collectors.toSet());
+            message.movies = new ArrayList<>(uniqueMovies);
 
             // Set the response type
             message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;

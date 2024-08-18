@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.events.SeatStatusChangedEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
@@ -101,6 +102,13 @@ public class SimpleServer extends AbstractServer
 						MovieTicket ticket = ((MovieTicket)((PurchaseMessage) msg).purchases.getFirst());
 						sendToAllClients(new SeatStatusChangedEvent(List.of(ticket.getSeat())));
 					}
+					else if(msg instanceof MovieMessage
+							&&(((MovieMessage) msg).requestType == MovieMessage.RequestType.ADD_MOVIE))
+					{
+						System.out.println("Hello");
+						sendToAllClientsExceptMe(new MovieEvent(),client);
+					}
+
 
 					System.out.println("message handled");
 

@@ -150,7 +150,6 @@ public class MovieInstanceHandler extends MessageHandler
 
             // Set the response type
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE;
-
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
@@ -225,7 +224,7 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void get_all_movie_instances_by_movie_id()
     {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie", MovieInstance.class);
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and isActive=true", MovieInstance.class);
         query.setParameter("movie",message.id);
 
         message.movies = query.list();

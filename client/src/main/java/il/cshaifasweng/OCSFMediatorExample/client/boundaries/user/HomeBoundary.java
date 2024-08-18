@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
@@ -14,6 +15,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -155,6 +157,16 @@ public class HomeBoundary implements Initializable {
             });
         }
     }
+
+    @Subscribe
+    public void onMovieEventReceived(MovieEvent event)
+    {
+        Platform.runLater(() ->
+        {
+            SimpleChatClient.mainBoundary.homeWindowsInitialize();
+        });
+    }
+
     public void setDateListeners ()
     {
         System.out.println("init");
