@@ -4,9 +4,11 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -50,6 +52,25 @@ public class ComplaintFollowUpScheduler {
 
     public static void scheduleResponseEmailToCustomer(Complaint complaint) {
         emailExecutor.submit(() -> sendResponseEmailToCustomer(complaint));
+    }
+
+
+    public void scheduleAllActiveComplaints() {
+        new Thread(() -> {
+            try (Session session = SimpleServer.session.getSessionFactory().openSession()) {
+                Transaction transaction = session.beginTransaction();
+
+                List<Complaint> activeComplaints = session.createQuery("from Complaint where isClosed = false", Complaint.class).list();
+
+                // Use parallel stream to process complaints concurrently
+                activeComplaints.parallelStream().forEach(ComplaintFollowUpScheduler::scheduleComplaintHandling);
+
+                transaction.commit();
+                System.out.println("Scheduled all active complaints.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void sendComplaintHandling(Complaint complaint) {

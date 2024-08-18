@@ -37,6 +37,8 @@ public class SimpleServer extends AbstractServer {
 		// Initialize the database
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
+		// Schedule all active complaints
+		complaintScheduler.scheduleAllActiveComplaints();
 	}
 
 	public static SimpleServer getServer() {

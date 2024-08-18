@@ -521,10 +521,6 @@ public class GenerateDB {
                 session.flush();
                 System.out.println("Saved complaint: " + complaint.getId() + " (Closed: " + isClosed + ")");
 
-                // Schedule email notification after 24 hours
-                if (!isClosed) {
-                    ComplaintFollowUpScheduler.scheduleComplaintHandling(complaint);
-                }
             }
 
             transaction.commit();
