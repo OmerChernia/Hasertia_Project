@@ -4,27 +4,27 @@
 
 .h1 {
     -fx-font-size: 25;
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .h2 {
     -fx-font-size: 20;
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .h3 {
     -fx-font-size: 15;
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .h4 {
     -fx-font-size: 14;
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .h5 {
     -fx-font-size: 12;
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 

@@ -104,7 +104,6 @@ public class CustomerServiceBoundary implements Initializable {
             case COMPLIANT_WAS_ANSWERED:
                 Platform.runLater(() -> {
                     AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "Complaint Handled!");
-                    EmailSender.sendEmail(complaint.getPurchase().getOwner().getEmail(), "Customer Service: Complain num " + complaintId, customerServiceAnswer);
                     ComplaintController.getOpenComplaints();
                 });
                 break;

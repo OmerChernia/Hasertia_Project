@@ -92,18 +92,22 @@ public class DialogCustomerService implements Initializable {
         this.myComplaint = selectedComplaint;
 
         if (selectedComplaint != null) {
-            complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
-            complainantNameLabel.setText(selectedComplaint.getRegisteredUser().getName() == null ? "" : selectedComplaint.getRegisteredUser().getName());
+            if(selectedComplaint.getRegisteredUser() != null)
+            {   complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
+                complainantNameLabel.setText(selectedComplaint.getRegisteredUser().getName() == null ? "" : selectedComplaint.getRegisteredUser().getName());
 
-            if (selectedComplaint.getPurchase() instanceof MovieTicket) {
-                setMovieTicket(selectedComplaint);
-            } else if (selectedComplaint.getPurchase() instanceof MultiEntryTicket) {
-                setMultiEntryTicket(selectedComplaint);
-            } else if (selectedComplaint.getPurchase() instanceof HomeViewingPackageInstance) {
-                setHomeViewing(selectedComplaint);
+                if (selectedComplaint.getPurchase() instanceof MovieTicket) {
+                    setMovieTicket(selectedComplaint);
+                } else if (selectedComplaint.getPurchase() instanceof MultiEntryTicket) {
+                    setMultiEntryTicket(selectedComplaint);
+                } else if (selectedComplaint.getPurchase() instanceof HomeViewingPackageInstance) {
+                    setHomeViewing(selectedComplaint);
+                }
             }
-        }
-    }
+            else  {complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
+                complainantNameLabel.setText(""); }
+        }}
+
 
     private void setMovieTicket(Complaint selectedComplaint) {
         this.selectedMovieInstance = ((MovieTicket) selectedComplaint.getPurchase()).getMovieInstance();

@@ -4,9 +4,13 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
@@ -55,6 +59,15 @@ public class PurchaseHandler extends MessageHandler
                 }
                 session.save(message.purchases.getFirst());
                 session.flush();
+
+                // If the purchase is a HomeViewingPackageInstance, schedule link activation and email notification
+                if (message.purchases.getFirst() instanceof HomeViewingPackageInstance homeViewingPackage) {
+                    scheduleLinkAndEmail(homeViewingPackage);
+                }
+
+                // Schedule email notification for the purchase
+                OrderScheduler.getInstance().schedulePurchaseConfirmation(message.purchases.getFirst());
+
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_ADDED;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -65,42 +78,41 @@ public class PurchaseHandler extends MessageHandler
         }
     }
 
-    /*
-     מיותר
-    private void get_purchase() {
-        try {
-            Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
-            if (purchase != null) {
-                message.purchases.clear();
-                message.purchases.add(purchase);
-                message.responseType = PurchaseMessage.ResponseType.PURCHASE_FOUND;
-            } else {
-                message.responseType = PurchaseMessage.ResponseType.PURCHASE_NOT_FOUND;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
-        }
+    private void scheduleLinkAndEmail(HomeViewingPackageInstance homeViewingPackage) {
+        LocalDateTime movieTime = homeViewingPackage.getViewingDate();
+        String movieLink = homeViewingPackage.getLink();
+        String customerEmail = homeViewingPackage.getOwner().getEmail();
+
+        // Schedule email one hour before the movie time
+        LocalDateTime emailTime = movieTime.minusHours(1);
+
+        // Schedule link activation at the movie time
+        LinkScheduler.getInstance().scheduleLinkActivation(homeViewingPackage);
     }
-*/
+
     private void remove_purchase() {
         try {
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
             if (purchase != null) {
                 purchase.setisActive(false); // purchase is now not active anymore
 
-                if(purchase instanceof MovieTicket) // if the purchase is a seat release it
-                {
+                if (purchase instanceof MovieTicket) { // if the purchase is a seat, release it
                     Seat seat = session.get(Seat.class, ((MovieTicket) purchase).getSeat().getId());
                     seat.deleteMovieInstance(((MovieTicket) purchase).getMovieInstance());
                     session.update(seat);
                 }
 
-                session.update(purchase);
+                if (purchase instanceof HomeViewingPackageInstance homeViewingPackage) {
+                    LinkScheduler.getInstance().cancelScheduledTasks(homeViewingPackage);
+                }
 
+                session.update(purchase);
                 session.flush();
+
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_REMOVED;
                 message.purchases.add(purchase);
+                // Send the cancellation email using the EmailNotificationScheduler
+                OrderScheduler.getInstance().scheduleEmailCancellation(purchase);
 
             } else {
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_NOT_FOUND;
@@ -108,8 +120,15 @@ public class PurchaseHandler extends MessageHandler
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
+        } finally {
+            try {
+                client.sendToClient(message); // Always send the message back to the client
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
     }
+
 
     private void get_purchases_by_customer_id() {
         try {

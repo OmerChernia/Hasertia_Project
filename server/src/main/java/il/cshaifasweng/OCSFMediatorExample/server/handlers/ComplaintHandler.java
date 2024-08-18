@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -33,17 +34,22 @@ public class ComplaintHandler extends MessageHandler
     @Override
     public void setMessageTypeToResponse()
     {
-
         message.messageType= Message.MessageType.RESPONSE;
     }
 
     private void add_complaint()
     {
-        if(message.compliants.getFirst() != null)
-        {
-            session.save(message.compliants.getFirst());
+        Complaint complaint = message.compliants.getFirst();
+        if (complaint != null) {
+
+            session.save(complaint);
             session.flush();
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_ADDED;
+            // Schedule the complaint handling after 24 hours if not addressed
+            ComplaintFollowUpScheduler.scheduleComplaintHandling(complaint);
+
+            // Send email to the customer confirming the complaint was received
+            ComplaintFollowUpScheduler.scheduleComplaintReceive(complaint);
         }
         else
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
@@ -67,6 +73,11 @@ public class ComplaintHandler extends MessageHandler
             session.update(complaint);
             session.flush();
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WAS_ANSWERED;
+            // Cancel the scheduled email task since the complaint has been answered
+            ComplaintFollowUpScheduler.scheduleCancelScheduledComplaintHandling(complaint.getId());
+
+            // Schedule sending the response email in a separate thread
+            ComplaintFollowUpScheduler.scheduleResponseEmailToCustomer(complaint);
         }
         else
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;

@@ -11,6 +11,9 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import jdk.jfr.Event;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -26,8 +29,9 @@ import java.util.List;
 
 public class SimpleServer extends AbstractServer
 {
+	private static SimpleServer instance;  // Static variable to hold the single instance
 	private static ArrayList<SubscribedClient> clients = new ArrayList<>();
-	static Session session;
+	public static Session session;
 	private final String password;
 
 
@@ -37,10 +41,23 @@ public class SimpleServer extends AbstractServer
 		this.password = password;
 		session = getSessionFactory(password).openSession();
 
+		// Initialize schedulers as singletons
+		ComplaintFollowUpScheduler complaintScheduler = ComplaintFollowUpScheduler.getInstance();
+		OrderScheduler emailNotificationScheduler = OrderScheduler.getInstance();
+		LinkScheduler linkScheduler = LinkScheduler.getInstance();
+
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
-		EventNotifier eventNotifier = new EventNotifier();//nodifier of 1 houre erlier
-		eventNotifier.start(); // Starts the thread
+
+		// Schedule all active complaints
+		complaintScheduler.scheduleAllActiveComplaints();
+		// Schedule all home viewing packages
+		linkScheduler.scheduleHomeViewingPackages();
+	}
+
+
+	public static SimpleServer getServer() {
+		return instance;
 	}
 
 	@Override
@@ -96,12 +113,19 @@ public class SimpleServer extends AbstractServer
 					{
 						sendToAllClientsExceptMe(new SeatStatusChangedEvent(((SeatMessage) msg).hallSeats),client);
 					}
-					else if(msg instanceof PurchaseMessage
-							&& ((PurchaseMessage) msg).requestType== PurchaseMessage.RequestType.REMOVE_PURCHASE)
-					{
-						MovieTicket ticket = ((MovieTicket)((PurchaseMessage) msg).purchases.getFirst());
-						sendToAllClients(new SeatStatusChangedEvent(List.of(ticket.getSeat())));
+					else if (msg instanceof PurchaseMessage) {
+						if (((PurchaseMessage) msg).requestType == PurchaseMessage.RequestType.REMOVE_PURCHASE) {
+							if (((PurchaseMessage) msg).purchases.getFirst() instanceof MovieTicket) {
+								MovieTicket ticket = (MovieTicket) ((PurchaseMessage) msg).purchases.getFirst();
+								sendToAllClients(new SeatStatusChangedEvent(List.of(ticket.getSeat())));
+								System.out.println("Sent SeatStatusChangedEvent to all clients for MovieTicket removal.");
+							} else if (((PurchaseMessage) msg).purchases.getFirst() instanceof HomeViewingPackageInstance) {
+								System.out.println("HomeViewingPackageInstance purchase removed, sending response to specific client.");
+								client.sendToClient(msg);
+							}
+						}
 					}
+
 					else if(msg instanceof MovieMessage
 							&&(((MovieMessage) msg).requestType == MovieMessage.RequestType.ADD_MOVIE))
 					{

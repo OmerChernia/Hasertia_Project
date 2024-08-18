@@ -6,8 +6,10 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
+import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -176,6 +178,9 @@ public class MovieHandler extends MessageHandler
         message.messageType= Message.MessageType.RESPONSE;
     }
 
+
+
+
     private void add_movie()
     {
         if(message.movies.getFirst() != null) {
@@ -190,6 +195,12 @@ public class MovieHandler extends MessageHandler
             if (movies.isEmpty()) {
                 session.save(message.movies.getFirst());
                 session.flush();
+
+                // Fetch users who have purchased MultiEntryTickets
+                List<RegisteredUser> usersWithMultiEntryTickets = getUsersWithMultiEntryTickets();
+
+                // Notify users about the new movie
+                OrderScheduler.getInstance().notifyNewMovie(message.movies.getFirst(), usersWithMultiEntryTickets);
                 message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
             } else
                 message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
@@ -197,6 +208,22 @@ public class MovieHandler extends MessageHandler
         }
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+    }
+
+    public List<RegisteredUser> getUsersWithMultiEntryTickets() {
+        List<RegisteredUser> users = null;
+        try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
+            // Create an HQL query to fetch users who have purchased MultiEntryTickets
+            String hql = "SELECT DISTINCT p.owner " +
+                    "FROM Purchase p " +
+                    "WHERE TYPE(p) = il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket";
+
+            Query<RegisteredUser> query = session.createQuery(hql, RegisteredUser.class);
+            users = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     private void deactivate_movie() {

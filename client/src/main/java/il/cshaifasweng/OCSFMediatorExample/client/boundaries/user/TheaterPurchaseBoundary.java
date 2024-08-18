@@ -590,13 +590,7 @@ public class TheaterPurchaseBoundary {
                 seats_info;
         if(!isCardPackageOn)
                 text += "Price Paid: ₪" + currentMovieInstance.getMovie().getTheaterPrice() *selectedSeats.size();
-        String Email;
-        if(user!=null)
-            Email= user.getEmail();
-        else
-            Email = emailTF.getText();
-        EmailSender.sendEmail(Email, "New Movie Ticket Purchase From Hasertia", text);
-        EmailSender.sendEmail("hasertiaproject@gmail.com", "New Movie Ticket Purchase From Hasertia", text);
+
         confirmationDetails.setText(text);
         confirmationMovieImage.setImage(movieImage.getImage());
         stackPane.getChildren().clear();

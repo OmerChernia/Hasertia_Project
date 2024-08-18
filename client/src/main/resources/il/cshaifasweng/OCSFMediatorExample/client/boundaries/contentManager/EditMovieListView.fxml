@@ -13,6 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.Separator?>
 <StackPane fx:id="stckProducts" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="565.0" prefWidth="930.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager.EditMovieListBoundary">
    <children>
       <AnchorPane fx:id="rootProducts" prefHeight="200.0" prefWidth="200.0">
@@ -32,46 +33,57 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <HBox fx:id="hBoxSearch" alignment="CENTER" layoutX="14.0" layoutY="14.0" prefHeight="45.0" prefWidth="730.0" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5;" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="186.0">
+            <HBox fx:id="hBoxSearch" alignment="BASELINE_LEFT" layoutX="11.0" layoutY="14.0" prefHeight="45.0" prefWidth="730.0" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 5;" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="189.0">
                <padding>
                   <Insets bottom="20.0" left="5.0" />
                </padding>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="EDIT MOVIE LIST" wrappingWidth="209.603515625">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
             </HBox>
             <AnchorPane fx:id="containerAddProduct" layoutX="181.0" layoutY="39.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="448.0" prefWidth="530.0" style="-fx-background-radius: 10;" visible="false">
 
             </AnchorPane>
-            <AnchorPane fx:id="containerDeleteProducts" layoutX="249.0" layoutY="136.0" prefHeight="291.0" prefWidth="425.0" visible="false">
+            <AnchorPane fx:id="containerDeleteProducts" layoutX="249.0" layoutY="136.0" prefHeight="291.0" prefWidth="425.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #3a1c9d; -fx-border-width: 2px; -fx-background-radius: 10px;" visible="false">
                <children>
-                  <Button fx:id="btnDelete" layoutX="208.0" layoutY="201.0" prefHeight="25.0" prefWidth="131.0" styleClass="button-delete" text="Delete" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="btnCancel" layoutX="57.0" layoutY="201.0" onAction="#closeDialogAddProduct" onMouseClicked="#hideDialogDeleteProduct" prefHeight="25.0" prefWidth="131.0" styleClass="button-cancel" text="Cancel">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Button>
-                  <Button contentDisplay="CENTER" layoutX="360.0" onAction="#closeDialogAddProduct" onMouseClicked="#hideDialogDeleteProduct" prefHeight="28.0" prefWidth="20.0" styleClass="button-close" text="close">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../media/icons/icons8-close-50.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <VBox alignment="CENTER" layoutY="14.0" prefHeight="188.0" prefWidth="396.0" spacing="5.0">
+                  <VBox alignment="CENTER" layoutY="20.0" prefHeight="179.0" prefWidth="418.0" spacing="20.0">
                      <children>
-                        <ImageView fitHeight="100.0" fitWidth="103.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../media/warning.png" />
-                           </image>
-                        </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h4" text="Are you sure to remove this Movie permanently?" textAlignment="CENTER" wrappingWidth="250.6171875" />
-                        <Text fill="#bebec2" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="h5" text="Information cannot be retrieved" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Are you sure to remove this Movie permanently?" textAlignment="CENTER" wrappingWidth="337.0">
+                           <font>
+                              <Font name="System Bold Italic" size="22.0" />
+                           </font>
+                        </Text>
+                        <Text fill="#aeacac" strokeType="OUTSIDE" strokeWidth="0.0" text="Information cannot be retrieved" textAlignment="CENTER" wrappingWidth="320.0">
+                           <font>
+                              <Font name="System Bold Italic" size="20.0" />
+                           </font>
+                        </Text>
                      </children>
                   </VBox>
+                  <Separator layoutX="10.0" layoutY="192.0" prefHeight="2.0" prefWidth="399.0" />
+                  <HBox layoutX="57.0" layoutY="237.0" prefHeight="29.0" prefWidth="282.0" spacing="20.0">
+                     <children>
+                        <Button fx:id="btnDelete" prefHeight="25.0" prefWidth="131.0" style="-fx-background-color: #3a1c9d;" styleClass="button-delete" text="Delete" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Button>
+                        <Button onMouseClicked="#hideDialogDeleteProduct" prefHeight="25.0" prefWidth="131.0" style="-fx-background-color: #e0e0e0;" styleClass="button-cancel" text="Cancel" textFill="GREY">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <Button layoutX="384.0" layoutY="5.0" onAction="#closeDialogAddProduct" onMouseClicked="#hideDialogDeleteProduct" prefHeight="27.0" prefWidth="34.0" style="-fx-background-color: transparent;" styleClass="button-close" text=" ">
+                     <graphic>
+                        <Text fill="#989cab" style="-fx-font-size: 20px;" text="X" />
+                     </graphic>
+                  </Button>
                </children>
             </AnchorPane>
             <Button fx:id="btnNewProduct" layoutX="759.0" layoutY="17.0" onAction="#handleNewMovie" prefHeight="39.0" prefWidth="155.0" styleClass="action-button" text="New product" textFill="WHITE" AnchorPane.rightAnchor="16.0">

@@ -402,30 +402,33 @@ public class MainBoundary implements Initializable {
     @Subscribe
     public void handleLoginResponse(LoginMessage loginMessage) {
         if (loginMessage instanceof EmployeeLoginMessage) {
+            Platform.runLater(() -> {
+                handleEmployeeLoginResponse((EmployeeLoginMessage) loginMessage);
+                String role = "";
+                if (((EmployeeLoginMessage) loginMessage).employeeType !=null){
 
-            handleEmployeeLoginResponse((EmployeeLoginMessage) loginMessage);
-            String role = "";
-            switch (((EmployeeLoginMessage) loginMessage).employeeType) {
-                case THEATER_MANAGER:
-                    role = "Theater Manager";
-                    break;
-                case COMPANY_MANAGER:
-                    role = "Company Manager";
-                    break;
-                case CUSTOMER_SERVICE:
-                    role = "Customer Service";
-                    break;
-                case CONTENT_MANAGER:
-                    role = "Content Manager";
-                    break;
-            }
-
-            String finalRole = role;
-            Platform.runLater(() -> lblWelcome.setText("Welcome " + finalRole + "!"));
+                switch (((EmployeeLoginMessage) loginMessage).employeeType) {
+                    case THEATER_MANAGER:
+                        role = "Theater Manager";
+                        break;
+                    case COMPANY_MANAGER:
+                        role = "Company Manager";
+                        break;
+                    case CUSTOMER_SERVICE:
+                        role = "Customer Service";
+                        break;
+                    case CONTENT_MANAGER:
+                        role = "Content Manager";
+                        break;
+                }
+                lblWelcome.setText("Welcome " + role + "!");
+            }   }
+            );
         } else {
             Platform.runLater(() -> handleCustomerLoginResponse(loginMessage));
         }
     }
+
 
 
     public static int getId(){

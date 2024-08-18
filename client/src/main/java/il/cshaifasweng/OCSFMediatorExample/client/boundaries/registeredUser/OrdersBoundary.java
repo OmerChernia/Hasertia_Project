@@ -104,7 +104,16 @@ public class OrdersBoundary implements Initializable {
         PurchaseController.GetPurchasesByCustomerID(id);
         animateNodes();
         setContextMenu();
-
+        tblOrders.setRowFactory(tv -> {
+            TableRow<Purchase> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Purchase rowData = row.getItem();
+                    showDialogOrder();
+                }
+            });
+            return row;
+        });
     }
 
     public void setId(int id) {
@@ -116,6 +125,7 @@ public class OrdersBoundary implements Initializable {
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message)
     {
+        System.out.println(message.responseType);
         Platform.runLater(() -> {
             ticketCounterT.setText("Multi-Entry-Ticket amount: " +message.purchases.get(0).getOwner().getTicket_counter());
         if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST)
@@ -124,14 +134,16 @@ public class OrdersBoundary implements Initializable {
         }
         else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_REMOVED)
         {
+            System.out.println("Purchase removed, refreshing purchases for customer ID: " + id);
             PurchaseController.GetPurchasesByCustomerID(id);
         }
+
         else if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_FAILED)
         {
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "Cannot Cancel purchase selected!");
         }
         else {
-            MovieController.requestAllMovies();
+            PurchaseController.GetPurchasesByCustomerID(id);
         }});
     }
 
@@ -364,26 +376,11 @@ public class OrdersBoundary implements Initializable {
     @FXML
     private void handleRefund(Purchase purchase) {
 
-        String purchaseType;
-        if(purchase instanceof MovieTicket)
-            purchaseType = ((MovieTicket) purchase).getMovieInstance().getMovie().getEnglishName() + " ticket";
-        else
-            purchaseType = ((HomeViewingPackageInstance) purchase).getMovie().getEnglishName() + " home viewing package";
-
-        String confirmation = "Dear " + purchase.getOwner().getName() + ",\n\n" +
-                "I hope this message finds you well.\n\n" +
-                "We wanted to confirm that your recent purchase of "+purchaseType+" has been successfully canceled. " +
-                "If you have any questions or require further assistance, please don't hesitate to reach out to us.\n\n" +
-                "Thank you for your understanding.\n\n" +
-                "Best regards";
-
-        //txtRefund.setText(refundPrice+"");
         if(refundPrice==0)
             AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have not been refunded.");
         else
-            AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have been refunded for: " +refundPrice);
-        EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Canceled Purchase from Hasertia.", confirmation);
-        EmailSender.sendEmail("hasertiaproject@gmail.com", "A purchase has been canceled.", confirmation);
+            AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have been refunded for: " + refundPrice);
+
     }
 
     private String processRefund(Purchase purchase) {

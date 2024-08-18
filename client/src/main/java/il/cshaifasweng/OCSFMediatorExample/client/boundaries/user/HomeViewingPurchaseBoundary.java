@@ -321,8 +321,7 @@ public class HomeViewingPurchaseBoundary {
                     "Purchase link: " + link;
 
             confirmationDetails.setText(text);
-            EmailSender.sendEmail(homeViewingPackageInstance.getOwner().getEmail(), "New Home Viewing Purchase From Hasertia", text);
-            EmailSender.sendEmail("hasertiaproject@gmail.com", "New Home Viewing Purchase From Hasertia", text);
+
             confirmationMovieImage.setImage(movieImage.getImage());
             stackPane.getChildren().clear();
             stackPane.getChildren().add(ticketConfirmationPane);

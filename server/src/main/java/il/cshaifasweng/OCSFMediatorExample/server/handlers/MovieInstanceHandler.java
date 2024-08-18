@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -158,6 +159,9 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
+
+
+
     private void delete_movie_instance() {
         // Load the movie instance
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where id = :id", MovieInstance.class);
@@ -175,8 +179,6 @@ public class MovieInstanceHandler extends MessageHandler
 
         List<MovieTicket> movieTickets = queryMovieTickets.list();
 
-        // Prepare the list of emails to be sent
-        List<Runnable> emailTasks = new ArrayList<>();
 
         for (MovieTicket movieTicket : movieTickets) {
             // Setting movie ticket to not be active anymore
@@ -188,32 +190,27 @@ public class MovieInstanceHandler extends MessageHandler
             seat.deleteMovieInstance(movieInstance);
             session.update(seat);
 
-            // Prepare the email task
-            emailTasks.add(() -> {
-                EmailSender.sendEmail(movieTicket.getOwner().getEmail(), "Canceled ticket from Hasertia",
-                        String.format("Dear %s, your ticket for the movie '%s' has been canceled. We apologize for the inconvenience.",
-                                movieTicket.getOwner().getName(),
-                                movieInstance.getMovie().getEnglishName()));
-            });
         }
 
         // Flush all updates at once
         session.flush();
 
-        // Execute email tasks asynchronously
-        for (Runnable task : emailTasks) {
-            new Thread(task).start(); // You can use an ExecutorService for more controlled async processing
-        }
+
+        OrderScheduler.getInstance().scheduleEmailsForCanceledScreening(movieTickets, movieInstance);
 
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
-        }
+    }
+
+
+
     private void update_movie_instance() {
         try {
-            //need to implement what to do with the seats associated with the movie instance: delete them or change them???
 
             MovieInstance mergedInstance = (MovieInstance) session.merge(message.movies.getFirst());
             session.flush();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_UPDATED;
+            // Schedule email notifications for updates
+            scheduleUpdateNotifications(mergedInstance);
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
@@ -222,6 +219,23 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
+
+    private void scheduleUpdateNotifications(MovieInstance movieInstance) {
+        Query<Object[]> emailQuery = session.createQuery(
+                "SELECT mt.owner.email, mt.owner.name FROM MovieTicket mt " +
+                        "WHERE mt.movieInstance.id = :movieInstanceId AND mt.isActive = true",
+                Object[].class
+        );
+        emailQuery.setParameter("movieInstanceId", movieInstance.getId());
+
+        List<Object[]> customerData = emailQuery.list();
+
+        // Pass the customer data and movie instance info to the scheduler
+        OrderScheduler.getInstance().scheduleEmailsForUpdatedScreening(customerData, movieInstance);
+    }
+
+
+
     private void get_all_movie_instances_by_movie_id()
     {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and isActive=true", MovieInstance.class);

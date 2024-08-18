@@ -26,7 +26,6 @@ public class ButtonFactory {
         return button;
     }
 
-    // פונקציה ליצירת כפתור עם סגנון בהתאם לזמן שנותר
     public static Button createUrgencyButton(long hoursLeft) {
         Button statusButton = new Button(getTextForHoursLeft(hoursLeft));
         statusButton.setStyle(getStyleForHoursLeft(hoursLeft) + "; -fx-text-fill: white;");
@@ -44,7 +43,6 @@ public class ButtonFactory {
         }
     }
 
-    // טקסט בהתאם לזמן שנותר
     private static String getTextForHoursLeft(long hoursLeft) {
         if (hoursLeft <= 6) {
             return "High";
@@ -55,7 +53,6 @@ public class ButtonFactory {
         }
     }
 
-    // מחלקה פנימית שמטפלת בהצגה של הכפתור בעמודת הסטטוס
     public static class ButtonUrgencyCell extends TableCell<Complaint, Button> {
         @Override
         protected void updateItem(Button item, boolean empty) {
@@ -71,7 +68,6 @@ public class ButtonFactory {
         }
     }
 
-    // מחלקת Callback ליצירת ה-TableCell עבור עמודת הסטטוס
     public static class ButtonUrgencyCellFactory implements Callback<TableColumn<Complaint, Button>, TableCell<Complaint, Button>> {
         @Override
         public TableCell<Complaint, Button> call(TableColumn<Complaint, Button> param) {
@@ -100,7 +96,7 @@ public class ButtonFactory {
                 styleClass = "button-purple";
             } else {
                 imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-more-info.png";
-                text = "Unregistered";
+                text = "UnClassified";
                 styleClass = "button-red";
             }
 
@@ -137,17 +133,22 @@ public class ButtonFactory {
 
             if (item instanceof MultiEntryTicket) {
                 text = "Multi-Entry Card";
-                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/action.png";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-two-tickets.png";
                 styleClass = "button-orange";
             } else if (item instanceof MovieTicket) {
-                text = "Movie Ticket";
-                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/comedy.png";
+                text = "Theater Ticket";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-movie-theater.png";
                 styleClass = "button-blue";
-            } else {
-                text = "Home Viewing Package";
-                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/genre/drama.png";
+            } else if (item instanceof HomeViewingPackageInstance) {
+                text = "Home Viewing";
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/online-movie.png";
                 styleClass = "button-purple";
+            } else {
+                imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-more-info.png";
+                text = "Unregistered";
+                styleClass = "button-red";
             }
+
 
             return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }

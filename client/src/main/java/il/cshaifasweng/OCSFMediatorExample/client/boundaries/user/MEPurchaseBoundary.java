@@ -268,8 +268,7 @@ public class MEPurchaseBoundary {
             confirmationPackageImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE + "logo.png")));
             stackPane.getChildren().clear();
             stackPane.getChildren().add(packageConfirmationPane);
-            EmailSender.sendEmail(ticket.getOwner().getEmail(), "New Multi-Entry Ticket Purchase From Hasertia", text);
-            EmailSender.sendEmail("hasertiaproject@gmail.com", "New Multi-Entry Ticket Purchase From Hasertia", text);
+
         });
     }
 
