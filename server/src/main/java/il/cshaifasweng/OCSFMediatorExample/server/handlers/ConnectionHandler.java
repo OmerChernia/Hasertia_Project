@@ -42,7 +42,7 @@ public class ConnectionHandler extends MessageHandler
     public void delete_connection()
     {
         for(int i = 0; i < clients.size(); i++)
-            if(clients.get(i).getClient().equals(client))
+            if(clients.get(i).getClient().equals(client)) //ver2: clients.get(i).getClient().threadId() == client.threadId()
             {
                 clients.remove(i);
                 System.out.println("client deleted successfully, the size of SubscribedClients are: " + clients.size());

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import java.lang.reflect.InvocationTargetException;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
@@ -183,6 +184,8 @@ public class MainBoundary implements Initializable {
             clearTextFields();
         });
 
+        SimpleChatClient.mainBoundary =this;
+
         homeWindowsInitialize();
         resetButtons();
         tooltips();
@@ -330,14 +333,18 @@ public class MainBoundary implements Initializable {
         currentController = new_currentController;
     }
 
-    private void showFXMLWindows(String FXMLName)  {
-
+    public void executeCleanup()
+    {
         if (currentController != null) {
             try {
                 currentController.getClass().getMethod("cleanup").invoke(currentController);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {}
         }
+    }
 
+    private void showFXMLWindows(String FXMLName)  {
+
+        executeCleanup();
 
         rootContainer.getChildren().clear();
 

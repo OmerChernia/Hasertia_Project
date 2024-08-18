@@ -390,7 +390,7 @@ public class OrdersBoundary implements Initializable {
         if (purchase instanceof MovieTicket) {
             MovieTicket movieTicket = (MovieTicket) purchase;
             refundPrice = movieTicket.getMovieInstance().getMovie().getTheaterPrice();
-            LocalDateTime screeningTime = purchase.getPurchaseDate();
+            LocalDateTime screeningTime = movieTicket.getMovieInstance().getTime();
             long hoursUntilScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime);
             if (hoursUntilScreening > 3) {
                 return "You will refund Full Price Ticket: " + refundPrice + "₪";

@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.events.SeatStatusChangedEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
@@ -9,6 +10,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import jdk.jfr.Event;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -33,6 +35,7 @@ public class SimpleServer extends AbstractServer
 		super(port);
 		this.password = password;
 		session = getSessionFactory(password).openSession();
+
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
 		EventNotifier eventNotifier = new EventNotifier();//nodifier of 1 houre erlier
@@ -66,11 +69,11 @@ public class SimpleServer extends AbstractServer
 					messageHandler = new SeatHandler((SeatMessage) msg, client, session);
 				} else if (msg instanceof TheaterMessage) {
 					messageHandler = new TheaterHandler((TheaterMessage) msg, client, session);
-				} else if(msg instanceof ConnectionMessage) {
+				} else if (msg instanceof ConnectionMessage) {
 					messageHandler = new ConnectionHandler((ConnectionMessage) msg , client, session ,clients);
 				} else if (msg instanceof RegisteredUserMessage) {
 					messageHandler = new RegisteredUserHandler((RegisteredUserMessage)msg , client, session);
-				} else if(msg instanceof HallMessage) {
+				} else if (msg instanceof HallMessage) {
 					messageHandler = new HallHandler((HallMessage) msg, client, session);
 				}
 
@@ -86,10 +89,25 @@ public class SimpleServer extends AbstractServer
 					{
 						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
 					}
+					else if(msg instanceof SeatMessage &&
+							(((SeatMessage) msg).requestType == SeatMessage.RequestType.SEATS_CANCELATION
+							|| ((SeatMessage) msg).requestType == SeatMessage.RequestType.SEATS_RESERVED))
+					{
+						sendToAllClientsExceptMe(new SeatStatusChangedEvent(((SeatMessage) msg).hallSeats),client);
+					}
+					else if(msg instanceof PurchaseMessage
+							&& ((PurchaseMessage) msg).requestType== PurchaseMessage.RequestType.REMOVE_PURCHASE)
+					{
+						MovieTicket ticket = ((MovieTicket)((PurchaseMessage) msg).purchases.getFirst());
+						sendToAllClients(new SeatStatusChangedEvent(List.of(ticket.getSeat())));
+					}
+
 					System.out.println("message handled");
 
-					if(msg instanceof ConnectionMessage && ((ConnectionMessage) msg).requestType == ConnectionMessage.RequestType.DELETE_CONNECTION)
-						return;
+                    if (msg instanceof ConnectionMessage && ((ConnectionMessage) msg).requestType == ConnectionMessage.RequestType.DELETE_CONNECTION){
+                        System.out.println("message didn't sent");
+                        return;
+                    }
 
 					client.sendToClient(msg);					//send the message to the client
 					System.out.println("message sent");
@@ -136,9 +154,23 @@ public class SimpleServer extends AbstractServer
 	@Override
 	public void sendToAllClients(Object message) {
 		try {
-			System.out.println("size: "+ clients.size());
-			for (SubscribedClient SubscribedClient : clients) {
-				SubscribedClient.getClient().sendToClient(message);
+			for (SubscribedClient SubscribedClient : clients)
+			{
+				if(SubscribedClient.getClient().isAlive()) // for insurance
+					SubscribedClient.getClient().sendToClient(message);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+
+	public void sendToAllClientsExceptMe(Object message, ConnectionToClient client) {
+		try {
+			for (SubscribedClient SubscribedClient : clients)
+			{
+				if(!SubscribedClient.getClient().equals(client) &&  SubscribedClient.getClient().isAlive()) // for insurance
+					SubscribedClient.getClient().sendToClient(message);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();

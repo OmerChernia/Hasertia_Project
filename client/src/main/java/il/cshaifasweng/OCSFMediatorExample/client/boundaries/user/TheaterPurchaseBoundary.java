@@ -12,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.Notificatio
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.events.SeatStatusChangedEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -257,7 +258,6 @@ public class TheaterPurchaseBoundary {
         }
     }
 
-    //need to finish!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @Subscribe
     public void onMovieInstanceEvent(MovieInstanceCanceledEvent movieInstanceCanceledEvent)
     {
@@ -270,6 +270,17 @@ public class TheaterPurchaseBoundary {
 
 
         }
+    }
+
+    @Subscribe
+    public void onSeatStatusChangedEvent(SeatStatusChangedEvent seatStatusChangedEvent)
+    {
+        if(stackPane.getChildren().contains(seatSelectionPane) && seatStatusChangedEvent.seats.get(0).getHall().getId() == currentMovieInstance.getHall().getId() )
+        {
+            AlertsBuilder.create(AlertType.CANCELLATION, stackPane, stackPane, stackPane, "The seats in this screening has been modified, Please choose seats again");
+            Platform.runLater(this::initializeSeatSelection);
+        }
+
     }
 
     private void selectSeat(Seat seat, Button seatButton)
@@ -364,7 +375,7 @@ public class TheaterPurchaseBoundary {
                 }
             }
 
-            if(message.responseType.equals(SeatMessage.ResponseType.SEATS_HAS_BEEN_CANCELED))
+            if(message.responseType.equals(SeatMessage.ResponseType.SEATS_HAS_BEEN_CANCELED))   //maybe improve it?
             {
                 isReserved = false;
                 stackPane.getChildren().clear();
@@ -601,7 +612,7 @@ public class TheaterPurchaseBoundary {
     public void cleanup()
     {
         EventBus.getDefault().unregister(this);
-        System.out.println("cleanup: is reserved-> "+isReserved);
+        System.out.println("cleanup of TheaterPurchaseBoundary: is reserved-> "+isReserved);
         if (isReserved)
         {
             stopTimer();
@@ -741,5 +752,6 @@ public class TheaterPurchaseBoundary {
         }
         return cvv.matches("\\d{3,4}");
     }
+
 
 }

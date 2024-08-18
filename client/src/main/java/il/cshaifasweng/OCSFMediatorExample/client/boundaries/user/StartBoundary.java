@@ -75,6 +75,7 @@ public class StartBoundary {
             // Add this to handle closing the application when the stage is closed
             stage.setOnCloseRequest(event -> {
                 MainBoundary.sendLogoutRequest();
+                SimpleChatClient.mainBoundary.executeCleanup();
                 Platform.exit();
             });
 
