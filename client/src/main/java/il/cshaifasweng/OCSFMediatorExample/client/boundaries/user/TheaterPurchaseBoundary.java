@@ -257,7 +257,6 @@ public class TheaterPurchaseBoundary {
         }
     }
 
-    //need to finish!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @Subscribe
     public void onMovieInstanceEvent(MovieInstanceCanceledEvent movieInstanceCanceledEvent)
     {
@@ -267,7 +266,6 @@ public class TheaterPurchaseBoundary {
             Platform.runLater(() -> {
                 SimpleChatClient.mainBoundary.homeWindowsInitialize();
             });
-
 
         }
     }

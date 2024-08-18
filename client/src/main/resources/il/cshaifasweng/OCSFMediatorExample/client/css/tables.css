@@ -1,4 +1,3 @@
-/* טבלה */
 .table-view {
     -fx-background-color: white;
 }
@@ -36,22 +35,10 @@
 
 .action-button {
     -fx-font-size: 12;
-    -fx-font-family: "Rimouski Sb";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-background-color: -primary;
     -fx-text-fill: white;
 }
 
 
 
-/* תא סיסמא */
-.password-field-cell {
-    -fx-background-color: transparent;
-    -fx-text-fill: black;
-    -fx-highlight-fill: null;
-    -fx-highlight-text-fill: null;
-}
-
-.table-row-cell:selected .password-field-cell {
-    -fx-background-color: -secondary;
-    -fx-text-fill: white;
-}

@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import net.bytebuddy.implementation.ToStringMethod;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -438,6 +438,52 @@ public class GenerateDB {
         Transaction transaction = session.beginTransaction();
 
         try {
+            // Predefined customer complaints related to movies or purchases
+            String[] complaintMessages = {
+                    "The movie was not as described. I expected more.",
+                    "The ticket booking system failed, and I couldn't select my preferred seats.",
+                    "The movie quality was poor. It was not worth the price.",
+                    "I was charged twice for the same movie ticket.",
+                    "The home viewing package link did not work at the scheduled time.",
+                    "The multi-entry ticket I purchased was not valid for the selected movie.",
+                    "There was an issue with the sound during the movie. It was too low.",
+                    "The movie was abruptly cut off before the end.",
+                    "The online booking system didn't reflect the correct available seats.",
+                    "The movie I purchased was missing from the schedule.",
+                    "The movie had several technical glitches and was unwatchable.",
+                    "I couldn't access the premium features I paid for with the package.",
+                    "The theater staff were unhelpful and rude during the movie.",
+                    "The movie's content was inappropriate for the advertised rating.",
+                    "The streaming quality kept buffering throughout the movie.",
+                    "The seating arrangement at the theater was uncomfortable and not as advertised.",
+                    "The movie was not available in the language I requested.",
+                    "The booking confirmation email never arrived.",
+                    "The seat selection tool on the website was not working properly.",
+                    "The movie time on the website was incorrect, causing me to miss the show.",
+                    "The promotional offer I used did not apply correctly at checkout.",
+                    "The movie's special effects were not as impressive as advertised.",
+                    "The customer service response was too slow and unhelpful.",
+                    "The app crashed frequently during my purchase process.",
+                    "I was charged extra fees that were not disclosed upfront.",
+                    "The theater's cleanliness was below standard.",
+                    "The movie's ending was abrupt and unsatisfying.",
+                    "The email notifications about movie times were inaccurate.",
+                    "I received the wrong movie ticket at the theater.",
+                    "The booking system overbooked the theater, causing seating issues.",
+                    "The movie did not match the genre advertised.",
+                    "The home viewing package was missing content that was advertised.",
+                    "The theater's air conditioning was not working, making it uncomfortable.",
+                    "The online purchase process was confusing and unintuitive.",
+                    "The movie's soundtrack was too loud compared to the dialogue.",
+                    "The movie's running time was significantly shorter than advertised.",
+                    "The movie's subtitles were not synchronized with the dialogue.",
+                    "The theater's location was incorrectly listed on the website.",
+                    "The customer support number was unreachable when I needed help.",
+                    "The movie's visual quality was subpar for a new release.",
+                    "The ticket booking system had glitches that prevented me from completing my purchase."
+            };
+
+
             for (int i = 0; i < 100; i++) { // Increase the limit to 100
                 RegisteredUser user = users.get(i % users.size());
                 Purchase purchase;
@@ -453,6 +499,9 @@ public class GenerateDB {
                 LocalDateTime complaintDate;
                 boolean isClosed;
 
+                // Randomly select a complaint message
+                String complaintInfo = complaintMessages[i % complaintMessages.length];
+
                 if (i < 50) {
                     complaintDate = LocalDateTime.now().minusHours(24 - (i % 24));
                     isClosed = false;
@@ -462,7 +511,7 @@ public class GenerateDB {
                 }
 
                 Complaint complaint = new Complaint(
-                        "Complaint info " + i,
+                        complaintInfo,
                         complaintDate,
                         purchase,
                         isClosed,
@@ -471,6 +520,11 @@ public class GenerateDB {
                 session.save(complaint);
                 session.flush();
                 System.out.println("Saved complaint: " + complaint.getId() + " (Closed: " + isClosed + ")");
+
+                // Schedule email notification after 24 hours
+                if (!isClosed) {
+                    ComplaintFollowUpScheduler.scheduleComplaintHandling(complaint);
+                }
             }
 
             transaction.commit();
@@ -483,7 +537,5 @@ public class GenerateDB {
             e.printStackTrace();
         }
     }
-
-
 
 }

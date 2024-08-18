@@ -113,7 +113,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
                         MovieInstanceController.requestAllMovieInstances();
                         showAlert("You have updated the screening!", AlertType.SUCCESS);
                         break;
-                    case FILLTERD_LIST:
+                    case FILTERED_LIST:
                         loadTableData(movieInstanceMessage.movies);
                         break;
                     case MOVIE_INSTANCE_ADDED:

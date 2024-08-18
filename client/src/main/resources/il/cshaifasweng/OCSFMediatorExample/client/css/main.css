@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 @import url('context-menu.css');
 @import url('colors.css');
 @import url('text-components.css');
@@ -8,67 +7,6 @@
 @import url('scroll.css');
 @import url('report.css');
 @import url('complaint.css');
-.lato-thin {
-    font-family: "Lato", sans-serif;
-    font-weight: 100;
-    font-style: normal;
-}
-
-
-
-.lato-light {
-    font-family: "Lato", sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
-
-.lato-regular {
-    font-family: "Lato", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
-
-.lato-bold {
-    font-family: "Lato", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-}
-
-.lato-black {
-    font-family: "Lato", sans-serif;
-    font-weight: 900;
-    font-style: normal;
-}
-
-.lato-thin-italic {
-    font-family: "Lato", sans-serif;
-    font-weight: 100;
-    font-style: italic;
-}
-
-.lato-light-italic {
-    font-family: "Lato", sans-serif;
-    font-weight: 300;
-    font-style: italic;
-}
-
-.lato-regular-italic {
-    font-family: "Lato", sans-serif;
-    font-weight: 400;
-    font-style: italic;
-}
-
-.lato-bold-italic {
-    font-family: "Lato", sans-serif;
-    font-weight: 700;
-    font-style: italic;
-}
-
-.lato-black-italic {
-    font-family: "Lato", sans-serif;
-    font-weight: 900;
-    font-style: italic;
-}
 
 /* פופאפ */
 .jfx-dialog-overlay-pane {
@@ -91,14 +29,38 @@
 }
 
 .chart-pie-label {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-font-size: 15;
     -fx-fill: black;
 }
 
+
+/* התראות information */
+.alert-information-button {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: #8A2BE2;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-pref-height: 50px;
+    -fx-pref-width: 340px;
+    -fx-font-size: 15;
+}
+
+
+.alert-information-title {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-fill: #8A2BE2;
+    -fx-font-size: 30;
+}
+
+.alert-information-body {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-fill: #8A2BE2;
+    -fx-font-size: 15;
+}
 /* התראות שגיאה */
 .alert-error-button {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-background-color: -delete;
     -fx-background-radius: 5;
     -fx-text-fill: white;
@@ -109,13 +71,13 @@
 
 
 .alert-error-title {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-fill: -delete;
     -fx-font-size: 30;
 }
 
 .alert-error-body {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-fill: -delete;
     -fx-font-size: 15;
 }
@@ -123,7 +85,7 @@
 
 /* התראות WARNING */
 .alert-warning-button {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-background-color: -delete;
     -fx-background-radius: 5;
     -fx-text-fill: white;
@@ -134,13 +96,13 @@
 
 
 .alert-warning-title {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-fill: -delete;
     -fx-font-size: 30;
 }
 
 .alert-warning-body {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-fill: -delete;
     -fx-font-size: 15;
 }
@@ -149,7 +111,7 @@
 
 /* התראות הצלחה */
 .alert-success-button {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-background-color: -primary;
     -fx-background-radius: 5;
     -fx-text-fill: white;
@@ -161,13 +123,13 @@
 
 
 .alert-success-title {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-fill: -primary;
     -fx-font-size: 30;
 }
 
 .alert-success-body {
-    -fx-font-family: "Lato";
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
     -fx-fill: -primary;
     -fx-font-size: 15;
 }

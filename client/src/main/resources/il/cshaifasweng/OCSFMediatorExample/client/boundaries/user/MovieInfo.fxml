@@ -15,7 +15,7 @@
    <children>
       <AnchorPane prefHeight="449.0" prefWidth="799.0" StackPane.alignment="TOP_LEFT">
          <children>
-            <Pane prefHeight="460.0" prefWidth="798.0" style="-fx-background-color: #daeefc;">
+            <Pane prefHeight="460.0" prefWidth="798.0" style="-fx-background-color: linear-gradient(to bottom, #f5f7fa, #c3cfe2); -fx-border-color: #e72241; -fx-border-width: 2;">
                <children>
                   <Pane fx:id="paneContainer" layoutX="486.0" layoutY="45.0" prefHeight="365.0" prefWidth="268.0">
                      <cursor>
@@ -24,26 +24,23 @@
                      <children>
                         <HBox fx:id="imageContainer" alignment="CENTER" layoutX="-26.0" layoutY="1.0" maxWidth="352.0" prefHeight="395.0" prefWidth="328.0">
                            <children>
-                              <ImageView fx:id="image" fitHeight="197.0" fitWidth="328.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="image" fitHeight="250.0" fitWidth="328.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 10, 0, 0, 5);">
                                  <image>
                                     <Image url="@../../media/empty-image.jpg" />
                                  </image>
                               </ImageView>
                            </children>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
                         </HBox>
                      </children>
                   </Pane>
-                  <Pane layoutX="38.0" layoutY="164.0" prefHeight="66.0" prefWidth="411.0" style=": ; : ;">
+                  <Pane layoutX="38.0" layoutY="164.0" prefHeight="66.0" prefWidth="411.0">
                      <children>
                         <Label layoutX="58.0" layoutY="14.0" text="PRODUCER" textFill="#1d1d48">
                            <font>
                               <Font name="System Bold Italic" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lblProducer" layoutX="55.0" layoutY="34.0" text=" Walt Disney Pictures " textFill="#1d1d49">
+                        <Label fx:id="lblProducer" layoutX="55.0" layoutY="34.0" text=" Walt Disney Pictures " textFill="#4b4b79">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -55,20 +52,20 @@
                         </ImageView>
                      </children>
                   </Pane>
-                  <Pane layoutX="37.0" layoutY="213.0" prefHeight="66.0" prefWidth="411.0" style=": ; : ;">
+                  <Pane layoutX="37.0" layoutY="213.0" prefHeight="66.0" prefWidth="411.0">
                      <children>
-                        <Label layoutX="58.0" layoutY="6.0" text="Price" textFill="#1d1d48">
+                        <Label layoutX="58.0" layoutY="6.0" text="PRICE" textFill="#1d1d48">
                            <font>
                               <Font name="System Bold Italic" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="theaterPrice" layoutX="111.0" layoutY="24.0" text="price here" textFill="#1d1d49">
+                        <Label fx:id="theaterPrice" layoutX="111.0" layoutY="24.0" text="price here" textFill="#4b4b79">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
                         <Label layoutX="14.0" layoutY="25.0" prefHeight="17.0" prefWidth="50.0" text="Theater" />
-                        <Label fx:id="homePrice" layoutX="111.0" layoutY="43.0" text="price here" textFill="#1d1d49">
+                        <Label fx:id="homePrice" layoutX="111.0" layoutY="43.0" text="price here" textFill="#4b4b79">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -76,7 +73,7 @@
                         <Label layoutX="15.0" layoutY="44.0" prefHeight="17.0" prefWidth="84.0" text="Home Viewing" />
                      </children>
                   </Pane>
-                  <Pane layoutX="39.0" layoutY="121.0" prefHeight="66.0" prefWidth="411.0" style=": ; : ;">
+                  <Pane layoutX="39.0" layoutY="121.0" prefHeight="66.0" prefWidth="411.0">
                      <children>
                         <ImageView fitHeight="38.0" fitWidth="34.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -88,36 +85,35 @@
                               <Font name="System Bold Italic" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lblActors" layoutX="58.0" layoutY="33.0" prefHeight="20.0" prefWidth="299.0" text="Donald Glover, Beyoncé " textFill="#1d1d49">
+                        <Label fx:id="lblActors" layoutX="58.0" layoutY="33.0" prefHeight="20.0" prefWidth="299.0" text="Donald Glover, Beyoncé " textFill="#4b4b79">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
                      </children>
                   </Pane>
-                  <Label fx:id="lblInfo" alignment="CENTER" layoutX="45.0" layoutY="304.0" prefHeight="117.0" prefWidth="399.0" text="The plot follows Simba, a young lion who must embrace his role as the rightful king of his homeland following the murder of his father, Mufasa, at the hands of his uncle, Scar." textFill="#1d1d49" wrapText="true">
+                  <Label fx:id="lblInfo" alignment="CENTER" layoutX="45.0" layoutY="304.0" prefHeight="117.0" prefWidth="399.0" text="The plot follows Simba, a young lion who must embrace his role as the rightful king of his homeland following the murder of his father, Mufasa, at the hands of his uncle, Scar." textFill="#4b4b79" wrapText="true">
                      <font>
                         <Font size="15.5" />
                      </font>
                   </Label>
-                  <Label layoutX="48.0" layoutY="284.0" text="Summery" textFill="#e72241">
+                  <Label layoutX="48.0" layoutY="284.0" text="Summary" textFill="#e72241">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
                   <Label fx:id="lblName" alignment="TOP_LEFT" layoutX="41.0" layoutY="27.0" prefHeight="30.0" prefWidth="727.0" text="The Lion King" textFill="#e72241">
                      <font>
-                        <Font name="System Bold Italic" size="18.0" />
+                        <Font name="System Bold Italic" size="22.0" />
                      </font>
                   </Label>
-                  <Button fx:id="Close" layoutX="767.0" layoutY="9.0" mnemonicParsing="false" onAction="#handleClose" prefHeight="20.0" prefWidth="25.0" styleClass="button-close"  text="X" textFill="WHITE">
+                  <Button fx:id="Close" layoutX="767.0" layoutY="9.0" mnemonicParsing="false" onAction="#handleClose" prefHeight="20.0" prefWidth="25.0" styleClass="button-close" text="X" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </Button>
                </children>
             </Pane>
-
          </children>
       </AnchorPane>
    </children>

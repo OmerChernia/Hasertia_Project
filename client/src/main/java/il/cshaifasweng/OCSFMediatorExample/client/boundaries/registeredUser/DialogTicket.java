@@ -117,6 +117,7 @@ public class DialogTicket {
     public void setPurchase(Purchase purchase) {
         LocalDate purchaseDate = purchase.getPurchaseDate().toLocalDate();
         if (purchaseDate != null) {
+            lblId.setText(String.valueOf(purchase.getId()));
             lblPurchaseDay.setText(String.format("%02d", purchaseDate.getDayOfMonth()));
             lblPurchaseMonth.setText(purchaseDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
             lblPurchaseYear.setText(String.valueOf(purchaseDate.getYear()));
@@ -176,7 +177,7 @@ public class DialogTicket {
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
 
-        lblLink.setText(homeViewingPackage.getLink());
+        lblLink.setText( homeViewingPackage.isLinkActive() ? homeViewingPackage.getLink() : "");
 
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(true);

@@ -97,15 +97,14 @@ public class CustomerServiceBoundary implements Initializable {
         switch (message.responseType) {
             case FILTERED_COMPLAINTS_LIST:
                 loadTableData(message.compliants);
-                break; // Add break to avoid fall-through
+                break;
             case COMPLIANT_ADDED:
                 Platform.runLater(ComplaintController::getOpenComplaints);
                 break;
             case COMPLIANT_WAS_ANSWERED:
                 Platform.runLater(() -> {
                     AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "Complaint Handled!");
-                    EmailSender.sendEmail(complaint.getPurchase().getOwner().getEmail(), "Customer Service: Complain num " + complaintId, customerServiceAnswer);
-                    ComplaintController.getOpenComplaints();
+                     ComplaintController.getOpenComplaints();
                 });
                 break;
             case COMPLIANT_MESSAGE_FAILED:

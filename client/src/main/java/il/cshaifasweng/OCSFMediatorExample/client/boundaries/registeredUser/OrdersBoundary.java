@@ -55,9 +55,11 @@ public class OrdersBoundary implements Initializable {
 
     @FXML
     private TableColumn<Purchase, Button> colTypePurchase;
+    @FXML
+    private TableColumn<Purchase, String> colName;
 
     @FXML
-    private TableColumn<Purchase, String> colpurchaseDate;
+    private TableColumn<Purchase, String> colPurchaseDate;
 
     @FXML
     private Text ticketCounterT;
@@ -104,7 +106,16 @@ public class OrdersBoundary implements Initializable {
         PurchaseController.GetPurchasesByCustomerID(id);
         animateNodes();
         setContextMenu();
-
+        tblOrders.setRowFactory(tv -> {
+            TableRow<Purchase> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Purchase rowData = row.getItem();
+                    showDialogOrder();
+                }
+            });
+            return row;
+        });
     }
 
     public void setId(int id) {
@@ -156,7 +167,26 @@ public class OrdersBoundary implements Initializable {
             tblOrders.setItems(listOrders);
             tblOrders.setFixedCellSize(30);
             colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colpurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
+            colName.setCellValueFactory(param -> {
+                String s ="";
+
+                if(param.getValue() instanceof MultiEntryTicket)
+                {
+                    s = "Multi Entry Card";
+                 }
+                else if(param.getValue() instanceof MovieTicket)
+                {
+                    s = ((MovieTicket) param.getValue()).getMovieInstance().getMovie().getEnglishName();
+                }
+                else if(param.getValue() instanceof HomeViewingPackageInstance)
+                {
+                    s = ((HomeViewingPackageInstance) param.getValue()).getMovie().getEnglishName();
+                }
+
+                return new SimpleObjectProperty<>(s);
+
+        });
+            colPurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
             ButtonFactory buttonFactory = new ButtonFactory();
             colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
             colStatus.setCellValueFactory(param -> {
@@ -364,27 +394,11 @@ public class OrdersBoundary implements Initializable {
     @FXML
     private void handleRefund(Purchase purchase) {
 
-        String purchaseType;
-        if(purchase instanceof MovieTicket)
-            purchaseType = ((MovieTicket) purchase).getMovieInstance().getMovie().getEnglishName() + " ticket";
-        else
-            purchaseType = ((HomeViewingPackageInstance) purchase).getMovie().getEnglishName() + " home viewing package";
-
-        String confirmation = "Dear " + purchase.getOwner().getName() + ",\n\n" +
-                "I hope this message finds you well.\n\n" +
-                "We wanted to confirm that your recent purchase of "+purchaseType+" has been successfully canceled. " +
-                "If you have any questions or require further assistance, please don't hesitate to reach out to us.\n\n" +
-                "Thank you for your understanding.\n\n" +
-                "Best regards";
-
-        //txtRefund.setText(refundPrice+"");
         if(refundPrice==0)
             AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have not been refunded.");
         else
             AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have been refunded for: " +refundPrice);
-        EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Canceled Purchase from Hasertia.", confirmation);
-        EmailSender.sendEmail("hasertiaproject@gmail.com", "A purchase has been canceled.", confirmation);
-    }
+     }
 
     private String processRefund(Purchase purchase) {
         if (purchase instanceof MovieTicket) {

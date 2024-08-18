@@ -92,7 +92,8 @@ public class DialogCustomerService implements Initializable {
         this.myComplaint = selectedComplaint;
 
         if (selectedComplaint != null) {
-            complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
+            if(selectedComplaint.getRegisteredUser() != null)
+            {   complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
             complainantNameLabel.setText(selectedComplaint.getRegisteredUser().getName() == null ? "" : selectedComplaint.getRegisteredUser().getName());
 
             if (selectedComplaint.getPurchase() instanceof MovieTicket) {
@@ -103,7 +104,9 @@ public class DialogCustomerService implements Initializable {
                 setHomeViewing(selectedComplaint);
             }
         }
-    }
+        else  {complaintDetailsLabel.setText(selectedComplaint.getInfo() == null ? "" : selectedComplaint.getInfo());
+             complainantNameLabel.setText(""); }
+    }}
 
     private void setMovieTicket(Complaint selectedComplaint) {
         this.selectedMovieInstance = ((MovieTicket) selectedComplaint.getPurchase()).getMovieInstance();

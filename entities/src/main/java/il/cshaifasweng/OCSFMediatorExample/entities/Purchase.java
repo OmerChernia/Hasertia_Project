@@ -70,7 +70,7 @@ public abstract class Purchase implements Serializable
         this.id = id;
     }
 
-    public void setisActive(boolean isActive)
+    public void setIsActive(boolean isActive)
     {
         this.isActive=isActive;
     }

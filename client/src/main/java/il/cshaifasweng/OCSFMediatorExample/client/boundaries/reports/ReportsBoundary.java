@@ -1,11 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ComplaintReportConfiguration;
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportConfiguration;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportFactory;
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.ReportsPageController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
@@ -134,8 +132,8 @@ public class ReportsBoundary implements Initializable {
         // Add listeners to update the charts when selection changes
         addComboBoxListeners();
 
-        ReportsPageController.requestAllPurchases();
-        ReportsPageController.requestAllComplaints();
+        PurchaseController.GetAllPurchases();
+        ComplaintController.getAllComplaints();
     }
 
     private void initializeYearComboBox(ComboBox<Integer> yearComboBox) {

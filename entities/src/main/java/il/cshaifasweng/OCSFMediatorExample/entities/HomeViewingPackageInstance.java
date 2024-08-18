@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @DiscriminatorValue("Home_Viewing_Package")
-public class HomeViewingPackageInstance extends Purchase{
+public class HomeViewingPackageInstance extends Purchase {
 
     @OneToOne
     private Movie movie;
@@ -14,15 +14,17 @@ public class HomeViewingPackageInstance extends Purchase{
 
     private String link;
 
+    private boolean linkActive;
 
     public HomeViewingPackageInstance() {
     }
 
-    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, boolean isActive, String link) {
+    public HomeViewingPackageInstance(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, Movie movie, LocalDateTime viewingDate, boolean isActive, String link) {
         super(purchaseDate, owner, purchaseValidation, isActive);
         this.movie = movie;
         this.activationDate = viewingDate;
-        this.link=link;
+        this.link = link;
+        this.linkActive = false; // Link is inactive by default
     }
 
     // Getters and setters
@@ -47,24 +49,32 @@ public class HomeViewingPackageInstance extends Purchase{
         this.link = link;
     }
 
-    public String getLink ()
-    {
+    public String getLink() {
         return this.link;
     }
 
-    public LocalDateTime getActivationDate()
-    {
+    public LocalDateTime getActivationDate() {
         return this.activationDate;
     }
 
-    public void setActivationDate (LocalDateTime dateTime)
-    {
+    public void setActivationDate(LocalDateTime dateTime) {
         this.activationDate = dateTime;
+    }
+
+    public boolean isLinkActive() {
+        return linkActive;
+    }
+
+    public void activateLink() {
+        this.linkActive = true;
+    }
+
+    public void deactivateLink() {
+        this.linkActive = false;
     }
 
     @Override
     protected String getPurchaseType() {
         return "HomeViewingPackageInstance";
     }
-
 }

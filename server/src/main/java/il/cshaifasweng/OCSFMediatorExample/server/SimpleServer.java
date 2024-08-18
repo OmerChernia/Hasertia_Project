@@ -1,46 +1,50 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
-import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
-public class SimpleServer extends AbstractServer
-{
-	private static ArrayList<SubscribedClient> clients = new ArrayList<>();
-	static Session session;
+public class SimpleServer extends AbstractServer {
+ 	private static SimpleServer instance;  // Static variable to hold the single instance
+	private static final ArrayList<SubscribedClient> clients = new ArrayList<>();
+	private static SessionFactory sessionFactory;  // Use SessionFactory instead of Session for static context
 	private final String password;
+	public static Session session;
 
-
-	public SimpleServer(int port,String password)
-	{
+    public SimpleServer(int port, String password) {
 		super(port);
 		this.password = password;
+		instance = this;
 		session = getSessionFactory(password).openSession();
+
+		// Initialize schedulers as singletons
+        ComplaintFollowUpScheduler complaintScheduler = ComplaintFollowUpScheduler.getInstance();
+        OrderScheduler emailNotificationScheduler = OrderScheduler.getInstance();
+		LinkScheduler scheduledEventNotifier = LinkScheduler.getInstance();
+
+		// Initialize the database
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
-		EventNotifier eventNotifier = new EventNotifier();//nodifier of 1 houre erlier
-		eventNotifier.start(); // Starts the thread
+	}
+
+	public static SimpleServer getServer() {
+		return instance;
 	}
 
 	@Override
-	protected void handleMessageFromClient(Object msg, ConnectionToClient client){
+	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		try {
 			Message message = (Message) msg;
 			MessageHandler messageHandler = null;
@@ -66,44 +70,35 @@ public class SimpleServer extends AbstractServer
 					messageHandler = new SeatHandler((SeatMessage) msg, client, session);
 				} else if (msg instanceof TheaterMessage) {
 					messageHandler = new TheaterHandler((TheaterMessage) msg, client, session);
-				} else if(msg instanceof ConnectionMessage) {
-					messageHandler = new ConnectionHandler((ConnectionMessage) msg , client, session ,clients);
+				} else if (msg instanceof ConnectionMessage) {
+					messageHandler = new ConnectionHandler((ConnectionMessage) msg, client, session, clients);
 				} else if (msg instanceof RegisteredUserMessage) {
-					messageHandler = new RegisteredUserHandler((RegisteredUserMessage)msg , client, session);
-				} else if(msg instanceof HallMessage) {
+					messageHandler = new RegisteredUserHandler((RegisteredUserMessage) msg, client, session);
+				} else if (msg instanceof HallMessage) {
 					messageHandler = new HallHandler((HallMessage) msg, client, session);
 				}
 
 				if (messageHandler != null) {
-					messageHandler.handleMessage();            	// handle the message ,and change DB if needed
-					session.getTransaction().commit();          // save changes in DB
-					messageHandler.setMessageTypeToResponse();  //change message to response that client will know it is a response from server
+					messageHandler.handleMessage();  // Handle the message, including DB changes and notifications
+					session.getTransaction().commit();  // Save changes in the DB
+					messageHandler.setMessageTypeToResponse();  // Change message to response so the client knows it's a response from the server
 
-					if(msg instanceof MovieInstanceMessage &&(
-							((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE
-							||((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE
-							||((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE))
-					{
-						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
-					}
-					System.out.println("message handled");
+					System.out.println("Message handled");
 
-					if(msg instanceof ConnectionMessage && ((ConnectionMessage) msg).requestType == ConnectionMessage.RequestType.DELETE_CONNECTION)
+					if (msg instanceof ConnectionMessage && ((ConnectionMessage) msg).requestType == ConnectionMessage.RequestType.DELETE_CONNECTION)
 						return;
 
-					client.sendToClient(msg);					//send the message to the client
-					System.out.println("message sent");
+					client.sendToClient(msg);  // Send the message to the client
+					System.out.println("Message sent");
 				}
 			}
-
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 			if (session != null)
 				session.getTransaction().rollback();
 			exception.printStackTrace();
 		}
-
 	}
+
 
 	private static SessionFactory getSessionFactory(String password) throws HibernateException {
 		Configuration configuration = new Configuration();
@@ -136,13 +131,12 @@ public class SimpleServer extends AbstractServer
 	@Override
 	public void sendToAllClients(Object message) {
 		try {
-			System.out.println("size: "+ clients.size());
-			for (SubscribedClient SubscribedClient : clients) {
-				SubscribedClient.getClient().sendToClient(message);
+			System.out.println("size: " + clients.size());
+			for (SubscribedClient subscribedClient : clients) {
+				subscribedClient.getClient().sendToClient(message);
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 	}
-
 }

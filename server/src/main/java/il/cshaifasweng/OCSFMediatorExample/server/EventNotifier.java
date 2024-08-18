@@ -49,7 +49,7 @@ public class EventNotifier extends Thread {
         System.out.println("checkForUnhandledComplaints");
 
         // Start the transaction
-        SimpleServer.session.beginTransaction();
+        SimpleServer.session.getSessionFactory().openSession();
         try {
             // Query to find unhandled complaints
             Query<Complaint> query = SimpleServer.session.createQuery(

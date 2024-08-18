@@ -59,11 +59,6 @@ public class EditMovieListBoundary implements Initializable {
     @FXML
     private HBox hBoxSearch;
 
-    @FXML
-    private TextField txtSearchProduct;
-
-    @FXML
-    private TextField txtSearchBarCode;
 
     @FXML
     private Button btnNewProduct;
@@ -344,41 +339,7 @@ public class EditMovieListBoundary implements Initializable {
         tblProducts.setDisable(true) ;
     }
 
-    @FXML
-    private void filterNameProduct() {
-        Platform.runLater(() -> {
-            String filterName = txtSearchProduct.getText().trim();
-            if (filterName.isEmpty()) {
-                tblProducts.setItems(listProducts);
-            } else {
-                filterProducts.clear();
-                for (Movie p : listProducts) {
-                    if (p.getEnglishName().toLowerCase().contains(filterName.toLowerCase())) {
-                        filterProducts.add(p);
-                    }
-                }
-                tblProducts.setItems(filterProducts);
-            }
-        });
-    }
 
-    @FXML
-    private void filterCodeBar() {
-        Platform.runLater(() -> {
-            String filterCodeBar = txtSearchBarCode.getText().trim();
-            if (filterCodeBar.isEmpty()) {
-                tblProducts.setItems(listProducts);
-            } else {
-                filterProducts.clear();
-                for (Movie p : listProducts) {
-                    if (p.getEnglishName().toLowerCase().contains(filterCodeBar.toLowerCase())) {
-                        filterProducts.add(p);
-                    }
-                }
-                tblProducts.setItems(filterProducts);
-            }
-        });
-    }
 
     public void cleanup() {
         Platform.runLater(() -> EventBus.getDefault().unregister(this));

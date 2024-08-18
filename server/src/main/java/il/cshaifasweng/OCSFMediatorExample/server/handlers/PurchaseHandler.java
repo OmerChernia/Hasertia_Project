@@ -3,58 +3,70 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
-public class PurchaseHandler extends MessageHandler
-{
+public class PurchaseHandler extends MessageHandler {
     private PurchaseMessage message;
+    private final ExecutorService executor = Executors.newFixedThreadPool(10); // Adjust pool size as needed
 
-    public PurchaseHandler(PurchaseMessage message, ConnectionToClient client, Session session)
-    {
-        super(client,session);
+    public PurchaseHandler(PurchaseMessage message, ConnectionToClient client, Session session) {
+        super(client, session);
         this.message = message;
     }
+
     @Override
-    public void setMessageTypeToResponse()
-    {
-        message.messageType= Message.MessageType.RESPONSE;
+    public void setMessageTypeToResponse() {
+        message.messageType = Message.MessageType.RESPONSE;
     }
 
-    public void handleMessage()
-    {
-        switch (message.requestType)
-        {
+    public void handleMessage() {
+        switch (message.requestType) {
             case ADD_PURCHASE -> add_purchase();
             case REMOVE_PURCHASE -> remove_purchase();
             case GET_PURCHASES_BY_CUSTOMER_ID -> get_purchases_by_customer_id();
             case GET_PURCHASES_BY_THEATER_ID -> get_purchases_by_theater_id();
             case GET_ALL_MOVIE_PACKAGES_AND_MULTI_TICKETS_PURCHASES_THIS_MONTH -> get_all_movie_packages_and_multi_entry_tickets_purchases_this_month();
             case GET_ALL_PURCHASES -> get_all_purchases();
-
         }
     }
 
     private void add_purchase() {
         if (message.purchases.getFirst() != null) {
             try {
-                if(message.purchases.getFirst() instanceof MultiEntryTicket)
-                {
+                Purchase purchase = message.purchases.getFirst();
+
+                if (purchase instanceof MultiEntryTicket) {
                     Query<RegisteredUser> query = session.createQuery("from RegisteredUser where id = :id", RegisteredUser.class);
                     query.setParameter("id", message.key);
                     RegisteredUser user = query.getResultList().getFirst();
                     user.setTicket_counter(user.getTicket_counter() + 20);
                     session.update(user);
                 }
-                session.save(message.purchases.getFirst());
+
+                session.save(purchase);
                 session.flush();
+
+                // If the purchase is a HomeViewingPackageInstance, schedule link activation and email notification
+                if (purchase instanceof HomeViewingPackageInstance homeViewingPackage) {
+                    scheduleLinkAndEmail(homeViewingPackage);
+                }
+
+                // Schedule email notification for the purchase
+                OrderScheduler.getInstance().schedulePurchaseConfirmation(purchase);
+
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_ADDED;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -65,29 +77,26 @@ public class PurchaseHandler extends MessageHandler
         }
     }
 
-    /*
-     מיותר
-    private void get_purchase() {
-        try {
-            Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
-            if (purchase != null) {
-                message.purchases.clear();
-                message.purchases.add(purchase);
-                message.responseType = PurchaseMessage.ResponseType.PURCHASE_FOUND;
-            } else {
-                message.responseType = PurchaseMessage.ResponseType.PURCHASE_NOT_FOUND;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
-        }
+
+
+    private void scheduleLinkAndEmail(HomeViewingPackageInstance homeViewingPackage) {
+        LocalDateTime movieTime = homeViewingPackage.getViewingDate();
+        String movieLink = homeViewingPackage.getLink();
+        String customerEmail = homeViewingPackage.getOwner().getEmail();
+
+        // Schedule email one hour before the movie time
+        LocalDateTime emailTime = movieTime.minusHours(1);
+        LinkScheduler.getInstance().scheduleEmailNotification(emailTime, customerEmail, movieLink);
+
+        // Schedule link activation at the movie time
+        LinkScheduler.getInstance().scheduleLinkActivation(homeViewingPackage);
     }
-*/
+
     private void remove_purchase() {
         try {
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
             if (purchase != null) {
-                purchase.setisActive(false); // purchase is now not active anymore
+                purchase.setIsActive(false); // purchase is now not active anymore
 
                 if(purchase instanceof MovieTicket) // if the purchase is a seat release it
                 {
@@ -99,6 +108,8 @@ public class PurchaseHandler extends MessageHandler
                 session.update(purchase);
 
                 session.flush();
+                // Send the cancellation email using the EmailNotificationScheduler
+                OrderScheduler.getInstance().scheduleEmailCancellation(purchase);
                 message.responseType = PurchaseMessage.ResponseType.PURCHASE_REMOVED;
                 message.purchases.add(purchase);
 
@@ -110,6 +121,7 @@ public class PurchaseHandler extends MessageHandler
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
         }
     }
+
 
     private void get_purchases_by_customer_id() {
         try {
@@ -146,8 +158,6 @@ public class PurchaseHandler extends MessageHandler
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
         }
     }
-
-
 
     private void get_all_movie_packages_and_multi_entry_tickets_purchases_this_month() {
         try {

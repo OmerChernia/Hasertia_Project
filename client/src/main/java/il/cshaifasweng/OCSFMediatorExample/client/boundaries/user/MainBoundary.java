@@ -398,20 +398,24 @@ public class MainBoundary implements Initializable {
 
             handleEmployeeLoginResponse((EmployeeLoginMessage) loginMessage);
             String role = "";
-            switch (((EmployeeLoginMessage) loginMessage).employeeType) {
-                case THEATER_MANAGER:
-                    role = "Theater Manager";
-                    break;
-                case COMPANY_MANAGER:
-                    role = "Company Manager";
-                    break;
-                case CUSTOMER_SERVICE:
-                    role = "Customer Service";
-                    break;
-                case CONTENT_MANAGER:
-                    role = "Content Manager";
-                    break;
+            if(employeeRadioButton.isSelected()) {
+                role = "EMPLOYEE";
+                switch (((EmployeeLoginMessage) loginMessage).employeeType) {
+                    case THEATER_MANAGER:
+                        role = "Theater Manager";
+                        break;
+                    case COMPANY_MANAGER:
+                        role = "Company Manager";
+                        break;
+                    case CUSTOMER_SERVICE:
+                        role = "Customer Service";
+                        break;
+                    case CONTENT_MANAGER:
+                        role = "Content Manager";
+                        break;
+                }
             }
+
 
             String finalRole = role;
             Platform.runLater(() -> lblWelcome.setText("Welcome " + finalRole + "!"));
@@ -533,7 +537,6 @@ public class MainBoundary implements Initializable {
         // Show common buttons
         btnAbout.setVisible(true);
         btnLog.setVisible(true);
-        btnSettings.setVisible(true);
         btnHome.setVisible(true);
         btnME.setVisible(true);
 

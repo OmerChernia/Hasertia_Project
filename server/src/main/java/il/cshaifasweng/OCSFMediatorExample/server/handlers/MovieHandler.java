@@ -1,12 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
+import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -22,6 +23,8 @@ public class MovieHandler extends MessageHandler
         this.message = message;
     }
 
+
+
     public void handleMessage()
     {
         switch (message.requestType)
@@ -36,6 +39,10 @@ public class MovieHandler extends MessageHandler
             case GET_UPCOMING_MOVIES -> getUpcomingMovies();
         }
     }
+
+
+
+
 
 
     private void getUpcomingMovies() {
@@ -172,28 +179,61 @@ public class MovieHandler extends MessageHandler
         message.messageType= Message.MessageType.RESPONSE;
     }
 
-    private void add_movie()
-    {
-        if(message.movies.getFirst() != null) {
-            // Create an HQL query to fetch all complaints
-            // Searching if the movie is existed in DB
-            Query<Movie> query = session.createQuery("FROM Movie WHERE englishName = :_englishName or hebrewName = :_hebrewName", Movie.class);
+    private void add_movie() {
+        if (message.movies.getFirst() != null) {
+            // Create an HQL query to fetch all movies with the specified names
+            Query<Movie> query = session.createQuery(
+                    "FROM Movie WHERE englishName = :_englishName OR hebrewName = :_hebrewName",
+                    Movie.class
+            );
             query.setParameter("_englishName", message.movies.getFirst().getEnglishName());
             query.setParameter("_hebrewName", message.movies.getFirst().getHebrewName());
 
             List<Movie> movies = query.getResultList();
 
             if (movies.isEmpty()) {
+                // Save the new movie
                 session.save(message.movies.getFirst());
                 session.flush();
-                message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
-            } else
-                message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
 
-        }
-        else // if we don't have any movie to add
+                // Fetch users who have purchased MultiEntryTickets
+                List<RegisteredUser> usersWithMultiEntryTickets = getUsersWithMultiEntryTickets();
+
+                // Notify users about the new movie
+                OrderScheduler.getInstance().notifyNewMovie(message.movies.getFirst(), usersWithMultiEntryTickets);
+
+                message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
+            } else {
+                message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+            }
+        } else {
+            // If no movie is provided
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+        }
     }
+
+
+
+
+
+    public List<RegisteredUser> getUsersWithMultiEntryTickets() {
+        List<RegisteredUser> users = null;
+        try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
+            // Create an HQL query to fetch users who have purchased MultiEntryTickets
+            String hql = "SELECT DISTINCT p.owner " +
+                    "FROM Purchase p " +
+                    "WHERE TYPE(p) = il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket";
+
+            Query<RegisteredUser> query = session.createQuery(hql, RegisteredUser.class);
+            users = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+
+
 
     private void deactivate_movie() {
         Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);

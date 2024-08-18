@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -33,43 +34,59 @@ public class ComplaintHandler extends MessageHandler
     @Override
     public void setMessageTypeToResponse()
     {
-
         message.messageType= Message.MessageType.RESPONSE;
     }
 
-    private void add_complaint()
-    {
-        if(message.compliants.getFirst() != null)
-        {
-            session.save(message.compliants.getFirst());
+    private void add_complaint() {
+        Complaint complaint = message.compliants.getFirst();
+        if (complaint != null) {
+            session.save(complaint);
             session.flush();
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_ADDED;
-        }
-        else
+
+            // Schedule the complaint handling after 24 hours if not addressed
+            ComplaintFollowUpScheduler.scheduleComplaintHandling(complaint);
+
+            // Send email to the customer confirming the complaint was received
+            ComplaintFollowUpScheduler.scheduleComplaintReceive(complaint);
+        } else {
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
+        }
     }
 
 
-    private void answer_compliant()
-    {
-
-        // Create an HQL query to fetch all complaints
+    private void answer_compliant() {
+        // Create an HQL query to fetch the complaint by ID
         Query<Complaint> query = session.createQuery("FROM Complaint WHERE id = :id_compliant", Complaint.class);
         query.setParameter("id_compliant", message.compliants.getFirst().getId());
 
-
         Complaint complaint = query.uniqueResult();
 
-        if(complaint != null)
-        {
+        if (complaint != null) {
+            // Update the complaint with the new information
             complaint.setInfo(message.compliants.getFirst().getInfo());
+
+            // Mark the complaint as closed
+            complaint.setClosed(true);
+
+            // Persist the changes to the database
             session.update(complaint);
             session.flush();
+
+            // Cancel the scheduled email task since the complaint has been answered
+            ComplaintFollowUpScheduler.scheduleCancelScheduledComplaintHandling(complaint.getId());
+
+            // Schedule sending the response email in a separate thread
+            ComplaintFollowUpScheduler.scheduleResponseEmailToCustomer(complaint);
+
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_WAS_ANSWERED;
-        }
-        else
+        } else {
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
+        }
     }
+
+
+
     private void get_all_complaints() {
 
         try {
