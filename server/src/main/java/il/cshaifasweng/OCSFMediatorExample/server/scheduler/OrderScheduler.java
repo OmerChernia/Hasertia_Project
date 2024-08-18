@@ -12,11 +12,10 @@ public class OrderScheduler {
 
     private static OrderScheduler instance; // Singleton instance
     private final ExecutorService emailExecutor;
-    private final ExecutorService executorService;
 
     private OrderScheduler() {
         emailExecutor = Executors.newFixedThreadPool(5);
-        executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
     }
 
     public static synchronized OrderScheduler getInstance() {
