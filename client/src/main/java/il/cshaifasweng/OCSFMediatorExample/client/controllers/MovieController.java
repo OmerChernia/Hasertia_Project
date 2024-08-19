@@ -49,6 +49,12 @@ public class MovieController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
+    public static void getMoviesPresentedInTheaterContentManager()
+    {
+        MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.GET_MOVIES_PRESENTED_IN_THEATER_CONTENT_MANAGER);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
     public static void getMoviesPresentedInHomeViewing()
     {
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.GET_MOVIES_PRESENTED_IN_HOME_VIEWING);

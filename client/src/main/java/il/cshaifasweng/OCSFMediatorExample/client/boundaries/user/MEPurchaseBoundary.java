@@ -28,6 +28,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class MEPurchaseBoundary {
@@ -53,8 +54,7 @@ public class MEPurchaseBoundary {
     @FXML
     private ImageView confirmationPackageImage;
 
-    @FXML
-    private Label packageName;
+
 
     private double packagePrice;
 
@@ -265,18 +265,14 @@ public class MEPurchaseBoundary {
             String text =  "Package: " + "20 tickets" + "\n" +
                     "Price Paid: 290₪";
             confirmationDetails.setText(text);
-            confirmationPackageImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE + "logo.png")));
+            confirmationPackageImage.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE + "logo.png"))));
             stackPane.getChildren().clear();
             stackPane.getChildren().add(packageConfirmationPane);
 
         });
     }
 
-    @FXML
-    private void closeApplication()
-    {
-        //EventBus.getDefault().unregister(this);
-    }
+
     public void cleanup() {
         System.out.println("cleanup");
         EventBus.getDefault().unregister(this);

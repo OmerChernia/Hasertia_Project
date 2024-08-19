@@ -37,6 +37,7 @@ public class MovieHandler extends MessageHandler
             case GET_ALL_MOVIES -> get_all_movies();
             case UPDATE_MOVIE -> update_movie();
             case GET_MOVIES_PRESENTED_IN_THEATER -> getMoviesPresentedInTheater();
+            case GET_MOVIES_PRESENTED_IN_THEATER_CONTENT_MANAGER -> getMoviesPresentedInTheaterContentManager();
             case GET_MOVIES_PRESENTED_IN_HOME_VIEWING -> getMoviesPresentedInHomeViewing();
             case GET_MOVIES_FILTERED_BY_SCREENING_TYPE_AND_GENRE -> getMoviesFilteredByScreeningTypeAndGenre();
             case GET_UPCOMING_MOVIES -> getUpcomingMovies();
@@ -144,6 +145,33 @@ public class MovieHandler extends MessageHandler
             }
         }
     }
+    private void getMoviesPresentedInTheaterContentManager() {
+        try {
+            // Create an HQL query to fetch movies with streamingType HOME_VIEWING or BOTH
+            Query<Movie> query = session.createQuery(
+                    "FROM Movie WHERE (streamingType = :theater OR streamingType = :both) AND available = :available",
+                    Movie.class
+            );
+            query.setParameter("theater", Movie.StreamingType.THEATER_VIEWING);
+            query.setParameter("both", Movie.StreamingType.BOTH);
+            query.setParameter("available", Movie.Availability.AVAILABLE);
+
+
+            // Execute the query and get the result list
+            message.movies = query.getResultList();
+
+            // Set the response type
+            message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message.responseType = MovieMessage.ResponseType.MOVIE_MESSAGE_FAILED;
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+        }
+    }
+
 
     private void getMoviesPresentedInTheater() {
         try {
@@ -171,7 +199,6 @@ public class MovieHandler extends MessageHandler
         }
     }
 
-
     @Override
     public void setMessageTypeToResponse()
     {
@@ -195,12 +222,6 @@ public class MovieHandler extends MessageHandler
             if (movies.isEmpty()) {
                 session.save(message.movies.getFirst());
                 session.flush();
-
-                // Fetch users who have purchased MultiEntryTickets
-                List<RegisteredUser> usersWithMultiEntryTickets = getUsersWithMultiEntryTickets();
-
-                // Notify users about the new movie
-                OrderScheduler.getInstance().notifyNewMovie(message.movies.getFirst(), usersWithMultiEntryTickets);
                 message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
             } else
                 message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
@@ -210,21 +231,7 @@ public class MovieHandler extends MessageHandler
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
     }
 
-    public List<RegisteredUser> getUsersWithMultiEntryTickets() {
-        List<RegisteredUser> users = null;
-        try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
-            // Create an HQL query to fetch users who have purchased MultiEntryTickets
-            String hql = "SELECT DISTINCT p.owner " +
-                    "FROM Purchase p " +
-                    "WHERE TYPE(p) = il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket";
 
-            Query<RegisteredUser> query = session.createQuery(hql, RegisteredUser.class);
-            users = query.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
 
     private void deactivate_movie() {
         Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);

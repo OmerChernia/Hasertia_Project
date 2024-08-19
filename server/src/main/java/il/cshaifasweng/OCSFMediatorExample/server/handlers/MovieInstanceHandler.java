@@ -3,8 +3,10 @@ package il.cshaifasweng.OCSFMediatorExample.server.handlers;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -34,7 +36,7 @@ public class MovieInstanceHandler extends MessageHandler
     {
         switch (message.requestType)
         {
-            case ADD_MOVIE_INSTANCE -> add_movie_intance();
+            case ADD_MOVIE_INSTANCE -> add_movie_instance();
             case GET_MOVIE_INSTANCE -> get_movie_instance_by_id();
             case DELETE_MOVIE_INSTANCE -> delete_movie_instance();
             case UPDATE_MOVIE_INSTANCE -> update_movie_instance();
@@ -124,24 +126,65 @@ public class MovieInstanceHandler extends MessageHandler
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
 
-    private void add_movie_intance()
-    {
-        if(message.movies.getFirst()!=null)
-        {
+    private void add_movie_instance() {
+        if (message.movies.getFirst() != null) {
             session.save(message.movies.getFirst());
             session.flush();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_ADDED;
-            if(!message.movies.getFirst().getMovie().getNotificationSent())
-            {
-                message.movies.getFirst().getMovie().setNotificationSent(true);
-                session.update(message.movies.getFirst().getMovie());
-                session.flush();
-            }
-        }
-        else
-            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
 
+            // Schedule the movie instance for deactivation after it ends
+            LinkAndInstanceScheduler.getInstance().scheduleMovieInstanceDeactivation(message.movies.getFirst());
+
+            Movie movie = message.movies.getFirst().getMovie();
+
+            // Load the movie from the session to avoid NonUniqueObjectException
+            movie = (Movie) session.get(Movie.class, movie.getId());
+
+            if (!movie.getNotificationSent()) {
+                // Set the notification flag to true
+                movie.setNotificationSent(true);
+                session.update(movie);
+                session.flush();
+
+                // Fetch users with MultiEntryTickets
+                List<RegisteredUser> usersWithMultiEntryTickets = getUsersWithMultiEntryTickets();
+
+                // Schedule to notify users about the new movie one day before the screening
+                OrderScheduler.getInstance().scheduleNotifyNewMovieOneDayBefore(
+                        movie,
+                        usersWithMultiEntryTickets,
+                        message.movies.getFirst().getTime()
+                );
+            }
+        } else {
+            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+        }
     }
+
+
+
+    /**
+     * Fetches all users who have purchased MultiEntryTickets.
+     *
+     * @return a list of registered users who own MultiEntryTickets.
+     */
+    public List<RegisteredUser> getUsersWithMultiEntryTickets() {
+        List<RegisteredUser> users = null;
+        try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
+            // Create an HQL query to fetch users who have purchased MultiEntryTickets
+            String hql = "SELECT DISTINCT p.owner " +
+                    "FROM Purchase p " +
+                    "WHERE TYPE(p) = il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket";
+
+            Query<RegisteredUser> query = session.createQuery(hql, RegisteredUser.class);
+            users = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+
     private void get_movie_instance_by_id()
     {
         try
@@ -179,7 +222,6 @@ public class MovieInstanceHandler extends MessageHandler
 
         List<MovieTicket> movieTickets = queryMovieTickets.list();
 
-
         for (MovieTicket movieTicket : movieTickets) {
             // Setting movie ticket to not be active anymore
             movieTicket.setisActive(false);
@@ -189,14 +231,15 @@ public class MovieInstanceHandler extends MessageHandler
             Seat seat = session.get(Seat.class, movieTicket.getSeat().getId());
             seat.deleteMovieInstance(movieInstance);
             session.update(seat);
-
         }
 
         // Flush all updates at once
         session.flush();
 
-
+        // Schedule emails for canceled screening
         OrderScheduler.getInstance().scheduleEmailsForCanceledScreening(movieTickets, movieInstance);
+        OrderScheduler.getInstance().cancelScheduledNotifyNewMovie(movieInstance.getMovie());
+        LinkAndInstanceScheduler.getInstance().cancelMovieInstanceTasks(movieInstance);
 
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }

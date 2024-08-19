@@ -32,8 +32,7 @@ public class ButtonFactory {
         return statusButton;
     }
 
-    // סגנון בהתאם לזמן שנותר
-    private static String getStyleForHoursLeft(long hoursLeft) {
+     private static String getStyleForHoursLeft(long hoursLeft) {
         if (hoursLeft <= 6) {
             return "-fx-background-color: red;";
         } else if (hoursLeft <= 12) {
@@ -224,6 +223,34 @@ public class ButtonFactory {
             return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }
     }
+    public static class ButtonStatusTicketCellValueFactory implements Callback<TableColumn.CellDataFeatures<Purchase, Button>, ObservableValue<Button>> {
+
+        @Override
+        public ObservableValue<Button> call(TableColumn.CellDataFeatures<Purchase, Button> param) {
+            Purchase item = param.getValue();
+            String text;
+            String styleClass;
+            String imagePath;
+
+            if (item instanceof MultiEntryTicket) {
+                text = "";
+                imagePath = "";
+                styleClass = "button-gray";
+            } else {
+                if (item.getIsActive()) {
+                    text = "Available";
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-happy-50.png";
+                    styleClass = "button-green";
+                } else {
+                    text = "Not Available";
+                    imagePath = ConstantsPath.MEDIA_PACKAGE + "icons/icons8-sad-50.png";
+                    styleClass = "button-red";
+                }
+            }
+
+            return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
+        }
+    }
 
     public static class ButtonMovieTypeCellValueFactory implements Callback<TableColumn.CellDataFeatures<Movie, Button>, ObservableValue<Button>> {
 
@@ -235,16 +262,16 @@ public class ButtonFactory {
 
             switch (item.getStreamingType()) {
                 case HOME_VIEWING:
-                    styleClass = "button-action";
+                    styleClass = "button-purple";
                     break;
                 case THEATER_VIEWING:
-                    styleClass = "button-comedy";
+                    styleClass = "button-blue";
                     break;
                 case BOTH:
-                    styleClass = "button-drama";
+                    styleClass = "button-orange";
                     break;
                 default:
-                    styleClass = "button-default";
+                    styleClass = "button-gray";
                     break;
             }
 

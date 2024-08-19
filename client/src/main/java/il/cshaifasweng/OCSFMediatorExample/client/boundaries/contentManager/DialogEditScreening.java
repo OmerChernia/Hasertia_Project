@@ -94,7 +94,7 @@ public class DialogEditScreening implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
-        MovieController.getMoviesPresentedInTheater();
+        MovieController.getMoviesPresentedInTheaterContentManager();
         TheaterController.getAllTheaters();
         setupComboBoxes();
     }
@@ -258,7 +258,7 @@ public class DialogEditScreening implements Initializable {
     @Subscribe
     public void onMoviesMessageReceived(MovieMessage message) {
         Platform.runLater(() -> {
-            if (message.requestType == MovieMessage.RequestType.GET_MOVIES_PRESENTED_IN_THEATER)
+            if (message.responseType == MovieMessage.ResponseType.RETURN_MOVIES)
                 populateMoviesComboBox(message.movies);
         });
     }

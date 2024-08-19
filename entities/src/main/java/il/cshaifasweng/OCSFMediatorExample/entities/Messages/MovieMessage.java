@@ -65,7 +65,8 @@ public class MovieMessage extends Message
         MOVIE_NOT_UPDATED,
         MOVIE_NOT_DELETED,
         RETURN_MOVIES,
-        MOVIE_MESSAGE_FAILED
+        MOVIE_MESSAGE_FAILED,
+        GET_MOVIES_PRESENTED_IN_THEATER
 
     }
     public enum RequestType
@@ -77,7 +78,8 @@ public class MovieMessage extends Message
         GET_MOVIES_PRESENTED_IN_THEATER,
         GET_MOVIES_PRESENTED_IN_HOME_VIEWING,
         GET_MOVIES_FILTERED_BY_SCREENING_TYPE_AND_GENRE,
-        GET_UPCOMING_MOVIES
+        GET_UPCOMING_MOVIES,
+        GET_MOVIES_PRESENTED_IN_THEATER_CONTENT_MANAGER
     }
 
 }

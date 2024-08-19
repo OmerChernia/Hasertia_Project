@@ -12,7 +12,8 @@
             <TableView fx:id="tblOrders" layoutX="11.0" layoutY="74.0" prefHeight="477.0" prefWidth="909.0" style=": ;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="74.0">
                <columns>
                   <TableColumn fx:id="colId" maxWidth="1200.0" minWidth="0.0" prefWidth="56.0" text="Id" />
-                  <TableColumn fx:id="colpurchaseDate" prefWidth="216.0" text="Purchase Date" />
+                  <TableColumn fx:id="colPurchaseDate" prefWidth="216.0" text="Purchase Date" />
+                  <TableColumn fx:id="colName" prefWidth="216.0" text="Purchase Name" />
                   <TableColumn fx:id="colTypePurchase" prefWidth="327.0" text="Type of Purchase" />
                   <TableColumn fx:id="colStatus" prefWidth="234.0" text="Status" />
                </columns>
@@ -21,7 +22,7 @@
                </columnResizePolicy>
             </TableView>
 
-            <HBox fx:id="hboxSearch" alignment="CENTER_LEFT" layoutX="11.0" layoutY="14.0" prefHeight="45.0" prefWidth="730.0" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 5;" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="189.0">
+            <HBox fx:id="HBoxSearch" alignment="CENTER_LEFT" layoutX="11.0" layoutY="14.0" prefHeight="45.0" prefWidth="730.0" spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 5;" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="189.0">
                <padding>
                   <Insets bottom="20.0" left="5.0" />
                </padding>

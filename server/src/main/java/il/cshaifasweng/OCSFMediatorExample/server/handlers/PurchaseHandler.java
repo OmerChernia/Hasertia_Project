@@ -4,7 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -87,7 +87,7 @@ public class PurchaseHandler extends MessageHandler
         LocalDateTime emailTime = movieTime.minusHours(1);
 
         // Schedule link activation at the movie time
-        LinkScheduler.getInstance().scheduleLinkActivation(homeViewingPackage);
+        LinkAndInstanceScheduler.getInstance().scheduleLinkActivation(homeViewingPackage);
     }
 
     private void remove_purchase() {
@@ -103,7 +103,7 @@ public class PurchaseHandler extends MessageHandler
                 }
 
                 if (purchase instanceof HomeViewingPackageInstance homeViewingPackage) {
-                    LinkScheduler.getInstance().cancelScheduledTasks(homeViewingPackage);
+                    LinkAndInstanceScheduler.getInstance().cancelScheduledTasks(homeViewingPackage);
                 }
 
                 session.update(purchase);
@@ -120,12 +120,6 @@ public class PurchaseHandler extends MessageHandler
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
-        } finally {
-            try {
-                client.sendToClient(message); // Always send the message back to the client
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
         }
     }
 

@@ -49,6 +49,10 @@ import org.greenrobot.eventbus.Subscribe;
 public class MainBoundary implements Initializable {
 
     @FXML
+    private Button btnSpace;
+    @FXML
+    private VBox vboxSide;
+    @FXML
     private ImageView imgLog;
 
     @FXML
@@ -501,78 +505,44 @@ public class MainBoundary implements Initializable {
 
 
     private void resetButtons() {
-        // Disable all buttons by default
-        btnOrders.setVisible(false);
-        btnEditMovieList.setVisible(false);
-        btnEditScreenings.setVisible(false);
-        btnComplaints.setVisible(false);
-        btnReports.setVisible(false);
-        btnPriceChange.setVisible(false);
+
+        vboxSide.getChildren().clear();
 
 
-        // Show common buttons
-        btnAbout.setVisible(true);
-        btnLog.setVisible(true);
-        btnSettings.setVisible(true);
-        btnHome.setVisible(true);
-        btnME.setVisible(true);
     }
 
     private void updateUserBasedOnRole(String userId ) {
-        // Disable all buttons by default
-        btnEditMovieList.setVisible(false);
-        btnEditScreenings.setVisible(false);
-        btnComplaints.setVisible(false);
-        btnReports.setVisible(false);
-        btnPriceChange.setVisible(false);
 
-
-        // Show common buttons
-        btnAbout.setVisible(true);
-        btnLog.setVisible(true);
-        btnSettings.setVisible(true);
-        btnHome.setVisible(true);
-        btnME.setVisible(true);
-        btnOrders.setVisible(true);
+        VBox vboxSide = (VBox) rootSideMenu.lookup("#vboxSide");
+        vboxSide.getChildren().clear();
+        vboxSide.getChildren().add(btnSpace);
+        vboxSide.getChildren().add(btnOrders);
 
     }
 
 
-    private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role ) {
-        // Disable all buttons by default
-        btnEditMovieList.setVisible(false);
-        btnEditScreenings.setVisible(false);
-        btnComplaints.setVisible(false);
-        btnReports.setVisible(false);
-        btnPriceChange.setVisible(false);
-        btnOrders.setVisible(false);
-
-
-        // Show common buttons
-        btnAbout.setVisible(true);
-        btnLog.setVisible(true);
-        btnSettings.setVisible(true);
-        btnHome.setVisible(true);
-        btnME.setVisible(true);
-
+    private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role) {
+        VBox vboxSide = (VBox) rootSideMenu.lookup("#vboxSide");
+        vboxSide.getChildren().clear();
+        vboxSide.getChildren().add(btnSpace);
 
         switch (role) {
             case CONTENT_MANAGER:
-                btnEditMovieList.setVisible(true);
-                btnEditScreenings.setVisible(true);
+                vboxSide.getChildren().add(btnEditMovieList);
+                vboxSide.getChildren().add(btnEditScreenings);
                 break;
             case CUSTOMER_SERVICE:
-                btnComplaints.setVisible(true);
+                vboxSide.getChildren().add(btnComplaints);
                 break;
             case THEATER_MANAGER:
-                btnReports.setVisible(true);
+                vboxSide.getChildren().add(btnReports);
                 break;
-            case  COMPANY_MANAGER:
-                btnReports.setVisible(true);
-                btnPriceChange.setVisible(true);
+            case COMPANY_MANAGER:
+                vboxSide.getChildren().add(btnReports);
+                vboxSide.getChildren().add(btnPriceChange);
                 break;
-
         }
+
 
     }
 

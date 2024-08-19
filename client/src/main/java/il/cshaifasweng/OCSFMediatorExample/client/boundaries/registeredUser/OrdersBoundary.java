@@ -55,9 +55,10 @@ public class OrdersBoundary implements Initializable {
 
     @FXML
     private TableColumn<Purchase, Button> colTypePurchase;
-
     @FXML
-    private TableColumn<Purchase, String> colpurchaseDate;
+    private TableColumn<Purchase, String> colName;
+    @FXML
+    private TableColumn<Purchase, String> colPurchaseDate;
 
     @FXML
     private Text ticketCounterT;
@@ -65,7 +66,7 @@ public class OrdersBoundary implements Initializable {
     private AnchorPane deleteUserContainer;
 
     @FXML
-    private HBox hboxSearch;
+    private HBox HBoxSearch;
 
 
     @FXML
@@ -168,30 +169,29 @@ public class OrdersBoundary implements Initializable {
             tblOrders.setItems(listOrders);
             tblOrders.setFixedCellSize(30);
             colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colpurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
-            ButtonFactory buttonFactory = new ButtonFactory();
-            colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
-            colStatus.setCellValueFactory(param -> {
-                Button button = new Button();
-                button.setPrefWidth(100);
+            colName.setCellValueFactory(param -> {
+                String s ="";
 
                 if(param.getValue() instanceof MultiEntryTicket)
                 {
-                    button.setText("");
-                    button.getStyleClass().addAll("button-gray", "table-row-cell");
+                    s = "Multi Entry Card";
                 }
-                else {
-                    // Check if the purchase is active or not
-                    if (param.getValue().getIsActive()) { // Assuming isActive() is a method in your Purchase class
-                        button.setText("Available");
-                        button.getStyleClass().addAll("button-green", "table-row-cell");
-                    } else {
-                        button.setText("Not Available");
-                        button.getStyleClass().addAll("button-red", "table-row-cell"); // You can use a different style for "Not Available"
-                    }
+                else if(param.getValue() instanceof MovieTicket)
+                {
+                    s = ((MovieTicket) param.getValue()).getMovieInstance().getMovie().getEnglishName();
                 }
-                return new SimpleObjectProperty<>(button);
+                else if(param.getValue() instanceof HomeViewingPackageInstance)
+                {
+                    s = ((HomeViewingPackageInstance) param.getValue()).getMovie().getEnglishName();
+                }
+
+                return new SimpleObjectProperty<>(s);
+
             });
+            colPurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
+            colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
+            colStatus.setCellValueFactory(new ButtonFactory.ButtonStatusTicketCellValueFactory());
+
         });
     }
 
@@ -219,7 +219,7 @@ public class OrdersBoundary implements Initializable {
 
     private void animateNodes() {
         Animations.fadeInUp(tblOrders);
-        Animations.fadeInUp(hboxSearch);
+        Animations.fadeInUp(HBoxSearch);
     }
 
     @FXML

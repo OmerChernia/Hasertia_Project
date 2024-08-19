@@ -218,11 +218,17 @@ public class MovieSmallBoundary {
     private void handleMouseEnter() {
         if (!contentPanel.isVisible()) {
             contentPanel.setVisible(true);
+            if (HomeBoundary.currentScreeningFilter.equals("View Upcoming Movies")){
+                btnBook.setVisible(false);
+            }
         }
     }
 
     private void handleMouseExit() {
         if (contentPanel.isVisible()) {
+            if (HomeBoundary.currentScreeningFilter.equals("View Upcoming Movies")){
+                btnBook.setVisible(true);
+            }
             contentPanel.setVisible(false);
         }
     }
@@ -283,9 +289,9 @@ public class MovieSmallBoundary {
     public void onMovieInstanceEvent(MovieInstanceCanceledEvent movieInstanceCanceledEvent)
     {
         Platform.runLater(() -> {
-        if(movie.getId()==movieInstanceCanceledEvent.movieInstance.getMovie().getId()) {
-            MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
-        }});
+            if(movie.getId()==movieInstanceCanceledEvent.movieInstance.getMovie().getId()) {
+                MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
+            }});
     }
 
     private void populateCinemasComboBox(List<MovieInstance> movieInstances) {
@@ -367,7 +373,7 @@ public class MovieSmallBoundary {
             }
             else
             {
-                 loadHomeViewingPurchasePage();
+                loadHomeViewingPurchasePage();
             }
         }
     }

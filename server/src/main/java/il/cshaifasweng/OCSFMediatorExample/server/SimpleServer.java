@@ -8,22 +8,15 @@ import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
-import jdk.jfr.Event;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +37,7 @@ public class SimpleServer extends AbstractServer
 		// Initialize schedulers as singletons
 		ComplaintFollowUpScheduler complaintScheduler = ComplaintFollowUpScheduler.getInstance();
 		OrderScheduler emailNotificationScheduler = OrderScheduler.getInstance();
-		LinkScheduler linkScheduler = LinkScheduler.getInstance();
+		LinkAndInstanceScheduler linkAndInstanceScheduler = LinkAndInstanceScheduler.getInstance();
 
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
@@ -52,7 +45,9 @@ public class SimpleServer extends AbstractServer
 		// Schedule all active complaints
 		complaintScheduler.scheduleAllActiveComplaints();
 		// Schedule all home viewing packages
-		linkScheduler.scheduleHomeViewingPackages();
+		linkAndInstanceScheduler.scheduleHomeViewingPackages();
+		// Schedule all movie instances
+		linkAndInstanceScheduler.scheduleMovieInstances();
 	}
 
 
