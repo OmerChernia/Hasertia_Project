@@ -28,8 +28,7 @@
 }
 
 
-/* שדות טקסט */
-.jfx-text-field, .text-field {
+ .jfx-text-field, .text-field {
     -fx-font-size: 14;
     -fx-accent: -primary;
     -jfx-focus-color: -primary;
@@ -40,14 +39,13 @@
     -fx-border-color: transparent transparent #CCCCCC transparent;
     -fx-border-width: 0 0 2 0;
     -fx-padding: 0 0 3 0;
-    -fx-wrap-text: true; /* הוספת עטיפת טקסט */
+    -fx-wrap-text: true;
 }
 
 .text-field:focused {
-    -fx-border-color: transparent transparent #00A000 transparent;
+    -fx-border-color: transparent transparent #ffc500 transparent;
 }
 
-/* אזורי טקסט */
 .jfx-text-area, .text-area {
     -fx-font-size: 14;
     -fx-accent: -primary;
@@ -59,15 +57,14 @@
     -fx-border-color: transparent transparent #CCCCCC transparent;
     -fx-border-width: 0 0 2 0;
     -fx-padding: 0 0 3 0;
-    -fx-wrap-text: true; /* הוספת עטיפת טקסט */
+    -fx-wrap-text: true;
 }
 
 .text-area:focused {
-    -fx-border-color: transparent transparent #00A000 transparent;
+    -fx-border-color: transparent transparent #ffc500 transparent;
 }
 
 
-/* תוויות צפות */
 .floating-label {
     -fx-font-size: 14px;
     -fx-fill: grey;

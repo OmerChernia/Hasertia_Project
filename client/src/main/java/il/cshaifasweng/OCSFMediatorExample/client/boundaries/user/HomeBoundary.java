@@ -259,7 +259,6 @@ public class HomeBoundary implements Initializable {
             Parent pane = loader.load();
 
             MovieInfoBoundary movieInfoController = loader.getController();
-            System.err.println("movieInfoController");
             movieInfoController.setHomeController(this);
             movieInfoController.setInfo(movie);
 

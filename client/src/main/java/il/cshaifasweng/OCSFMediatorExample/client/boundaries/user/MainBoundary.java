@@ -4,6 +4,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -46,6 +48,11 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class MainBoundary implements Initializable {
 
+    @FXML
+    private ImageView imgLog;
+
+    @FXML
+    private AnchorPane rootTopMenu;
     @FXML
     private Label lblWelcome;
     private ObservableList<MovieInstance> listProducts;
@@ -383,19 +390,20 @@ public class MainBoundary implements Initializable {
     @FXML
     private void login(ActionEvent event) {
         String UserName = txtUser.getText();
-        String EmploeeName = txtEmploee.getText();
+        String EmployeeName = txtEmploee.getText();
         String password = txtPassword.getText();
 
         if (customerRadioButton.isSelected()) {
             LoginPageController.requestUserLogin(UserName);
             System.out.println("SEND Login");
         } else if (employeeRadioButton.isSelected()) {
-            LoginPageController.requestEmployeeLogin(EmploeeName, password);
+            LoginPageController.requestEmployeeLogin(EmployeeName, password);
             System.out.println("SEND EMPLOYEE Login");
 
         }
         resetButtons();
         clearTextFields();
+        imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGOUT_ICON))));
         homeWindowsInitialize();
     }
 
@@ -578,6 +586,7 @@ public class MainBoundary implements Initializable {
                         resetButtons();
                         clearTextFields();
                         closeLoginDialog();
+                        imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGIN_ICON))));
                         homeWindowsInitialize();
                         AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
                     } , "No", () -> {

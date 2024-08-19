@@ -66,18 +66,15 @@ public class ConstantsPath {
 
 
 
-
-
-
-
-
-
-
     public static final String STAGE_ICON = MEDIA_PACKAGE + "icon.jpeg";
     public static final String NO_IMAGE_AVAILABLE = MEDIA_PACKAGE + "empty-image.jpg";
     public static final String INFORMATION_IMAGE = MEDIA_PACKAGE + "information.png";
     public static final String ERROR_IMAGE = MEDIA_PACKAGE + "error.png";
     public static final String SUCCESS_IMAGE = MEDIA_PACKAGE + "success.png";
+    public static final String LOGIN_ICON = ICON_PACKAGE + "icons8-login-50.png";
+    public static final String LOGOUT_ICON = ICON_PACKAGE + "icons8-logout-50.png";
+
+
 
     public static final String CSS_LIGHT_THEME = SOURCE_PACKAGE + "css/main.css";
     public static final String LIGHT_THEME = ConstantsPath.class.getResource(CSS_LIGHT_THEME).toExternalForm();
