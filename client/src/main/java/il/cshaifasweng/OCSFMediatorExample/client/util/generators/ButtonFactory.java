@@ -257,21 +257,21 @@ public class ButtonFactory {
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Movie, Button> param) {
             Movie item = param.getValue();
-            String text = item.getStreamingType().toString();
+            String text = "";
             String styleClass;
+            styleClass = "button-blue";
 
             switch (item.getStreamingType()) {
                 case HOME_VIEWING:
-                    styleClass = "button-purple";
+                    text = "Home Viewing";
                     break;
                 case THEATER_VIEWING:
-                    styleClass = "button-blue";
+                    text = "Theater Viewing";
                     break;
                 case BOTH:
-                    styleClass = "button-orange";
+                    text = "All Platforms";
                     break;
                 default:
-                    styleClass = "button-gray";
                     break;
             }
 

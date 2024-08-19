@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.loadFXML;
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.scene;
@@ -98,7 +99,7 @@ public class AlertsBuilder {
             root.getStyleClass().add("jfx-dialog-overlay-pane");
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(AlertsBuilder.class.getResource(ConstantsPath.CSS_LIGHT_THEME).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(AlertsBuilder.class.getResource(ConstantsPath.CSS_LIGHT_THEME)).toExternalForm());
             alertStage.setScene(scene);
 
             nodeToDisable.setDisable(true);

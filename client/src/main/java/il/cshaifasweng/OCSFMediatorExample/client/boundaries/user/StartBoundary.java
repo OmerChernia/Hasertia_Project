@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.loadFXML;
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.scene;
@@ -66,6 +67,9 @@ public class StartBoundary {
 
             scene = new Scene(loadFXML("MainView"));
             Stage stage = new Stage(); // Create a new Stage instance
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMinHeight(ConstantsPath.MIN_HEIGHT);
+            stage.setMinWidth(ConstantsPath.MIN_WIDTH);
             stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
             stage.setTitle(ConstantsPath.TITLE);
 

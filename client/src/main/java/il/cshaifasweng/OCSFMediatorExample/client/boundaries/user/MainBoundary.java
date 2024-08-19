@@ -4,6 +4,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -206,13 +207,16 @@ public class MainBoundary implements Initializable {
         txtUser.clear();
         txtEmploee.clear();
         txtPassword.clear();
-        lblWelcome.setText("Welcome to 'Hasretia'!");
+        lblWelcome.setText(setWelcomeMessage()+"Welcome To 'Hasretia'!");
     }
 
 
 
     public void homeWindowsInitialize() {
+        lblWelcome.setText(setWelcomeMessage()+"Welcome To 'Hasretia'!");
+
         showFXMLWindows(ConstantsPath.HOME_VIEW);
+
     }
 
     @FXML
@@ -433,7 +437,7 @@ public class MainBoundary implements Initializable {
                         role = "Content Manager";
                         break;
                 }
-                lblWelcome.setText("Welcome " + role + "!");
+                lblWelcome.setText(setWelcomeMessage()+ role + "!");
             }   }
             );
         } else {
@@ -448,13 +452,26 @@ public class MainBoundary implements Initializable {
     }
 
 
+    public String setWelcomeMessage() {
+        LocalTime now = LocalTime.now();
+        String greeting;
 
+        if (now.isBefore(LocalTime.NOON)) {
+            greeting = "Good Morning, ";
+        } else if (now.isBefore(LocalTime.of(18, 0))) {
+            greeting = "Good Afternoon, ";
+        } else {
+            greeting = "Good Evening ,";
+        }
+
+        return greeting;
+    }
 
     public void handleCustomerLoginResponse(LoginMessage loginMessage) {
         Platform.runLater(() -> {
             if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL)
             {
-                lblWelcome.setText("Nice to see you again in 'Hasretia'!");
+                lblWelcome.setText(setWelcomeMessage()+"Nice to see you again in 'Hasretia'!");
 
                 SimpleClient.user = loginMessage.id; // Save the logged-in user ID
 
@@ -506,6 +523,7 @@ public class MainBoundary implements Initializable {
 
     private void resetButtons() {
 
+        lblWelcome.setText(setWelcomeMessage()+"Welcome To 'Hasretia'!");
         vboxSide.getChildren().clear();
 
 
@@ -556,6 +574,7 @@ public class MainBoundary implements Initializable {
                         loggedInEmploeeId = null;
                         resetButtons();
                         clearTextFields();
+
                         closeLoginDialog();
                         imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGIN_ICON))));
                         homeWindowsInitialize();

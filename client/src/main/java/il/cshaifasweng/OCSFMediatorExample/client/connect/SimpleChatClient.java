@@ -47,14 +47,9 @@ public class SimpleChatClient extends Application {
         scene.setRoot(root);
 
         // Register the appropriate controller
-        switch (fxml) {
-            case "MainView":
-                mainBoundary = fxmlLoader.getController();
-                EventBus.getDefault().register(mainBoundary);
-                break;
-
-            default:
-                break;
+        if (fxml.equals("MainView")) {
+            mainBoundary = fxmlLoader.getController();
+            EventBus.getDefault().register(mainBoundary);
         }
     }
 
@@ -77,12 +72,6 @@ public class SimpleChatClient extends Application {
         if (mainBoundary != null) {
             EventBus.getDefault().unregister(mainBoundary);
         }
-
-        //// Log out the user if logged in
-        //if (SimpleClient.user != null && !SimpleClient.user.isEmpty()) {
-        //    LoginPageController.requestUserLogOut(SimpleClient.user);
-        //    LoginPageController.requestEmployeeLogOut(SimpleClient.user); // Consider improving this logic
-        //}
 
         // Close the client connection
         if (SimpleChatClient.client != null) {

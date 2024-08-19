@@ -368,4 +368,11 @@ public class ReportsBoundary implements Initializable {
         complaintStatusBarChart.getData().clear();  // Clear existing data
         complaintStatusBarChart.getData().add(series);  // Add new data
     }
+
+    public void cleanUp()
+    {
+        EventBus.getDefault().unregister(this);
+    }
+
+
 }
