@@ -26,7 +26,7 @@
                            <children>
                               <ImageView fx:id="image" fitHeight="250.0" fitWidth="328.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 10, 0, 0, 5);">
                                  <image>
-                                    <Image url="@../../media/empty-image.jpg" />
+                                    <Image url="@../../media/Movie/empty-image.jpg" />
                                  </image>
                               </ImageView>
                            </children>

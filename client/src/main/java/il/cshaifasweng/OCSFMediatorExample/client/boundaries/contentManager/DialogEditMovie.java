@@ -299,10 +299,10 @@ public class DialogEditMovie implements Initializable {
 
         // If there are changes, proceed with the update
         if ("add".equals(currentMode)) {
-            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "", streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
+            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "empty-image.jpg", streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre);
         } else {
             if (detailsChanged) {
-                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors), "", streaming, Integer.parseInt(duration), genre, availability);
+                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors),  "", streaming, Integer.parseInt(duration), genre, availability);
             }
 
             // Create a price update request only if prices have changed

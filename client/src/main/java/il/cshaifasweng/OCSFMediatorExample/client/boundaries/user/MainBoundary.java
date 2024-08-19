@@ -566,6 +566,7 @@ public class MainBoundary implements Initializable {
                 break;
             case THEATER_MANAGER:
                 btnReports.setVisible(true);
+                break;
             case  COMPANY_MANAGER:
                 btnReports.setVisible(true);
                 btnPriceChange.setVisible(true);

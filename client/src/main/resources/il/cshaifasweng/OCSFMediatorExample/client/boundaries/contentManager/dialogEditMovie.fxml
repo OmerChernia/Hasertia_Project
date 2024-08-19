@@ -104,7 +104,7 @@
                     <children>
                         <ImageView fx:id="imageProduct" fitHeight="300.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../../media/empty-image.jpg" />
+                                <Image url="@../../media/Movie/empty-image.jpg" />
                             </image>
                         </ImageView>
                     </children>

@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class OrderScheduler {
+/*הקרנה שנגמרה להפוך לnotactive */
+/*ביום של ההקרנה של סרט חדש (הקרנה ראשונה) להודיעה ללקוחות הרלוונטים */
 
     private static OrderScheduler instance; // Singleton instance
     private final ExecutorService emailExecutor;
@@ -114,7 +116,7 @@ public class OrderScheduler {
         EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Purchase from Monkii Movies", confirmation);
 
         // Optionally, email the company
-        // EmailSender.sendEmail("hasertiaproject@gmail.com", "New Purchase Confirmation from Monkii Movies", confirmation);
+         EmailSender.sendEmail("hasertiaproject@gmail.com", "New Purchase Confirmation from Monkii Movies", confirmation);
     }
 
     private void sendCancellationEmail(Purchase purchase) {
@@ -132,6 +134,6 @@ public class OrderScheduler {
         EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Canceled Purchase from Monkii Movies", confirmation);
 
         // Optionally, email the company
-        // EmailSender.sendEmail("hasertiaproject@gmail.com", "A purchase has been canceled.", confirmation);
+        EmailSender.sendEmail("hasertiaproject@gmail.com", "A purchase has been canceled.", confirmation);
     }
 }

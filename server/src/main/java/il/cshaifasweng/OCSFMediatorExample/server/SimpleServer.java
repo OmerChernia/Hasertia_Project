@@ -119,9 +119,6 @@ public class SimpleServer extends AbstractServer
 								MovieTicket ticket = (MovieTicket) ((PurchaseMessage) msg).purchases.getFirst();
 								sendToAllClients(new SeatStatusChangedEvent(List.of(ticket.getSeat())));
 								System.out.println("Sent SeatStatusChangedEvent to all clients for MovieTicket removal.");
-							} else if (((PurchaseMessage) msg).purchases.getFirst() instanceof HomeViewingPackageInstance) {
-								System.out.println("HomeViewingPackageInstance purchase removed, sending response to specific client.");
-								client.sendToClient(msg);
 							}
 						}
 					}

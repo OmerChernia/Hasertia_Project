@@ -84,6 +84,14 @@
                                  <String fx:value="The double charge has been refunded. Thank you for your patience." />
                                  <String fx:value="We are sorry about the movie quality. Compensation has been processed." />
                                  <String fx:value="We apologize for the noise. Compensation has been issued." />
+                                 <String fx:value="Thank you for your feedback. We're always working to improve our service." />
+                                 <String fx:value="We appreciate your patience as we resolve this issue." />
+                                 <String fx:value="Your suggestions have been forwarded to our development team." />
+                                 <String fx:value="We are currently looking into this matter. Thank you for bringing it to our attention." />
+                                 <String fx:value="Your concern has been noted, and we are working on a solution." />
+                                 <String fx:value="Thank you for reporting this issue. We are investigating it thoroughly." />
+                                 <String fx:value="We apologize for the inconvenience. Your case has been escalated to a higher level of support." />
+                                 <String fx:value="Thank you for your understanding as we work to improve our services." />
                               </FXCollections>
                            </items>
                         </ComboBox>
