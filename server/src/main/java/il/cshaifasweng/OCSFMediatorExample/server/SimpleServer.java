@@ -107,12 +107,19 @@ public class SimpleServer extends AbstractServer
 					{
 						if(((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE)
 						{
-							System.out.println("DELETE_MOVIE_INSTANCE");
 							Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :id and isActive=true", MovieInstance.class);
 							query.setParameter("id", ((MovieInstanceMessage) msg).id);
 							if(query.getResultList().isEmpty())
 								sendToAllClientsExceptMe(new MovieEvent(),client);
 						}
+						if(((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE)
+						{
+							Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :id and isActive=true", MovieInstance.class);
+							query.setParameter("id", ((MovieInstanceMessage) msg).id);
+							if(query.getResultList().size()==1)
+								sendToAllClientsExceptMe(new MovieEvent(),client);
+						}
+
 						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
 
 
@@ -132,13 +139,7 @@ public class SimpleServer extends AbstractServer
 							}
 						}
 					}
-
-					else if(msg instanceof MovieMessage
-							&&(((MovieMessage) msg).requestType == MovieMessage.RequestType.ADD_MOVIE))
-					{
-						System.out.println("Hello");
-						sendToAllClientsExceptMe(new MovieEvent(),client);
-					} else if ((msg instanceof ComplaintMessage && ((ComplaintMessage)msg).requestType==ComplaintMessage.RequestType.ADD_COMPLIANT)) {
+					 else if ((msg instanceof ComplaintMessage && ((ComplaintMessage)msg).requestType==ComplaintMessage.RequestType.ADD_COMPLIANT)) {
 						sendToAllClientsExceptMe(new ComplaintEvent(((ComplaintMessage)msg).compliants.getFirst()),client);
 					}
 

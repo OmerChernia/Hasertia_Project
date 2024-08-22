@@ -134,8 +134,8 @@ public class MovieInstanceHandler extends MessageHandler
 
             // Schedule the movie instance for deactivation after it ends
             LinkAndInstanceScheduler.getInstance().scheduleMovieInstanceDeactivation(message.movies.getFirst());
-
             Movie movie = message.movies.getFirst().getMovie();
+            message.id=movie.getId(); //save the movieid for later
 
             // Load the movie from the session to avoid NonUniqueObjectException
             movie = (Movie) session.get(Movie.class, movie.getId());
