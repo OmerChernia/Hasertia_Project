@@ -120,12 +120,6 @@ public class PurchaseHandler extends MessageHandler
         } catch (Exception e) {
             e.printStackTrace();
             message.responseType = PurchaseMessage.ResponseType.PURCHASE_FAILED;
-        } finally {
-            try {
-                client.sendToClient(message); // Always send the message back to the client
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
         }
     }
 

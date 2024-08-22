@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
@@ -13,6 +14,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -102,6 +104,7 @@ public class OrdersBoundary implements Initializable {
         EventBus.getDefault().register(this);
         setId(MainBoundary.getId());
         PurchaseController.GetPurchasesByCustomerID(id);
+        RegisteredUserController.getUserByID(String.valueOf(id));
         animateNodes();
         setContextMenu();
         tblOrders.setRowFactory(tv -> {
@@ -120,6 +123,13 @@ public class OrdersBoundary implements Initializable {
         this.id = id;
     }
 
+    @Subscribe
+    public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
+    {
+        Platform.runLater(() -> {
+            ticketCounterT.setText("Multi-Entry-Ticket amount: " + message.registeredUser.getTicket_counter());
+        });
+    }
 
 
     @Subscribe
@@ -127,7 +137,6 @@ public class OrdersBoundary implements Initializable {
     {
         System.out.println(message.responseType);
         Platform.runLater(() -> {
-            ticketCounterT.setText("Multi-Entry-Ticket amount: " +message.purchases.get(0).getOwner().getTicket_counter());
         if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST)
         {
             loadTableData(message.purchases) ;
