@@ -74,8 +74,6 @@ public class DialogTicket {
     @FXML
     private Label lblTheater;
 
-    @FXML
-    private Label lblTickets;
 
     @FXML
     private Label lblTitle;
@@ -86,8 +84,6 @@ public class DialogTicket {
     @FXML
     private VBox vbxHVP;
 
-    @FXML
-    private VBox vbxME;
 
     private MovieTicket movieTicket;
     private MultiEntryTicket multiEntryTicket;
@@ -147,7 +143,6 @@ public class DialogTicket {
         hboxTime.setVisible(true);
         hbxTheater.setVisible(true);
         vbxHVP.setVisible(false);
-        vbxME.setVisible(false);
         hboxPurchaseDay.setVisible(true);
         hbxActiveDay.setVisible(true);
         lblActive.setVisible(true);
@@ -156,11 +151,9 @@ public class DialogTicket {
 
     public void setMultiEntryTicket() {
         lblTitle.setText("Multi Entry Card");
-        lblTickets.setText("Remaining entries: " + multiEntryTicket.getOwner().getTicket_counter());
         lblPrice.setText("");
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(false);
-        vbxME.setVisible(true);
         hboxPurchaseDay.setVisible(true);
         hbxActiveDay.setVisible(false);
         hboxTime.setVisible(false);
@@ -181,7 +174,6 @@ public class DialogTicket {
 
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(true);
-        vbxME.setVisible(false);
         hboxPurchaseDay.setVisible(true);
         hbxActiveDay.setVisible(true);
         hboxTime.setVisible(false);

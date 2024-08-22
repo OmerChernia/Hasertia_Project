@@ -94,7 +94,7 @@ public class DialogEditScreening implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
-        MovieController.getMoviesPresentedInTheater();
+        MovieController.getMoviesPresentedInTheaterContentManager();
         TheaterController.getAllTheaters();
         setupComboBoxes();
     }
@@ -160,7 +160,7 @@ public class DialogEditScreening implements Initializable {
             if(newValue!=null) {
                 time = cmbHour.getValue();
             }
- });
+        });
     }
     private void populateTheatersComboBox(List<Theater> theaters) {
         cmbTheater.getItems().setAll(theaters);
@@ -258,7 +258,7 @@ public class DialogEditScreening implements Initializable {
     @Subscribe
     public void onMoviesMessageReceived(MovieMessage message) {
         Platform.runLater(() -> {
-            if (message.requestType == MovieMessage.RequestType.GET_MOVIES_PRESENTED_IN_THEATER)
+            if (message.responseType == MovieMessage.ResponseType.RETURN_MOVIES)
                 populateMoviesComboBox(message.movies);
         });
     }
@@ -297,12 +297,12 @@ public class DialogEditScreening implements Initializable {
             cmbHall.getSelectionModel().select(movieInstance.getHall());
             cmbMovies.getSelectionModel().select(movieInstance.getMovie());
         });
-        }
+    }
 
 
     @FXML
     private void handleSave(ActionEvent event) {
-       if (!validateInputs()) return;
+        if (!validateInputs()) return;
         if(currentMode.equals("add"))
         {
             MovieInstanceController.addMovieInstance(cmbMovies.getValue(), LocalDateTime.of(datePicker.getValue(), cmbHour.getValue().plusHours(3)),cmbHall.getValue());
@@ -360,7 +360,7 @@ public class DialogEditScreening implements Initializable {
             valid = false;
         }
 
-      return valid;
+        return valid;
     }
 
 

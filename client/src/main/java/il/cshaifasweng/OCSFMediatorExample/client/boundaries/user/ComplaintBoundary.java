@@ -44,10 +44,10 @@ public class ComplaintBoundary implements Initializable {
     private TextArea txtComplaintDetails;
 
     @FXML
-    private Label emailheader;
+    private Label emailHeader;
 
     @FXML
-    private Label nameheader;
+    private Label nameHeader;
 
 
     @FXML
@@ -70,8 +70,8 @@ public class ComplaintBoundary implements Initializable {
         if(!SimpleClient.user.isEmpty()) {
             txtCustomerName.setVisible(false);
             txtCustomerEmail.setVisible(false);
-            nameheader.setVisible(false);
-            emailheader.setVisible(false);
+            nameHeader.setVisible(false);
+            emailHeader.setVisible(false);
             RegisteredUserController.getUserByID(SimpleClient.user);
         }
     }

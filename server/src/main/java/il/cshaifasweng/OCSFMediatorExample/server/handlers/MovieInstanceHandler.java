@@ -127,22 +127,54 @@ public class MovieInstanceHandler extends MessageHandler
 
     private void add_movie_intance()
     {
-        if(message.movies.getFirst()!=null)
-        {
+        if (message.movies.getFirst() != null) {
             session.save(message.movies.getFirst());
             session.flush();
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_ADDED;
-            if(!message.movies.getFirst().getMovie().getNotificationSent())
-            {
-                message.movies.getFirst().getMovie().setNotificationSent(true);
-                session.update(message.movies.getFirst().getMovie());
-                session.flush();
-            }
-        }
-        else
-            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
 
+            // Schedule the movie instance for deactivation after it ends
+            LinkAndInstanceScheduler.getInstance().scheduleMovieInstanceDeactivation(message.movies.getFirst());
+
+            Movie movie = message.movies.getFirst().getMovie();
+
+            // Load the movie from the session to avoid NonUniqueObjectException
+            movie = (Movie) session.get(Movie.class, movie.getId());
+
+            if (!movie.getNotificationSent()) {
+                // Set the notification flag to true
+                movie.setNotificationSent(true);
+                session.update(movie);
+                session.flush();
+
+                // Fetch users with MultiEntryTickets
+                List<RegisteredUser> usersWithMultiEntryTickets = getUsersWithMultiEntryTickets();
+
+                // Schedule to notify users about the new movie one day before the screening
+                OrderScheduler.getInstance().scheduleNotifyNewMovieOneDayBefore(
+                        movie,
+                        usersWithMultiEntryTickets,
+                        message.movies.getFirst().getTime()
+                );
+            }
+        } else {
+            message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_MESSAGE_FAILED;
+        }
     }
+
+    /**
+     * Fetches all users who have purchased MultiEntryTickets.
+     *
+     * @return a list of registered users who own MultiEntryTickets.
+     */
+    public List<RegisteredUser> getUsersWithMultiEntryTickets() {
+        Query<RegisteredUser> query = session.createQuery(
+                "FROM RegisteredUser WHERE ticket_counter>0",
+                RegisteredUser.class
+        );
+        return query.getResultList();
+    }
+
+
     private void get_movie_instance_by_id()
     {
         try
@@ -196,8 +228,10 @@ public class MovieInstanceHandler extends MessageHandler
         session.flush();
 
 
+        // Schedule emails for canceled screening
         OrderScheduler.getInstance().scheduleEmailsForCanceledScreening(movieTickets, movieInstance);
-
+        OrderScheduler.getInstance().cancelScheduledNotifyNewMovie(movieInstance.getMovie());
+        LinkAndInstanceScheduler.getInstance().cancelMovieInstanceTasks(movieInstance);
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
 

@@ -178,7 +178,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
             contextMenu.hide();
         });
         contextMenu.show();
-        }
+    }
 
 
 

@@ -113,7 +113,7 @@ public class DialogEditMovie implements Initializable {
         initializeImageHoverEffect();
         initializeComboBoxAutoComplete();
 
-     }
+    }
 
     private void initializeComboBoxAutoComplete() {
         AutocompleteComboBox.autoCompleteComboBoxPlus(comboGenre, (typedText, item) -> item.toLowerCase().contains(typedText.toLowerCase()));
@@ -329,7 +329,7 @@ public class DialogEditMovie implements Initializable {
 
     private void closeDialog() {
         editMovieListBoundary.closeDialogAddProduct();
-     }
+    }
 
     private boolean validateInputs() {
         if (txtEnglishName.getText().trim().isEmpty()) {

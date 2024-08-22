@@ -10,7 +10,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import jdk.jfr.Event;
 import org.hibernate.*;
@@ -43,7 +44,7 @@ public class SimpleServer extends AbstractServer
 		// Initialize schedulers as singletons
 		ComplaintFollowUpScheduler complaintScheduler = ComplaintFollowUpScheduler.getInstance();
 		OrderScheduler emailNotificationScheduler = OrderScheduler.getInstance();
-		LinkScheduler linkScheduler = LinkScheduler.getInstance();
+		LinkAndInstanceScheduler linkAndInstanceScheduler = LinkAndInstanceScheduler.getInstance();
 
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
@@ -51,7 +52,7 @@ public class SimpleServer extends AbstractServer
 		// Schedule all active complaints
 		complaintScheduler.scheduleAllActiveComplaints();
 		// Schedule all home viewing packages
-		linkScheduler.scheduleHomeViewingPackages();
+		linkAndInstanceScheduler.scheduleHomeViewingPackages();
 	}
 
 

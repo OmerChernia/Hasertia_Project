@@ -21,6 +21,12 @@ public class MovieController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
+    public static void getMoviesPresentedInTheaterContentManager()
+    {
+        MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.GET_MOVIES_PRESENTED_IN_THEATER_CONTENT_MANAGER);
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
     public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, String mainActors, String image, Movie.StreamingType streamingType, int duration, String genre, Movie.Availability availability) {
         movie.setHebrewName(hebrewName);
         movie.setInfo(info);
