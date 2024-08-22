@@ -8,6 +8,5 @@ public class MovieEvent extends Event
 
     public MovieEvent()
     {
-
     }
 }

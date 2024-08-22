@@ -161,6 +161,7 @@ public class HomeBoundary implements Initializable {
     @Subscribe
     public void onMovieEventReceived(MovieEvent event)
     {
+        System.out.println("onMovieEventReceived");
         Platform.runLater(() ->
         {
             SimpleChatClient.mainBoundary.homeWindowsInitialize();

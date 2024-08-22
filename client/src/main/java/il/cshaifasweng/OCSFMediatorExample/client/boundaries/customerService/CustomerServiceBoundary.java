@@ -9,6 +9,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.events.ComplaintEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -94,25 +95,31 @@ public class CustomerServiceBoundary implements Initializable {
 
     @Subscribe
     public void onComplaintMessageReceived(ComplaintMessage message) {
-        switch (message.responseType) {
-            case FILTERED_COMPLAINTS_LIST:
-                loadTableData(message.compliants);
-                break; // Add break to avoid fall-through
-            case COMPLIANT_ADDED:
-                Platform.runLater(ComplaintController::getOpenComplaints);
-                break;
-            case COMPLIANT_WAS_ANSWERED:
-                Platform.runLater(() -> {
+        Platform.runLater(() -> {
+            switch (message.responseType) {
+                case FILTERED_COMPLAINTS_LIST:
+                    loadTableData(message.compliants);
+                    break; // Add break to avoid fall-through
+                case COMPLIANT_ADDED:
+                    ComplaintController.getOpenComplaints();
+                    break;
+                case COMPLIANT_WAS_ANSWERED:
                     AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "Complaint Handled!");
                     ComplaintController.getOpenComplaints();
-                });
-                break;
-            case COMPLIANT_MESSAGE_FAILED:
-                Platform.runLater(() -> {
+                    break;
+                case COMPLIANT_MESSAGE_FAILED:
                     AlertsBuilder.create(AlertType.ERROR, stckCustomerService, rootCustomerService, rootCustomerService, "Complaint wasn't Handled!");
-                });
-                break;
-        }
+                    break;
+            }
+        });
+    }
+
+
+    @Subscribe
+    public void onComplaintEventReceived (ComplaintEvent complaintEvent)
+    {
+        listComplaints.add(complaintEvent.complaint);
+        tblComplaints.setItems(listComplaints);
     }
 
     private void loadTableData(List<Complaint> complaints) {

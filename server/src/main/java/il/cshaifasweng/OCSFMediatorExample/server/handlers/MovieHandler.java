@@ -72,40 +72,40 @@ public class MovieHandler extends MessageHandler
         System.out.println("filter by " + message.Screening + " and " + message.Genre);
 
         try {
-            // Start building the HQL query
-            StringBuilder hql = new StringBuilder("FROM Movie WHERE available = :available");
+            if (message.Screening == Movie.StreamingType.THEATER_VIEWING) {
+                String hql = "FROM MovieInstance WHERE isActive = true";
+                if (!"all".equalsIgnoreCase(message.Genre)) {
+                    hql += " and movie.genre=:genre";
+                }
 
-            // Conditionally append screening type filtering
-            if (message.Screening != Movie.StreamingType.BOTH) {
-                hql.append(" AND (streamingType = :type OR streamingType = :both)");
+                Query<MovieInstance> query = session.createQuery(hql, MovieInstance.class);
+                if (!"all".equalsIgnoreCase(message.Genre)) {
+                    query.setParameter("genre", message.Genre);
+                }
+
+                List<MovieInstance> movieInstances = query.getResultList();
+                Set<Movie> uniqueMovies = movieInstances.stream()
+                        .map(MovieInstance::getMovie)
+                        .collect(Collectors.toSet());
+                message.movies = new ArrayList<>(uniqueMovies);
+                message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;
+                return;
             }
 
-            // Conditionally append genre filtering
-            if (message.Genre != null && !message.Genre.equals("all")) {
-                hql.append(" AND genre = :genre");
+            String hql = "FROM Movie WHERE (streamingType =:home or streamingType =: both) and available =: available";
+            if (!"all".equalsIgnoreCase(message.Genre)) {
+                hql += " and genre=:genre";
             }
 
-            // Create the query with the constructed HQL
-            Query<Movie> query = session.createQuery(hql.toString(), Movie.class);
-
-            // Set common parameters
+            Query<Movie> query = session.createQuery(hql, Movie.class);
+            query.setParameter("home", Movie.StreamingType.HOME_VIEWING);
+            query.setParameter("both", Movie.StreamingType.BOTH);
             query.setParameter("available", Movie.Availability.AVAILABLE);
-
-            // Set screening type parameters if applicable
-            if (message.Screening != Movie.StreamingType.BOTH) {
-                query.setParameter("type", message.Screening);
-                query.setParameter("both", Movie.StreamingType.BOTH);
-            }
-
-            // Set genre parameter if applicable
-            if (message.Genre != null && !message.Genre.equals("all")) {
+            if (!"all".equalsIgnoreCase(message.Genre)) {
                 query.setParameter("genre", message.Genre);
             }
 
-            // Execute the query and get the result list
             message.movies = query.getResultList();
-
-            // Set the response type
             message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;
 
         } catch (Exception e) {
@@ -116,6 +116,7 @@ public class MovieHandler extends MessageHandler
             }
         }
     }
+
 
 
     private void getMoviesPresentedInHomeViewing() {

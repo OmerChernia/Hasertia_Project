@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -170,7 +171,7 @@ public class MovieInstanceHandler extends MessageHandler
         MovieInstance movieInstance = query.uniqueResult();
         movieInstance.setIsActive(false);
         session.update(movieInstance);
-
+        message.id=movieInstance.getMovie().getId(); //save the movieid for later
         message.movies.add(movieInstance);
 
         // Fetch all tickets for the movie instance
@@ -189,7 +190,6 @@ public class MovieInstanceHandler extends MessageHandler
             Seat seat = session.get(Seat.class, movieTicket.getSeat().getId());
             seat.deleteMovieInstance(movieInstance);
             session.update(seat);
-
         }
 
         // Flush all updates at once

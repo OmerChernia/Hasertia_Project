@@ -1,8 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
+
 import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
@@ -10,12 +9,9 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
-import il.cshaifasweng.OCSFMediatorExample.entities.PriceRequest;
+import il.cshaifasweng.OCSFMediatorExample.server.events.PriceChangeEvent;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,22 +19,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class EditMovieListBoundary implements Initializable {
@@ -187,6 +176,16 @@ public class EditMovieListBoundary implements Initializable {
                 Platform.runLater(() -> loadTableData(movieMessage.movies));
                 break;
         }
+    }
+
+    @Subscribe
+    public void onPriceChangeEvent(PriceChangeEvent priceChangeEvent)
+    {
+        Platform.runLater(() -> {
+            AlertsBuilder.create(AlertType.INFO, stckProducts, rootProducts, rootProducts, "Company manger just approved price request on the movie: "
+                    + priceChangeEvent.movie.getEnglishName());
+            MovieController.requestAllMovies();
+        });
     }
 
     private void loadTableData(List<Movie> movies) {

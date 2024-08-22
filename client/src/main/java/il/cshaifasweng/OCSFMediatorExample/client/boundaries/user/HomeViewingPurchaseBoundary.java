@@ -108,6 +108,8 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private Label pricePaidLabel;
+    @FXML
+    private Label price;
 
     //the user details
     @FXML
@@ -343,6 +345,7 @@ public class HomeViewingPurchaseBoundary {
     public void setCurrentMovie(Movie movie) {
         this.currentMovie = movie;
         movieTitle.setText(movie.getEnglishName());
+        price.setText("Package Price: " + movie.getHomeViewingPrice());
         // Set other movie-related details here
     }
     public void setCurrentdateTime(LocalDateTime dateTime) {

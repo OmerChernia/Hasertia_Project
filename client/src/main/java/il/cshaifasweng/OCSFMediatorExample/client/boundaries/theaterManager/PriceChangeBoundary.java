@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.theaterManager;
 
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
@@ -8,6 +9,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.events.PriceChangeEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -81,6 +83,15 @@ public class PriceChangeBoundary implements Initializable {
 
         }
 
+    }
+    @Subscribe
+    public void onPriceChangeEvent(PriceChangeEvent priceChangeEvent)
+    {
+        Platform.runLater(() -> {
+            AlertsBuilder.create(AlertType.INFO, stckPriceChange , stckPriceChange,stckPriceChange , "Content manger just added a new price request on the movie: "
+                    + priceChangeEvent.movie.getEnglishName());
+            PriceRequestController.requestAllPriceRequests();
+        });
     }
 
     private void loadTableData(List<PriceRequest> priceRequests) {

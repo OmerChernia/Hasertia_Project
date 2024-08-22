@@ -1,9 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
-import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.events.SeatStatusChangedEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.events.*;
 import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
@@ -18,6 +16,7 @@ import jdk.jfr.Event;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 import org.hibernate.service.ServiceRegistry;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -105,7 +104,17 @@ public class SimpleServer extends AbstractServer
 							||((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.UPDATE_MOVIE_INSTANCE
 							||((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE))
 					{
+						if(((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.DELETE_MOVIE_INSTANCE)
+						{
+							System.out.println("DELETE_MOVIE_INSTANCE");
+							Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :id and isActive=true", MovieInstance.class);
+							query.setParameter("id", ((MovieInstanceMessage) msg).id);
+							if(query.getResultList().isEmpty())
+								sendToAllClientsExceptMe(new MovieEvent(),client);
+						}
 						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
+
+
 					}
 					else if(msg instanceof SeatMessage &&
 							(((SeatMessage) msg).requestType == SeatMessage.RequestType.SEATS_CANCELATION
@@ -128,6 +137,15 @@ public class SimpleServer extends AbstractServer
 					{
 						System.out.println("Hello");
 						sendToAllClientsExceptMe(new MovieEvent(),client);
+					} else if ((msg instanceof ComplaintMessage && ((ComplaintMessage)msg).requestType==ComplaintMessage.RequestType.ADD_COMPLIANT)) {
+						sendToAllClientsExceptMe(new ComplaintEvent(((ComplaintMessage)msg).compliants.getFirst()),client);
+					}
+
+					else if(msg instanceof PriceRequestMessage priceRequestMessage
+							&& (((PriceRequestMessage) msg).requestType == PriceRequestMessage.RequestType.APPROVE_PRICE_REQUEST ||
+							((PriceRequestMessage) msg).requestType == PriceRequestMessage.RequestType.CREATE_NEW_PRICE_REQUEST))
+					{
+						sendToAllClientsExceptMe(new PriceChangeEvent(priceRequestMessage.requests.getFirst().getMovie()),client);
 					}
 
 
