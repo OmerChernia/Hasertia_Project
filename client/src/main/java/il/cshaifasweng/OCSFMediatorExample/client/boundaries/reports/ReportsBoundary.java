@@ -173,6 +173,14 @@ public class ReportsBoundary implements Initializable {
             return;
         }
 
+        // Adjust the purchase time by subtracting 3 hours
+//        List<Purchase> adjustedPurchases = purchases.stream()
+//                .map(purchase -> {
+//                    purchase.setPurchaseDate(purchase.getPurchaseDate().minusHours(3));
+//                    return purchase;
+//                })
+//                .collect(Collectors.toList());
+
         // Ticket Sales
         int ticketSalesYear = TicketSalesyearComboBox.getValue();
         int ticketSalesMonth = TicketSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
@@ -185,6 +193,7 @@ public class ReportsBoundary implements Initializable {
                             purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth &&
                             purchase instanceof MovieTicket)
                     .collect(Collectors.toList());
+
         } else {
             // Theater Manager - Show only their theater's ticket sales
             filteredTicketSales = purchases.stream()
@@ -196,27 +205,32 @@ public class ReportsBoundary implements Initializable {
         }
 
         // Package Sales
+        int packageSalesYear = PackageSalesyearComboBox.getValue();
+        int packageSalesMonth = PackageSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
+
         List<Purchase> filteredPackageSales;
         if (this.theaterLocation == null) {
             // Company Manager - Show all package sales
             filteredPackageSales = purchases.stream()
-                    .filter(purchase -> purchase instanceof HomeViewingPackageInstance &&
-                            purchase.getPurchaseDate().getYear() == ticketSalesYear &&
-                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth)
+                    .filter(purchase -> purchase.getPurchaseDate().getYear() == packageSalesYear &&
+                            purchase.getPurchaseDate().getMonthValue() == packageSalesMonth &&
+                            purchase instanceof HomeViewingPackageInstance)
                     .collect(Collectors.toList());
         } else {
             // Theater Manager - Do not show package sales
             filteredPackageSales = Collections.emptyList();
         }
-
         // Multi-Entry Ticket Sales
+        int multiEntrySalesYear = MultiSalesyearComboBox.getValue();
+        int multiEntrySalesMonth = MultiSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
+
         List<Purchase> filteredMultiEntrySales;
         if (this.theaterLocation == null) {
             // Company Manager - Show all multi-entry sales
             filteredMultiEntrySales = purchases.stream()
-                    .filter(purchase -> purchase instanceof MultiEntryTicket &&
-                            purchase.getPurchaseDate().getYear() == ticketSalesYear &&
-                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth)
+                    .filter(purchase -> purchase.getPurchaseDate().getYear() == multiEntrySalesYear &&
+                            purchase.getPurchaseDate().getMonthValue() == multiEntrySalesMonth &&
+                            purchase instanceof MultiEntryTicket)
                     .collect(Collectors.toList());
         } else {
             // Theater Manager - Do not show multi-entry sales
@@ -225,10 +239,10 @@ public class ReportsBoundary implements Initializable {
 
         // Complaints
         if (complaints != null) {
-            List<Complaint> filteredComplaints;
             int complaintsYear = ComplaintsyearComboBox.getValue();
             int complaintsMonth = ComplaintsmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
 
+            List<Complaint> filteredComplaints;
             if (this.theaterLocation == null) {
                 // Company Manager - Show all complaints
                 filteredComplaints = complaints.stream()
@@ -255,15 +269,16 @@ public class ReportsBoundary implements Initializable {
         // Update the reports with the filtered data
         createSalesReports(filteredTicketSales, filteredPackageSales, filteredMultiEntrySales);
 
-        // Apply layout updates to ensure proper rendering
-        ticketSalesBarChart.applyCss();
-        ticketSalesBarChart.layout();
-        packageSalesBarChart.applyCss();
-        packageSalesBarChart.layout();
-        multiEntryTicketSalesBarChart.applyCss();
-        multiEntryTicketSalesBarChart.layout();
-        complaintStatusBarChart.applyCss();
-        complaintStatusBarChart.layout();
+        Platform.runLater(() -> {
+            ticketSalesBarChart.applyCss();
+            ticketSalesBarChart.layout();
+            packageSalesBarChart.applyCss();
+            packageSalesBarChart.layout();
+            multiEntryTicketSalesBarChart.applyCss();
+            multiEntryTicketSalesBarChart.layout();
+            complaintStatusBarChart.applyCss();
+            complaintStatusBarChart.layout();
+        });
     }
 
     private void clearCharts() {
@@ -278,11 +293,21 @@ public class ReportsBoundary implements Initializable {
         Platform.runLater(() -> {
             if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
                 this.purchases = message.purchases; // Update the purchases list with the data received
+
+                // Adjust the purchase time by subtracting 3 hours, done only once
+                this.purchases = this.purchases.stream()
+                        .map(purchase -> {
+                            purchase.setPurchaseDate(purchase.getPurchaseDate().minusHours(3));
+                            return purchase;
+                        })
+                        .collect(Collectors.toList());
+
                 // Automatically filter the data based on the currently selected year and month
                 updateFilteredData();
             }
         });
     }
+
     @Subscribe
     public void onTheaterMessageReceived(TheaterMessage message) {
         Platform.runLater(() -> {
