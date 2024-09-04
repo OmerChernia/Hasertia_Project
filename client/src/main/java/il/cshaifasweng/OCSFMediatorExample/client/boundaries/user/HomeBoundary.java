@@ -62,6 +62,9 @@ public class HomeBoundary implements Initializable {
     private StackPane stckHome;
 
     @FXML
+    private HBox hBoxGenre;
+
+    @FXML
     private GridPane grid;
 
     static String currentScreeningFilter="Theater";        // sets in what type of screening the user wants to see
@@ -290,13 +293,17 @@ public class HomeBoundary implements Initializable {
         if (currentScreeningFilter.equals("Theater")) {
             TheaterFilters.setDisable(false);
             TheaterFilters.setVisible(true);
+            hBoxGenre.setVisible(true);
+
         } else {
             TheaterFilters.setDisable(true);
             TheaterFilters.setVisible(false);
+            hBoxGenre.setVisible(true);
 
         }
         if(currentScreeningFilter.equals("View Upcoming Movies"))
-            MovieController.getUpcomingMovies();
+        {      MovieController.getUpcomingMovies();
+        hBoxGenre.setVisible(false);}
         else
              FilterByScreeningTypeAndGenre(event);
     }

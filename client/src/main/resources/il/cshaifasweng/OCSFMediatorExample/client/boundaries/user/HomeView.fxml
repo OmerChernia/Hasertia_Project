@@ -17,7 +17,7 @@
                                 <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" styleClass="home-menu-button" text="Home Viewing" />
                                 <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" styleClass="home-menu-button" text="View Upcoming Movies" />
                             </HBox>
-                            <HBox alignment="CENTER" spacing="40.0">
+                            <HBox fx:id="hBoxGenre" alignment="CENTER" spacing="40.0">
                                 <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByGenre" styleClass="home-menu-button" text="All" />
                                 <Button onAction="#FilterByGenre" styleClass="home-menu-button" text="Action" />
                                 <Button onAction="#FilterByGenre" styleClass="home-menu-button" text="Comedy" />
