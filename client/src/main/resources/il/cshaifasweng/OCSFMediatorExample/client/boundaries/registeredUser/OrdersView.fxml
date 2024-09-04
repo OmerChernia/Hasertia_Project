@@ -12,7 +12,8 @@
             <TableView fx:id="tblOrders" layoutX="11.0" layoutY="74.0" prefHeight="477.0" prefWidth="909.0" style=": ;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="74.0">
                <columns>
                   <TableColumn fx:id="colId" maxWidth="1200.0" minWidth="0.0" prefWidth="56.0" text="Id" />
-                  <TableColumn fx:id="colpurchaseDate" prefWidth="216.0" text="Purchase Date" />
+                  <TableColumn fx:id="colPurchaseDate" prefWidth="216.0" text="Purchase Date" />
+                  <TableColumn fx:id="colName" prefWidth="216.0" text="Purchase Name" />
                   <TableColumn fx:id="colTypePurchase" prefWidth="327.0" text="Type of Purchase" />
                   <TableColumn fx:id="colStatus" prefWidth="234.0" text="Status" />
                </columns>
@@ -39,7 +40,7 @@
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Are you sure you want to cancel this order permanently?" textAlignment="CENTER" wrappingWidth="320.0">
                            <font>
-                              <Font name="System Bold Italic" size="22.0" />
+                              <Font name="System Bold" size="22.0" />
                            </font>
                         </Text>
                         <Text fx:id="txtRefund" fill="#aeacac" strokeType="OUTSIDE" strokeWidth="0.0" text="Information cannot be retrieved" textAlignment="CENTER" wrappingWidth="320.0">
@@ -71,8 +72,7 @@
                   </Button>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="OrderContainer" layoutX="235.0" layoutY="111.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="298.0" prefWidth="507.0" style="-fx-background-radius: 10;" visible="false">
-
+            <AnchorPane fx:id="OrderContainer" layoutX="235.0" layoutY="111.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="256.0" prefWidth="459.0" style="-fx-background-radius: 10;" visible="false">
             </AnchorPane>
          </children>
       </AnchorPane>

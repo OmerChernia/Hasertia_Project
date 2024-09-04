@@ -4,17 +4,17 @@ import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -33,8 +33,6 @@ import javafx.scene.layout.StackPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.scene.control.ComboBox;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.paint.Color;
 
 
 import java.io.IOException;
@@ -49,18 +47,16 @@ import java.util.stream.Collectors;
 
 public class HomeBoundary implements Initializable {
 
-    private static final int ITEMS_PER_ROW = 4;
+    private static final int ITEMS_PER_ROW = 3;
+    @FXML
+    private HBox TheaterFilters;
+
     private List<Movie> items;
     private DialogTool dialogInfo;
 
     @FXML
     private AnchorPane InfoContainer;
 
-    @FXML
-    private Button btnHV;
-
-    @FXML
-    private Button btnTheater;
 
     @FXML
     private StackPane stckHome;
@@ -71,8 +67,7 @@ public class HomeBoundary implements Initializable {
     static String currentScreeningFilter="Theater";        // sets in what type of screening the user wants to see
     private String Genre="all";
 
-    @FXML
-    private HBox TheaterFilters;
+
 
     @FXML
     private ComboBox<String> cmbTheater;
@@ -88,6 +83,7 @@ public class HomeBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
+
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
         SetTheaterCombo();
@@ -98,30 +94,23 @@ public class HomeBoundary implements Initializable {
     }
 
     private void animateNodes() {
-        // הוספת אנימציות טעינה רכות לרכיבים מרכזיים
         Animations.fadeInUp(stckHome);
         Animations.fadeInUp(grid);
-        Animations.fadeInUp(TheaterFilters);
-        Animations.fadeInUp(cmbTheater);
-        Animations.fadeInUp(beforeDate);
-        Animations.fadeInUp(afterDate);
+
     }
 
 
     private void toggleButtonState(Button clickedButton, Button lastSelectedButton) {
         if (lastSelectedButton != null) {
-
-            lastSelectedButton.setEffect(null);
-            lastSelectedButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #cae8fb; -fx-font-size: 18px;");
+            lastSelectedButton.getStyleClass().remove("selected");
         }
         if (lastSelectedButton == clickedButton) {
             lastSelectedButton = null;
         } else {
-
-            clickedButton.setEffect(new DropShadow(10, Color.BLACK));
-            clickedButton.setStyle("-fx-background-color: #333366; -fx-text-fill: #ffffff; -fx-font-size: 18px;");
+            clickedButton.getStyleClass().add("selected");
         }
     }
+
 
 
     @Subscribe
@@ -204,6 +193,7 @@ public class HomeBoundary implements Initializable {
             }
         });
     }
+
     public void setItems(List<Movie> movies) throws IOException {
         this.items = movies;
         Platform.runLater(() -> {
@@ -329,12 +319,12 @@ public class HomeBoundary implements Initializable {
     }
 
     public void cleanup() {
-        // Unregister this controller from EventBus when it's no longer needed
-        EventBus.getDefault().unregister(this);
+         EventBus.getDefault().unregister(this);
     }
 
     @FXML
     void SetTheaterCombo() {
+
         cmbTheater.setCellFactory(comboBox -> new ListCell<String>() {
             @Override
             protected void updateItem(String location, boolean empty) {
@@ -360,7 +350,7 @@ public class HomeBoundary implements Initializable {
     @FXML
     void Reset(ActionEvent event) {
         MovieController.getMoviesPresentedInTheater();
-        cmbTheater.setValue(null);
+         cmbTheater.setValue(null);
         afterDate.setValue(null);
         beforeDate.setValue(null);
     }

@@ -23,6 +23,9 @@ public class Complaint implements Serializable {
     @Column(nullable = false)
     private boolean isClosed;
 
+    @Column
+    private String email;
+
     @ManyToOne
     private RegisteredUser registeredUser;
 
@@ -32,7 +35,18 @@ public class Complaint implements Serializable {
         this.purchase = purchase;
         this.isClosed = isClosed;
         this.registeredUser = registeredUser;
+        this.email = registeredUser.getEmail();
     }
+
+
+    public Complaint(String info, LocalDateTime creationDate, boolean isClosed, String email) {
+        this.info = info;
+        this.creationDate = creationDate;
+        this.isClosed = isClosed;
+        this.email = email;
+    }
+
+
 
     public Complaint() {
     }
@@ -42,6 +56,11 @@ public class Complaint implements Serializable {
     public String getInfo() {
         return info;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
 
     public void setInfo(String info) {
         this.info = info;

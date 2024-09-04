@@ -6,24 +6,17 @@ import il.cshaifasweng.OCSFMediatorExample.server.handlers.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.ComplaintFollowUpScheduler;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.HomeViewingScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.MovieInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
-import jdk.jfr.Event;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 import org.hibernate.service.ServiceRegistry;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,15 +37,17 @@ public class SimpleServer extends AbstractServer
 		// Initialize schedulers as singletons
 		ComplaintFollowUpScheduler complaintScheduler = ComplaintFollowUpScheduler.getInstance();
 		OrderScheduler emailNotificationScheduler = OrderScheduler.getInstance();
-		LinkAndInstanceScheduler linkAndInstanceScheduler = LinkAndInstanceScheduler.getInstance();
+		HomeViewingScheduler homeViewingScheduler = HomeViewingScheduler.getInstance();
+		MovieInstanceScheduler movieInstanceScheduler = MovieInstanceScheduler.getInstance();
 
 		GenerateDB db = new GenerateDB(session);
 		db.initializeDatabase();
-
 		// Schedule all active complaints
 		complaintScheduler.scheduleAllActiveComplaints();
 		// Schedule all home viewing packages
-		linkAndInstanceScheduler.scheduleHomeViewingPackages();
+		HomeViewingScheduler.scheduleHomeViewingPackages();
+		// Schedule all future movie instances
+		movieInstanceScheduler.scheduleMovieInstances();
 	}
 
 
@@ -66,6 +61,7 @@ public class SimpleServer extends AbstractServer
 			Message message = (Message) msg;
 			MessageHandler messageHandler = null;
 
+			session.clear();  // Clear session to ensure fresh data is fetched.
 			session.beginTransaction();
 
 			if (message.messageType == Message.MessageType.REQUEST) {

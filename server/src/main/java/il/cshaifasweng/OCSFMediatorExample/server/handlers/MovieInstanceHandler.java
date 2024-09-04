@@ -4,15 +4,12 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.MovieInstanceScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,7 +32,7 @@ public class MovieInstanceHandler extends MessageHandler
     {
         switch (message.requestType)
         {
-            case ADD_MOVIE_INSTANCE -> add_movie_intance();
+            case ADD_MOVIE_INSTANCE -> add_movie_instance();
             case GET_MOVIE_INSTANCE -> get_movie_instance_by_id();
             case DELETE_MOVIE_INSTANCE -> delete_movie_instance();
             case UPDATE_MOVIE_INSTANCE -> update_movie_instance();
@@ -125,7 +122,7 @@ public class MovieInstanceHandler extends MessageHandler
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
 
-    private void add_movie_intance()
+    private void add_movie_instance()
     {
         if (message.movies.getFirst() != null) {
             session.save(message.movies.getFirst());
@@ -133,7 +130,7 @@ public class MovieInstanceHandler extends MessageHandler
             message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_ADDED;
 
             // Schedule the movie instance for deactivation after it ends
-            LinkAndInstanceScheduler.getInstance().scheduleMovieInstanceDeactivation(message.movies.getFirst());
+            MovieInstanceScheduler.getInstance().scheduleMovieInstanceDeactivation(message.movies.getFirst());
             Movie movie = message.movies.getFirst().getMovie();
             message.id=movie.getId(); //save the movieid for later
 
@@ -231,8 +228,8 @@ public class MovieInstanceHandler extends MessageHandler
         // Schedule emails for canceled screening
         OrderScheduler.getInstance().scheduleEmailsForCanceledScreening(movieTickets, movieInstance);
         OrderScheduler.getInstance().cancelScheduledNotifyNewMovie(movieInstance.getMovie());
-        LinkAndInstanceScheduler.getInstance().cancelMovieInstanceTasks(movieInstance);
-        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
+        // Cancel all scheduled tasks related to the movie instance and its tickets
+        MovieInstanceScheduler.getInstance().cancelMovieInstanceTasks(movieInstance);        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
 
 

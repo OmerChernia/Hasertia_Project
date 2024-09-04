@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,14 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import net.bytebuddy.implementation.ToStringMethod;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,8 +51,7 @@ public class MovieInfoBoundary implements Initializable {
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize logic if needed
-    }
+     }
 
     public void setHomeController(HomeBoundary homeController) {
         this.homeController = homeController;
@@ -73,8 +70,11 @@ public class MovieInfoBoundary implements Initializable {
         image.setFitHeight(350);
         expandImage(movie);
 
-        ButtonFactory.ButtonGenreCellValueFactory factory = new ButtonFactory.ButtonGenreCellValueFactory();
-        btnGenre = factory.call(new TableColumn.CellDataFeatures<>(null, null, movie)).getValue();
+        // Update genre button with appropriate styling and action
+        Button genreButton = ButtonFactory.createButtonGenre(movie);
+        btnGenre.setText(genreButton.getText());
+        btnGenre.setGraphic(genreButton.getGraphic());
+        btnGenre.getStyleClass().addAll(genreButton.getStyleClass());
     }
 
     @FXML

@@ -1,11 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.customerService;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -166,7 +164,7 @@ public class DialogCustomerService implements Initializable {
         finalResponsePreviewArea.getChildren().clear();
 
         if (employeeResponseComboBox.getValue() != null) {
-            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text("Employee Response: " + employeeResponseComboBox.getValue() + "\n"));
+            finalResponsePreviewArea.getChildren().add(new javafx.scene.text.Text(  employeeResponseComboBox.getValue() + "\n"));
         }
 
         String selectedAction = actionComboBox.getValue();
@@ -180,7 +178,7 @@ public class DialogCustomerService implements Initializable {
     public void handleSubmitFinalResponse() {
 
         if (btnSend.isDisable()) {
-            NotificationsBuilder.create(NotificationType.ERROR, "You must select an action and a response before sending.");
+            NotificationsBuilder.create(NotificationType.ERROR, "You must select an action and a response before sending.",pnEmployeeArea);
             return;
         }
 

@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
@@ -22,6 +22,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class AboutBoundary implements Initializable {
+
 
     @FXML
     private ImageView MonkeyCode;
@@ -43,14 +44,15 @@ public class AboutBoundary implements Initializable {
 
     private void setURL() {
         String GITHUB = "https://github.com/OmerChernia/Hasertia_Project.git";
-        url(GITHUB, github);
+         url(GITHUB, github);
+
     }
 
     private void setAnimations() {
-        transition(developer, 1);
-        transition(MonkeyCode, 1);
+         transition(MonkeyCode, 1);
         transition(separator, 1);
         transition(github, 1);
+
 
     }
 

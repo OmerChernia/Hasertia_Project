@@ -1,21 +1,17 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,21 +20,21 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.CustomContextMenu;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -53,13 +49,13 @@ public class OrdersBoundary implements Initializable {
     private TableColumn<Purchase, Integer> colId;
 
     @FXML
-    private TableColumn<Purchase, Button> colStatus;
+    private TableColumn<Purchase, Node> colStatus;
 
     @FXML
     private TableColumn<Purchase, Button> colTypePurchase;
 
     @FXML
-    private TableColumn<Purchase, String> colpurchaseDate;
+    private TableColumn<Purchase, String> colPurchaseDate,colName;
 
     @FXML
     private Text ticketCounterT;
@@ -177,34 +173,34 @@ public class OrdersBoundary implements Initializable {
             tblOrders.setItems(listOrders);
             tblOrders.setFixedCellSize(30);
             colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colpurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
-            ButtonFactory buttonFactory = new ButtonFactory();
-            colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
-            colStatus.setCellValueFactory(param -> {
-                Button button = new Button();
-                button.setPrefWidth(100);
+            colName.setCellValueFactory(param -> {
+                String s ="";
 
                 if(param.getValue() instanceof MultiEntryTicket)
                 {
-                    button.setText("");
-                    button.getStyleClass().addAll("button-gray", "table-row-cell");
+                    s = "20 Movie Tickets";
                 }
-                else {
-                    // Check if the purchase is active or not
-                    if (param.getValue().getIsActive()) { // Assuming isActive() is a method in your Purchase class
-                        button.setText("Available");
-                        button.getStyleClass().addAll("button-green", "table-row-cell");
-                    } else {
-                        button.setText("Not Available");
-                        button.getStyleClass().addAll("button-red", "table-row-cell"); // You can use a different style for "Not Available"
-                    }
+                else if(param.getValue() instanceof MovieTicket)
+                {
+                    s = ((MovieTicket) param.getValue()).getMovieInstance().getMovie().getEnglishName();
                 }
-                return new SimpleObjectProperty<>(button);
+                else if(param.getValue() instanceof HomeViewingPackageInstance)
+                {
+                    s = ((HomeViewingPackageInstance) param.getValue()).getMovie().getEnglishName();
+                }
+
+                return new SimpleObjectProperty<>(s);
+
             });
+            colPurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
+            colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
+            colStatus.setCellValueFactory(new ButtonFactory.ButtonStatusTicketCellValueFactory());
+
         });
+
     }
 
-
+    public StackPane getStckUsers(){return stckUsers;}
 
     private void setContextMenu() {
         CustomContextMenu contextMenu = new CustomContextMenu(tblOrders,2);

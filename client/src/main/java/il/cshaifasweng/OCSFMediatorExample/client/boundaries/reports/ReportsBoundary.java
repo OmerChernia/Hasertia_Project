@@ -312,12 +312,17 @@ public class ReportsBoundary implements Initializable {
     public void onTheaterMessageReceived(TheaterMessage message) {
         Platform.runLater(() -> {
             if (message.responseType == TheaterMessage.ResponseType.RETURN_THEATER) {
-                this.theaterLocation = message.theaterList.get(0).getLocation();
-                System.out.println("Theater Location set to: " + this.theaterLocation);
-                updateFilteredData();
+                if (!message.theaterList.isEmpty()) { // Check if the list is not empty
+                    this.theaterLocation = message.theaterList.get(0).getLocation();
+                    System.out.println("Theater Location set to: " + this.theaterLocation);
+                    updateFilteredData();
+                } else {
+                    System.out.println("Theater list is empty, cannot set location.");
+                }
             }
         });
     }
+
 
     @Subscribe
     public void onComplaintMessageReceived(ComplaintMessage message) {

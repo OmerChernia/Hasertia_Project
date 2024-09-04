@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,7 +11,6 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import org.greenrobot.eventbus.EventBus;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -51,7 +50,7 @@ public class DialogComplaint implements Initializable  {
         if (additionalComments.length() > 0) {
             // Code to submit the complaint to the system goes here
             LocalDateTime creationDate = LocalDateTime.now();
-            ComplaintController.addComplaint( additionalComments,  creationDate,  myPurchase,  false,  myPurchase.getOwner());
+            ComplaintController.addComplaintRegister( additionalComments,  creationDate,  myPurchase,  false,  myPurchase.getOwner());
             additionalCommentsArea.clear();
             closeDialog();
 

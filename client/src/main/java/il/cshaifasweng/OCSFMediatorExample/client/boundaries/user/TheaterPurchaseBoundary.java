@@ -3,22 +3,19 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.*;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.*;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.events.SeatStatusChangedEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -26,7 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -120,7 +117,7 @@ public class TheaterPurchaseBoundary {
     private Label step3Text;
 
     @FXML
-    private Label confirmationDetails;
+    private Text theaterLabel,dateLabel,timeLabel,hallLabel,seatLabel,movieTitleLabel,oldPriceLabel,paidPriceLabel,totalAmountLabel,qtyLabel;
 
     @FXML
     private ComboBox<String> expirationMonthCombo;
@@ -128,8 +125,6 @@ public class TheaterPurchaseBoundary {
     @FXML
     private ComboBox<String> expirationYearCombo;
 
-    @FXML
-    private Label pricePaidLabel;
 
     //the user details
     @FXML
@@ -155,7 +150,7 @@ public class TheaterPurchaseBoundary {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     @FXML
-    private Spinner<Integer> ticketsSpinner; // רכיב לבחירת מספר כרטיסים
+    private Spinner<Integer> ticketsSpinner;
 
     @FXML
     private Button cardPackageBTN;
@@ -191,7 +186,7 @@ public class TheaterPurchaseBoundary {
             RegisteredUserController.getUserByID(SimpleClient.user);
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
-        ticketsSpinner.setValueFactory(valueFactory); // הגדרת טווח לבחירת מספר כרטיסים
+        ticketsSpinner.setValueFactory(valueFactory);
 
         populateExpirationMonths();
         populateExpirationYears();
@@ -225,8 +220,7 @@ public class TheaterPurchaseBoundary {
         movieImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MOVIE_PACKAGE + currentMovieInstance.getMovie().getImage())));
     }
 
-    //send a message to get an updated movie instance
-    private void updateSeats()
+     private void updateSeats()
     {
         HallController.requestHallByID(currentMovieInstance.getHall().getId());
     }
@@ -300,7 +294,7 @@ public class TheaterPurchaseBoundary {
                 seatButton.setStyle("-fx-background-color: #e72241;");
             }
             else
-                NotificationsBuilder.create(NotificationType.ERROR, "You can't select more seats!.");
+                NotificationsBuilder.create(NotificationType.ERROR, "You can't select more seats!.",stackPane);
         }
 
     }
@@ -328,7 +322,7 @@ public class TheaterPurchaseBoundary {
     {
         if(numberOfTickets > 0)
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"You didn't selected all the seats you asked.");
+            NotificationsBuilder.create(NotificationType.ERROR,"You didn't selected all the seats you asked.",stackPane);
         }
         else
         {
@@ -344,13 +338,13 @@ public class TheaterPurchaseBoundary {
             System.out.println(message.responseType);
 
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_IS_ALREADY_TAKEN)) {
-                NotificationsBuilder.create(NotificationType.ERROR, "Somebody ordered those tickets now, try again.");
+                NotificationsBuilder.create(NotificationType.ERROR, "Somebody ordered those tickets now, try again.",stackPane);
                 initializeSeatSelection();
             }
 
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_WAS_RESERVED)) {
 
-                isReserved = true; // flag is now says the seats been reserved
+                isReserved = true;
 
                 stackPane.getChildren().clear();
                 highlightStep(3);
@@ -366,7 +360,7 @@ public class TheaterPurchaseBoundary {
                 }
                 else {
 
-                    startTimer();  //start the timer
+                    startTimer();
 
                     if (user != null)
                         showCreditCardFields();
@@ -381,7 +375,7 @@ public class TheaterPurchaseBoundary {
                 stackPane.getChildren().clear();
                 stackPane.getChildren().add(seatSelectionPane);
                 highlightStep(2);
-                stopTimer();  //stop the timer
+                stopTimer();
             }
         });
     }
@@ -408,7 +402,7 @@ public class TheaterPurchaseBoundary {
     {
         if(ticketsSpinner.getValue() > user.getTicket_counter())
         {
-            NotificationsBuilder.create(NotificationType.ERROR, "You can't order more tickets then what you have in card package.");
+            NotificationsBuilder.create(NotificationType.ERROR, "You can't order more tickets then what you have in card package.",stackPane);
         }
         else
         {
@@ -463,7 +457,7 @@ public class TheaterPurchaseBoundary {
             timer.stop();
         }
 
-        timeRemaining = 600; // 10 דקות בשניות
+        timeRemaining = 600;
         timerLabel.setText(formatTime(timeRemaining));
 
         timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
@@ -472,7 +466,7 @@ public class TheaterPurchaseBoundary {
 
             if (timeRemaining <= 0) {
                 timer.stop();
-                NotificationsBuilder.create(NotificationType.ERROR, "Timer has passed!, seats canceled, order again.");
+                NotificationsBuilder.create(NotificationType.ERROR, "Timer has passed!, seats canceled, order again.",stackPane);
                 System.out.println("Time is up! Please select a seat again.");
                 goToSeatSelection();
             }
@@ -569,7 +563,6 @@ public class TheaterPurchaseBoundary {
                 break;
         }
 
-        // הוספת זום לסטפ הנבחר
         Animations.hover(step1Label, 200, 1.2);
         Animations.hover(step2Label, 200, 1.2);
         Animations.hover(step3Label, 200, 1.2);
@@ -577,31 +570,34 @@ public class TheaterPurchaseBoundary {
 
     private void showConfirmation() {
         isReserved = false;
-        StringBuilder seats_info= new StringBuilder("Seats:\n");
-        for(Seat seat : selectedSeats)
-        {
-            seats_info.append("Row: ").append(seat.getRow()).append(", Col: ").append(seat.getCol()).append("\n");
+        StringBuilder seats_info = new StringBuilder();
+        for (Seat seat : selectedSeats) {
+            seats_info.append("ROW: ").append(seat.getRow()).append(", COL: ").append(seat.getCol()).append("\n");
         }
-        String text = "Movie: " + currentMovieInstance.getMovie().getHebrewName() + " | " + currentMovieInstance.getMovie().getEnglishName() + "\n" +
-                "Date: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "\n" +
-                "Time: " + currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")) + "\n" +
-                "Hall: " + currentMovieInstance.getHall().getId() + "\n" +
-                "Theater: " + currentMovieInstance.getHall().getTheater().getLocation() + "\n" +
-                seats_info;
-        if(!isCardPackageOn)
-                text += "Price Paid: ₪" + currentMovieInstance.getMovie().getTheaterPrice() *selectedSeats.size();
-
-        confirmationDetails.setText(text);
-        confirmationMovieImage.setImage(movieImage.getImage());
+        qtyLabel.setText(String.valueOf(selectedSeats.size()));
+        dateLabel.setText(currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        timeLabel.setText(currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        hallLabel.setText("HALL: "+ String.valueOf(currentMovieInstance.getHall().getId()));
+        seatLabel.setText(String.valueOf(seats_info));
+        movieTitleLabel.setText(currentMovieInstance.getMovie().getHebrewName() + " | " + currentMovieInstance.getMovie().getEnglishName());
+        theaterLabel.setText(currentMovieInstance.getHall().getTheater().getLocation());
+        if (!isCardPackageOn) {
+            oldPriceLabel.setVisible(false);
+            paidPriceLabel.setText(currentMovieInstance.getMovie().getTheaterPrice() + "₪");
+            totalAmountLabel.setText(currentMovieInstance.getMovie().getTheaterPrice()*selectedSeats.size() + "₪");
+        }
+        if (isCardPackageOn)
+        {
+            oldPriceLabel.setVisible(true);
+            oldPriceLabel.setText(currentMovieInstance.getMovie().getTheaterPrice() + "₪");
+            paidPriceLabel.setText(ConstantsPath.DISCOUNT_TICKET + "₪");
+            totalAmountLabel.setText(ConstantsPath.DISCOUNT_TICKET*selectedSeats.size() + "₪");
+        }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);
     }
 
-    @FXML
-    private void closeApplication() {
-        Stage stage = (Stage) stackPane.getScene().getWindow();
-        stage.close();
-    }
+
 
     public void cleanup()
     {
@@ -614,13 +610,12 @@ public class TheaterPurchaseBoundary {
         }
     }
 
-    // a method that checks if the details that the user given is valid , returns true if the details are valid
     private boolean checkDetails()
     {
         if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
                 || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.");
+            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.",stackPane);
             return false;
         }
 
@@ -628,7 +623,7 @@ public class TheaterPurchaseBoundary {
         for (char c : textFirstName.toCharArray()) {
             if (Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.",stackPane);
                 return false;
             }
         }
@@ -637,7 +632,7 @@ public class TheaterPurchaseBoundary {
         for (char c : textLastName.toCharArray()) {
             if (Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.",stackPane);
                 return false;
             }
         }
@@ -646,28 +641,28 @@ public class TheaterPurchaseBoundary {
         for (char c : textID.toCharArray()) {
             if (!Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.",stackPane);
                 return false;
             }
         }
 
         if(!idNumberTF.getText().equals(confirmIdNumberTF.getText()))
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!");
+            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!",stackPane);
             return false;
         }
 
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         if (!pattern.matcher(emailTF.getText()).matches())
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.");
+            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.",stackPane);
             return false;
         }
 
 
         if(!emailTF.getText().equals(confirmEmailTF.getText()))
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!");
+            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!",stackPane);
             return false;
         }
         return true;
@@ -682,25 +677,25 @@ public class TheaterPurchaseBoundary {
 
         // Check if all fields are filled
         if (cardNumber.isEmpty() || expirationMonth == null || expirationYear == null || cvv.isEmpty()) {
-            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled");
+            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled",stackPane);
             return false;
         }
 
         // Validate card number (using Luhn algorithm)
         if (!isValidCardNumber(cardNumber)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number",stackPane);
             return false;
         }
 
         // Validate expiration date
         if (!isValidExpirationDate(expirationMonth, expirationYear)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date",stackPane);
             return false;
         }
 
         // Validate CVV
         if (!isValidCVV(cvv)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV",stackPane);
             return false;
         }
 

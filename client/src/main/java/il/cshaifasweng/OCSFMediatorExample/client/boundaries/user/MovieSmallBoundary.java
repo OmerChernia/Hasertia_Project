@@ -2,9 +2,9 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieInstanceMessage;
@@ -107,6 +107,7 @@ public class MovieSmallBoundary {
 
     @FXML
     private Text txtMovieTheater;
+    private static MovieSmallBoundary registeredInstance = null; // Static reference to keep track of registered instance
 
     @FXML
     private StackPane stkpanel;
@@ -403,7 +404,7 @@ public class MovieSmallBoundary {
             Parent root = loader.load();
             HomeViewingPurchaseBoundary purchaseController = loader.getController();
             purchaseController.setCurrentMovie(movie);
-            purchaseController.setCurrentdateTime(dateTime);
+            purchaseController.setCurrentDateTime(dateTime);
             homeController.setRoot(root);
 
             MainBoundary.setCurrentController(purchaseController);  //set the last controller for cleanup
@@ -413,7 +414,7 @@ public class MovieSmallBoundary {
         }
     }
 
-    @FXML
+    @Subscribe
     private void onMovieInstanceReceived(MovieInstance movieInstance) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.THEATER_PURCHASE_VIEW));
@@ -429,7 +430,7 @@ public class MovieSmallBoundary {
     }
 
     @FXML
-    void setHVdate(ActionEvent event) {
+    void setHVDate(ActionEvent event) {
         cmbHourHv.setDisable(false);
         for (int i = 12; i <= 24; i++) {
             cmbHourHv.getItems().add(LocalTime.of(i % 24, 0).format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -448,17 +449,22 @@ public class MovieSmallBoundary {
         }
     }
 
-    public void goToSelect(ActionEvent actionEvent)
-    {
-        //need to look this up
-        if(!EventBus.getDefault().isRegistered(this))
+    public void goToSelect(ActionEvent actionEvent) {
+        // Unregister the previous instance if there is one
+        if (registeredInstance != null && registeredInstance != this) {
+            registeredInstance.cleanup();
+        }
+
+        // Register the current instance and update the static reference
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
+            registeredInstance = this; // Set the current instance as the registered instance
+        }
 
         MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
-        if (HomeBoundary.currentScreeningFilter.equals("Theater")){
+        if (HomeBoundary.currentScreeningFilter.equals("Theater")) {
             selectTheaterPane.setVisible(true);
-        }
-        else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")){
+        } else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")) {
             txtMovieHV.setText(movie.getEnglishName());
             selectHvPanel.setVisible(true);
         }
@@ -469,7 +475,28 @@ public class MovieSmallBoundary {
     }
 
     public void cleanup() {
+        // Call the method that handles the close button action to return to the main screen
+        handleClose();
+
+        // Unregister the instance from EventBus and reset the static reference
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+            if (registeredInstance == this) {
+                registeredInstance = null; // Reset the static reference if this is the registered instance
+            }
+        }
+    }
+
+    private void handleClose() {
+        // Unregister from EventBus and reset the UI elements to show the main screen
         EventBus.getDefault().unregister(this);
+
+        imagePanel.setVisible(true);
+        if (HomeBoundary.currentScreeningFilter.equals("Theater")) {
+            selectTheaterPane.setVisible(false);
+        } else if (HomeBoundary.currentScreeningFilter.equals("Home Viewing")) {
+            selectHvPanel.setVisible(false);
+        }
     }
 
 

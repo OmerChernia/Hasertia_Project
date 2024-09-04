@@ -2,33 +2,28 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.lang.reflect.InvocationTargetException;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser.OrdersBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.EmployeeLoginMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.LoginMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
-import il.cshaifasweng.OCSFMediatorExample.entities.Person;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -47,7 +42,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 public class MainBoundary implements Initializable {
+    @FXML
+    private ImageView eyeIcon;
+    @FXML
+    private TextField txtPasswordVisible;
 
+    @FXML
+    private Button btnSpace;
+    @FXML
+    private VBox vboxSide;
     @FXML
     private ImageView imgLog;
 
@@ -118,8 +121,7 @@ public class MainBoundary implements Initializable {
     @FXML
     private StackPane stckMain;
 
-    @FXML
-    private AnchorPane tooltipAbout;
+
 
     @FXML
     private AnchorPane tooltipComplaints;
@@ -128,15 +130,10 @@ public class MainBoundary implements Initializable {
     private AnchorPane tooltipEditMovieList;
 
 
-
     @FXML
     private AnchorPane tooltipEditScreening;
 
-    @FXML
-    private AnchorPane tooltipHome;
 
-    @FXML
-    private AnchorPane tooltipMe;
 
     @FXML
     private AnchorPane tooltipOrders;
@@ -147,8 +144,7 @@ public class MainBoundary implements Initializable {
     @FXML
     private AnchorPane tooltipReports;
 
-    @FXML
-    private AnchorPane tooltipSettings;
+
 
     @FXML
     private ToggleGroup userTypeToggleGroup;
@@ -161,7 +157,7 @@ public class MainBoundary implements Initializable {
     private TextField txtUser;
 
     @FXML
-    private TextField txtEmploee;
+    private TextField txtEmployee;
 
 
     private DialogTool dialogLogIn;
@@ -169,17 +165,18 @@ public class MainBoundary implements Initializable {
     private ImageView image;
 
     private static String loggedInUserId;
-    private static Employee.EmployeeType loggedInEmploeeId;
+    private static Employee.EmployeeType loggedInEmployeeId;
 
 
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
         txtUser.setStyle("-fx-text-fill: #cae8fb;");
-        txtEmploee.setStyle("-fx-text-fill: #cae8fb;");
+        txtEmployee.setStyle("-fx-text-fill: #cae8fb;");
         txtPassword.setStyle("-fx-text-fill: #cae8fb;");
+         eyeIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.GENERAL_PACKAGE+"close-eye.png"))));
 
         // Create the ToggleGroup and add the radio buttons to it
-        userTypeToggleGroup = new ToggleGroup();
+        ToggleGroup userTypeToggleGroup = new ToggleGroup();
         customerRadioButton.setToggleGroup(userTypeToggleGroup);
         employeeRadioButton.setToggleGroup(userTypeToggleGroup);
 
@@ -190,8 +187,9 @@ public class MainBoundary implements Initializable {
         userTypeToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             clearTextFields();
         });
+        lblWelcome.setText(setWelcomeMessage() + "Welcome To 'Hasretia'!");
 
-        SimpleChatClient.mainBoundary =this;
+        SimpleChatClient.mainBoundary = this;
 
         homeWindowsInitialize();
         resetButtons();
@@ -200,11 +198,13 @@ public class MainBoundary implements Initializable {
 
     private void clearTextFields() {
         txtUser.clear();
-        txtEmploee.clear();
+        txtEmployee.clear();
         txtPassword.clear();
-        lblWelcome.setText("Welcome to 'Hasretia'!");
-    }
+        txtPasswordVisible.clear();
+        imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGIN_ICON))));
 
+        lblWelcome.setText(setWelcomeMessage() + "Welcome To 'Hasretia'!");
+    }
 
 
     public void homeWindowsInitialize() {
@@ -213,38 +213,35 @@ public class MainBoundary implements Initializable {
 
     @FXML
     private void homeWindows(ActionEvent event) {
-        showFXMLWindows(ConstantsPath.HOME_VIEW );
+        showFXMLWindows(ConstantsPath.HOME_VIEW);
     }
 
     @FXML
-    private void EditMovieScreeningsWindows(ActionEvent event) {
-
-        showFXMLWindows(ConstantsPath.CONTENT_SCREENINGS_VIEW );
-    }
+    private void EditMovieScreeningsWindows(ActionEvent event) { showFXMLWindows(ConstantsPath.CONTENT_SCREENINGS_VIEW);}
 
     @FXML
     private void CustomerServiceWindows(ActionEvent event) {
-        showFXMLWindows(ConstantsPath.CUSTOMER_SERVICE_VIEW );
+        showFXMLWindows(ConstantsPath.CUSTOMER_SERVICE_VIEW);
     }
 
     @FXML
     private void settingsWindows(ActionEvent event) {
-        showFXMLWindows( ConstantsPath.COMPLAINT_VIEW );
+        showFXMLWindows(ConstantsPath.COMPLAINT_VIEW);
     }
 
     @FXML
     private void statisticsWindows(ActionEvent event) {
-        showFXMLWindows(ConstantsPath.COMPANY_MANAGER_VIEW );
+        showFXMLWindows(ConstantsPath.COMPANY_MANAGER_VIEW);
     }
 
     @FXML
     private void aboutWindows(ActionEvent event) {
-        showFXMLWindows( ConstantsPath.ABOUT_VIEW  ) ;
+        showFXMLWindows(ConstantsPath.ABOUT_VIEW);
     }
 
     @FXML
     private void productsWindows(ActionEvent event) {
-        showFXMLWindows(ConstantsPath.CONTENT_MOVIES_VIEW );
+        showFXMLWindows(ConstantsPath.CONTENT_MOVIES_VIEW);
     }
 
     @FXML
@@ -252,10 +249,9 @@ public class MainBoundary implements Initializable {
         showFXMLWindows(ConstantsPath.PRICE_CHANGE_VIEW);
     }
 
-
     @FXML
     private void addUserWindows(ActionEvent event) {
-        showFXMLWindows(ConstantsPath.ORDERS_VIEW );
+        showFXMLWindows(ConstantsPath.ORDERS_VIEW);
     }
 
     @FXML
@@ -272,21 +268,24 @@ public class MainBoundary implements Initializable {
 
     @FXML
     private void loginWindow() {
-        rootContainer.setEffect(ConstantsPath.BOX_BLUR_EFFECT); // Blur the background
+         rootContainer.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
 
-        pnLogIn.setVisible(true); // Show the login pane
+         pnLogIn.setVisible(true);
 
-        dialogLogIn = new DialogTool(pnLogIn, stckMain);
-        dialogLogIn.show();
-        dialogLogIn.setOnDialogOpened(ev -> employeeLogin.requestFocus());
-        handleRadioButtonAction();
+         dialogLogIn = new DialogTool(pnLogIn, stckMain);
 
-        dialogLogIn.setOnDialogClosed(ev -> {
-            rootContainer.setEffect(null); // Remove the blur effect
-            pnLogIn.setVisible(false); // Hide the login pane
+         dialogLogIn.setOnDialogOpened(ev -> employeeLogin.requestFocus());
+
+         dialogLogIn.show();
+
+         handleRadioButtonAction();
+
+         dialogLogIn.setOnDialogClosed(ev -> {
+            rootContainer.setEffect(null);
+            pnLogIn.setVisible(false);
         });
 
-        pnLogIn.toFront(); // Ensure the login pane is in front of other elements
+         pnLogIn.toFront();
     }
 
 
@@ -319,37 +318,31 @@ public class MainBoundary implements Initializable {
     }
 
     private void tooltips() {
-        Animations.tooltip(btnHome, tooltipHome);
         Animations.tooltip(btnEditMovieList, tooltipEditMovieList);
         Animations.tooltip(btnEditScreenings, tooltipEditScreening);
-        Animations.tooltip(btnSettings, tooltipSettings);
         Animations.tooltip(btnOrders, tooltipOrders);
         Animations.tooltip(btnPriceChange, tooltipPrice);
         Animations.tooltip(btnComplaints, tooltipComplaints);
         Animations.tooltip(btnReports, tooltipReports);
-        Animations.tooltip(btnAbout, tooltipAbout);
-        Animations.tooltip(btnME, tooltipMe);
 
     }
 
     private static Object currentController;
 
-    //to set Controllers that cant be reached by rootContainer: TheaterPurchaseBoundary and HomeViewingPurchaseBoundary
-    public static void setCurrentController(Object new_currentController)
-    {
+     public static void setCurrentController(Object new_currentController) {
         currentController = new_currentController;
     }
 
-    public void executeCleanup()
-    {
+    public void executeCleanup() {
         if (currentController != null) {
             try {
                 currentController.getClass().getMethod("cleanup").invoke(currentController);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {}
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            }
         }
     }
 
-    private void showFXMLWindows(String FXMLName)  {
+    private void showFXMLWindows(String FXMLName) {
 
         executeCleanup();
 
@@ -381,7 +374,6 @@ public class MainBoundary implements Initializable {
     }
 
 
-
     public Button getBtnAbout() {
         return btnAbout;
     }
@@ -390,7 +382,7 @@ public class MainBoundary implements Initializable {
     @FXML
     private void login(ActionEvent event) {
         String UserName = txtUser.getText();
-        String EmployeeName = txtEmploee.getText();
+        String EmployeeName = txtEmployee.getText();
         String password = txtPassword.getText();
 
         if (customerRadioButton.isSelected()) {
@@ -403,7 +395,6 @@ public class MainBoundary implements Initializable {
         }
         resetButtons();
         clearTextFields();
-        imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGOUT_ICON))));
         homeWindowsInitialize();
     }
 
@@ -411,26 +402,27 @@ public class MainBoundary implements Initializable {
     public void handleLoginResponse(LoginMessage loginMessage) {
         if (loginMessage instanceof EmployeeLoginMessage) {
             Platform.runLater(() -> {
-                handleEmployeeLoginResponse((EmployeeLoginMessage) loginMessage);
-                String role = "";
-                if (((EmployeeLoginMessage) loginMessage).employeeType !=null){
+                        handleEmployeeLoginResponse((EmployeeLoginMessage) loginMessage);
+                        String role = "";
+                        if (((EmployeeLoginMessage) loginMessage).employeeType != null) {
 
-                switch (((EmployeeLoginMessage) loginMessage).employeeType) {
-                    case THEATER_MANAGER:
-                        role = "Theater Manager";
-                        break;
-                    case COMPANY_MANAGER:
-                        role = "Company Manager";
-                        break;
-                    case CUSTOMER_SERVICE:
-                        role = "Customer Service";
-                        break;
-                    case CONTENT_MANAGER:
-                        role = "Content Manager";
-                        break;
-                }
-                lblWelcome.setText("Welcome " + role + "!");
-            }   }
+                            switch (((EmployeeLoginMessage) loginMessage).employeeType) {
+                                case THEATER_MANAGER:
+                                    role = "Theater Manager";
+                                    break;
+                                case COMPANY_MANAGER:
+                                    role = "Company Manager";
+                                    break;
+                                case CUSTOMER_SERVICE:
+                                    role = "Customer Service";
+                                    break;
+                                case CONTENT_MANAGER:
+                                    role = "Content Manager";
+                                    break;
+                            }
+                            lblWelcome.setText(setWelcomeMessage() + role + "!");
+                        }
+                    }
             );
         } else {
             Platform.runLater(() -> handleCustomerLoginResponse(loginMessage));
@@ -438,37 +430,53 @@ public class MainBoundary implements Initializable {
     }
 
 
+    public String setWelcomeMessage() {
+        LocalTime now = LocalTime.now();
+        String greeting;
 
-    public static int getId(){
-        return Integer.parseInt(loggedInUserId);
+        if (now.isBefore(LocalTime.NOON)) {
+            greeting = "Good Morning, ";
+        } else if (now.isBefore(LocalTime.of(18, 0))) {
+            greeting = "Good Afternoon, ";
+        } else {
+            greeting = "Good Evening ,";
+        }
+
+        return greeting;
     }
 
 
+    public static int getId() {
+        return Integer.parseInt(loggedInUserId);
+    }
+    public static Employee.EmployeeType getEmployee() {
+        return loggedInEmployeeId;
+    }
 
 
     public void handleCustomerLoginResponse(LoginMessage loginMessage) {
         Platform.runLater(() -> {
-            if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL)
-            {
-                lblWelcome.setText("Nice to see you again in 'Hasretia'!");
+            if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
+                lblWelcome.setText(setWelcomeMessage() + "Nice to see you again in 'Hasretia'!");
 
                 SimpleClient.user = loginMessage.id; // Save the logged-in user ID
 
-                this.loggedInUserId = loginMessage.id; // Save the logged-in user ID
-                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User " + loginMessage.id + " Logged in!");
+                loggedInUserId = loginMessage.id; // Save the logged-in user ID
+                NotificationsBuilder.create(NotificationType.SUCCESS, "Registered User " + loginMessage.id + " Logged in!",stckMain);
 
                 // Update the UI based on the user's role
                 updateUserBasedOnRole(loginMessage.id);
+                imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGOUT_ICON))));
 
                 // Close the login dialog or do any other post-login actions
                 closeLoginDialog();
             } else if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_FAILED) {
                 // Handle login failure (show error message, etc.)
-                NotificationsBuilder.create(NotificationType.ERROR,"Login failed. Please check your credentials.");
+                NotificationsBuilder.create(NotificationType.ERROR, "Login failed. Please check your credentials.",stckMain);
 
             } else if (loginMessage.responseType == LoginMessage.ResponseType.ALREADY_LOGGED) {
 
-                NotificationsBuilder.create(NotificationType.ERROR,"Registered User is already logged in.");
+                NotificationsBuilder.create(NotificationType.ERROR, "Registered User is already logged in.",stckMain);
             }
         });
     }
@@ -479,119 +487,82 @@ public class MainBoundary implements Initializable {
             if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
                 SimpleClient.user = loginMessage.id; // Save the logged-in employee ID
 
-                this.loggedInUserId = loginMessage.id; // Save the logged-in employee ID
-                this.loggedInEmploeeId = loginMessage.employeeType; // Save the logged-in employee type
+                loggedInUserId = loginMessage.id; // Save the logged-in employee ID
+                loggedInEmployeeId = loginMessage.employeeType; // Save the logged-in employee type
 
+                imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGOUT_ICON))));
 
-                // Update the UI based on the user's role
                 updateEmployeeBasedOnRole(loginMessage.id, loginMessage.employeeType);
-                NotificationsBuilder.create(NotificationType.SUCCESS, "Employee" + loginMessage.employeeType+  loginMessage.employeeType.name() + "Logged in!");
+                NotificationsBuilder.create(NotificationType.SUCCESS, "Employee" + loginMessage.employeeType + loginMessage.employeeType.name() + "Logged in!",stckMain);
 
-                // Close the login dialog or do any other post-login actions
                 closeLoginDialog();
             } else if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_FAILED) {
-                // Handle login failure (show error message, etc.)
-                NotificationsBuilder.create(NotificationType.ERROR,"Login failed. Please check your credentials.");
+
+                NotificationsBuilder.create(NotificationType.ERROR, "Login failed. Please check your credentials.",stckMain);
             } else if (loginMessage.responseType == LoginMessage.ResponseType.ALREADY_LOGGED) {
                 // Handle the case where the user is already logged in
-                NotificationsBuilder.create(NotificationType.ERROR,"User is already logged in.");
+                NotificationsBuilder.create(NotificationType.ERROR, "User is already logged in.",stckMain);
             }
         });
     }
 
 
     private void resetButtons() {
-        // Disable all buttons by default
-        btnOrders.setVisible(false);
-        btnEditMovieList.setVisible(false);
-        btnEditScreenings.setVisible(false);
-        btnComplaints.setVisible(false);
-        btnReports.setVisible(false);
-        btnPriceChange.setVisible(false);
-
-
-        // Show common buttons
-        btnAbout.setVisible(true);
-        btnLog.setVisible(true);
-        btnSettings.setVisible(true);
-        btnHome.setVisible(true);
-        btnME.setVisible(true);
+        lblWelcome.setText(setWelcomeMessage() + "Welcome To 'Hasretia'!");
+        vboxSide.getChildren().clear();
     }
 
-    private void updateUserBasedOnRole(String userId ) {
-        // Disable all buttons by default
-        btnEditMovieList.setVisible(false);
-        btnEditScreenings.setVisible(false);
-        btnComplaints.setVisible(false);
-        btnReports.setVisible(false);
-        btnPriceChange.setVisible(false);
 
-
-        // Show common buttons
-        btnAbout.setVisible(true);
-        btnLog.setVisible(true);
-        btnSettings.setVisible(true);
-        btnHome.setVisible(true);
-        btnME.setVisible(true);
-        btnOrders.setVisible(true);
+    private void updateUserBasedOnRole(String userId) {
+        VBox vboxSide = (VBox) rootSideMenu.lookup("#vboxSide");
+        vboxSide.getChildren().clear();
+        vboxSide.getChildren().add(btnSpace);
+        vboxSide.getChildren().add(btnOrders);
 
     }
 
 
-    private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role ) {
-        // Disable all buttons by default
-        btnEditMovieList.setVisible(false);
-        btnEditScreenings.setVisible(false);
-        btnComplaints.setVisible(false);
-        btnReports.setVisible(false);
-        btnPriceChange.setVisible(false);
-        btnOrders.setVisible(false);
-
-
-        // Show common buttons
-        btnAbout.setVisible(true);
-        btnLog.setVisible(true);
-        btnSettings.setVisible(true);
-        btnHome.setVisible(true);
-        btnME.setVisible(true);
-
+    private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role) {
+        VBox vboxSide = (VBox) rootSideMenu.lookup("#vboxSide");
+        vboxSide.getChildren().clear();
+        vboxSide.getChildren().add(btnSpace);
 
         switch (role) {
             case CONTENT_MANAGER:
-                btnEditMovieList.setVisible(true);
-                btnEditScreenings.setVisible(true);
+                vboxSide.getChildren().add(btnEditMovieList);
+                vboxSide.getChildren().add(btnEditScreenings);
                 break;
             case CUSTOMER_SERVICE:
-                btnComplaints.setVisible(true);
+                vboxSide.getChildren().add(btnComplaints);
                 break;
             case THEATER_MANAGER:
-                btnReports.setVisible(true);
+                vboxSide.getChildren().add(btnReports);
                 break;
-            case  COMPANY_MANAGER:
-                btnReports.setVisible(true);
-                btnPriceChange.setVisible(true);
+            case COMPANY_MANAGER:
+                vboxSide.getChildren().add(btnReports);
+                vboxSide.getChildren().add(btnPriceChange);
                 break;
-
         }
+
 
     }
 
 
     @FXML
     private void logout() {
-        if (loggedInUserId != null || loggedInEmploeeId != null) {
+        if (loggedInUserId != null || loggedInEmployeeId != null) {
             AlertsBuilder.create(AlertType.WARNING, stckMain, stckMain, stckMain, "Are you sure you want to log out?", "Yes", () -> {
                         sendLogoutRequest();
                         loggedInUserId = null;
-                        loggedInEmploeeId = null;
+                        loggedInEmployeeId = null;
                         resetButtons();
                         clearTextFields();
                         closeLoginDialog();
                         imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGIN_ICON))));
                         homeWindowsInitialize();
                         AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "You have successfully logged out.");
-                    } , "No", () -> {
-                        AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "Have A nice Stay in 'Hasretia' :)");
+                    }, "No", () -> {
+                        AlertsBuilder.create(AlertType.SUCCESS, stckMain, stckMain, stckMain, "Have A nice Stay in 'Hasretia'!");
                     }
             );
         } else {
@@ -600,17 +571,36 @@ public class MainBoundary implements Initializable {
     }
 
 
-
     public static void sendLogoutRequest() {
-        if (loggedInUserId != null )
-        {
+        if (loggedInUserId != null) {
             SimpleClient.user = ""; // Save the logged-in user ID
-            if(loggedInEmploeeId != null)
+            if (loggedInEmployeeId != null)
                 LoginPageController.requestEmployeeLogOut(loggedInUserId);
             else
                 LoginPageController.requestUserLogOut(loggedInUserId);
         }
     }
 
+    private boolean isPasswordVisible = false;
 
-}
+    public void togglePasswordVisibility(ActionEvent actionEvent) {
+        if (isPasswordVisible) {
+            txtPassword.setText(txtPasswordVisible.getText());
+            txtPassword.setManaged(true);
+            txtPassword.setVisible(true);
+            txtPasswordVisible.setManaged(false);
+            txtPasswordVisible.setVisible(false);
+            txtPasswordVisible.clear();
+            eyeIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.GENERAL_PACKAGE + "close-eye.png"))));
+        } else {
+            txtPasswordVisible.setText(txtPassword.getText());
+            txtPasswordVisible.setManaged(true);
+            txtPasswordVisible.setVisible(true);
+            txtPassword.setManaged(false);
+            txtPassword.setVisible(false);
+            txtPassword.clear();
+            eyeIcon.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.GENERAL_PACKAGE+"view.png"))));
+        }
+        isPasswordVisible = !isPasswordVisible;
+    }
+    }

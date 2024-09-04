@@ -16,8 +16,9 @@ public class OrderScheduler {
     private final ScheduledExecutorService scheduledExecutor;
     private final Map<String, ScheduledFuture<?>> scheduledTasks; // Map to keep track of scheduled tasks
 
-    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_BLUE = "\u001B[34m";
     private static final String ANSI_RESET = "\u001B[0m";
+    private static final String CLASS_NAME = "OrderScheduler:: ";
 
     private OrderScheduler() {
         emailExecutor = Executors.newFixedThreadPool(5);
@@ -43,7 +44,7 @@ public class OrderScheduler {
      * @param purchase The purchase for which the confirmation email should be sent.
      */
     public void schedulePurchaseConfirmation(Purchase purchase) {
-        System.out.println(ANSI_GREEN + "Scheduling purchase confirmation email for purchase ID: " + purchase.getId() + ANSI_RESET);
+        System.out.println(ANSI_BLUE +CLASS_NAME+ "Scheduling purchase confirmation email for purchase ID: " + purchase.getId() + ANSI_RESET);
         emailExecutor.submit(() -> sendPurchaseConfirmationEmail(purchase));
     }
 
@@ -53,7 +54,7 @@ public class OrderScheduler {
      * @param purchase The purchase for which the cancellation email should be sent.
      */
     public void scheduleEmailCancellation(Purchase purchase) {
-        System.out.println(ANSI_GREEN + "Scheduling cancellation email for purchase ID: " + purchase.getId() + ANSI_RESET);
+        System.out.println(ANSI_BLUE +CLASS_NAME+ "Scheduling cancellation email for purchase ID: " + purchase.getId() + ANSI_RESET);
         emailExecutor.submit(() -> sendCancellationEmail(purchase));
     }
 
@@ -64,13 +65,13 @@ public class OrderScheduler {
      * @param movieInstance The movie instance that was canceled.
      */
     public void scheduleEmailsForCanceledScreening(List<MovieTicket> customerData, MovieInstance movieInstance) {
-        System.out.println(ANSI_GREEN + "Scheduling emails for canceled screening of movie instance ID: " + movieInstance.getId() + ANSI_RESET);
+        System.out.println(ANSI_BLUE +CLASS_NAME+ "Scheduling emails for canceled screening of movie instance ID: " + movieInstance.getId() + ANSI_RESET);
         for (MovieTicket customer : customerData) {
             String email = customer.getOwner().getEmail();
             String name = customer.getOwner().getName();
 
             emailExecutor.submit(() -> {
-                System.out.println(ANSI_GREEN + "Sending cancellation email to " + email + " for movie: " + movieInstance.getMovie().getEnglishName() + ANSI_RESET);
+                System.out.println(ANSI_BLUE +CLASS_NAME+ "Sending cancellation email to " + email + " for movie: " + movieInstance.getMovie().getEnglishName() + ANSI_RESET);
                 EmailSender.sendEmail(email, "Canceled Ticket from Monkii Movies",
                         String.format("Dear %s,\n\nYour ticket for the movie '%s' scheduled on %s has been canceled. We apologize for the inconvenience. You will receive a full refund.\n\nThank you,\nMonkii Movies",
                                 name,
@@ -92,13 +93,13 @@ public class OrderScheduler {
      * @param movieInstance The movie instance whose screening details were updated.
      */
     public void scheduleEmailsForUpdatedScreening(List<Object[]> customerData, MovieInstance movieInstance) {
-        System.out.println(ANSI_GREEN + "Scheduling emails for updated screening of movie instance ID: " + movieInstance.getId() + ANSI_RESET);
+        System.out.println(ANSI_BLUE +CLASS_NAME+ "Scheduling emails for updated screening of movie instance ID: " + movieInstance.getId() + ANSI_RESET);
         for (Object[] customer : customerData) {
             String email = (String) customer[0];
             String name = (String) customer[1];
 
             emailExecutor.submit(() -> {
-                System.out.println(ANSI_GREEN + "Sending updated screening email to " + email + " for movie: " + movieInstance.getMovie().getEnglishName() + ANSI_RESET);
+                System.out.println(ANSI_BLUE +CLASS_NAME+ "Sending updated screening email to " + email + " for movie: " + movieInstance.getMovie().getEnglishName() + ANSI_RESET);
                 EmailSender.sendEmail(
                         email,
                         "Updated Movie Screening Notification from Monkii Movies",
@@ -148,7 +149,7 @@ public class OrderScheduler {
      * @param users  The list of registered users to notify.
      */
     public void notifyNewMovie(Movie movie, List<RegisteredUser> users) {
-        System.out.println(ANSI_GREEN + "Scheduling notification emails for new movie: " + movie.getEnglishName() + ANSI_RESET);
+        System.out.println(ANSI_BLUE +CLASS_NAME+ "Scheduling notification emails for new movie: " + movie.getEnglishName() + ANSI_RESET);
         for (RegisteredUser user : users) {
             emailExecutor.submit(() -> {
                 String emailBody = String.format(
@@ -163,7 +164,7 @@ public class OrderScheduler {
                         movie.getDuration(), movie.getStreamingType()
                 );
 
-                System.out.println(ANSI_GREEN + "Sending new movie email to " + user.getEmail() + " for movie: " + movie.getEnglishName() + ANSI_RESET);
+                System.out.println(ANSI_BLUE + "Sending new movie email to " + user.getEmail() + " for movie: " + movie.getEnglishName() + ANSI_RESET);
                 EmailSender.sendEmail(user.getEmail(), "New Movie Available: " + movie.getEnglishName(), emailBody);
                 // Optionally, email the company
                 EmailSender.sendEmail("hasertiaproject@gmail.com", "New Movie Available: " + movie.getEnglishName(), emailBody);
@@ -179,7 +180,7 @@ public class OrderScheduler {
      * @param screeningDateTime The date and time of the movie screening.
      */
     public void scheduleNotifyNewMovieOneDayBefore(Movie movie, List<RegisteredUser> users, LocalDateTime screeningDateTime) {
-        System.out.println(ANSI_GREEN + "Scheduling notification email one day before screening for movie: " + movie.getEnglishName() + ANSI_RESET);
+        System.out.println(ANSI_BLUE +CLASS_NAME+ "Scheduling notification email one day before screening for movie: " + movie.getEnglishName() + ANSI_RESET);
         // Calculate the delay until 24 hours before the screening
         long delay = Duration.between(LocalDateTime.now(), screeningDateTime.minusDays(1)).toMillis();
         String taskKey = "notify-" + movie.getId();
@@ -197,10 +198,10 @@ public class OrderScheduler {
         String taskKey = "notify-" + movie.getId();
         ScheduledFuture<?> scheduledTask = scheduledTasks.get(taskKey);
         if (scheduledTask != null && !scheduledTask.isDone()) {
-            System.out.println(ANSI_GREEN + "Canceling scheduled notification email for movie: " + movie.getEnglishName() + ANSI_RESET);
+            System.out.println(ANSI_BLUE +CLASS_NAME+ "Canceling scheduled notification email for movie: " + movie.getEnglishName() + ANSI_RESET);
             scheduledTask.cancel(true);
             scheduledTasks.remove(taskKey);
-            System.out.println(ANSI_GREEN + "Canceled scheduled notification for movie: " + movie.getEnglishName() + ANSI_RESET);
+            System.out.println(ANSI_BLUE + "Canceled scheduled notification for movie: " + movie.getEnglishName() + ANSI_RESET);
         }
     }
 
@@ -220,7 +221,7 @@ public class OrderScheduler {
                         "Thank you for choosing Monkii Movies.\n\nBest regards,\nMonkii Movies Team",
                 purchase.getOwner().getName(), purchaseType);
 
-        System.out.println(ANSI_GREEN + "Sending purchase confirmation email to " + purchase.getOwner().getEmail() + ANSI_RESET);
+        System.out.println(ANSI_BLUE + "Sending purchase confirmation email to " + purchase.getOwner().getEmail() + ANSI_RESET);
         // Send the email to the customer
         EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Purchase from Monkii Movies", confirmation);
 
@@ -244,7 +245,7 @@ public class OrderScheduler {
                         "Thank you for your understanding.\n\nBest regards,\nMonkii Movies Team",
                 purchase.getOwner().getName(), purchaseType);
 
-        System.out.println(ANSI_GREEN + "Sending cancellation email to " + purchase.getOwner().getEmail() + ANSI_RESET);
+        System.out.println(ANSI_BLUE + "Sending cancellation email to " + purchase.getOwner().getEmail() + ANSI_RESET);
         // Send the email to the customer
         EmailSender.sendEmail(purchase.getOwner().getEmail(), "Confirmation of Your Canceled Purchase from Monkii Movies", confirmation);
 

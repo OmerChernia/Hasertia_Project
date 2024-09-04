@@ -65,6 +65,7 @@ public class HomeViewingPackageInstance extends Purchase {
         return linkActive;
     }
 
+
     public void activateLink() {
         this.linkActive = true;
     }

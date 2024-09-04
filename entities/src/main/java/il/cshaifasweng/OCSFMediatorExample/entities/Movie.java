@@ -211,7 +211,9 @@ public class Movie implements Serializable {
         return genre;
     }
 
-    public void setGenre(String genre) {}
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 
     public Availability getAvailability() {return available;}
 

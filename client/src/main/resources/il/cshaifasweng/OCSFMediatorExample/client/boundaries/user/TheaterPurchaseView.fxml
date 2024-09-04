@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="857.0" prefWidth="1004.0" stylesheets="@../../css/theater-purchase.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.TheaterPurchaseBoundary">
    <!-- Top section with tabs and movie details -->
@@ -40,7 +43,7 @@
                <StackPane styleClass="screen-container">
                   <ImageView fitHeight="120.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../media/icons/screenSVG.png" />
+                        <Image url="@../../media/icons/general/screenSVG.png" />
                      </image>
                   </ImageView>
                   <Label styleClass="screen-label" text="Screen" />
@@ -102,7 +105,7 @@
                </GridPane>
                <Button onAction="#showCreditCardFields" styleClass="button-primary" text="Pay with Credit Card" />
                <VBox alignment="CENTER">
-                  <VBox fx:id="creditCardPane" alignment="CENTER" spacing="20" styleClass="sub-pane" visible="false" maxWidth="400">
+                  <VBox fx:id="creditCardPane" alignment="CENTER" maxWidth="400" spacing="20" styleClass="sub-pane" visible="false">
                      <Label styleClass="label-large" text="Credit Card Payment" />
                      <GridPane alignment="CENTER" hgap="15" vgap="15">
                         <Label text="Card Number:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
@@ -137,12 +140,76 @@
             </VBox>
 
             <!-- Ticket Confirmation Pane -->
-            <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
-               <Label styleClass="section-title, confirmation-title" text="Ticket Confirmation" />
-               <ImageView fx:id="confirmationMovieImage" fitHeight="150" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
-               <Label fx:id="confirmationDetails" styleClass="confirmation-details" />
-               <Label fx:id="pricePaidLabel" styleClass="confirmation-price" />
-             </VBox>
+            <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" prefHeight="700.0" prefWidth="350.0" spacing="5" styleClass="receipt-pane" stylesheets="@../../css/receipt.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+               <Label styleClass="confirmation-title" text="Payment Confirmation" />
+
+               <!-- Header Section -->
+               <VBox alignment="CENTER" spacing="2" styleClass="header-section">
+                  <Label styleClass="header-title" text="MONKII MOVIES" />
+                  <Text fx:id="theaterLabel" styleClass="header-subtitle" text="Movie City, MC" />
+                  <VBox.margin>
+                     <Insets top="20.0" />
+                  </VBox.margin>
+               </VBox>
+
+               <!-- Divider Line -->
+               <Line endX="300" endY="0" startX="0" startY="0" style="-fx-stroke: black; -fx-stroke-width: 1;" />
+
+               <!-- Movie Details Section -->
+               <VBox alignment="CENTER" spacing="2" styleClass="details-section">
+                  <Text fx:id="movieTitleLabel" styleClass="details-movie" text="MOVIE: Star Adventures" />
+                  <HBox alignment="CENTER" spacing="10">
+                     <Text fx:id="dateLabel" styleClass="details-label" text="03-12-2024" />
+                     <Text fx:id="timeLabel" styleClass="details-value" text="7:30PM" />
+                  </HBox>
+                  <Text fx:id="hallLabel" styleClass="details-label" text="SCREEN 5" />
+                  <Text fx:id="seatLabel" styleClass="details-value" text="SEAT B12" />
+               </VBox>
+
+               <!-- Divider Line -->
+               <Line endX="300" styleClass="divider-line" />
+
+               <!-- Ticket Item Section -->
+               <GridPane alignment="CENTER" hgap="10" styleClass="ticket-section" vgap="5">
+                  <!-- כותרות -->
+                  <Text styleClass="ticket-header" text="QTY" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <Text styleClass="ticket-header" text="DESCRIPTION" textAlignment="CENTER" wrappingWidth="131.212890625" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                  <Text styleClass="ticket-header" text="PRICE" textAlignment="CENTER" wrappingWidth="127.005859375" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+                  <Label alignment="CENTER" prefHeight="15.0" prefWidth="305.0" styleClass="divider-text" text="------------------------------------" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+
+                  <Text fx:id="qtyLabel" styleClass="ticket-item" text="1" textAlignment="CENTER" wrappingWidth="24.4013671875" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <Text styleClass="ticket-item" text="MOVIE TICKET" textAlignment="CENTER" wrappingWidth="133.81640625" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                  <HBox alignment="CENTER" prefHeight="16.0" prefWidth="131.0" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                     <Text fx:id="oldPriceLabel" strikethrough="true" styleClass="ticket-item" text="30₪" visible="false" wrappingWidth="32.2041015625" />
+                     <Text fx:id="paidPriceLabel" styleClass="ticket-item" text="60₪" />
+                  </HBox>
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints maxWidth="136.0" minWidth="124.0" prefWidth="134.0" />
+                     <ColumnConstraints maxWidth="135.0" minWidth="123.0" prefWidth="125.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+               </GridPane>
+
+
+               <!-- Divider Line -->
+               <Line endX="300" styleClass="divider-line" />
+
+               <!-- Summary Section -->
+               <VBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="911.0" spacing="2" styleClass="summary-section">
+                  <HBox alignment="CENTER" spacing="10">
+                     <Text styleClass="summary-label" text="TOTAL AMOUNT" />
+                     <Text fx:id="totalAmountLabel" styleClass="summary-value" text="12.00$" />
+                  </HBox>
+               </VBox>
+            </VBox>
+
          </StackPane>
       </ScrollPane>
    </center>

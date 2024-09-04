@@ -3,11 +3,12 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
@@ -25,20 +26,26 @@ import org.greenrobot.eventbus.Subscribe;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 public class ComplaintBoundary implements Initializable {
 
-    @FXML
-    private StackPane stckComplaint;
 
     @FXML
-    private BorderPane rootComplaint;
+    private StackPane stackPane;
+    @FXML
+    private BorderPane complaintPane;
+
+
 
     @FXML
     private TextField txtCustomerName;
 
     @FXML
     private TextField txtCustomerEmail;
+
+    @FXML
+    private Label complaintHeader;
 
     @FXML
     private TextArea txtComplaintDetails;
@@ -49,12 +56,10 @@ public class ComplaintBoundary implements Initializable {
     @FXML
     private Label nameHeader;
 
-
     @FXML
     private Button btnSubmitComplaint;
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
-    @FXML
-    private Label lblTitle;
 
     private RegisteredUser user;
 
@@ -62,12 +67,11 @@ public class ComplaintBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initializeComplaintForm();
 
-        // Register this controller to listen for events
         EventBus.getDefault().register(this);
     }
 
     private void initializeComplaintForm() {
-        if(!SimpleClient.user.isEmpty()) {
+        if(!SimpleClient.user.isEmpty() && MainBoundary.getEmployee()==null) {
             txtCustomerName.setVisible(false);
             txtCustomerEmail.setVisible(false);
             nameHeader.setVisible(false);
@@ -88,11 +92,11 @@ public class ComplaintBoundary implements Initializable {
         if(!txtCustomerName.isVisible()) {
             if (complaintDetails.isEmpty() ) {
                 Animations.shake(txtComplaintDetails);
-                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.");
+                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.",complaintPane);
                 return;
             }
             LocalDateTime creationDate = LocalDateTime.now();
-            ComplaintController.addComplaint(complaintDetails, creationDate, null, false, user);
+            ComplaintController.addComplaintRegister(complaintDetails, creationDate, null, false, user);
         }
         else {
             if (customerName.isEmpty() || customerEmail.isEmpty() || complaintDetails.isEmpty()) {
@@ -105,30 +109,43 @@ public class ComplaintBoundary implements Initializable {
                 if (complaintDetails.isEmpty()) {
                     Animations.shake(txtComplaintDetails);
                 }
-                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.");
+                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.",complaintPane);
+                return;
+            }
+            Pattern pattern = Pattern.compile(EMAIL_REGEX);
+            if (!pattern.matcher(customerEmail).matches())
+            {
+                NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.",complaintPane);
                 return;
             }
 
 
-            // Code to submit the complaint to the system goes here
             LocalDateTime creationDate = LocalDateTime.now();
-            ComplaintController.addComplaint(complaintDetails, creationDate, null, false, user);
+            ComplaintController.addComplaintUnregister(complaintDetails, creationDate, null, false, txtCustomerEmail.getText());
         }
-        AlertsBuilder.create(AlertType.SUCCESS, stckComplaint, rootComplaint, rootComplaint, "Complaint submitted successfully. A response will be sent to the customer's email within 24 hours.");
     }
 
     @Subscribe
     public void onComplaintMessageReceived(ComplaintMessage message) {
-        // Handle the event, e.g., update the UI with complaint information
-        System.out.println("Received complaint message: " + message);
-    }
+        switch (message.responseType)
+        {
+            case COMPLIANT_ADDED:
+                AlertsBuilder.create(AlertType.SUCCESS, stackPane, complaintPane, complaintPane, "Complaint submitted successfully.\n A response will be sent to your email within 24 hours.");
+                break;
+            case COMPLIANT_MESSAGE_FAILED:
+                AlertsBuilder.create(AlertType.ERROR, stackPane, complaintPane, complaintPane, "Failed to submit complaint.\n Please try again later."
+                );
+
+        }
+        txtCustomerEmail.clear();
+        txtComplaintDetails.clear();
+        txtCustomerName.clear();
+     }
+
     @Subscribe
-    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) {
-        user= message.registeredUser;
-    }
+    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) { user= message.registeredUser;}
 
     public void cleanup() {
-        // Unregister this controller from EventBus when it's no longer needed
         EventBus.getDefault().unregister(this);
     }
 }

@@ -3,26 +3,26 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.SeatController;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,6 +30,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -67,11 +69,10 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private Label movieTime;
 
-    @FXML
-    private Label movieHall;
+
 
     @FXML
-    private Label movieLocation;
+    private Label movieDate;
 
     @FXML
     private TextField cardNumberField;
@@ -103,12 +104,9 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private Label step3Text;
 
-    @FXML
-    private Label confirmationDetails;
 
-    @FXML
-    private Label pricePaidLabel;
-    @FXML
+
+     @FXML
     private Label price;
 
     //the user details
@@ -119,7 +117,8 @@ public class HomeViewingPurchaseBoundary {
     private TextField lastNameTF;
 
     @FXML
-    private Label connectedText;
+    private Text movieText,availableOnText,totalAmountLabel,pricePaidText,validUntilText;
+
 
     @FXML
     private TextField emailTF;
@@ -132,18 +131,16 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private TextField confirmIdNumberTF;
-    //end of user details
-    private RegisteredUser user=null;
+
+     private RegisteredUser user=null;
 
     private String link;
 
-    // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     private LocalDateTime dateTime;
     private double packagePrice;
     private Movie currentMovie;
-    private MovieInstance currentMovieInstance;
     private HomeViewingPackageInstance homeViewingPackageInstance;
 
     @FXML
@@ -174,23 +171,36 @@ public class HomeViewingPurchaseBoundary {
         }
     }
 
+
+
     private void highlightStep(int step) {
+
         step2Label.setStyle("-fx-text-fill: white;");
         step2Text.setStyle("-fx-text-fill: white;");
         step3Label.setStyle("-fx-text-fill: white;");
         step3Text.setStyle("-fx-text-fill: white;");
+        step2Label.setStyle("-fx-background-color: #1d1d48");
+        step3Label.setStyle("-fx-background-color: #1d1d48");
 
         switch (step) {
             case 1:
-                step2Label.setStyle("-fx-text-fill: yellow;");
-                step2Text.setStyle("-fx-text-fill: yellow;");
+                step2Label.setStyle("-fx-text-fill: #ffc500;");
+                step2Text.setStyle("-fx-text-fill: #ffc500;");
+                step2Label.setStyle("-fx-background-color: #ffc500");
+
                 break;
             case 2:
-                step3Label.setStyle("-fx-text-fill: yellow;");
-                step3Text.setStyle("-fx-text-fill: yellow;");
+                step3Label.setStyle("-fx-text-fill: #ffc500;");
+                step3Text.setStyle("-fx-text-fill: #ffc500;");
+                step3Label.setStyle("-fx-background-color: #ffc500");
                 break;
+
         }
+        Animations.hover(step2Label, 200, 1.2);
+        Animations.hover(step3Label, 200, 1.2);
     }
+
+
 
     @FXML
     private void showIdPhoneFields() {
@@ -316,61 +326,50 @@ public class HomeViewingPurchaseBoundary {
     private void showConfirmation() {
         Platform.runLater(() -> {
             System.out.println("Package purchased successfully.");
-            String text = "Movie: " + movieTitle.getText() + ", " +
-                    "Available on " + homeViewingPackageInstance.getViewingDate() + ", " +
-                    "Price Paid: ₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice() + ", " +
-                    "Valid until: " + homeViewingPackageInstance.getViewingDate().plusWeeks(1) + ", " +
-                    "Purchase link: " + link;
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-            confirmationDetails.setText(text);
+            LocalDateTime viewingDateTime = homeViewingPackageInstance.getViewingDate();
+            String formattedDate = viewingDateTime.toLocalDate().format(dateFormatter);
+            String formattedTime = viewingDateTime.toLocalTime().format(timeFormatter);
 
-            confirmationMovieImage.setImage(movieImage.getImage());
+            LocalDateTime validUntilDateTime = viewingDateTime.plusWeeks(1);
+            String validUntilDate = validUntilDateTime.toLocalDate().format(dateFormatter);
+            String validUntilTime = validUntilDateTime.toLocalTime().format(timeFormatter);
+            movieText.setText(movieTitle.getText());
+            availableOnText.setText(formattedDate + " AT " + formattedTime);
+            pricePaidText.setText("₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice());
+            validUntilText.setText(validUntilDate + " AT " + validUntilTime);
+            totalAmountLabel.setText("₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice());
             stackPane.getChildren().clear();
             stackPane.getChildren().add(ticketConfirmationPane);
         });
     }
+
+
+
+
     public void cleanup() {
         System.out.println("cleanup");
         EventBus.getDefault().unregister(this);
     }
 
-    @FXML
-    private void closeApplication()
-    {
-        Stage stage = (Stage) stackPane.getScene().getWindow();
-        stage.close();
-    }
+
 
 
     public void setCurrentMovie(Movie movie) {
         this.currentMovie = movie;
-        movieTitle.setText(movie.getEnglishName());
-        price.setText("Package Price: " + movie.getHomeViewingPrice());
-        // Set other movie-related details here
+        price.setText("Package Price: " + movie.getHomeViewingPrice()+"₪");
+        movieTitle.setText(currentMovie.getHebrewName() + " | " + currentMovie.getEnglishName());
+        movieImage.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.MOVIE_PACKAGE + currentMovie.getImage()))));
     }
-    public void setCurrentdateTime(LocalDateTime dateTime) {
+    public void setCurrentDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-        //present the time?
+        movieTime.setText("Time: " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm")));
+        movieDate.setText("Date: " + dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
     }
 
-    public void setCurrentMovieInstance(MovieInstance movieInstance) {
-        this.currentMovieInstance = movieInstance;
-        // Set movie instance details here
-    }
-
-    @FXML
-    public void loadTheaters() {
-        TheaterController.getAllTheaters();
-        System.out.println("Request to load all theaters sent.");
-    }
-
-    @FXML
-    public void loadSeatsForCurrentHall() {
-        if (currentMovieInstance != null) {
-            SeatController.getAllSeatsByHall(currentMovieInstance.getHall().getId());
-            System.out.println("Request to load all seats for the current hall sent.");
-        }
-    }
 
     // a method that checks if the details that the user given is valid , returns true if the details are valid
     private boolean checkDetails()
@@ -378,7 +377,7 @@ public class HomeViewingPurchaseBoundary {
         if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
                 || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.");
+            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.",stackPane);
             return false;
         }
 
@@ -386,7 +385,7 @@ public class HomeViewingPurchaseBoundary {
         for (char c : textFirstName.toCharArray()) {
             if (Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.",stackPane);
                 return false;
             }
         }
@@ -395,7 +394,7 @@ public class HomeViewingPurchaseBoundary {
         for (char c : textLastName.toCharArray()) {
             if (Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.",stackPane);
                 return false;
             }
         }
@@ -404,28 +403,28 @@ public class HomeViewingPurchaseBoundary {
         for (char c : textID.toCharArray()) {
             if (!Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.",stackPane);
                 return false;
             }
         }
 
         if(!idNumberTF.getText().equals(confirmIdNumberTF.getText()))
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!");
+            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!",stackPane);
             return false;
         }
 
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         if (!pattern.matcher(emailTF.getText()).matches())
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.");
+            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.",stackPane);
             return false;
         }
 
 
         if(!emailTF.getText().equals(confirmEmailTF.getText()))
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!");
+            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!",stackPane);
             return false;
         }
         return true;
@@ -440,25 +439,25 @@ public class HomeViewingPurchaseBoundary {
 
         // Check if all fields are filled
         if (cardNumber.isEmpty() || expirationMonth == null || expirationYear == null || cvv.isEmpty()) {
-            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled");
+            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled",stackPane);
             return false;
         }
 
         // Validate card number (using Luhn algorithm)
         if (!isValidCardNumber(cardNumber)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number",stackPane);
             return false;
         }
 
         // Validate expiration date
         if (!isValidExpirationDate(expirationMonth, expirationYear)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date",stackPane);
             return false;
         }
 
         // Validate CVV
         if (!isValidCVV(cvv)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV",stackPane);
             return false;
         }
 

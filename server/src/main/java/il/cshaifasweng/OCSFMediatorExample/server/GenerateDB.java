@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -283,7 +284,7 @@ public class GenerateDB {
             }
 
             // Set the time to include only up to minutes, with seconds and nanoseconds set to 0
-            LocalDateTime startDate = LocalDateTime.of(2024, 8, 18, 12, 0);
+            LocalDateTime startDate = LocalDateTime.of(2024, 9, 4, 12, 0);
             //.plusHours(3)
             movieInstances = List.of(
                     new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0),true),
@@ -339,38 +340,25 @@ public class GenerateDB {
         try {
             for (int i = 0; i < 150; i++) {
                 RegisteredUser user = users.get(i % users.size());
+                MovieInstance movieInstance = movieInstances.get(i % movieInstances.size());
 
-                // Skip movie ID 20
-                Movie movie = movies.get(i % movies.size());
-                if (movie.getId() == 20) {
-                    continue;
-                }
+                // Ensure the purchase time is always on or before the movie instance time
+                LocalDateTime movieInstanceTime = movieInstance.getTime();
+                LocalDateTime purchaseTime = movieInstanceTime.minusHours(rand.nextInt(24)); // Up to 24 hours before the screening
 
-                // Generate a different date for each purchase starting from 20th August 2024
-                int randomMonth = 8 + rand.nextInt(5);  // Month between August (8) and December (12)
-                int randomDay = rand.nextInt(30) + 1;  // Day between 1 and 30
-                int randomHour = rand.nextInt(24);      // Hour between 0 and 23
+                // Generate a different time within the day of the screening
+                int randomHour = rand.nextInt(movieInstanceTime.getHour() + 1); // Hour up to the screening hour
                 int randomMinute = rand.nextInt(60);    // Minute between 0 and 59
                 int randomSecond = rand.nextInt(60);    // Second between 0 and 59
-                LocalDateTime purchaseTime = LocalDateTime.of(2024, randomMonth, randomDay, randomHour, randomMinute, randomSecond);
+                purchaseTime = purchaseTime.withHour(randomHour).withMinute(randomMinute).withSecond(randomSecond);
 
-                // If purchaseTime is before 20th August 2024, adjust it
-                if (purchaseTime.isBefore(LocalDateTime.of(2024, 8, 20, 0, 0))) {
-                    purchaseTime = LocalDateTime.of(2024, 8, 20, randomHour, randomMinute, randomSecond);
-                }
-
-                // Add a week to the purchase time and round up to the nearest hour for the activation date
+                // Set activation date for Home Viewing Packages
                 LocalDateTime activationDate = purchaseTime.plusWeeks(1);
-                if (activationDate.getMinute() != 0 || activationDate.getSecond() != 0) {
-                    activationDate = activationDate.plusHours(1);
-                }
                 activationDate = activationDate.truncatedTo(ChronoUnit.HOURS);
 
                 if (i < 40) {
                     // Create a HomeViewingPackageInstance with the activation date
-                    int randomActivationHour = 12 + rand.nextInt(12);  // Random hour between 12 and 23 for the activation date
-                    activationDate = activationDate.withHour(randomActivationHour);
-                    HomeViewingPackageInstance homeViewingPackageInstance = new HomeViewingPackageInstance(purchaseTime, user, "purchaseValidation", movie, activationDate, true, "https://hasertia.com/dhbtdgt"+ i);
+                    HomeViewingPackageInstance homeViewingPackageInstance = new HomeViewingPackageInstance(purchaseTime, user, "purchaseValidation", movieInstance.getMovie(), activationDate, true, "https://hasertia.com/dhbtdgt" + i);
                     session.save(homeViewingPackageInstance);
                     session.flush();
                 } else if (i < 60) {
@@ -387,7 +375,7 @@ public class GenerateDB {
                             purchaseTime,
                             user,
                             "validation" + i,
-                            movieInstances.get(i % movieInstances.size()),
+                            movieInstance,
                             seats.get(i % seats.size()),
                             true
                     );
@@ -413,6 +401,7 @@ public class GenerateDB {
         }
     }
 
+
     private void generateComplaints() {
         List<Complaint> existingComplaints = session.createQuery("from Complaint", Complaint.class).list();
         if (!existingComplaints.isEmpty()) {
@@ -435,19 +424,63 @@ public class GenerateDB {
             return;
         }
 
+        List<String> movieTicketComplaints = Arrays.asList(
+                "The movie quality at the theater was subpar; screen was blurry.",
+                "Theater was too cold, making the viewing experience uncomfortable.",
+                "Booked seats were already occupied by others upon arrival.",
+                "There were technical issues during the screening at the theater.",
+                "The audio was too low during the entire movie.",
+                "The snack bar was closed at the theater; couldn't get refreshments.",
+                "The movie was delayed by 30 minutes, causing inconvenience.",
+                "The 3D glasses provided were dirty and scratched.",
+                "The theater's restroom facilities were inadequate.",
+                "Parking near the theater was unavailable or too expensive."
+        );
+
+        List<String> homeViewingComplaints = Arrays.asList(
+                "Streaming link for the home viewing was not provided on time.",
+                "The streaming quality was poor; it kept buffering.",
+                "Audio and video were not synced during the home viewing.",
+                "There was no option to change subtitles for the movie.",
+                "The movie link was inactive despite the scheduled time.",
+                "I was charged twice for the home viewing package.",
+                "The movie link expired too soon; I couldn't finish watching.",
+                "The home viewing service crashed during the movie.",
+                "The movie file had missing parts or scenes.",
+                "Subtitles were not available in the requested language."
+        );
+
+        List<String> multiEntryTicketComplaints = Arrays.asList(
+                "I was unable to book a seat using my multi-entry ticket.",
+                "Multi-entry ticket was not recognized at the theater.",
+                "The multi-entry ticket expired too soon without prior notice.",
+                "The discount offered with the multi-entry ticket was not applied.",
+                "System charged me an extra fee when using my multi-entry ticket.",
+                "There was an error when redeeming the multi-entry ticket online.",
+                "The multi-entry ticket benefits were not clear, leading to confusion.",
+                "Multi-entry ticket purchase was not recorded correctly in the system.",
+                "Unable to track usage of remaining entries on the multi-entry ticket.",
+                "Multi-entry ticket was declined for a special screening event."
+        );
+
+        Random random = new Random();
         Transaction transaction = session.beginTransaction();
 
         try {
-            for (int i = 0; i < 100; i++) { // Increase the limit to 100
+            for (int i = 0; i < 100; i++) {
                 RegisteredUser user = users.get(i % users.size());
                 Purchase purchase;
+                String complaintReason;
 
                 if (i % 3 == 0) {
                     purchase = movieTickets.get(i % movieTickets.size());
+                    complaintReason = movieTicketComplaints.get(random.nextInt(movieTicketComplaints.size()));
                 } else if (i % 3 == 1) {
                     purchase = homePackages.get(i % homePackages.size());
+                    complaintReason = homeViewingComplaints.get(random.nextInt(homeViewingComplaints.size()));
                 } else {
                     purchase = multiEntryTickets.get(i % multiEntryTickets.size());
+                    complaintReason = multiEntryTicketComplaints.get(random.nextInt(multiEntryTicketComplaints.size()));
                 }
 
                 LocalDateTime complaintDate;
@@ -462,12 +495,13 @@ public class GenerateDB {
                 }
 
                 Complaint complaint = new Complaint(
-                        "Complaint info " + i,
+                        complaintReason,
                         complaintDate,
                         purchase,
                         isClosed,
                         user
                 );
+
                 session.save(complaint);
                 session.flush();
                 System.out.println("Saved complaint: " + complaint.getId() + " (Closed: " + isClosed + ")");
@@ -483,7 +517,4 @@ public class GenerateDB {
             e.printStackTrace();
         }
     }
-
-
-
 }

@@ -1,13 +1,33 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.registeredUser;
 
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieTicket;
 import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
 import il.cshaifasweng.OCSFMediatorExample.entities.Purchase;
+import javafx.animation.*;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,8 +41,8 @@ public class DialogTicket {
 
     @FXML
     private HBox hboxTime;
-
     @FXML
+
     private HBox hbxActiveDay;
 
 
@@ -54,19 +74,14 @@ public class DialogTicket {
     private Label lblId;
 
     @FXML
-    private Label lblLink;
+    private Hyperlink lblLink;
 
     @FXML
     private Label lblMin;
 
     @FXML
-    private Label lblPurchaseDay;
+    private Label lblPurchaseDay,lblPurchaseMonth,lblPurchaseYear;
 
-    @FXML
-    private Label lblPurchaseMonth;
-
-    @FXML
-    private Label lblPurchaseYear;
 
     @FXML
     private Label lblSeat;
@@ -78,6 +93,10 @@ public class DialogTicket {
     @FXML
     private Label lblTitle;
 
+    @FXML
+    private Label lblExpiredDay, lblExpiredMonth, lblExpiredYear,lblHourExpired,lblMinExpired;
+    @FXML
+    private HBox hbxExpired;
 
     @FXML
     private Label lblActive;
@@ -136,7 +155,6 @@ public class DialogTicket {
         lblMin.setText(String.format("%02d", activeDate.getMinute()));
         lblPrice.setText(String.valueOf(movieTicket.getMovieInstance().getMovie().getTheaterPrice())+"₪");
         lblTheater.setText(movieTicket.getSeat().getHall().getTheater().getLocation());
-       // lblHall.setText(movieTicket.getSeat().getHall().getName().replace("Hall", ""));
         String seat = "row: " + movieTicket.getSeat().getRow() + ", seat: " + movieTicket.getSeat().getCol();
         lblSeat.setText(seat);
 
@@ -146,39 +164,75 @@ public class DialogTicket {
         hboxPurchaseDay.setVisible(true);
         hbxActiveDay.setVisible(true);
         lblActive.setVisible(true);
+        hbxExpired.setVisible(false);
 
     }
 
     public void setMultiEntryTicket() {
         lblTitle.setText("Multi Entry Card");
-        lblPrice.setText("");
+        lblPrice.setText("600₪");
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(false);
         hboxPurchaseDay.setVisible(true);
         hbxActiveDay.setVisible(false);
         hboxTime.setVisible(false);
         lblActive.setVisible(false);
+        hbxExpired.setVisible(false);
 
     }
 
     public void setHomeViewingPackage() {
-        lblTitle.setText(homeViewingPackage.getMovie().getEnglishName());
-        LocalDateTime activeDate = homeViewingPackage.getViewingDate();
-        lblPrice.setText(String.valueOf(homeViewingPackage.getMovie().getHomeViewingPrice())+"₪");
+        lblTitle.setText(homeViewingPackage.getMovie().getEnglishName()+" | " + homeViewingPackage.getMovie().getHebrewName());
 
+        if (homeViewingPackage.isLinkActive()) {
+            lblLink.setDisable(false);
+            lblLink.setText(homeViewingPackage.getLink());
+        } else {
+            lblLink.setDisable(true);
+            lblLink.setText("Unavailable");
+        }
+
+        lblLink.setOnAction(event -> {
+            closeDialogAddUser();
+            AlertsBuilder.create(
+                    AlertType.INFO,
+                    ordersController.getStckUsers(),
+                    lblLink.getScene().getRoot(),
+                    lblLink,
+                    "Enjoy your cinematic experience!",
+                    "START",
+                    null,
+                    null,
+                    null
+            );
+
+        });
+
+        lblPrice.setText(String.valueOf(homeViewingPackage.getMovie().getHomeViewingPrice()) + "₪");
+
+        hbxActiveDay.setVisible(true);
+        hboxTime.setVisible(true);
+
+        LocalDateTime activeDate = homeViewingPackage.getViewingDate();
         lblActiveDay.setText(String.valueOf(activeDate.getDayOfMonth()));
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
 
-        lblLink.setText( homeViewingPackage.isLinkActive() ? homeViewingPackage.getLink() : "Unavailable");
+        lblHour.setText(String.valueOf(activeDate.getHour()));
+        lblMin.setText(String.format("%02d", activeDate.getMinute()));
+
+        LocalDateTime expiredDate = homeViewingPackage.getViewingDate().plusWeeks(1);
+        hbxExpired.setVisible(true);
+        lblExpiredDay.setText(String.valueOf(expiredDate.getDayOfMonth()));
+        lblExpiredMonth.setText(expiredDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
+        lblExpiredYear.setText(String.valueOf(expiredDate.getYear()));
+        lblHourExpired.setText(String.valueOf(expiredDate.getHour()));
+        lblMinExpired.setText(String.format("%02d", expiredDate.getMinute()));
 
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(true);
         hboxPurchaseDay.setVisible(true);
-        hbxActiveDay.setVisible(true);
-        hboxTime.setVisible(false);
         lblActive.setVisible(true);
-
     }
 
 

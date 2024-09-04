@@ -2,15 +2,11 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.*;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.comboBox.AutocompleteComboBox;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.mask.RequieredFieldsValidators;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,8 +19,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.*;
 import java.net.URL;
@@ -68,31 +62,13 @@ public class DialogEditMovie implements Initializable {
     private Pane paneContainer;
 
     @FXML
-    private TextField txtActors;
+    private TextField txtActors,txtDuration,txtEnglishName,txtHVPrice,txtHebrewName, txtTheaterPrice, txtProducer;
 
     @FXML
-    private Label txtAddProduct;
+    private TextArea  txtDescription;
 
     @FXML
-    private TextArea txtDescription;
-
-    @FXML
-    private TextField txtDuration;
-
-    @FXML
-    private TextField txtEnglishName;
-
-    @FXML
-    private TextField txtHVPrice;
-
-    @FXML
-    private TextField txtHebrewName;
-
-    @FXML
-    private TextField txtProducer;
-
-    @FXML
-    private TextField txtTheaterPrice;
+    private Label  txtAddProduct;
 
     @FXML
     private Label lblPathImage;
@@ -110,15 +86,17 @@ public class DialogEditMovie implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+
         initializeImageHoverEffect();
-        initializeComboBoxAutoComplete();
+        initializeComboBox();
 
     }
 
-    private void initializeComboBoxAutoComplete() {
-        AutocompleteComboBox.autoCompleteComboBoxPlus(comboGenre, (typedText, item) -> item.toLowerCase().contains(typedText.toLowerCase()));
+    private void initializeComboBox() {
         comboAvailable.getItems().addAll(Movie.Availability.values());
         comboType.getItems().addAll(Movie.StreamingType.values());
+        comboGenre.getItems().addAll("action","comedy","drama","horror","romance","sci-Fi","documentary");
 
     }
 
@@ -152,8 +130,8 @@ public class DialogEditMovie implements Initializable {
             imageProduct.setEffect(colorAdjust);
         });
         imageContainer.setPadding(new Insets(5));
-        imageProduct.setFitHeight(300); // Set to a fixed size for better proportion
-        imageProduct.setFitWidth(200);  // Ensure it aligns well with other UI components
+        imageProduct.setFitHeight(300);
+        imageProduct.setFitWidth(200);
     }
 
     private void populateFieldsForEdit() {
@@ -270,6 +248,7 @@ public class DialogEditMovie implements Initializable {
         String theaterPrice = txtTheaterPrice.getText().trim();
         String hvPrice = txtHVPrice.getText().trim();
         String genre = comboGenre.getSelectionModel().getSelectedItem();
+        System.out.println(genre);
         Movie.StreamingType streaming = comboType.getSelectionModel().getSelectedItem();
         Movie.Availability availability = comboAvailable.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();
@@ -293,7 +272,7 @@ public class DialogEditMovie implements Initializable {
 
         // If no changes detected, do nothing
         if (!detailsChanged && !priceChanged) {
-            NotificationsBuilder.create(NotificationType.INFORMATION, "No changes detected, nothing was saved.");
+            NotificationsBuilder.create(NotificationType.INFORMATION, "No changes detected, nothing was saved.",containerAddProduct);
             return;
         }
 
@@ -303,6 +282,7 @@ public class DialogEditMovie implements Initializable {
         } else {
             if (detailsChanged) {
                 MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors),  "", streaming, Integer.parseInt(duration), genre, availability);
+
             }
 
             // Create a price update request only if prices have changed
@@ -358,7 +338,7 @@ public class DialogEditMovie implements Initializable {
         }
         if (imageFile != null) {
             Animations.shake(imageContainer);
-            NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE);
+            NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE,containerAddProduct);
             return false;
         }
         return true;

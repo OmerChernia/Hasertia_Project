@@ -3,25 +3,22 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.MultiEntryTicket;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -158,23 +155,40 @@ public class MEPurchaseBoundary {
         }
     }
 
+
+
+
     private void highlightStep(int step) {
         step1Label.setStyle("-fx-text-fill: white;");
         step1Text.setStyle("-fx-text-fill: white;");
         step2Label.setStyle("-fx-text-fill: white;");
         step2Text.setStyle("-fx-text-fill: white;");
 
+        step1Label.setStyle("-fx-background-color: #2e2e85");
+        step2Label.setStyle("-fx-background-color: #2e2e85");
+
+
         switch (step) {
             case 1:
-                step1Label.setStyle("-fx-text-fill: yellow;");
-                step1Text.setStyle("-fx-text-fill: yellow;");
+                step1Label.setStyle("-fx-text-fill: #ffc500;");
+                step1Text.setStyle("-fx-text-fill: #ffc500;");
+                step1Label.setStyle("-fx-background-color: #ffc500");
+
                 break;
             case 2:
-                step2Label.setStyle("-fx-text-fill: yellow;");
-                step2Text.setStyle("-fx-text-fill: yellow;");
+                step2Label.setStyle("-fx-text-fill: #ffc500;");
+                step2Text.setStyle("-fx-text-fill: #ffc500;");
+                step2Label.setStyle("-fx-background-color: #ffc500");
+
                 break;
+
         }
-    }
+
+        Animations.hover(step1Label, 200, 1.2);
+        Animations.hover(step2Label, 200, 1.2);
+     }
+
+
 
     @FXML
     private void goToPaymentDetails() {
@@ -262,10 +276,7 @@ public class MEPurchaseBoundary {
 
     private void showConfirmation() {
         Platform.runLater(() -> {
-            String text =  "Package: " + "20 tickets" + "\n" +
-                    "Price Paid: 290₪";
-            confirmationDetails.setText(text);
-            confirmationPackageImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.ICON_PACKAGE + "logo.png")));
+
             stackPane.getChildren().clear();
             stackPane.getChildren().add(packageConfirmationPane);
 
@@ -314,7 +325,7 @@ public class MEPurchaseBoundary {
         if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
                 || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.");
+            NotificationsBuilder.create(NotificationType.ERROR,"One or more fields are missing.",ME_pane);
             return false;
         }
 
@@ -322,7 +333,7 @@ public class MEPurchaseBoundary {
         for (char c : textFirstName.toCharArray()) {
             if (Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"First name contains digits.",ME_pane);
                 return false;
             }
         }
@@ -331,7 +342,7 @@ public class MEPurchaseBoundary {
         for (char c : textLastName.toCharArray()) {
             if (Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.",ME_pane);
                 return false;
             }
         }
@@ -340,28 +351,28 @@ public class MEPurchaseBoundary {
         for (char c : textID.toCharArray()) {
             if (!Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.");
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.",ME_pane);
                 return false;
             }
         }
 
         if(!idNumberTF.getText().equals(confirmIdNumberTF.getText()))
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!");
+            NotificationsBuilder.create(NotificationType.ERROR,"ID Number and confirm ID Number do not match!",ME_pane);
             return false;
         }
 
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         if (!pattern.matcher(emailTF.getText()).matches())
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.");
+            NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.",ME_pane);
             return false;
         }
 
 
         if(!emailTF.getText().equals(confirmEmailTF.getText()))
         {
-            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!");
+            NotificationsBuilder.create(NotificationType.ERROR,"Email and confirm email do not match!",ME_pane);
             return false;
         }
         return true;
@@ -390,25 +401,25 @@ public class MEPurchaseBoundary {
 
         // Check if all fields are filled
         if (cardNumber.isEmpty() || expirationMonth == null || expirationYear == null || cvv.isEmpty()) {
-            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled");
+            NotificationsBuilder.create(NotificationType.ERROR,"All fields must be filled",ME_pane);
             return false;
         }
 
         // Validate card number (using Luhn algorithm)
         if (!isValidCardNumber(cardNumber)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid card number",ME_pane);
             return false;
         }
 
         // Validate expiration date
         if (!isValidExpirationDate(expirationMonth, expirationYear)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid expiration date",ME_pane);
             return false;
         }
 
         // Validate CVV
         if (!isValidCVV(cvv)) {
-            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV");
+            NotificationsBuilder.create(NotificationType.ERROR,"Invalid CVV",ME_pane);
             return false;
         }
 

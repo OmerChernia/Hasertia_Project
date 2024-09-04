@@ -4,12 +4,11 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import il.cshaifasweng.OCSFMediatorExample.server.scheduler.LinkAndInstanceScheduler;
+import il.cshaifasweng.OCSFMediatorExample.server.scheduler.HomeViewingScheduler;
 import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,14 +86,14 @@ public class PurchaseHandler extends MessageHandler
         LocalDateTime emailTime = movieTime.minusHours(1);
 
         // Schedule link activation at the movie time
-        LinkAndInstanceScheduler.getInstance().scheduleLinkActivation(homeViewingPackage);
+        HomeViewingScheduler.scheduleLinkActivation(homeViewingPackage);
     }
 
     private void remove_purchase() {
         try {
             Purchase purchase = session.get(Purchase.class, message.purchases.getFirst().getId());
             if (purchase != null) {
-                purchase.setisActive(false); // purchase is now not active anymore
+                purchase.setisActive(false);
 
                 if (purchase instanceof MovieTicket) { // if the purchase is a seat, release it
                     Seat seat = session.get(Seat.class, ((MovieTicket) purchase).getSeat().getId());
@@ -103,8 +102,9 @@ public class PurchaseHandler extends MessageHandler
                 }
 
                 if (purchase instanceof HomeViewingPackageInstance homeViewingPackage) {
-                    LinkAndInstanceScheduler.getInstance().cancelScheduledTasks(homeViewingPackage);
-                }
+                    HomeViewingScheduler.getInstance().cancelScheduledTasks(homeViewingPackage);
+                    homeViewingPackage.deactivateLink();
+                 }
 
                 session.update(purchase);
                 session.flush();

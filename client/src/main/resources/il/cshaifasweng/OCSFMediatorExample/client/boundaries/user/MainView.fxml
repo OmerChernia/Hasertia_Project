@@ -1,65 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="stckMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary">
+<StackPane fx:id="stckMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../../css/main.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary">
    <AnchorPane prefHeight="419.0" prefWidth="728.0" style="-fx-background-color: f5f5f7;">
-      <AnchorPane fx:id="rootContainer" layoutX="70.0" prefHeight="600.0" prefWidth="930.0" style="-fx-background-color: #f5f5f7;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+      <AnchorPane fx:id="rootContainer" layoutX="70.0" prefHeight="600.0" prefWidth="930.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0" />
+
 
       <!-- Existing side toolbar -->
       <AnchorPane fx:id="rootSideMenu" prefHeight="600.0" prefWidth="70.0" style="-fx-background-color: #1d1d48;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <VBox alignment="CENTER" prefHeight="600.0" prefWidth="70.0">
-            <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#addUserWindows" prefHeight="53.0" prefWidth="77.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
+         <VBox fx:id="vboxSide" alignment="CENTER">
+            <Button fx:id="btnSpace" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" ellipsisString="" onAction="#logout" prefHeight="60.0" prefWidth="77.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE" />
+            <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#addUserWindows" prefHeight="62.0" prefWidth="77.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-tickets-64.png" />
+                     <Image url="@../../media/icons/general/tickets.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnComplaints" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#CustomerServiceWindows" prefHeight="61.0" prefWidth="71.0" style="-fx-background-color: transparent;" text="  " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-customer-support-50.png" />
+                     <Image url="@../../media/icons/general/customer-support.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnEditScreenings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#EditMovieScreeningsWindows" prefHeight="56.0" prefWidth="73.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-schedule-50.png" />
+                     <Image url="@../../media/icons/general/schedule.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnEditMovieList" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#productsWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transparent;" text="  " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-action-85.png" />
+                     <Image url="@../../media/icons/general/action.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnPriceChange" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#priceChangeWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transparent;" text="  " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/eruro.png" />
+                     <Image url="@../../media/icons/general/money.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnReports" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#statisticsWindows" prefHeight="57.0" prefWidth="72.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/chart.png" />
+                     <Image url="@../../media/icons/general/chart.png" />
                   </ImageView>
                </graphic>
             </Button>
@@ -67,71 +61,52 @@
       </AnchorPane>
 
       <!-- New top toolbar -->
-      <AnchorPane fx:id="rootTopMenu" prefHeight="50.0" prefWidth="1000.0" style="-fx-background-color: #1d1d48;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT">
-            <Button fx:id="btnLog" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#logout" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
+      <AnchorPane fx:id="rootTopMenu" nodeOrientation="RIGHT_TO_LEFT" style="-fx-background-color: #1d1d48;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="60.0" prefWidth="876.0" AnchorPane.rightAnchor="0.0">
+            <Button fx:id="btnLog" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#logout" prefHeight="60.0" prefWidth="78.0" style="-fx-background-color: transparent;" text="Log In" textFill="WHITE">
                <graphic>
                   <ImageView fx:id="imgLog" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-login-50.png" />
+                     <Image url="@../../media/icons/general/login.png" />
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="btnAbout" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#aboutWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
+            <Button fx:id="btnAbout" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#aboutWindows" prefHeight="60.0" prefWidth="78.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="32.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../../media/icons/general/monkey.png" />
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#settingsWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-monkey-48.png" />
+                     <Image url="@../../media/icons/general/more-info.png" />
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#settingsWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
+            <Button fx:id="btnME" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#MEWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
-                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8-more-info.png" />
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="btnME" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#MEWindows" prefHeight="50.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
-               <graphic>
-                  <ImageView fitHeight="33.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/icons8_Shopping_Cart_50px_2.png" />
+                  <ImageView fitHeight="31.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../../media/icons/general/Shopping_Cart.png" />
                   </ImageView>
                </graphic>
             </Button>
             <!-- Additional buttons for side toolbar -->
-            <Button fx:id="btnHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#homeWindows" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
+            <Button fx:id="btnHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#homeWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" textAlignment="RIGHT" textFill="WHITE">
                <graphic>
-                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons8-home-24.png" />
+                  <ImageView fitHeight="32.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../../media/icons/general/home.png" />
                   </ImageView>
                </graphic>
             </Button>
-            <Label fx:id="lblWelcome" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" text="Welcome to Hasretia!" textAlignment="RIGHT" textFill="#ffc500">
+            <Label fx:id="lblWelcome" text="Welcome to Hasretia!" textFill="#cae8fb" HBox.hgrow="ALWAYS">
                <font>
-                  <Font name="System Bold Italic" size="17.0" />
+                  <Font name="Segoe UI Bold" size="17.0" />
                </font>
             </Label>
          </HBox>
       </AnchorPane>
-      <!-- Tooltip and other UI elements -->
-      <AnchorPane fx:id="tooltipSettings" layoutX="132.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="57.0" prefWidth="105.0" visible="false" AnchorPane.bottomAnchor="487.0">
-         <AnchorPane layoutX="39.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="90.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
-            <Label layoutX="12.0" layoutY="5.0" text="Complaint" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-         </AnchorPane>
-      </AnchorPane>
-      <AnchorPane fx:id="tooltipAbout" layoutX="68.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="83.0" visible="false" AnchorPane.bottomAnchor="494.0">
-         <AnchorPane layoutX="36.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="71.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
-            <Label layoutX="12.0" layoutY="5.0" text="About" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-         </AnchorPane>
-      </AnchorPane>
-      <AnchorPane fx:id="tooltipReports" layoutX="79.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="105.0" visible="false" AnchorPane.bottomAnchor="123.0">
+      <AnchorPane fx:id="tooltipReports" layoutX="79.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="62.0" prefWidth="137.0" visible="false" AnchorPane.bottomAnchor="472.0">
          <AnchorPane layoutX="37.0" layoutY="11.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="83.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
             <Label layoutX="12.0" layoutY="5.0" prefHeight="21.0" prefWidth="70.0" text="Reports" textFill="WHITE">
                <font>
@@ -140,7 +115,7 @@
             </Label>
          </AnchorPane>
       </AnchorPane>
-      <AnchorPane fx:id="tooltipOrders" layoutX="70.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="123.0" visible="false" AnchorPane.bottomAnchor="425.0">
+      <AnchorPane fx:id="tooltipOrders" layoutX="80.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="137.0" visible="false" AnchorPane.bottomAnchor="476.0">
          <padding>
             <Insets top="20.0" />
          </padding>
@@ -153,7 +128,7 @@
          </AnchorPane>
          <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="14.0" layoutY="50.0" translateX="-30.0" />
       </AnchorPane>
-      <AnchorPane fx:id="tooltipEditMovieList" layoutX="76.0" layoutY="292.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="57.0" prefWidth="137.0" visible="false" AnchorPane.leftAnchor="76.0">
+      <AnchorPane fx:id="tooltipEditMovieList" layoutX="82.0" layoutY="67.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="57.0" prefWidth="159.0" visible="false" AnchorPane.leftAnchor="82.0">
          <AnchorPane layoutX="33.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="127.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
             <Label layoutX="11.0" layoutY="5.0" text="Edit Movie List" textFill="WHITE">
                <font>
@@ -162,34 +137,7 @@
             </Label>
          </AnchorPane>
       </AnchorPane>
-      <AnchorPane fx:id="tooltipMe" layoutX="191.0" layoutY="67.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="47.0" prefWidth="173.0" visible="false">
-         <AnchorPane layoutX="29.0" layoutY="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="165.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
-            <Label layoutX="9.0" layoutY="5.0" prefHeight="21.0" prefWidth="185.0" text="Buy Multi-Entry Card" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-         </AnchorPane>
-      </AnchorPane>
-      <AnchorPane fx:id="tooltipHome" layoutX="269.0" layoutY="72.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="99.0" visible="false">
-         <AnchorPane layoutX="39.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="73.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
-            <Label layoutX="14.0" layoutY="4.0" text="Home" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-         </AnchorPane>
-      </AnchorPane>
-      <AnchorPane fx:id="tooltipComplaints" layoutX="73.0" layoutY="191.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="41.0" prefWidth="144.0" visible="false">
-         <AnchorPane layoutX="32.0" layoutY="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
-            <Label fx:id="Complaints" layoutX="12.0" layoutY="4.0" text="Customer Service" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-         </AnchorPane>
-      </AnchorPane>
-      <AnchorPane fx:id="tooltipEditScreening" layoutX="79.0" layoutY="243.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="53.0" prefWidth="144.0" visible="false">
+      <AnchorPane fx:id="tooltipEditScreening" layoutX="79.0" layoutY="129.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="159.0" visible="false">
          <AnchorPane layoutX="31.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="131.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
             <Label layoutX="11.0" layoutY="5.0" text="Edit Screenings" textFill="WHITE">
                <font>
@@ -198,9 +146,18 @@
             </Label>
          </AnchorPane>
       </AnchorPane>
-      <AnchorPane fx:id="tooltipPrice" layoutX="82.0" layoutY="361.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="56.0" prefWidth="137.0" visible="false">
+      <AnchorPane fx:id="tooltipPrice" layoutX="82.0" layoutY="132.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="127.0" visible="false">
          <AnchorPane layoutX="31.0" layoutY="16.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="114.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
             <Label layoutX="11.0" layoutY="5.0" text="Price Change" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+         </AnchorPane>
+      </AnchorPane>
+      <AnchorPane fx:id="tooltipComplaints" layoutX="79.0" layoutY="66.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="54.0" prefWidth="173.0" visible="false">
+         <AnchorPane layoutX="32.0" layoutY="5.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color: black; -fx-background-radius: 5;" translateX="-30.0">
+            <Label fx:id="Complaints" layoutX="12.0" layoutY="4.0" text="Customer Service" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -210,43 +167,42 @@
 
    </AnchorPane>
 
-   <!-- Existing login pane -->
-   <AnchorPane fx:id="pnLogIn" style="-fx-background-color: transparent;" visible="false" StackPane.alignment="CENTER">
-      <VBox alignment="CENTER" prefHeight="143.0" prefWidth="445.0" style="-fx-background-color: transparent;">
-         <Label prefHeight="47.0" prefWidth="462.0"
-                style="-fx-background-color: #e72141; -fx-text-fill: white; -fx-padding: 10; -fx-font-size: 18;"
-                text="Login to Personal Area">
-            <graphic>
-               <Button mnemonicParsing="false" onAction="#closeLoginDialog" styleClass="button-close" text="x"/>
-            </graphic>
-         </Label>
-         <VBox alignment="CENTER" prefHeight="97.0" prefWidth="424.0" spacing="10.0"
-               style="-fx-background-color: #262262; -fx-padding: 20;">
-            <HBox alignment="CENTER" spacing="10.0">
-               <RadioButton fx:id="customerRadioButton" onAction="#handleRadioButtonAction" selected="true"
-                            text="Customer" textFill="WHITE"/>
-               <RadioButton fx:id="employeeRadioButton" onAction="#handleRadioButtonAction" text="Employee"
-                            textFill="WHITE"/>
+
+
+       <AnchorPane fx:id="pnLogIn" style="-fx-background-color: transparent; -fx-padding: 0;" visible="false" StackPane.alignment="CENTER">
+          <VBox alignment="CENTER" prefHeight="179.0" prefWidth="476.0" style="-fx-background-color: white; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 10;" styleClass="login-form">
+            <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="400.0" spacing="10.0" styleClass="login-header">
+               <Label prefHeight="27.0" prefWidth="300.0" styleClass="login-title" text="Login to Personal Area" />
+               <Button mnemonicParsing="false" onAction="#closeLoginDialog" styleClass="button-close" text="x" />
             </HBox>
-            <VBox fx:id="customerLogin" alignment="CENTER" spacing="10.0">
+            <VBox alignment="CENTER" prefHeight="150.0" prefWidth="400.0" spacing="10.0">
                <HBox alignment="CENTER" spacing="10.0">
-                  <Button onAction="#login" style="-fx-background-color: #f3bc00; -fx-font-size: 16;"
-                          text="✓"/>
-                  <TextField fx:id="txtUser" promptText="ID Number"
-                             style="-fx-pref-width: 200; -fx-font-size: 16;"/>
+                  <RadioButton fx:id="customerRadioButton" onAction="#handleRadioButtonAction" selected="true" styleClass="radio-button" text="Customer" />
+                  <RadioButton fx:id="employeeRadioButton" onAction="#handleRadioButtonAction" styleClass="radio-button" text="Employee" />
                </HBox>
-            </VBox>
-            <VBox fx:id="employeeLogin" alignment="CENTER" managed="false" spacing="10.0" visible="false">
-               <HBox alignment="CENTER" spacing="10.0">
-                  <TextField fx:id="txtEmploee" promptText="ID Number"
-                             style="-fx-pref-width: 100; -fx-font-size: 16;"/>
-                  <PasswordField fx:id="txtPassword" promptText="Password"
-                                 style="-fx-pref-width: 100; -fx-font-size: 16;"/>
-                  <Button onAction="#login" style="-fx-background-color: #f3bc00; -fx-font-size: 16;"
-                          text="✓"/>
-               </HBox>
+               <VBox fx:id="customerLogin" alignment="CENTER" spacing="10.0">
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <TextField fx:id="txtUser" prefWidth="150.0" promptText="ID Number" style="-fx-text-fill: #000000; /* Darker text color */" styleClass="login-text-field" />
+                     <Button onAction="#login" prefWidth="80.0" styleClass="login-button" text="Login" />
+                  </HBox>
+               </VBox>
+               <VBox fx:id="employeeLogin" alignment="CENTER" managed="false" spacing="10.0" visible="false">
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <TextField fx:id="txtEmployee" prefWidth="150.0" promptText="Employee ID" style="-fx-text-fill: #000000; /* Darker text color */" styleClass="login-text-field" />
+                     <PasswordField fx:id="txtPassword" prefWidth="150.0" promptText="Password" style="-fx-text-fill: #000000; /* Darker text color */" styleClass="login-password-field" />
+                     <TextField fx:id="txtPasswordVisible" managed="false" prefWidth="150.0" promptText="Password" style="-fx-text-fill: #000000; /* Darker text color */" styleClass="login-text-field" visible="false" />
+                     <Button onAction="#togglePasswordVisibility" styleClass="eye-button">
+                        <graphic>
+                           <ImageView fx:id="eyeIcon" fitHeight="15" fitWidth="15" />
+                        </graphic>
+                     </Button>
+                     <Button onAction="#login" prefWidth="80.0" styleClass="login-button" text="Login" />
+                  </HBox>
+               </VBox>
             </VBox>
          </VBox>
-      </VBox>
-   </AnchorPane>
+      </AnchorPane>
+
+
+
 </StackPane>

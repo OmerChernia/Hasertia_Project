@@ -1,7 +1,6 @@
 .root {
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
-    -fx-background-color: #f0f0f0;
-}
+ }
 
 .step-indicator {
     -fx-background-color: linear-gradient(to right, #161438, #2e2e85);
@@ -9,7 +8,7 @@
 }
 
 .step-label {
-    -fx-text-fill: #161438;
+    -fx-text-fill: white;
     -fx-font-size: 18px;
     -fx-background-color: #2e2e85;
     -fx-padding: 5 10 5 10;
@@ -29,7 +28,7 @@
 
 .content-pane {
     -fx-padding: 30px;
-    -fx-background-color: #cae8fb;
+    -fx-background-color: linear-gradient(to bottom right, #cae8fb, #ffffff);
 }
 
 .section-title {

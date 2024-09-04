@@ -17,9 +17,16 @@ public class ComplaintController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-     public static void addComplaint(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, RegisteredUser registeredUser) {
+     public static void addComplaintRegister(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, RegisteredUser registeredUser) {
          Complaint complaint = new Complaint( info,  creationDate,  purchase,  isClosed,  registeredUser);
          ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.ADD_COMPLIANT, complaint);
+
+        SimpleClient.getClient().sendRequest(requestMessage);
+    }
+
+    public static void addComplaintUnregister(String info, LocalDateTime creationDate, Purchase purchase, boolean isClosed, String email) {
+       Complaint complaint = new Complaint( info, creationDate,  isClosed,  email) ;
+        ComplaintMessage requestMessage = new ComplaintMessage(Message.MessageType.REQUEST, ComplaintMessage.RequestType.ADD_COMPLIANT, complaint);
 
         SimpleClient.getClient().sendRequest(requestMessage);
     }

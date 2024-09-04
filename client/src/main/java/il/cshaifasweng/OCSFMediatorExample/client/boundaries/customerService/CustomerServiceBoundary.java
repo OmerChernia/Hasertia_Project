@@ -1,16 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.customerService;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.events.ComplaintEvent;
-import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -118,6 +117,7 @@ public class CustomerServiceBoundary implements Initializable {
     @Subscribe
     public void onComplaintEventReceived (ComplaintEvent complaintEvent)
     {
+        AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "New Complaint Added!");
         listComplaints.add(complaintEvent.complaint);
         tblComplaints.setItems(listComplaints);
     }

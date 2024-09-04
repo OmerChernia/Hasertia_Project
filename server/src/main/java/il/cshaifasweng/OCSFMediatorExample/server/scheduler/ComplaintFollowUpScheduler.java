@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -21,6 +22,7 @@ public class ComplaintFollowUpScheduler {
 
     private static final String ANSI_YELLOW = "\u001B[33m";
     private static final String ANSI_RESET = "\u001B[0m";
+    private static final String CLASS_NAME = "ComplaintFollowUpScheduler:: ";
 
     private ComplaintFollowUpScheduler() {
         emailExecutor = Executors.newFixedThreadPool(5);
@@ -91,7 +93,7 @@ public class ComplaintFollowUpScheduler {
      * @param complaint The complaint for which the response email should be sent.
      */
     public static void scheduleResponseEmailToCustomer(Complaint complaint) {
-        System.out.println(ANSI_YELLOW + "Scheduling response email to customer for complaint ID: " + complaint.getId() + ANSI_RESET);
+        System.out.println(ANSI_YELLOW +CLASS_NAME+ "Scheduling response email to customer for complaint ID: " + complaint.getId() + ANSI_RESET);
         emailExecutor.submit(() -> sendResponseEmailToCustomer(complaint));
     }
 
@@ -99,7 +101,7 @@ public class ComplaintFollowUpScheduler {
      * Schedules the handling of all active complaints in the system.
      */
     public void scheduleAllActiveComplaints() {
-        System.out.println(ANSI_YELLOW + "Scheduling all active complaints." + ANSI_RESET);
+        System.out.println(ANSI_YELLOW +CLASS_NAME+ "Scheduling all active complaints." + ANSI_RESET);
         new Thread(() -> {
             try (Session session = SimpleServer.session.getSessionFactory().openSession()) {
                 Transaction transaction = session.beginTransaction();
@@ -110,7 +112,7 @@ public class ComplaintFollowUpScheduler {
                 activeComplaints.parallelStream().forEach(ComplaintFollowUpScheduler::scheduleComplaintHandling);
 
                 transaction.commit();
-                System.out.println(ANSI_YELLOW + "Scheduled all active complaints." + ANSI_RESET);
+                System.out.println(ANSI_YELLOW +CLASS_NAME+ "Scheduled all active complaints." + ANSI_RESET);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -124,15 +126,24 @@ public class ComplaintFollowUpScheduler {
      */
     private void sendComplaintHandling(Complaint complaint) {
         LocalDateTime targetTime = complaint.getCreationDate().plusHours(24);
-        long delay = Duration.between(LocalDateTime.now(), targetTime).toMillis();
-        System.out.println(ANSI_YELLOW + "Scheduling complaint ID " + complaint.getId() + " for handling in " + delay + " milliseconds." + ANSI_RESET);
+        Duration duration = Duration.between(LocalDateTime.now(), targetTime);
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedTargetTime = targetTime.format(formatter);
+
+        System.out.println(ANSI_YELLOW + CLASS_NAME + "Scheduling complaint ID " + complaint.getId() + " for handling in 24 hours at " + formattedTargetTime + "." + ANSI_RESET);
 
         Future<?> future = scheduler.schedule(() -> {
-            System.out.println(ANSI_YELLOW + "Handling complaint ID " + complaint.getId() + " at " + LocalDateTime.now() + ANSI_RESET);
+            String formattedHandlingTime = LocalDateTime.now().format(formatter);
+            System.out.println(ANSI_YELLOW + CLASS_NAME + "Handling complaint ID " + complaint.getId() + " at " + formattedHandlingTime + ANSI_RESET);
             handleComplaintAfter24Hours(complaint);
-        }, delay, TimeUnit.MILLISECONDS);
+        }, duration.toMillis(), TimeUnit.MILLISECONDS);
         scheduledTasks.put(complaint.getId(), future);
     }
+
+
 
     /**
      * Cancels the scheduled handling of a complaint.
@@ -142,11 +153,11 @@ public class ComplaintFollowUpScheduler {
     private void cancelScheduledComplaintHandling(int complaintId) {
         Future<?> future = scheduledTasks.get(complaintId);
         if (future != null && !future.isDone()) {
-            System.out.println(ANSI_YELLOW + "Cancelling scheduled handling for complaint ID " + complaintId + ANSI_RESET);
+            System.out.println(ANSI_YELLOW +CLASS_NAME+ "Cancelling scheduled handling for complaint ID " + complaintId + ANSI_RESET);
             future.cancel(true);
             scheduledTasks.remove(complaintId);
         } else {
-            System.out.println(ANSI_YELLOW + "No scheduled task found for complaint ID " + complaintId + " or it has already been completed." + ANSI_RESET);
+            System.out.println(ANSI_YELLOW +CLASS_NAME+ "No scheduled task found for complaint ID " + complaintId + " or it has already been completed." + ANSI_RESET);
         }
     }
 
@@ -165,7 +176,7 @@ public class ComplaintFollowUpScheduler {
 
             complaint.setClosed(true);
             session.update(complaint);
-            System.out.println(ANSI_YELLOW + "Complaint ID " + complaint.getId() + " has been automatically closed after 24 hours." + ANSI_RESET);
+            System.out.println(ANSI_YELLOW +CLASS_NAME+ "Complaint ID " + complaint.getId() + " has been automatically closed after 24 hours." + ANSI_RESET);
 
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -186,17 +197,16 @@ public class ComplaintFollowUpScheduler {
      * @param complaint The complaint for which the notification should be sent.
      */
     private void sendNotificationToCustomer(Complaint complaint) {
-        String customerEmail = complaint.getPurchase().getOwner().getEmail();
-        String emailBody = String.format(
-                "Dear %s,\n\nUnfortunately, we were unable to resolve your complaint (ID: %d) within the expected time frame. " +
+         String emailBody = String.format(
+                "Dear Customer,\n\nUnfortunately, we were unable to resolve your complaint (ID: %d) within the expected time frame. " +
                         "Your complaint has now been closed.\n\n" +
                         "We apologize for the inconvenience and encourage you to contact our customer service for further assistance.\n\n" +
                         "Best regards,\nCustomer Service Team",
-                complaint.getPurchase().getOwner().getName(), complaint.getId()
+                  complaint.getId()
         );
 
-        System.out.println(ANSI_YELLOW + "Sending email notification to customer for complaint ID " + complaint.getId() + ANSI_RESET);
-        EmailSender.sendEmail(customerEmail, "Your Complaint Has Been Closed", emailBody);
+        System.out.println(ANSI_YELLOW +CLASS_NAME+ "Sending email notification to customer for complaint ID " + complaint.getId() + ANSI_RESET);
+        EmailSender.sendEmail(complaint.getEmail(), "Your Complaint Has Been Closed", emailBody);
         // Optionally, email the company
         EmailSender.sendEmail("hasertiaproject@gmail.com", "Your Complaint Has Been Closed", emailBody);
     }
@@ -207,16 +217,15 @@ public class ComplaintFollowUpScheduler {
      * @param complaint The complaint for which the response email should be sent.
      */
     private static void sendResponseEmailToCustomer(Complaint complaint) {
-        String customerEmail = complaint.getPurchase().getOwner().getEmail();
+
         String emailBody = String.format(
-                "Dear %s,\n\nWe have responded to your complaint regarding your purchase. " +
-                        "Please check your account for the details of our response.\n\n" +
-                        "Thank you for your patience.\n\nBest regards,\nCustomer Service Team",
-                complaint.getPurchase().getOwner().getName()
+                "Dear Customer,\n\nWe have responded to your complaint regarding your purchase. " +
+                        complaint.getInfo() +
+                        "Thank you for your patience.\n\nBest regards,\nCustomer Service Team"
         );
 
-        System.out.println(ANSI_YELLOW + "Sending response email to customer for complaint ID " + complaint.getId() + ANSI_RESET);
-        EmailSender.sendEmail(customerEmail, "Response to Your Complaint", emailBody);
+        System.out.println(ANSI_YELLOW +CLASS_NAME+ "Sending response email to customer for complaint ID " + complaint.getId() + ANSI_RESET);
+        EmailSender.sendEmail(complaint.getEmail(), "Response to Your Complaint", emailBody);
 
         // Optionally, email the company
         EmailSender.sendEmail("hasertiaproject@gmail.com", "Response to Your Complaint", emailBody);
@@ -228,17 +237,16 @@ public class ComplaintFollowUpScheduler {
      * @param complaint The complaint that was received.
      */
     public void sendComplaintReceivedEmail(Complaint complaint) {
-        String customerEmail = complaint.getRegisteredUser().getEmail();
         String subject = "Complaint Received";
-        String body = "Dear " + complaint.getRegisteredUser().getName() + ",\n\n"
+        String body = "Dear Customer ,\n\n"
                 + "We have received your complaint regarding: " + complaint.getInfo() + ".\n"
                 + "Our team will address it within 24 hours.\n\n"
                 + "Thank you for your patience.\n"
                 + "Best regards,\n"
                 + "Customer Service Team";
 
-        System.out.println(ANSI_YELLOW + "Sending complaint received email to customer for complaint ID " + complaint.getId() + ANSI_RESET);
-        EmailSender.sendEmail(customerEmail, subject, body);
+        System.out.println(ANSI_YELLOW +CLASS_NAME+ "Sending complaint received email to customer for complaint ID " + complaint.getId() + ANSI_RESET);
+        EmailSender.sendEmail(complaint.getEmail(), subject, body);
         // Optionally, email the company
         EmailSender.sendEmail("hasertiaproject@gmail.com", subject, body);
     }

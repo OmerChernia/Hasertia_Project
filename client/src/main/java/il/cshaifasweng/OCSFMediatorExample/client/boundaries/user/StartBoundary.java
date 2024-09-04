@@ -7,10 +7,9 @@ import java.util.ResourceBundle;
 
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ConnectionMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
 import javafx.application.Platform;
@@ -20,7 +19,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.loadFXML;
 import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient.scene;
@@ -28,6 +29,8 @@ import static il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClien
 
 public class StartBoundary {
 
+    @FXML
+    private   AnchorPane anchorPane;
     @FXML
     private ResourceBundle resources;
 
@@ -60,12 +63,15 @@ public class StartBoundary {
             SimpleChatClient.client.openConnection();
 
             messageField.setText("Client created, host: " + SimpleClient.host + ", port: " + SimpleClient.port);
-            NotificationsBuilder.create(NotificationType.SUCCESS, "Welcome to the system!");
+            NotificationsBuilder.create(NotificationType.SUCCESS, "Welcome to the system!",anchorPane);
 
             SimpleClient.getClient().sendRequest(new ConnectionMessage(Message.MessageType.REQUEST, ConnectionMessage.RequestType.FIRST_CONNECTION));
 
             scene = new Scene(loadFXML("MainView"));
             Stage stage = new Stage(); // Create a new Stage instance
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setMinHeight(ConstantsPath.MIN_HEIGHT);
+            stage.setMinWidth(ConstantsPath.MIN_WIDTH);
             stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
             stage.setTitle(ConstantsPath.TITLE);
 

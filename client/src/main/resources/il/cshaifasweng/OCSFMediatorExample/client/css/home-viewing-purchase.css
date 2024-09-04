@@ -1,10 +1,11 @@
 .root {
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
-    -fx-background-color: #f0f0f0;
+    -fx-background-color: #2e2e85;
+
 }
 
 .step-indicator {
-    -fx-background-color: linear-gradient(to right, #2e2e85, #4a4ab8);
+    -fx-background-color:  linear-gradient(to right, #161438, #1d1d48);
     -fx-padding: 15px;
 }
 
@@ -22,7 +23,7 @@
 }
 
 .movie-info-bar {
-    -fx-background-color: #3e3e3e;
+    -fx-background-color:  #1d1d48;
     -fx-padding: 15px;
 }
 
@@ -39,7 +40,7 @@
 
 .content-pane {
     -fx-padding: 30px;
-    -fx-background-color: white;
+    -fx-background-color: linear-gradient(to bottom right, #cae8fb, #ffffff);
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
 }
 
@@ -97,9 +98,6 @@
     -fx-text-fill: #dc3545;
 }
 
-.confirmation-title {
-    -fx-text-fill: #28a745;
-}
 
 .confirmation-details, .confirmation-price {
     -fx-font-size: 18px;

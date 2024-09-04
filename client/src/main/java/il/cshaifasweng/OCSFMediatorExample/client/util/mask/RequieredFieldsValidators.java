@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client.util.mask;
 
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,10 +10,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.time.YearMonth;
+import java.util.regex.Pattern;
+
 public class RequieredFieldsValidators {
 
     private static final String MESSAGE = "Obligatory field";
     private static final String ICON_PATH = ConstantsPath.MEDIA_PACKAGE+ "warning.png";
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+
 
     public static void toTextField(TextField txt) {
         addValidationListener(txt);
@@ -108,6 +114,40 @@ public class RequieredFieldsValidators {
         }
     }
 
+    public static boolean isValidEmail(String email) {
+        Pattern pattern = Pattern.compile(EMAIL_REGEX);
+        return pattern.matcher(email).matches();
+    }
 
+    public static boolean isValidCardNumber(String cardNumber) {
+        cardNumber = cardNumber.replaceAll("\\s", "");
+        if (!cardNumber.matches("[0-9-]+")) {
+            return false;
+        }
+        String digitsOnly = cardNumber.replaceAll("-", "");
+        return digitsOnly.length() == 16 && (!cardNumber.contains("-") || cardNumber.matches("\\d{4}-\\d{4}-\\d{4}-\\d{4}"));
+    }
+
+    public static boolean isValidExpirationDate(String month, String year) {
+        YearMonth expirationDate = YearMonth.of(Integer.parseInt(year), Integer.parseInt(month));
+        YearMonth currentDate = YearMonth.now();
+        return expirationDate.isAfter(currentDate);
+    }
+
+    public static boolean isValidCVV(String cvv) {
+        return cvv.matches("\\d{3,4}");
+    }
+
+    public static boolean areEmailsMatching(String email, String confirmEmail) {
+        return email.equals(confirmEmail);
+    }
+
+    public static boolean areIdsMatching(String id, String confirmId) {
+        return id.equals(confirmId);
+    }
+
+    public static boolean isNameValid(String name) {
+        return name.chars().noneMatch(Character::isDigit);
+    }
 
 }

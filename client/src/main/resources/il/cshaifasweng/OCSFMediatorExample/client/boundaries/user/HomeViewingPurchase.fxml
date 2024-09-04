@@ -1,43 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="800" prefWidth="1000" stylesheets="@../../css/home-viewing-purchase.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.HomeViewingPurchaseBoundary">
+<BorderPane prefHeight="800" prefWidth="1000" stylesheets="@../../css/home-viewing-purchase.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.HomeViewingPurchaseBoundary">
     <top>
-        <VBox spacing="0">
-            <HBox alignment="CENTER" spacing="20" styleClass="step-indicator">
+        <VBox prefWidth="1000.0" spacing="0">
+            <HBox alignment="CENTER" prefHeight="38.0" prefWidth="1000.0" spacing="20" styleClass="step-indicator">
                 <Label fx:id="step2Label" styleClass="step-label" text="1" />
                 <Label fx:id="step2Text" styleClass="step-text" text="Select Package" />
                 <Label fx:id="step3Label" styleClass="step-label" text="2" />
                 <Label fx:id="step3Text" styleClass="step-text" text="Payment Details" />
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="15" styleClass="movie-info-bar">
+            <HBox alignment="CENTER_LEFT" prefHeight="71.0" prefWidth="1000.0" spacing="15" styleClass="movie-info-bar">
                 <ImageView fx:id="movieImage" fitHeight="60" fitWidth="60" pickOnBounds="true" preserveRatio="true" />
                 <Label fx:id="movieTitle" styleClass="movie-info" />
                 <Label styleClass="movie-info-separator" text="|" />
-                <Label fx:id="movieLocation" styleClass="movie-info" />
+                <Label fx:id="movieDate" styleClass="movie-info" />
                 <Label styleClass="movie-info-separator" text="|" />
                 <Label fx:id="movieTime" styleClass="movie-info" />
-                <Label styleClass="movie-info-separator" text="|" />
-                <Label fx:id="movieHall" styleClass="movie-info" />
-            </HBox>
+              </HBox>
         </VBox>
     </top>
 
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true">
+        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom right, #cae8fb, #ffffff);">
             <StackPane fx:id="stackPane">
                 <!-- Package Selection Pane -->
                 <VBox fx:id="ticketSelectionPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
@@ -136,18 +127,80 @@
                     </VBox>
                 </VBox>
 
-                <!-- Package Confirmation Pane -->
-                <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" spacing="30" styleClass="content-pane">
-                    <Label styleClass="section-title, confirmation-title" text="Package Confirmation" />
-                    <ImageView fx:id="confirmationMovieImage" fitHeight="150" fitWidth="150" pickOnBounds="true" preserveRatio="true" />
-                    <Label fx:id="confirmationDetails" styleClass="confirmation-details" />
-                    <Label fx:id="pricePaidLabel" styleClass="confirmation-price" />
+
+                <!-- Movie Purchase Receipt -->
+                <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" prefHeight="695.0" prefWidth="944.0" spacing="5" styleClass="receipt-pane" stylesheets="@../../css/receipt.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+
+                    <!-- Title -->
+                    <Label styleClass="confirmation-title" text="Payment Confirmation" />
+
+                    <!-- Header Section -->
+                    <VBox alignment="CENTER" spacing="2" styleClass="header-section">
+                        <Label styleClass="header-title" text="MONKII MOVIES" />
+                        <Label styleClass="header-subtitle" text="Home Viewing" />
+                  <VBox.margin>
+                     <Insets top="20.0" />
+                  </VBox.margin>
+                    </VBox>
+
+                    <!-- Divider Line -->
+                    <Line endX="420.0" styleClass="divider-line" />
+
+                    <!-- Movie Details Section -->
+                    <VBox alignment="CENTER" spacing="2" styleClass="details-section">
+                        <Text fx:id="movieText" styleClass="details-movie" />
+                        <HBox alignment="CENTER" spacing="10">
+                            <Text styleClass="details-label" text="AVAILABLE FROM:" wrappingWidth="135.2177734375" />
+                            <Text fx:id="availableOnText" styleClass="details-value" />
+                        </HBox>
+                        <HBox alignment="CENTER" spacing="10">
+                            <Text styleClass="details-label" text="AVAILABLE UNTIL:" />
+                            <Text fx:id="validUntilText" styleClass="details-value" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Divider Line -->
+                    <Line endX="420.0" styleClass="divider-line" />
+
+                    <!-- Ticket Item Section -->
+                    <GridPane alignment="CENTER" hgap="20" styleClass="ticket-section" vgap="5">
+                        <Text styleClass="ticket-header" text="QTY" wrappingWidth="83.2041015625" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Text styleClass="ticket-header" text="DESCRIPTION" wrappingWidth="136.4150390625" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        <Text styleClass="ticket-header" text="PRICE" wrappingWidth="88.0068359375" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+                        <Label prefHeight="16.0" prefWidth="422.0" styleClass="divider-text" text="--------------------------------------------------" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+
+                        <Text styleClass="ticket-item" text="1" wrappingWidth="38.4013671875" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Text styleClass="ticket-item" text="HOME VIEWING PACKAGE" wrappingWidth="189.02734375" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Text fx:id="pricePaidText" styleClass="ticket-item" text="60שח" wrappingWidth="71.60546875" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+
+
+                    <!-- Divider Line -->
+                    <Line endX="420.0" styleClass="divider-line" />
+
+                    <!-- Summary Section -->
+                    <VBox alignment="CENTER_LEFT" prefHeight="57.0" prefWidth="959.0" spacing="2" styleClass="summary-section">
+                        <HBox alignment="CENTER" spacing="10">
+                            <Text styleClass="summary-label" text="TOTAL AMOUNT" />
+                            <Text fx:id="totalAmountLabel" styleClass="summary-value" />
+                        </HBox>
+                    </VBox>
                 </VBox>
+
+
+
             </StackPane>
         </ScrollPane>
     </center>
-
-    <bottom>
-        <HBox alignment="CENTER" spacing="20" styleClass="navigation-bar" />
-    </bottom>
 </BorderPane>

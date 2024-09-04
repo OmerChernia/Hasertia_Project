@@ -1,13 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client.connect;
 
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.LoginPageController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ConnectionMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

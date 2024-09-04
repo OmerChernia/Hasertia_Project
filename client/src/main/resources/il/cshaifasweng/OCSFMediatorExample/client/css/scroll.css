@@ -1,4 +1,3 @@
-/* גלילה */
 .scroll-bar:vertical>.track-background, .scroll-bar:horizontal>.track-background {
     -fx-background-color: rgb(230.0, 230.0, 240.0);
     -fx-background-insets: 0.0;

@@ -33,10 +33,3 @@
     -fx-fill: white;
 }
 
-.action-button {
-    -fx-font-size: 12px;
-    -fx-font-family: 'Segoe UI', Arial, sans-serif;
-    -fx-background-color: -primary;
-    -fx-text-fill: white;
-}
-

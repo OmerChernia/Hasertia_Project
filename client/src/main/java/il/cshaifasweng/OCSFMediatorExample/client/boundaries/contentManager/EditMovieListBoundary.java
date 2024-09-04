@@ -2,13 +2,13 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 
-import il.cshaifasweng.OCSFMediatorExample.client.util.CustomContextMenu;
-import il.cshaifasweng.OCSFMediatorExample.client.util.DialogTool;
-import il.cshaifasweng.OCSFMediatorExample.client.util.constants.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.generators.ButtonFactory;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertType;
-import il.cshaifasweng.OCSFMediatorExample.client.util.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animations.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.CustomContextMenu;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
+import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.server.events.PriceChangeEvent;
@@ -305,10 +305,6 @@ public class EditMovieListBoundary implements Initializable {
     }
 
 
-    private  void delete (int id)
-    {
-
-    }
 
 
     @FXML
@@ -343,41 +339,7 @@ public class EditMovieListBoundary implements Initializable {
         tblProducts.setDisable(true) ;
     }
 
-    @FXML
-    private void filterNameProduct() {
-        Platform.runLater(() -> {
-            String filterName = txtSearchProduct.getText().trim();
-            if (filterName.isEmpty()) {
-                tblProducts.setItems(listProducts);
-            } else {
-                filterProducts.clear();
-                for (Movie p : listProducts) {
-                    if (p.getEnglishName().toLowerCase().contains(filterName.toLowerCase())) {
-                        filterProducts.add(p);
-                    }
-                }
-                tblProducts.setItems(filterProducts);
-            }
-        });
-    }
 
-    @FXML
-    private void filterCodeBar() {
-        Platform.runLater(() -> {
-            String filterCodeBar = txtSearchBarCode.getText().trim();
-            if (filterCodeBar.isEmpty()) {
-                tblProducts.setItems(listProducts);
-            } else {
-                filterProducts.clear();
-                for (Movie p : listProducts) {
-                    if (p.getEnglishName().toLowerCase().contains(filterCodeBar.toLowerCase())) {
-                        filterProducts.add(p);
-                    }
-                }
-                tblProducts.setItems(filterProducts);
-            }
-        });
-    }
 
     public void cleanup() {
         Platform.runLater(() -> EventBus.getDefault().unregister(this));
