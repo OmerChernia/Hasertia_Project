@@ -7,7 +7,7 @@ import java.util.List;
 
 public class MovieMessage extends Message
 {
-    public List<Movie> movies;
+    public List<Movie> movies = new ArrayList<>();
     public int id;
     public RequestType requestType;
     public ResponseType responseType;
@@ -18,7 +18,6 @@ public class MovieMessage extends Message
     {
         // ADD_MOVIE ,UPDATE_MOVIE
         super(messageType);
-        movies = new ArrayList<>();
         movies.add(movie);
         this.requestType = requestType;
 

@@ -40,10 +40,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HomeBoundary implements Initializable {
@@ -156,9 +153,19 @@ public class HomeBoundary implements Initializable {
     public void onMovieEventReceived(MovieEvent event)
     {
         System.out.println("onMovieEventReceived");
-        Platform.runLater(() ->
-        {
-            SimpleChatClient.mainBoundary.homeWindowsInitialize();
+        if(currentScreeningFilter.equals("Theater"))
+            Platform.runLater(() ->
+            {
+                if(event.action.equals("add"))
+                    this.items.add(event.movie);
+                else //delete
+                    items.removeIf(movie -> movie.getId() == event.movie.getId());
+                try {
+                    updateGrid();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
         });
     }
 
@@ -166,15 +173,24 @@ public class HomeBoundary implements Initializable {
     public void onHomeViewingEventReceived(HomeViewingEvent event)
     {
         System.out.println("onHomeViewingEventReceived");
-        Platform.runLater(() ->
-        {
-            this.items.add(event.movie);
-            try {
-                updateGrid();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+
+            if (currentScreeningFilter.equals("Home Viewing")) {
+                if(event.action.equals("add"))
+                    this.items.add(event.movie);
+                else {
+                    System.out.println("Movie removed, "+event.movie.getEnglishName());
+                    items.removeIf(movie -> movie.getId() == event.movie.getId());
+                }
+                Platform.runLater(() ->
+                {
+                    try {
+                        updateGrid();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                });
             }
-        });
     }
 
     public void setDateListeners ()

@@ -106,14 +106,15 @@ public class SimpleServer extends AbstractServer
 							Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :id and isActive=true", MovieInstance.class);
 							query.setParameter("id", ((MovieInstanceMessage) msg).id);
 							if(query.getResultList().isEmpty())
-								sendToAllClientsExceptMe(new MovieEvent(),client);
+								sendToAllClientsExceptMe(new MovieEvent(((MovieInstanceMessage) msg).movies.getFirst().getMovie(),"remove"),client);
 						}
 						if(((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE)
 						{
 							Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :id and isActive=true", MovieInstance.class);
 							query.setParameter("id", ((MovieInstanceMessage) msg).id);
-							if(query.getResultList().size()==1)
-								sendToAllClientsExceptMe(new MovieEvent(),client);
+							List<MovieInstance> movieList = query.getResultList();
+							if(movieList.size()==1)
+								sendToAllClientsExceptMe(new MovieEvent(movieList.getFirst().getMovie(),"add"),client);
 						}
 
 						sendToAllClients(new MovieInstanceCanceledEvent(((MovieInstanceMessage) msg).movies.getFirst()));
@@ -149,8 +150,12 @@ public class SimpleServer extends AbstractServer
 							&& ((MovieMessage) msg).requestType == MovieMessage.RequestType.ADD_MOVIE
 							&& (((MovieMessage) msg).movies.getFirst().getStreamingType()==Movie.StreamingType.HOME_VIEWING || ((MovieMessage) msg).movies.getFirst().getStreamingType()==Movie.StreamingType.BOTH))
 					{
-						System.out.println("Sending HomeViewingEvent");
-						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst()), client);
+						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst(),"add"), client);
+					}
+					else if(msg instanceof MovieMessage
+							&& ((MovieMessage) msg).requestType == MovieMessage.RequestType.DEACTIVATE_MOVIE)
+					{
+						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst(), "delete"), client);
 					}
 
 

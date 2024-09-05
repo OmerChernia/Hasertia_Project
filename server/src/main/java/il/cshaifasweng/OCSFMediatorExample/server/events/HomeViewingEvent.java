@@ -4,9 +4,11 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 
 public class HomeViewingEvent extends Event{
     public Movie movie;
-    public HomeViewingEvent(Movie movie)
+    public String action;
+    public HomeViewingEvent(Movie movie, String action)
     {
         this.movie = movie;
+        this.action = action;
     }
 
 }

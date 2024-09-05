@@ -243,6 +243,7 @@ public class MovieHandler extends MessageHandler
         query.setParameter("_id", message.id);
 
         Movie movie = query.uniqueResult();
+        message.movies.addFirst(movie);
 
         if (movie != null) {
             System.out.println(movie.getId());
