@@ -311,57 +311,137 @@ public class DialogEditMovie implements Initializable {
         editMovieListBoundary.closeDialogAddProduct();
     }
 
+    // Method to validate the inputs of the form
     private boolean validateInputs() {
+
+        // Check if the English name text field is empty
         if (txtEnglishName.getText().trim().isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR, "English name cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtEnglishName); // Show error and focus on the field
+            return false;
+        }
+
+        // Check if only English letters are allowed
+        if (!txtEnglishName.getText().trim().matches("[a-zA-Z ]+")) { // Allows only English letters and spaces
+            NotificationsBuilder.create(NotificationType.ERROR, "Only English letters are allowed", containerAddProduct);
             showErrorAndFocus(txtEnglishName);
             return false;
         }
+
+        // Check if the Hebrew name text field is empty
         if (txtHebrewName.getText().trim().isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Hebrew name cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtHebrewName); // Show error and focus on the field
+            return false;
+        }
+
+        // Check if only Hebrew letters are allowed
+        if (!txtHebrewName.getText().trim().matches("[\u0590-\u05FF ]+")) { // Allows only Hebrew letters and spaces
+            NotificationsBuilder.create(NotificationType.ERROR, "Only Hebrew letters are allowed", containerAddProduct);
             showErrorAndFocus(txtHebrewName);
             return false;
         }
+
+
+        // Check if the producer text field is empty
         if (txtProducer.getText().trim().isEmpty()) {
-            showErrorAndFocus(txtProducer);
-            return false;
-        }
-        if (txtTheaterPrice.getText().trim().isEmpty()) {
-            showErrorAndFocus(txtTheaterPrice);
+            NotificationsBuilder.create(NotificationType.ERROR, "Producer cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtProducer); // Show error and focus on the field
             return false;
         }
 
-        String str1=txtTheaterPrice.getText().trim();
-       if (!(str1.matches("-?\\d+"))) {
-            showErrorAndFocus(txtTheaterPrice);
+        // Check if the Duration text field is empty
+        if (txtDuration.getText().trim().isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Duration cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtDuration); // Show error and focus on the field
             return false;
-       }
-// chacks if the string is int
-        str1=txtHVPrice.getText().trim();
+        }
+
+        // Validate if the Duration contains only numbers
+        if (!(txtDuration.getText().trim().matches("-?\\d+"))) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Duration must be a valid number", containerAddProduct);
+            showErrorAndFocus(txtDuration); // Show error and focus on the field
+            return false;
+        }
+
+        // Check if the Genre combo box is empty
+        if (comboGenre.getValue() == null) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Genre cannot be empty", containerAddProduct);
+            comboGenre.requestFocus();
+            Animations.shake(comboGenre);
+            return false;
+        }
+
+        // Check if the Available combo box is empty
+        if (comboAvailable.getValue() == null) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Available cannot be empty", containerAddProduct);
+            comboAvailable.requestFocus();
+            Animations.shake(comboAvailable);
+            return false;
+        }
+
+        // Check if the Type combo box is empty
+        if (comboType.getValue() == null) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Type of movie cannot be empty", containerAddProduct);
+            comboType.requestFocus();
+            Animations.shake(comboType);
+            return false;
+        }
+
+        // Check if the Actors text field is empty
+        if (txtActors.getText().trim().isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Actors cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtActors); // Show error and focus on the field
+            return false;
+        }
+
+        // Check if the home video price text field is empty
         if (txtHVPrice.getText().trim().isEmpty()) {
-            showErrorAndFocus(txtHVPrice);
+            NotificationsBuilder.create(NotificationType.ERROR, "Home video price cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtHVPrice); // Show error and focus on the field
             return false;
         }
 
-        if (!(str1.matches("-?\\d+"))) {
-            showErrorAndFocus(txtHVPrice);
+        // Validate if the home video price contains only numbers
+        if (!(txtHVPrice.getText().trim().matches("-?\\d+"))) { // Matches if the string is a valid integer
+            NotificationsBuilder.create(NotificationType.ERROR, "Home video price must be a valid number", containerAddProduct);
+            showErrorAndFocus(txtHVPrice); // Show error and focus on the field
             return false;
         }
 
+        // Check if the theater price text field is empty
+        if (txtTheaterPrice.getText().trim().isEmpty()) {
+            NotificationsBuilder.create(NotificationType.ERROR, "Theater price cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtTheaterPrice); // Show error and focus on the field
+            return false;
+        }
+
+        // Validate if the theater price contains only numbers
+        if (!(txtTheaterPrice.getText().trim().matches("-?\\d+"))) { // Matches if the string is a valid integer
+            NotificationsBuilder.create(NotificationType.ERROR, "Theater price must be a valid number", containerAddProduct);
+            showErrorAndFocus(txtTheaterPrice); // Show error and focus on the field
+            return false;
+        }
+
+        // Check if the description text field is empty
         if (txtDescription.getText().trim().isEmpty()) {
-            showErrorAndFocus(txtDescription);
+            NotificationsBuilder.create(NotificationType.ERROR, "Description cannot be empty", containerAddProduct);
+            showErrorAndFocus(txtDescription); // Show error and focus on the field
             return false;
         }
-        str1=txtDescription.getText().trim();
-        if (!(str1.matches("-?\\d+"))) {
-            showErrorAndFocus(txtDescription);
-            return false;
-        }
+
+
+        // Check if an image file is provided and trigger an error if it exists
         if (imageFile != null) {
-            Animations.shake(imageContainer);
+            Animations.shake(imageContainer); // Add a shake animation to indicate an error
             NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE,containerAddProduct);
             return false;
         }
+
+        // If all checks pass, return true to indicate validation success
         return true;
     }
+
 
     private void showErrorAndFocus(TextInputControl field) {
         field.requestFocus();
