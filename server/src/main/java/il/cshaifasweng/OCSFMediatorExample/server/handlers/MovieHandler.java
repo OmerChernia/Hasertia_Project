@@ -124,7 +124,7 @@ public class MovieHandler extends MessageHandler
                 return;
             }
 
-            String hql = "FROM Movie WHERE (streamingType =:home or streamingType =: both) and available =: available";
+            String hql = "FROM Movie WHERE (streamingType =:home or streamingType =:both) and available =:available";
             if (!"all".equalsIgnoreCase(message.Genre)) {
                 hql += " and genre=:genre";
             }

@@ -15,6 +15,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.server.events.HomeViewingEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 
 public class HomeBoundary implements Initializable {
 
-    private static final int ITEMS_PER_ROW = 3;
+    private static final int ITEMS_PER_ROW = 4;
     @FXML
     private HBox TheaterFilters;
 
@@ -121,6 +122,7 @@ public class HomeBoundary implements Initializable {
         Platform.runLater(() ->
         {
             try {
+                System.out.println("Movie list recieved");
                 setItems(message.movies);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -160,6 +162,21 @@ public class HomeBoundary implements Initializable {
         });
     }
 
+    @Subscribe
+    public void onHomeViewingEventReceived(HomeViewingEvent event)
+    {
+        System.out.println("onHomeViewingEventReceived");
+        Platform.runLater(() ->
+        {
+            this.items.add(event.movie);
+            try {
+                updateGrid();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
     public void setDateListeners ()
     {
         System.out.println("init");
@@ -167,7 +184,7 @@ public class HomeBoundary implements Initializable {
             if (newDate != null) {
                 System.out.println("before");
                 beforeDate.setValue(newDate);
-
+                cmbTheater.setValue("");
                 if(beforeDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
                 {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
@@ -181,6 +198,7 @@ public class HomeBoundary implements Initializable {
 
         afterDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
+                cmbTheater.setValue("");
                 System.out.println("after");
                 afterDate.setValue(newDate);
 
@@ -303,7 +321,8 @@ public class HomeBoundary implements Initializable {
         }
         if(currentScreeningFilter.equals("View Upcoming Movies"))
         {      MovieController.getUpcomingMovies();
-        hBoxGenre.setVisible(false);}
+        hBoxGenre.setVisible(false);
+        }
         else
              FilterByScreeningTypeAndGenre(event);
     }
@@ -350,6 +369,8 @@ public class HomeBoundary implements Initializable {
         cmbTheater.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if (newValue != null) {
                 MovieInstanceController.requestMovieInstancesByTheaterName(newValue);
+                beforeDate.setValue(null);
+                afterDate.setValue(null);
             }
         });
     }
@@ -361,6 +382,7 @@ public class HomeBoundary implements Initializable {
         afterDate.setValue(null);
         beforeDate.setValue(null);
     }
+
     private void populateTheatersComboBox(List<Theater> theatersList) {
         Set<String> theaterLocations = theatersList.stream()
                 .map(Theater::getLocation)

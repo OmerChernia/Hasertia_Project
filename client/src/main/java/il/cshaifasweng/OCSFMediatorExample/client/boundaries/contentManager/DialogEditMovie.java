@@ -328,11 +328,30 @@ public class DialogEditMovie implements Initializable {
             showErrorAndFocus(txtTheaterPrice);
             return false;
         }
+
+        String str1=txtTheaterPrice.getText().trim();
+       if (!(str1.matches("-?\\d+"))) {
+            showErrorAndFocus(txtTheaterPrice);
+            return false;
+       }
+// chacks if the string is int
+        str1=txtHVPrice.getText().trim();
         if (txtHVPrice.getText().trim().isEmpty()) {
             showErrorAndFocus(txtHVPrice);
             return false;
         }
+
+        if (!(str1.matches("-?\\d+"))) {
+            showErrorAndFocus(txtHVPrice);
+            return false;
+        }
+
         if (txtDescription.getText().trim().isEmpty()) {
+            showErrorAndFocus(txtDescription);
+            return false;
+        }
+        str1=txtDescription.getText().trim();
+        if (!(str1.matches("-?\\d+"))) {
             showErrorAndFocus(txtDescription);
             return false;
         }

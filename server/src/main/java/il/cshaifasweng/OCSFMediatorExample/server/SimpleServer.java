@@ -145,6 +145,14 @@ public class SimpleServer extends AbstractServer
 					{
 						sendToAllClientsExceptMe(new PriceChangeEvent(priceRequestMessage.requests.getFirst().getMovie()),client);
 					}
+					else if(msg instanceof MovieMessage
+							&& ((MovieMessage) msg).requestType == MovieMessage.RequestType.ADD_MOVIE
+							&& (((MovieMessage) msg).movies.getFirst().getStreamingType()==Movie.StreamingType.HOME_VIEWING || ((MovieMessage) msg).movies.getFirst().getStreamingType()==Movie.StreamingType.BOTH))
+					{
+						System.out.println("Sending HomeViewingEvent");
+						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst()), client);
+					}
+
 
 
 					System.out.println("message handled");
