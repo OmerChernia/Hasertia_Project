@@ -22,15 +22,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import javafx.scene.control.ComboBox;
@@ -245,8 +243,27 @@ public class HomeBoundary implements Initializable {
 
 
 
+//    private void updateGrid() throws IOException {
+//        grid.getChildren().clear();
+//        int row = 0;
+//        int col = 0;
+//        for (Movie item : items) {
+//            Node normalItem = createItem(item);
+//            grid.add(normalItem, col, row);
+//            col++;
+//            if (col == ITEMS_PER_ROW) {
+//                col = 0;
+//                row++;
+//            }
+//        }
+//    }
+
     private void updateGrid() throws IOException {
         grid.getChildren().clear();
+
+        // Clear existing row constraints
+        grid.getRowConstraints().clear();
+
         int row = 0;
         int col = 0;
         for (Movie item : items) {
@@ -256,7 +273,23 @@ public class HomeBoundary implements Initializable {
             if (col == ITEMS_PER_ROW) {
                 col = 0;
                 row++;
+
+                // Add a new row constraint
+                RowConstraints rowConstraints = new RowConstraints();
+                rowConstraints.setMinHeight(316.0);
+                rowConstraints.setMaxHeight(316.0);
+                rowConstraints.setValignment(VPos.CENTER);
+                grid.getRowConstraints().add(rowConstraints);
             }
+        }
+
+        // If the last row is not full, add the final row constraint
+        if (col != 0) {
+            RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setMinHeight(316.0);
+            rowConstraints.setMaxHeight(316.0);
+            rowConstraints.setValignment(VPos.CENTER);
+            grid.getRowConstraints().add(rowConstraints);
         }
     }
 

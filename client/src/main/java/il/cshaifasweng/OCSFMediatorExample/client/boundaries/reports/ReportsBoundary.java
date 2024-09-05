@@ -136,6 +136,10 @@ public class ReportsBoundary implements Initializable {
 
         ReportsPageController.requestAllPurchases();
         ReportsPageController.requestAllComplaints();
+
+        if (MainBoundary.loggedInEmployeeId == Employee.EmployeeType.THEATER_MANAGER) {
+            tabPane.getTabs().removeIf(tab -> tab.getText().equals("Package Sales") || tab.getText().equals("Multi-Entry Ticket Sales"));
+        }
     }
 
     private void initializeYearComboBox(ComboBox<Integer> yearComboBox) {

@@ -165,7 +165,7 @@ public class MainBoundary implements Initializable {
     private ImageView image;
 
     private static String loggedInUserId;
-    private static Employee.EmployeeType loggedInEmployeeId;
+    public static Employee.EmployeeType loggedInEmployeeId;
 
 
     public void initialize(URL location, ResourceBundle resources) {
