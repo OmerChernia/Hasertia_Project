@@ -143,6 +143,9 @@ public class TheaterPurchaseBoundary {
     private TextField idNumberTF;
 
     @FXML
+    private Button goToSeatSelectionBtn;
+
+    @FXML
     private TextField confirmIdNumberTF;
     //end of user details
 
@@ -208,6 +211,7 @@ public class TheaterPurchaseBoundary {
         this.currentMovieInstance = movieInstance;
         selectedSeats = new ArrayList<>();
         updateMovieDetails();
+        goToSeatSelectionBtn.setText(String.format("Regular- price per ticket: %d", movieInstance.getMovie().getTheaterPrice()));
         //updateSeats();
     }
 

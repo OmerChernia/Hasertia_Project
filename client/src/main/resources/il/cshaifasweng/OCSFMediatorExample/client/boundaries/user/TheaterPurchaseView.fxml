@@ -68,7 +68,7 @@
                   <Spinner fx:id="ticketsSpinner" styleClass="spinner-large" />
                </HBox>
                <VBox alignment="CENTER" spacing="15">
-                  <Button onAction="#goToSeatSelection" styleClass="button-primary" text="Regular" />
+                  <Button fx:id="goToSeatSelectionBtn" onAction="#goToSeatSelection" styleClass="button-primary" text="Regular" />
                   <Button fx:id="cardPackageBTN" onAction="#goToSeatSelectionWithCardPackage" styleClass="button-secondary" text="Card Package" visible="false" />
                </VBox>
             </VBox>
