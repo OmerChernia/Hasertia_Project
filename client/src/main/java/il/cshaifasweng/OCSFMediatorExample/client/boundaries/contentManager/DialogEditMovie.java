@@ -248,7 +248,6 @@ public class DialogEditMovie implements Initializable {
         String theaterPrice = txtTheaterPrice.getText().trim();
         String hvPrice = txtHVPrice.getText().trim();
         String genre = comboGenre.getSelectionModel().getSelectedItem();
-        System.out.println(genre);
         Movie.StreamingType streaming = comboType.getSelectionModel().getSelectedItem();
         Movie.Availability availability = comboAvailable.getSelectionModel().getSelectedItem();
         String description = txtDescription.getText().trim();

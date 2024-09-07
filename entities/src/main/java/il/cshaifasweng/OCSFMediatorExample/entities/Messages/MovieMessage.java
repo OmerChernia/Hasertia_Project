@@ -61,6 +61,7 @@ public class MovieMessage extends Message
         MOVIE_UPDATED,
         MOVIE_DELETED,
         MOVIE_NOT_ADDED,
+        MOVIE_ALREADY_EXISTS,
         MOVIE_NOT_UPDATED,
         MOVIE_NOT_DELETED,
         RETURN_MOVIES,

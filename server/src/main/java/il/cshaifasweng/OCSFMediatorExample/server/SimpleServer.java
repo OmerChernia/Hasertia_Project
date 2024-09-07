@@ -106,7 +106,7 @@ public class SimpleServer extends AbstractServer
 							Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :id and isActive=true", MovieInstance.class);
 							query.setParameter("id", ((MovieInstanceMessage) msg).id);
 							if(query.getResultList().isEmpty())
-								sendToAllClientsExceptMe(new MovieEvent(((MovieInstanceMessage) msg).movies.getFirst().getMovie(),"remove"),client);
+								sendToAllClientsExceptMe(new MovieEvent(((MovieInstanceMessage) msg).movies.getFirst().getMovie(),"delete"),client);
 						}
 						if(((MovieInstanceMessage) msg).requestType == MovieInstanceMessage.RequestType.ADD_MOVIE_INSTANCE)
 						{
@@ -157,9 +157,12 @@ public class SimpleServer extends AbstractServer
 					{
 						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst(), "delete"), client);
 					}
-
-
-
+					else if(msg instanceof MovieMessage
+							&& ((MovieMessage) msg).requestType == MovieMessage.RequestType.UPDATE_MOVIE)
+					{
+						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst(), "update"), client);
+						sendToAllClientsExceptMe(new MovieEvent(((MovieMessage) msg).movies.getFirst(),"update"),client);
+					}
 					System.out.println("message handled");
 
                     if (msg instanceof ConnectionMessage && ((ConnectionMessage) msg).requestType == ConnectionMessage.RequestType.DELETE_CONNECTION){

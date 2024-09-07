@@ -219,9 +219,10 @@ public class MovieHandler extends MessageHandler
         if(message.movies.getFirst() != null) {
             // Create an HQL query to fetch all complaints
             // Searching if the movie is existed in DB
-            Query<Movie> query = session.createQuery("FROM Movie WHERE englishName = :_englishName or hebrewName = :_hebrewName", Movie.class);
+            Query<Movie> query = session.createQuery("FROM Movie WHERE (englishName = :_englishName or hebrewName = :_hebrewName) and  available=:_availability", Movie.class);
             query.setParameter("_englishName", message.movies.getFirst().getEnglishName());
             query.setParameter("_hebrewName", message.movies.getFirst().getHebrewName());
+            query.setParameter("_availability", Movie.Availability.AVAILABLE);
 
             List<Movie> movies = query.getResultList();
 
@@ -230,7 +231,7 @@ public class MovieHandler extends MessageHandler
                 session.flush();
                 message.responseType = MovieMessage.ResponseType.MOVIE_ADDED;
             } else
-                message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
+                message.responseType = MovieMessage.ResponseType.MOVIE_ALREADY_EXISTS;
 
         }
         else // if we don't have any movie to add

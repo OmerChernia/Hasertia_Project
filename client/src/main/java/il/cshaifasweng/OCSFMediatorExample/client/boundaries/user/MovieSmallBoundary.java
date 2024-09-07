@@ -201,7 +201,8 @@ public class MovieSmallBoundary {
 
         cmbHour.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             btnBook.setDisable(newValue == null);
-            time = LocalTime.from(LocalTime.parse(newValue, DateTimeFormatter.ofPattern("HH:mm")));
+            if(newValue!=null)
+             time = LocalTime.from(LocalTime.parse(newValue, DateTimeFormatter.ofPattern("HH:mm")));
         });
     }
 

@@ -172,6 +172,11 @@ public class EditMovieListBoundary implements Initializable {
                     AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, rootProducts, "Failed to delete movie.");
                 });
                 break;
+            case MOVIE_ALREADY_EXISTS:
+                Platform.runLater(() -> {
+                    AlertsBuilder.create(AlertType.ERROR, stckProducts, rootProducts, rootProducts, "Movie with the same name already exists.");
+                });
+                break;
             case RETURN_MOVIES:
                 Platform.runLater(() -> loadTableData(movieMessage.movies));
                 break;

@@ -592,10 +592,9 @@ public class TheaterPurchaseBoundary {
         }
         if (isCardPackageOn)
         {
-            oldPriceLabel.setVisible(true);
-            oldPriceLabel.setText(currentMovieInstance.getMovie().getTheaterPrice() + "₪");
-            paidPriceLabel.setText(ConstantsPath.DISCOUNT_TICKET + "₪");
-            totalAmountLabel.setText(ConstantsPath.DISCOUNT_TICKET*selectedSeats.size() + "₪");
+            oldPriceLabel.setVisible(false);
+            paidPriceLabel.setText("Multi Entry Ticket");
+            totalAmountLabel.setText("Paid via Multi Entry Ticket");
         }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);

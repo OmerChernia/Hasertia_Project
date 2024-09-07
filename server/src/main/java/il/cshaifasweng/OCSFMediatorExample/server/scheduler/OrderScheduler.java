@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -211,15 +212,50 @@ public class OrderScheduler {
      * @param purchase The purchase for which the confirmation email should be sent.
      */
     private void sendPurchaseConfirmationEmail(Purchase purchase) {
-        String purchaseType = (purchase instanceof MovieTicket)
-                ? ((MovieTicket) purchase).getMovieInstance().getMovie().getEnglishName() + " ticket"
-                : ((HomeViewingPackageInstance) purchase).getMovie().getEnglishName() + " home viewing package";
+        String purchaseType = "";
+        String additionalInfo = "";
+        String paymentType = "";
+
+        if (purchase instanceof MovieTicket) {
+
+            MovieTicket ticket = (MovieTicket) purchase;
+            MovieInstance movieInstance = ticket.getMovieInstance();
+            purchaseType = movieInstance.getMovie().getEnglishName() + " ticket";
+            if(purchase.getPurchaseValidation().equals("Card Package"))
+                paymentType = "Payed via Card Package";
+            else paymentType = String.valueOf(movieInstance.getMovie().getTheaterPrice());
+            additionalInfo = String.format("\n\nTicket Details:\n" +
+                            "Theater: %s\n" +
+                            "Hall: %s\n" +
+                            "Seat Row: %s\n" +
+                            "Seat Col: %s\n" +
+                            "Date and Time: %s\n"+
+                            "Price Paid: %s",
+                    movieInstance.getHall().getTheater().getLocation(),
+                    movieInstance.getHall().getName(),
+                    ticket.getSeat().getCol(),
+                    ticket.getSeat().getRow(),
+                    movieInstance.getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                    paymentType);
+        } else if (purchase instanceof HomeViewingPackageInstance) {
+            HomeViewingPackageInstance homeViewing = (HomeViewingPackageInstance) purchase;
+            purchaseType = homeViewing.getMovie().getEnglishName() + " home viewing package";
+            additionalInfo = String.format("\n\nHome Viewing Details:\n" +
+                            "Available Date: %s\n" +
+                            "Available Time: %s\n" +
+                            "Price Paid: %s\n"+
+                    "You will receive a link for the home viewing via email one hour before your requested viewing time.",
+                    homeViewing.getActivationDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    homeViewing.getActivationDate().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    homeViewing.getMovie().getHomeViewingPrice());
+        }
 
         String confirmation = String.format("Dear %s,\n\n" +
                         "Thank you for your recent purchase of %s. " +
-                        "Your purchase has been confirmed and processed successfully. If you have any questions or need further assistance, please contact us.\n\n" +
+                        "Your purchase has been confirmed and processed successfully. %s" +
+                        "\n\nIf you have any questions or need further assistance, please contact us.\n\n" +
                         "Thank you for choosing Monkii Movies.\n\nBest regards,\nMonkii Movies Team",
-                purchase.getOwner().getName(), purchaseType);
+                purchase.getOwner().getName(), purchaseType, additionalInfo);
 
         System.out.println(ANSI_BLUE + "Sending purchase confirmation email to " + purchase.getOwner().getEmail() + ANSI_RESET);
         // Send the email to the customer

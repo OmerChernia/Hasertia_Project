@@ -15,6 +15,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.MovieInstance;
 import il.cshaifasweng.OCSFMediatorExample.entities.Theater;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.server.events.Event;
 import il.cshaifasweng.OCSFMediatorExample.server.events.HomeViewingEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
 import javafx.application.Platform;
@@ -147,48 +148,56 @@ public class HomeBoundary implements Initializable {
         }
     }
 
-    @Subscribe
-    public void onMovieEventReceived(MovieEvent event)
-    {
-        System.out.println("onMovieEventReceived");
-        if(currentScreeningFilter.equals("Theater"))
-            Platform.runLater(() ->
-            {
-                if(event.action.equals("add"))
-                    this.items.add(event.movie);
-                else //delete
-                    items.removeIf(movie -> movie.getId() == event.movie.getId());
-                try {
-                    updateGrid();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+//    @Subscribe
+//    public void onMovieEventReceived(MovieEvent event)
+//    {
+//        System.out.println("onMovieEventReceived");
+//        if(currentScreeningFilter.equals("Theater")) {
+//            UpdateMoviesInGrid(event.action, event.movie);
+//        }
+//    }
+//
+//    @Subscribe
+//    public void onHomeViewingEventReceived(HomeViewingEvent event)
+//    {
+//        System.out.println("onHomeViewingEventReceived");
+//
+//            if (currentScreeningFilter.equals("Home Viewing")) {
+//                UpdateMoviesInGrid(event.action, event.movie);
+//            }
+//    }
 
-        });
+    @Subscribe
+    public void onEventReceived(Event event)
+    {
+        if(event instanceof MovieEvent && currentScreeningFilter.equals("Theater"))
+            UpdateMoviesInGrid(((MovieEvent)event).action, ((MovieEvent)event).movie);
+        else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing"))
+            UpdateMoviesInGrid(((HomeViewingEvent)event).action, ((HomeViewingEvent)event).movie);
     }
 
-    @Subscribe
-    public void onHomeViewingEventReceived(HomeViewingEvent event)
-    {
-        System.out.println("onHomeViewingEventReceived");
-
-            if (currentScreeningFilter.equals("Home Viewing")) {
-                if(event.action.equals("add"))
-                    this.items.add(event.movie);
-                else {
-                    System.out.println("Movie removed, "+event.movie.getEnglishName());
-                    items.removeIf(movie -> movie.getId() == event.movie.getId());
-                }
-                Platform.runLater(() ->
-                {
-                    try {
-                        updateGrid();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                });
+    private void UpdateMoviesInGrid(String action, Movie eventMovie) {
+        switch (action) {
+            case "add":
+                this.items.add(eventMovie);
+                break;
+            case "delete":
+                items.removeIf(movie -> movie.getId() == eventMovie.getId());
+                break;
+            case "update":
+                items.removeIf(movie -> movie.getId() == eventMovie.getId());
+                this.items.add(eventMovie);
+                break;
+        }
+        Platform.runLater(() ->
+        {
+            try {
+                updateGrid();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+
+        });
     }
 
     public void setDateListeners ()

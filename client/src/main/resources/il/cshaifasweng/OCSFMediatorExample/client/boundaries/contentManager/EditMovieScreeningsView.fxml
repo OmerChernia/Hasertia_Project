@@ -39,7 +39,7 @@
                <children>
                   <VBox alignment="CENTER" layoutY="14.0" prefHeight="203.0" prefWidth="433.0" spacing="20.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Are you sure to remove this Movie permanently?" textAlignment="CENTER" wrappingWidth="327.0">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Are you sure to remove this Screening permanently?" textAlignment="CENTER" wrappingWidth="327.0">
                            <font>
                               <Font name="System Bold Italic" size="22.0" />
                            </font>
