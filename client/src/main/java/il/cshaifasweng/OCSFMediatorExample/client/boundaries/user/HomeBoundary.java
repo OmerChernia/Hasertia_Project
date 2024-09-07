@@ -208,7 +208,7 @@ public class HomeBoundary implements Initializable {
                 System.out.println("before");
                 beforeDate.setValue(newDate);
                 cmbTheater.setValue("");
-                if(beforeDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
+                if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
                 {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
                 }
@@ -231,8 +231,10 @@ public class HomeBoundary implements Initializable {
                 }
                 else if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(afterDate.getValue()))
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Start date can't be bigger than end date");
-                else
-                    MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(),afterDate.getValue());
+                else {
+                    System.out.println("Sending Request, before date " + beforeDate.getValue() + " after date " +afterDate.getValue());
+                    MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(), afterDate.getValue());
+                }
 
             }
         });
@@ -249,23 +251,6 @@ public class HomeBoundary implements Initializable {
             }
         });
     }
-
-
-
-//    private void updateGrid() throws IOException {
-//        grid.getChildren().clear();
-//        int row = 0;
-//        int col = 0;
-//        for (Movie item : items) {
-//            Node normalItem = createItem(item);
-//            grid.add(normalItem, col, row);
-//            col++;
-//            if (col == ITEMS_PER_ROW) {
-//                col = 0;
-//                row++;
-//            }
-//        }
-//    }
 
     private void updateGrid() throws IOException {
         grid.getChildren().clear();

@@ -9,7 +9,9 @@ import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,7 +70,6 @@ public class MovieInstanceHandler extends MessageHandler
         }
 
         Query<MovieInstance> query = session.createQuery(queryString.toString(), MovieInstance.class);
-        query.setParameter("available", Movie.Availability.AVAILABLE);
 
         if (startDateTime != null) {
             query.setParameter("startDateTime",startDateTime );
@@ -84,10 +85,8 @@ public class MovieInstanceHandler extends MessageHandler
 
 
     private void get_all_movie_instances_by_theater_name() {
-        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location= :theater and movie.available =: available", MovieInstance.class);
+        Query<MovieInstance> query = session.createQuery("FROM MovieInstance where hall.theater.location= :theater and isActive=true", MovieInstance.class);
         query.setParameter("theater",message.key);
-        query.setParameter("available",Movie.Availability.AVAILABLE);
-
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
@@ -303,20 +302,30 @@ public class MovieInstanceHandler extends MessageHandler
     }
     private void get_all_movie_instances_by_movie_theater_id_and_date() {
         get_all_movie_instances_by_movie_id_and_theater_name();
+
         if (message.movies == null) {
-            System.out.println("Empty movies ");
+            System.out.println("Empty movies");
             return;
         }
+
         // Use an iterator to safely remove elements from the list
         Iterator<MovieInstance> iterator = message.movies.iterator();
         while (iterator.hasNext()) {
             MovieInstance movie = iterator.next();
             System.out.println(movie.getId());
-            if (!movie.getTime().toLocalDate().equals(message.date.toLocalDate())) {
+
+            // Get movie's local date and time
+            LocalDate movieDate = movie.getTime().toLocalDate();
+            LocalTime movieTime = movie.getTime().toLocalTime();
+
+            // Check if the movie is on the same day or the next day until 03:00 AM
+            if (!(movieDate.equals(message.date.toLocalDate()) ||
+                    (movieDate.equals(message.date.plusDays(1).toLocalDate()) && movieTime.isBefore(LocalTime.of(3, 0))))) {
                 iterator.remove();
             }
         }
     }
+
 
     private void get_all_movie_instances_by_name()
     {
