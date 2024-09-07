@@ -7,6 +7,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Hall;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.HallMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
@@ -145,7 +147,7 @@ public class DialogEditScreening implements Initializable {
             else{
                 datePicker.setValue(newDate);
                 if(datePicker.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
-                    AlertsBuilder.create(AlertType.ERROR, null, containerAddProduct, containerAddProduct, "Can't choose a Date that passed");
+                    NotificationsBuilder.create(NotificationType.ERROR, "Can't choose a Date that passed", containerAddProduct);
                 else {
                     HallController.requestAvailableTimes(hall, datePicker.getValue());
                     cmbHour.setValue(null);

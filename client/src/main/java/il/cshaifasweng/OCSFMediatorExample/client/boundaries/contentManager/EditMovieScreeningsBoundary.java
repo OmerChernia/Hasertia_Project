@@ -126,7 +126,7 @@ public class EditMovieScreeningsBoundary implements Initializable {
     public void showAlert(String messageText, AlertType alertType) {
         AlertsBuilder.create(
                 alertType,
-                null,
+                stckProducts,
                 stckProducts,
                 stckProducts,
                 messageText
