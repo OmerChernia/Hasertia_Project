@@ -28,7 +28,7 @@
                      <Label text="Type" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                      <Label styleClass="highlight-text" text="VIP" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                      <Label text="Price" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                     <Label styleClass="highlight-text" text="₪290.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <Label styleClass="highlight-text" text="₪600.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      <columnConstraints>
                         <ColumnConstraints />
                         <ColumnConstraints />

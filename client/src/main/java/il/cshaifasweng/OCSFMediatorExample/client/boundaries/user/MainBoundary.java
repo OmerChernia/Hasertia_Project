@@ -383,7 +383,13 @@ public class MainBoundary implements Initializable {
     private void login(ActionEvent event) {
         String UserName = txtUser.getText();
         String EmployeeName = txtEmployee.getText();
-        String password = txtPassword.getText();
+
+        String password;
+
+        if(isPasswordVisible)
+            password = txtPasswordVisible.getText();
+        else
+            password = txtPassword.getText();
 
         if (customerRadioButton.isSelected()) {
             LoginPageController.requestUserLogin(UserName);
