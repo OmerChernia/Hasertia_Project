@@ -152,36 +152,38 @@ public class HomeBoundary implements Initializable {
     public void onEventReceived(Event event)
     {
         if(event instanceof MovieEvent && currentScreeningFilter.equals("Theater"))
-            UpdateMoviesInGrid(((MovieEvent)event).action, ((MovieEvent)event).movie);
+            MovieController.getMoviesPresentedInTheater();
         else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing"))
-            UpdateMoviesInGrid(((HomeViewingEvent)event).action, ((HomeViewingEvent)event).movie);
-    }
+            MovieController.getMoviesPresentedInHomeViewing();    }
 
-    private void UpdateMoviesInGrid(String action, Movie eventMovie) {
-        switch (action) {
-            case "add":
-                this.items.add(eventMovie);
-                break;
-            case "delete":
-                items.removeIf(movie -> movie.getId() == eventMovie.getId());
-                break;
-            case "update":
-                boolean removed = items.removeIf(movie -> movie.getId() == eventMovie.getId());
-                if ((eventMovie.getStreamingType() != Movie.StreamingType.THEATER_VIEWING && currentScreeningFilter.equals("Home Viewing")))
-                    this.items.add(eventMovie);
-                else if (removed && currentScreeningFilter.equals("Theater"))
-                    this.items.add(eventMovie);
-        }
-                Platform.runLater(() ->
-                {
-                    try {
-                        updateGrid();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-
-    }
+//    private void UpdateMoviesInGrid(String action, Movie eventMovie) {
+//        switch (action) {
+//            case "add":
+//                this.items.add(eventMovie);
+//                break;
+//            case "delete":
+//                items.removeIf(movie -> movie.getId() == eventMovie.getId());
+//                break;
+//            case "update":
+//                if(currentScreeningFilter.equals("Theater"))
+//                    MovieController.getMoviesPresentedInTheater();
+//                else MovieController.getMoviesPresentedInHomeViewing();
+//                boolean removed = items.removeIf(movie -> movie.getId() == eventMovie.getId());
+//                if ((eventMovie.getStreamingType() != Movie.StreamingType.THEATER_VIEWING && currentScreeningFilter.equals("Home Viewing")))
+//                    this.items.add(eventMovie);
+//                else if (removed && currentScreeningFilter.equals("Theater"))
+//                    this.items.add(eventMovie);
+//        }
+//                Platform.runLater(() ->
+//                {
+//                    try {
+//                        updateGrid();
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                });
+//
+//    }
 
     public void setDateListeners ()
     {
