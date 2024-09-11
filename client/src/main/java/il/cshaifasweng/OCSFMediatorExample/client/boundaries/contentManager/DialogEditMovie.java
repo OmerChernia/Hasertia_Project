@@ -321,7 +321,7 @@ public class DialogEditMovie implements Initializable {
         }
 
         // Check if only English letters are allowed
-        if (!txtEnglishName.getText().trim().matches("[a-zA-Z0-9 ,.!:-]+")) {// Allows only English letters and spaces
+        if (!txtEnglishName.getText().trim().matches("[a-zA-Z0-9 ,.!&:-]+")) {// Allows only English letters and spaces
             NotificationsBuilder.create(NotificationType.ERROR, "Only English letters are allowed", containerAddProduct);
             showErrorAndFocus(txtEnglishName);
             return false;
@@ -335,7 +335,7 @@ public class DialogEditMovie implements Initializable {
         }
 
         // Check if only Hebrew letters are allowed
-        if (!txtHebrewName.getText().trim().matches("[\u0590-\u05FF0-9 ,.!:-]+")) {// Allows only Hebrew letters and spaces
+        if (!txtHebrewName.getText().trim().matches("[\u0590-\u05FF0-9 ,.!&:-]+")) {// Allows only Hebrew letters and spaces
             NotificationsBuilder.create(NotificationType.ERROR, "Only Hebrew letters are allowed", containerAddProduct);
             showErrorAndFocus(txtHebrewName);
             return false;

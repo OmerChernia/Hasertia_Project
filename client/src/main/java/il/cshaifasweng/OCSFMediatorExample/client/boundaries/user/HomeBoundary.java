@@ -148,25 +148,6 @@ public class HomeBoundary implements Initializable {
         }
     }
 
-//    @Subscribe
-//    public void onMovieEventReceived(MovieEvent event)
-//    {
-//        System.out.println("onMovieEventReceived");
-//        if(currentScreeningFilter.equals("Theater")) {
-//            UpdateMoviesInGrid(event.action, event.movie);
-//        }
-//    }
-//
-//    @Subscribe
-//    public void onHomeViewingEventReceived(HomeViewingEvent event)
-//    {
-//        System.out.println("onHomeViewingEventReceived");
-//
-//            if (currentScreeningFilter.equals("Home Viewing")) {
-//                UpdateMoviesInGrid(event.action, event.movie);
-//            }
-//    }
-
     @Subscribe
     public void onEventReceived(Event event)
     {
@@ -185,19 +166,21 @@ public class HomeBoundary implements Initializable {
                 items.removeIf(movie -> movie.getId() == eventMovie.getId());
                 break;
             case "update":
-                items.removeIf(movie -> movie.getId() == eventMovie.getId());
-                this.items.add(eventMovie);
-                break;
+                boolean removed = items.removeIf(movie -> movie.getId() == eventMovie.getId());
+                if ((eventMovie.getStreamingType() != Movie.StreamingType.THEATER_VIEWING && currentScreeningFilter.equals("Home Viewing")))
+                    this.items.add(eventMovie);
+                else if (removed && currentScreeningFilter.equals("Theater"))
+                    this.items.add(eventMovie);
         }
-        Platform.runLater(() ->
-        {
-            try {
-                updateGrid();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+                Platform.runLater(() ->
+                {
+                    try {
+                        updateGrid();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
-        });
     }
 
     public void setDateListeners ()
