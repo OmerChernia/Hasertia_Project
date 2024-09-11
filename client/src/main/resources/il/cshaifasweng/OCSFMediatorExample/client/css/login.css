@@ -1,5 +1,5 @@
 #pnLogIn {
-     -fx-border-radius: 15;
+    -fx-border-radius: 15;
     -fx-background-radius: 15;
     -fx-padding: 10;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0, 0, 4);
@@ -47,11 +47,14 @@
 }
 
 .login-form .login-text-field,
-.login-form .login-password-field {
+.login-form .login-password-field,
+.login-form .text-field,
+.login-form .password-field {
     -fx-pref-width: 150;
     -fx-font-size: 14;
     -fx-background-color: #ffffff;
-    -fx-text-fill: #000;
+    -fx-prompt-text-fill: #999999;
+    -fx-text-fill: black !important;
     -fx-border-color: #d1d1d1;
     -fx-border-radius: 5;
     -fx-padding: 5;
@@ -59,6 +62,10 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
 }
 
+.login-form .text-field:focused,
+.login-form .password-field:focused {
+    -fx-text-fill: black !important;
+}
 
 .radio-button {
     -fx-text-fill: #333;
@@ -71,4 +78,3 @@
     -fx-cursor: hand;
     -fx-padding: 0;
 }
-

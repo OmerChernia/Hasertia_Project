@@ -127,7 +127,6 @@ public class OrdersBoundary implements Initializable {
         });
     }
 
-
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message)
     {
