@@ -390,6 +390,11 @@ public class HomeViewingPurchaseBoundary {
             }
         }
 
+        if(!textFirstName.matches("^[a-zA-Z]+$"))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"First name contains non-letters.",stackPane);
+        }
+
         String textLastName = lastNameTF.getText();
         for (char c : textLastName.toCharArray()) {
             if (Character.isDigit(c))
@@ -397,6 +402,11 @@ public class HomeViewingPurchaseBoundary {
                 NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.",stackPane);
                 return false;
             }
+        }
+
+        if(!textLastName.matches("^[a-zA-Z]+$"))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Last name contains non-letters.",stackPane);
         }
 
         String textID = idNumberTF.getText();

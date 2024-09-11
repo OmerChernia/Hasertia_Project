@@ -338,6 +338,12 @@ public class MEPurchaseBoundary {
             }
         }
 
+        if(!textFirstName.matches("^[a-zA-Z]+$"))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"First name contains non-letters.",stackPane);
+        }
+
+
         String textLastName = lastNameTF.getText();
         for (char c : textLastName.toCharArray()) {
             if (Character.isDigit(c))
@@ -345,6 +351,11 @@ public class MEPurchaseBoundary {
                 NotificationsBuilder.create(NotificationType.ERROR,"Last name contains digits.",ME_pane);
                 return false;
             }
+        }
+
+        if(!textLastName.matches("^[a-zA-Z]+$"))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Last name contains non-letters.",stackPane);
         }
 
         String textID = idNumberTF.getText();

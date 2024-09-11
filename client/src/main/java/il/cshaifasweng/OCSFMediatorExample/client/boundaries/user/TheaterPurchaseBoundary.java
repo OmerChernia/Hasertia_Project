@@ -631,6 +631,11 @@ public class TheaterPurchaseBoundary {
             }
         }
 
+        if(!textFirstName.matches("^[a-zA-Z]+$"))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"First name contains non-letters.",stackPane);
+        }
+
         String textLastName = lastNameTF.getText();
         for (char c : textLastName.toCharArray()) {
             if (Character.isDigit(c))
@@ -640,11 +645,16 @@ public class TheaterPurchaseBoundary {
             }
         }
 
+        if(!textLastName.matches("^[a-zA-Z]+$"))
+        {
+            NotificationsBuilder.create(NotificationType.ERROR,"Last name contains non-letters.",stackPane);
+        }
+
         String textID = idNumberTF.getText();
         for (char c : textID.toCharArray()) {
             if (!Character.isDigit(c))
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"ID number contains digits.",stackPane);
+                NotificationsBuilder.create(NotificationType.ERROR,"ID number need to contains digits only.",stackPane);
                 return false;
             }
         }

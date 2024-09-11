@@ -259,8 +259,9 @@ public class MovieHandler extends MessageHandler
     private void get_all_movies()
     {
         try {
-            Query<Movie> query = session.createQuery("FROM Movie where available= :_available", Movie.class);
+            Query<Movie> query = session.createQuery("FROM Movie where available= :_available or available =:_available2", Movie.class);
             query.setParameter("_available", Movie.Availability.AVAILABLE);
+            query.setParameter("_available2", Movie.Availability.COMING_SOON);
             message.movies = query.getResultList();
             message.responseType = MovieMessage.ResponseType.RETURN_MOVIES;
 
