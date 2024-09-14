@@ -146,8 +146,11 @@ public class DialogEditScreening implements Initializable {
             }
             else{
                 datePicker.setValue(newDate);
-                if(datePicker.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
+                if(datePicker.getValue().isBefore(ChronoLocalDate.from(LocalDate.now()))) {
                     NotificationsBuilder.create(NotificationType.ERROR, "Can't choose a Date that passed", containerAddProduct);
+                    datePicker.setValue(null);
+
+                }
                 else {
                     HallController.requestAvailableTimes(hall, datePicker.getValue());
                     cmbHour.setValue(null);

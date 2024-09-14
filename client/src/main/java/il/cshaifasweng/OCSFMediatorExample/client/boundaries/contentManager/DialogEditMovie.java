@@ -121,6 +121,7 @@ public class DialogEditMovie implements Initializable {
         cleanControls();
         enableEditControls();
         txtAddProduct.setText("Add Movie");
+        comboAvailable.getItems().remove(Movie.Availability.NOT_AVAILABLE);
         btnSave.setVisible(true);
     }
 

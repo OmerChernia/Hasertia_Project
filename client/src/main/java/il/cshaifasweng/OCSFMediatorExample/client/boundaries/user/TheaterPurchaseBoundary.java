@@ -634,6 +634,7 @@ public class TheaterPurchaseBoundary {
         if(!textFirstName.matches("^[a-zA-Z]+$"))
         {
             NotificationsBuilder.create(NotificationType.ERROR,"First name contains non-letters.",stackPane);
+            return false;
         }
 
         String textLastName = lastNameTF.getText();
@@ -648,6 +649,7 @@ public class TheaterPurchaseBoundary {
         if(!textLastName.matches("^[a-zA-Z]+$"))
         {
             NotificationsBuilder.create(NotificationType.ERROR,"Last name contains non-letters.",stackPane);
+            return false;
         }
 
         String textID = idNumberTF.getText();

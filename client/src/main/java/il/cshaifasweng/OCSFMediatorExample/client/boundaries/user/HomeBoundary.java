@@ -155,22 +155,26 @@ public class HomeBoundary implements Initializable {
             MovieController.getMoviesPresentedInTheater();
         else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing"))
             MovieController.getMoviesPresentedInHomeViewing();
+        else if (currentScreeningFilter.equals("View Upcoming Movies"))
+            MovieController.getUpcomingMovies();
     }
 
     public void setDateListeners ()
     {
-        System.out.println("init");
         beforeDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
-                System.out.println("before");
                 beforeDate.setValue(newDate);
                 cmbTheater.setValue("");
                 if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
                 {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
+                    beforeDate.setValue(null);
                 }
                 else if(afterDate.getValue()!=null&&beforeDate.getValue().isBefore(afterDate.getValue()))
+                {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Start date can't be bigger than end date");
+                    afterDate.setValue(null);
+                }
                 else
                     MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(),afterDate.getValue());
             }
@@ -179,15 +183,17 @@ public class HomeBoundary implements Initializable {
         afterDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
                 cmbTheater.setValue("");
-                System.out.println("after");
                 afterDate.setValue(newDate);
 
-                if(afterDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
+                if(afterDate.getValue()!=null&&afterDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
                 {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
+                    afterDate.setValue(null);
                 }
-                else if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(afterDate.getValue()))
+                else if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(afterDate.getValue())) {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Start date can't be bigger than end date");
+                    afterDate.setValue(null);
+                }
                 else {
                     System.out.println("Sending Request, before date " + beforeDate.getValue() + " after date " +afterDate.getValue());
                     MovieInstanceController.requestMovieInstancesBetweenDates(beforeDate.getValue(), afterDate.getValue());

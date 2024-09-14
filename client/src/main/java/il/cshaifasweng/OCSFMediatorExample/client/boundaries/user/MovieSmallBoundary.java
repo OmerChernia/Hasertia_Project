@@ -28,6 +28,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -363,14 +364,17 @@ public class MovieSmallBoundary {
             if (selectedDate.isEmpty() || selectedHour.isEmpty()) {
                 AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "You must fill all boxes!");
             }
-            else if(date.isBefore(LocalDate.now()))
+            else if(date.isBefore(ChronoLocalDate.from(LocalDate.now())))
             {
                 AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "Can't choose Day that passed");
+                cmbDateHv.setValue(null);
+                cmbHourHv.setValue(null);
 
             }
-            else if(date.equals(LocalDate.now())&&time.isBefore(LocalTime.now()))
+            else if(date.equals(ChronoLocalDate.from(LocalDate.now()))&&time.isBefore(LocalTime.now()))
             {
                 AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "Can't choose Time that passed");
+                cmbHourHv.setValue(null);
 
             }
             else

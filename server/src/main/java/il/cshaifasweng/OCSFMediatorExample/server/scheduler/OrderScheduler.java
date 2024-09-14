@@ -249,6 +249,11 @@ public class OrderScheduler {
                     homeViewing.getActivationDate().format(DateTimeFormatter.ofPattern("HH:mm")),
                     homeViewing.getMovie().getHomeViewingPrice());
         }
+        else if (purchase instanceof MultiEntryTicket) {
+            MultiEntryTicket homeViewing = (MultiEntryTicket) purchase;
+            purchaseType = " Multi Entry Ticket (20 Tickets)";
+        }
+
 
         String confirmation = String.format("Dear %s,\n\n" +
                         "Thank you for your recent purchase of %s. " +
