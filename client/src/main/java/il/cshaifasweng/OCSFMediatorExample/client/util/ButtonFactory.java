@@ -13,6 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ButtonFactory {
@@ -30,20 +32,19 @@ public class ButtonFactory {
         return button;
     }
 
-    private static Button createButton(String text, String styleClass) {
-        Button button = new Button(text);
-        button.setPrefWidth(100);
-        button.getStyleClass().addAll(styleClass, "table-row-cell");
-        return button;
+    private static Label createLabel(String text, String styleClass) {
+        Label label = new Label(text);
+        label.getStyleClass().add(styleClass);
+        return label;
     }
 
     public static Button createUrgencyButton(long hoursLeft) {
-        Button statusButton = new Button(getTextForHoursLeft(hoursLeft));
-        statusButton.getStyleClass().addAll(getStyleForHoursLeft(hoursLeft) , "table-row-cell");
-        return statusButton;
+        String text = getTextForHoursLeft(hoursLeft);
+        String styleClass = getStyleForHoursLeft(hoursLeft);
+        return createButton(text, "", styleClass);
     }
 
-     private static String getStyleForHoursLeft(long hoursLeft) {
+    private static String getStyleForHoursLeft(long hoursLeft) {
         if (hoursLeft <= 6) {
             return "button-red";
         } else if (hoursLeft <= 12) {
@@ -63,6 +64,25 @@ public class ButtonFactory {
         }
     }
 
+    private static final Map<String, String[]> genreMap = new HashMap<>() {{
+        put("action", new String[]{"action.png", "button-blue"});
+        put("comedy", new String[]{"comedy.png", "button-blue"});
+        put("drama", new String[]{"drama.png", "button-purple"});
+        put("horror", new String[]{"horror.png", "button-pink"});
+        put("romance", new String[]{"romance.png", "button-pink"});
+        put("sci-fi", new String[]{"sci-fi.png", "button-tomato"});
+        put("thriller", new String[]{"thriller.png", "button-orange"});
+        put("animation", new String[]{"animation.png", "button-orange"});
+        put("fantasy", new String[]{"fantasy.png", "button-light-purple"});
+        put("musical", new String[]{"musical.png", "button-hot-pink"});
+    }};
+
+    public static Button createButtonGenre(Movie movie) {
+        String genre = movie.getGenre();
+        String[] genreDetails = genreMap.getOrDefault(genre, new String[]{"", "button-default"});
+        return createButton(genre, ConstantsPath.GENRE_PACKAGE + genreDetails[0], genreDetails[1]);
+    }
+
     public static class ButtonUrgencyCell extends TableCell<Complaint, Button> {
         @Override
         protected void updateItem(Button item, boolean empty) {
@@ -72,8 +92,7 @@ public class ButtonFactory {
             } else {
                 Complaint complaint = getTableRow().getItem();
                 long hoursLeft = 24 - java.time.Duration.between(complaint.getCreationDate(), java.time.LocalDateTime.now()).toHours();
-                Button urgencyButton = createUrgencyButton(hoursLeft);
-                setGraphic(urgencyButton);
+                setGraphic(createUrgencyButton(hoursLeft));
             }
         }
     }
@@ -114,19 +133,10 @@ public class ButtonFactory {
                     text = "Not Available";
                     styleClass = "button-red";
                 }
-                return new SimpleObjectProperty<>(createButton(text, styleClass));
+                return new SimpleObjectProperty<>(createButton(text,"", styleClass));
             }
         }
-
-        private Label createLabel(String text, String styleClass) {
-            Label label = new Label(text);
-            label.getStyleClass().add(styleClass);
-            return label;
-        }
     }
-
-
-
 
     public static class ButtonUrgencyCellFactory implements Callback<TableColumn<Complaint, Button>, TableCell<Complaint, Button>> {
         @Override
@@ -160,85 +170,26 @@ public class ButtonFactory {
         }
     }
 
-
-
-
     public static class ButtonTypePurchaseCellValueFactory implements Callback<TableColumn.CellDataFeatures<Purchase, Button>, ObservableValue<Button>> {
 
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Purchase, Button> param) {
             Purchase item = param.getValue();
-            String text="", imagePath="", styleClass="button-default";
+            String text = "", imagePath = "", styleClass = "button-default";
 
             if (item instanceof MultiEntryTicket) {
                 text = "Multi-Entry Card";
                 imagePath = ConstantsPath.GENERAL_PACKAGE + "two-tickets.png";
-             } else if (item instanceof MovieTicket) {
+            } else if (item instanceof MovieTicket) {
                 text = "Theater Ticket";
                 imagePath = ConstantsPath.GENERAL_PACKAGE + "movie-theater.png";
-             } else if (item instanceof HomeViewingPackageInstance) {
+            } else if (item instanceof HomeViewingPackageInstance) {
                 text = "Home Viewing";
                 imagePath = ConstantsPath.GENERAL_PACKAGE + "home.png";
-             }
+            }
 
             return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }
-    }
-
-    public static Button createButtonGenre(Movie movie) {
-
-            String text = movie.getGenre();
-            String imagePath = "";
-            String styleClass;
-
-            switch (movie.getGenre()) {
-                case "action":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "action.png";
-                    styleClass = "button-blue";
-                    break;
-                case "comedy":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "comedy.png";
-                    styleClass = "button-blue";
-                    break;
-                case "drama":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "drama.png";
-                    styleClass = "button-purple";
-                    break;
-                case "horror":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "horror.png";
-                    styleClass = "button-pink";
-                    break;
-                case "romance":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "romance.png";
-                    styleClass = "button-pink";
-                    break;
-                case "sci-fi":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "sci-fi.png";
-                    styleClass = "button-tomato";
-                    break;
-                case "thriller":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "thriller.png";
-                    styleClass = "button-orange";
-                    break;
-                case "animation":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "animation.png";
-                    styleClass = "button-orange";
-                    break;
-                case "fantasy":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "fantasy.png";
-                    styleClass = "button-light-purple";
-                    break;
-                case "musical":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "musical.png";
-                    styleClass = "button-hot-pink";
-                    break;
-                default:
-                    styleClass = "button-default";
-                    break;
-            }
-
-             return createButton( text,  imagePath,  styleClass);
-
     }
 
     public static class ButtonGenreCellValueFactory implements Callback<TableColumn.CellDataFeatures<Movie, Button>, ObservableValue<Button>> {
@@ -246,57 +197,9 @@ public class ButtonFactory {
         @Override
         public ObservableValue<Button> call(TableColumn.CellDataFeatures<Movie, Button> param) {
             Movie item = param.getValue();
-            String text = item.getGenre();
-            String imagePath = "";
-            String styleClass;
-
-            switch (item.getGenre()) {
-                case "action":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "action.png";
-                    styleClass = "button-green";
-                    break;
-                case "comedy":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "comedy.png";
-                    styleClass = "button-blue";
-                    break;
-                case "drama":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "drama.png";
-                    styleClass = "button-purple";
-                    break;
-                case "horror":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "horror.png";
-                    styleClass = "button-red";
-                    break;
-                case "romance":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "romance.png";
-                    styleClass = "button-pink";
-                    break;
-                case "sci-fi":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "sci-fi.png";
-                    styleClass = "button-tomato";
-                    break;
-                case "thriller":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "thriller.png";
-                    styleClass = "button-green";
-                    break;
-                case "animation":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "animation.png";
-                    styleClass = "button-orange";
-                    break;
-                case "fantasy":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "fantasy.png";
-                    styleClass = "button-light-purple";
-                    break;
-                case "musical":
-                    imagePath = ConstantsPath.GENRE_PACKAGE + "musical.png";
-                    styleClass = "button-hot-pink";
-                    break;
-                default:
-                    styleClass = "button-default";
-                    break;
-            }
-
-            return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
+            String genre = item.getGenre();
+            String[] genreDetails = genreMap.getOrDefault(genre, new String[]{"", "button-default"});
+            return new SimpleObjectProperty<>(createButton(genre, ConstantsPath.GENRE_PACKAGE + genreDetails[0], genreDetails[1]));
         }
     }
 
@@ -309,8 +212,6 @@ public class ButtonFactory {
             String styleClass = "button-default";
             String imagePath = "";
 
-            imagePath = ConstantsPath.GENERAL_PACKAGE + "action.png";
-
             switch (item.getStreamingType()) {
                 case HOME_VIEWING:
                     text = "Home Viewing";
@@ -321,14 +222,12 @@ public class ButtonFactory {
                     imagePath = ConstantsPath.GENERAL_PACKAGE + "movie-theater.png";
                     break;
                 case BOTH:
-                    text = "Theater & Home Viewing";
+                    text = "All Platforms";
                     imagePath = ConstantsPath.GENERAL_PACKAGE + "movie-projector.png";
                     break;
-
             }
 
-            return new SimpleObjectProperty<>(createButton(text, "", styleClass));
+            return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
         }
     }
 }
-

@@ -8,7 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.MovieMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.server.events.PriceChangeEvent;

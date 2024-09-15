@@ -13,7 +13,13 @@ import il.cshaifasweng.OCSFMediatorExample.server.scheduler.OrderScheduler;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -294,7 +300,10 @@ public class MovieHandler extends MessageHandler
                 persistentMovie.setInfo(message.movies.getFirst().getInfo());
                 String joinedString = String.join("_", message.movies.getFirst().getMainActors());
                 persistentMovie.setMainActors(joinedString);
-
+                if (!Arrays.equals(persistentMovie.getImageBytes(), message.movies.getFirst().getImageBytes())) {
+                    persistentMovie.setImage(message.movies.getFirst().getImage());
+                    persistentMovie.setImageBytes(message.movies.getFirst().getImageBytes());
+                }
                 // Save the changes
                 session.update(persistentMovie);
                 session.flush();
@@ -310,5 +319,7 @@ public class MovieHandler extends MessageHandler
             }
         }
     }
+
+
 
 }

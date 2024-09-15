@@ -2,9 +2,8 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
-import il.cshaifasweng.OCSFMediatorExample.client.util.mask.RequieredFieldsValidators;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
@@ -12,7 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images;
 import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -27,6 +26,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.expandImage;
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.getImage;
+
 public class DialogEditMovie implements Initializable {
 
     private static final Stage stage = new Stage();
@@ -35,6 +37,7 @@ public class DialogEditMovie implements Initializable {
     private String currentMode;
 
     private final ColorAdjust colorAdjust = new ColorAdjust();
+    private final long LIMIT = 1000000;
 
     @FXML
     private Button btnCancel;
@@ -86,20 +89,34 @@ public class DialogEditMovie implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-
-        initializeImageHoverEffect();
+        Images.initializeImageHoverEffect(imageContainer, imageProduct, 300, 200);
         initializeComboBox();
 
+        paneContainer.setOnMouseClicked(event -> {
+            try {
+                handleUploadImage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void initializeComboBox() {
         comboAvailable.getItems().addAll(Movie.Availability.values());
         comboType.getItems().addAll(Movie.StreamingType.values());
-        comboGenre.getItems().addAll("action","comedy","drama","horror","romance","sci-Fi","documentary");
-
+        comboGenre.getItems().addAll("action", "comedy", "drama", "horror", "romance", "sci-Fi", "documentary");
     }
 
+    @FXML
+    private void handleUploadImage() throws IOException {
+        Stage stage = new Stage();
+        imageFile = Images.uploadMovieImage(stage, imageProduct);
+
+        if (imageFile != null) {
+            Images.setImageToMovie(imageFile, movie);
+            lblPathImage.setText(imageFile.getName());
+        }
+    }
 
     public void setEditMovieListBoundary(EditMovieListBoundary editMovieListBoundary) {
         this.editMovieListBoundary = editMovieListBoundary;
@@ -108,14 +125,19 @@ public class DialogEditMovie implements Initializable {
     public void setDialog(String operation, Movie movie) {
         this.currentMode = operation;
         this.movie = "add".equals(operation) ? new Movie() : movie;
-        if ("view".equals(operation)) {
-            populateFieldsForView();
-        } else if ("add".equals(operation)) {
-            prepareForNewProduct();
-        } else if ("edit".equals(operation)){
-            populateFieldsForEdit();
+        switch (operation) {
+            case "view":
+                populateFieldsForView();
+                break;
+            case "add":
+                prepareForNewProduct();
+                break;
+            case "edit":
+                populateFieldsForEdit();
+                break;
         }
     }
+
 
     private void prepareForNewProduct() {
         cleanControls();
@@ -125,54 +147,47 @@ public class DialogEditMovie implements Initializable {
         btnSave.setVisible(true);
     }
 
-    private void initializeImageHoverEffect() {
-        imageContainer.hoverProperty().addListener((o, oldV, newV) -> {
-            colorAdjust.setBrightness(newV ? 0.25 : 0);
-            imageProduct.setEffect(colorAdjust);
-        });
-        imageContainer.setPadding(new Insets(5));
-        imageProduct.setFitHeight(300);
-        imageProduct.setFitWidth(200);
+    private void populateFields(boolean isEditMode) {
+        txtEnglishName.setText(movie.getEnglishName());
+        txtHebrewName.setText(movie.getHebrewName());
+        txtProducer.setText(movie.getProducer());
+        txtDuration.setText(String.valueOf(movie.getDuration()));
+        txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
+        txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
+        comboGenre.setValue(movie.getGenre());
+        comboType.setValue(movie.getStreamingType());
+        comboAvailable.setValue(movie.getAvailability());
+        txtDescription.setText(movie.getInfo());
+        txtActors.setText(String.join(", ", movie.getMainActors()));
+        imageProduct.setImage(getImage(movie));
+         lblPathImage.setText(movie.getImage());
+
+        if (isEditMode) {
+            txtAddProduct.setText("Update Movie");
+            enableEditControls();
+            btnSave.setVisible(true);
+        } else {
+            txtAddProduct.setText("View Movie");
+            expandImage(paneContainer, imageProduct, movie, movie.getEnglishName());
+            disableEditControls();
+            btnSave.setVisible(false);
+        }
     }
 
     private void populateFieldsForEdit() {
-        txtEnglishName.setText(movie.getEnglishName());
-        txtHebrewName.setText(movie.getHebrewName());
-        txtProducer.setText(movie.getProducer());
-        txtDuration.setText(String.valueOf(movie.getDuration()));
-        txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
-        txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
-        comboGenre.setValue(movie.getGenre());
-        comboType.setValue(movie.getStreamingType());
-        comboAvailable.setValue(movie.getAvailability());
-        txtDescription.setText(movie.getInfo());
-        txtActors.setText(String.join(", ", movie.getMainActors()));
-        imageProduct.setImage(getImage(movie));
-        expandImage(movie, movie.getEnglishName());
-        lblPathImage.setText(movie.getImage());
-        txtAddProduct.setText("Update Movie");
-        enableEditControls();
+        populateFields(true);
     }
 
     private void populateFieldsForView() {
-        txtEnglishName.setText(movie.getEnglishName());
-        txtHebrewName.setText(movie.getHebrewName());
-        txtProducer.setText(movie.getProducer());
-        txtDuration.setText(String.valueOf(movie.getDuration()));
-        txtTheaterPrice.setText(String.valueOf(movie.getTheaterPrice()));
-        txtHVPrice.setText(String.valueOf(movie.getHomeViewingPrice()));
-        comboGenre.setValue(movie.getGenre());
-        comboType.setValue(movie.getStreamingType());
-        comboAvailable.setValue(movie.getAvailability());
-        txtDescription.setText(movie.getInfo());
-        txtActors.setText(String.join(", ", movie.getMainActors()));
-        imageProduct.setImage(getImage(movie));
+        populateFields(false);
+    }
 
-        expandImage(movie, movie.getEnglishName());
-
-        txtAddProduct.setText("View Movie");
-        disableEditControls();
-        btnSave.setVisible(false);
+    private void enableEditControls() {
+        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
+                .forEach(field -> field.setEditable(true));
+        comboGenre.setDisable(false);
+        comboType.setDisable(false);
+        comboAvailable.setDisable(false);
     }
 
     private void disableEditControls() {
@@ -183,63 +198,8 @@ public class DialogEditMovie implements Initializable {
         comboAvailable.setDisable(true);
     }
 
-    private void enableEditControls() {
-        Arrays.asList(txtEnglishName, txtHebrewName, txtProducer, txtDuration, txtTheaterPrice, txtHVPrice, txtDescription, txtActors)
-                .forEach(field -> field.setEditable(true));
-        comboGenre.setDisable(false);
-        comboType.setDisable(false);
-        comboAvailable.setDisable(false);
-
-    }
-
-    private void expandImage(Movie movie, String title) {
-        paneContainer.hoverProperty().addListener((o, oldV, newV) -> {
-            colorAdjust.setBrightness(newV ? 0.25 : 0);
-            imageProduct.setEffect(colorAdjust);
-        });
-
-        paneContainer.setOnMouseClicked(ev -> {
-            final Image image = getImage(movie);
-            final ImageView imageView = new ImageView(image);
-            imageView.setPreserveRatio(true);
-            imageView.setFitWidth(550);
-
-            final BorderPane borderPane = new BorderPane(imageView);
-            borderPane.setStyle("-fx-background-color: white");
-            borderPane.setCenter(imageView);
-
-            final ScrollPane root = new ScrollPane(borderPane);
-            root.setStyle("-fx-background-color: white");
-            root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            root.getStylesheets().add(ConstantsPath.LIGHT_THEME);
-            root.getStyleClass().add("scroll-bar");
-
-            root.setFitToHeight(true);
-            root.setFitToWidth(true);
-
-            stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
-            stage.setScene(new Scene(root, 550, 550));
-            stage.setTitle(title);
-            stage.show();
-        });
-    }
-
-    private Image getImage(Movie movie) {
-        return Optional.ofNullable(movie)
-                .map(Movie::getImage)
-                .map(img -> ConstantsPath.MOVIE_PACKAGE + img)
-                .map(path -> getClass().getResource(path))
-                .map(URL::toExternalForm)
-                .map(Image::new)
-                .orElse(new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true));
-    }
-
-
-
-
     @FXML
     private void handleSave(ActionEvent event) {
-
         if (!validateInputs()) return;
 
         String englishName = txtEnglishName.getText().trim();
@@ -254,38 +214,57 @@ public class DialogEditMovie implements Initializable {
         String description = txtDescription.getText().trim();
         List<String> actors = Arrays.asList(txtActors.getText().trim().split(", "));
 
+        boolean imageChanged = imageFile != null;
 
-        // Check for changes in details
+        if (imageChanged) {
+            try {
+
+                Images.setImageToMovie(imageFile, movie);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                NotificationsBuilder.create(NotificationType.ERROR, "Failed to update image.", containerAddProduct);
+                return;
+            }
+        }
+
         boolean detailsChanged = !englishName.equals(movie.getEnglishName()) ||
                 !hebrewName.equals(movie.getHebrewName()) ||
                 !producer.equals(movie.getProducer()) ||
                 !description.equals(movie.getInfo()) ||
                 !genre.equals(movie.getGenre()) ||
-                !(streaming==movie.getStreamingType()) ||
-                !(availability==movie.getAvailability())||
+                streaming != movie.getStreamingType() ||
+                availability != movie.getAvailability() ||
                 !actors.equals(movie.getMainActors()) ||
                 Integer.parseInt(duration) != movie.getDuration();
 
-        // Check for changes in prices
         boolean priceChanged = Integer.parseInt(theaterPrice) != movie.getTheaterPrice() ||
                 Integer.parseInt(hvPrice) != movie.getHomeViewingPrice();
 
-        // If no changes detected, do nothing
-        if (!detailsChanged && !priceChanged) {
-            NotificationsBuilder.create(NotificationType.INFORMATION, "No changes detected, nothing was saved.",containerAddProduct);
+        if (!detailsChanged && !priceChanged && !imageChanged) {
+            NotificationsBuilder.create(NotificationType.INFORMATION, "No changes detected, nothing was saved.", containerAddProduct);
             return;
         }
 
-        // If there are changes, proceed with the update
         if ("add".equals(currentMode)) {
-            MovieController.addMovie(hebrewName, description, producer, englishName, String.valueOf(actors), "empty-image.jpg", streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice), Integer.parseInt(hvPrice), genre,availability);
+            MovieController.addMovie(
+                    hebrewName, description, producer, englishName, String.valueOf(actors),
+                    movie.getImage() != null ? movie.getImage() : "empty-image.jpg",
+                    movie.getImageBytes() != null ? movie.getImageBytes() : new byte[0],
+                    streaming, Integer.parseInt(duration), Integer.parseInt(theaterPrice),
+                    Integer.parseInt(hvPrice), genre, availability
+            );
         } else {
-            if (detailsChanged) {
-                MovieController.updateMovie(movie, hebrewName, description, producer, englishName, String.valueOf(actors),  "", streaming, Integer.parseInt(duration), genre, availability);
-
+            if (detailsChanged || imageChanged) {
+                MovieController.updateMovie(
+                        movie, hebrewName, description, producer, englishName,
+                        String.join(", ", actors),
+                        movie.getImage() != null ? movie.getImage() : "empty-image.jpg",
+                        movie.getImageBytes() != null ? movie.getImageBytes() : new byte[0],
+                        streaming, Integer.parseInt(duration), genre, availability
+                );
             }
 
-            // Create a price update request only if prices have changed
             if (priceChanged) {
                 if (!theaterPrice.isEmpty() && Integer.parseInt(theaterPrice) != movie.getTheaterPrice()) {
                     PriceRequestController.createNewPriceRequest(Integer.parseInt(theaterPrice), movie, Movie.StreamingType.THEATER_VIEWING);
@@ -301,7 +280,6 @@ public class DialogEditMovie implements Initializable {
         closeDialog();
     }
 
-
     @FXML
     private void handleClose(ActionEvent event) {
         closeDialog();
@@ -311,8 +289,9 @@ public class DialogEditMovie implements Initializable {
         editMovieListBoundary.closeDialogAddProduct();
     }
 
-    // Method to validate the inputs of the form
-    private boolean validateInputs() {
+
+
+     private boolean validateInputs() {
 
         // Check if the English name text field is empty
         if (txtEnglishName.getText().trim().isEmpty()) {
@@ -336,7 +315,7 @@ public class DialogEditMovie implements Initializable {
         }
 
         // Check if only Hebrew letters are allowed
-        if (!txtHebrewName.getText().trim().matches("[\u0590-\u05FF0-9 ,.!&:-]+")) {// Allows only Hebrew letters and spaces
+        if (!txtHebrewName.getText().trim().matches("[\u0590-\u05FF0-9 ,.!'&:-]+")) {// Allows only Hebrew letters and spaces
             NotificationsBuilder.create(NotificationType.ERROR, "Only Hebrew letters are allowed", containerAddProduct);
             showErrorAndFocus(txtHebrewName);
             return false;
@@ -432,13 +411,12 @@ public class DialogEditMovie implements Initializable {
 
 
         // Check if an image file is provided and trigger an error if it exists
-        if (imageFile != null) {
+        if (imageFile != null && imageFile.length() > LIMIT) {
             Animations.shake(imageContainer); // Add a shake animation to indicate an error
             NotificationsBuilder.create(NotificationType.ERROR, ConstantsPath.MESSAGE_IMAGE_LARGE,containerAddProduct);
             return false;
         }
 
-        // If all checks pass, return true to indicate validation success
         return true;
     }
 

@@ -43,7 +43,7 @@
                <StackPane styleClass="screen-container">
                   <ImageView fitHeight="120.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../media/icons/general/screenSVG.png" />
+                        <Image url="@../../icons/general/screenSVG.png" />
                      </image>
                   </ImageView>
                   <Label styleClass="screen-label" text="Screen" />
@@ -139,77 +139,81 @@
                <Button onAction="#goToSeatSelection" styleClass="button-secondary" text="Back" />
             </VBox>
 
-            <!-- Ticket Confirmation Pane -->
-            <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" prefHeight="700.0" prefWidth="350.0" spacing="5" styleClass="receipt-pane" stylesheets="@../../css/receipt.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-               <Label styleClass="confirmation-title" text="Payment Confirmation" />
+            <!-- Package Confirmation Pane -->
+            <VBox fx:id="ticketConfirmationPane" alignment="TOP_CENTER" fillWidth="false" prefHeight="786.0" prefWidth="999.0" spacing="20.0" styleClass="receipt-pane" stylesheets="@../../css/receipt.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
 
-               <!-- Header Section -->
-               <VBox alignment="CENTER" spacing="2" styleClass="header-section">
-                  <Label styleClass="header-title" text="MONKII MOVIES" />
-                  <Text fx:id="theaterLabel" styleClass="header-subtitle" text="Movie City, MC" />
-                  <VBox.margin>
-                     <Insets top="20.0" />
-                  </VBox.margin>
-               </VBox>
+               <!-- Title -->
+               <Label prefHeight="66.0" prefWidth="257.0" styleClass="confirmation-title" text="Payment Confirmation" />
+               <!-- Content Wrapper -->
+               <VBox alignment="CENTER" fillWidth="false" prefHeight="312.0" prefWidth="438.0" styleClass="sub-pane" stylesheets="@../../css/receipt.css">
+                  <GridPane alignment="CENTER" hgap="10" prefHeight="276.0" prefWidth="396.0" vgap="5">
+                     <!-- Header Section -->
+                     <Text styleClass="header-title" text="MONKII MOVIES" textAlignment="CENTER" wrappingWidth="396.8203125" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                     <Text fx:id="movieEnglish" styleClass="details-movie" text="MOVIE: Star Adventures" textAlignment="CENTER" wrappingWidth="402.234375" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                     <Text fx:id="movieHebrew" layoutX="10.0" layoutY="51.0" styleClass="details-movie" text="MOVIE: Star Adventures" textAlignment="CENTER" wrappingWidth="402.234375" GridPane.rowIndex="2" />
+                     <Line endX="400.0" startX="0" styleClass="divider-line" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-               <!-- Divider Line -->
-               <Line endX="300" endY="0" startX="0" startY="0" style="-fx-stroke: black; -fx-stroke-width: 1;" />
+                     <!-- Movie Details Section (added) -->
+                     <Text fx:id="theaterLabel" styleClass="details-value" text="Movie City, MC" wrappingWidth="208.421875" GridPane.columnIndex="0" GridPane.rowIndex="4" />
 
-               <!-- Movie Details Section -->
-               <VBox alignment="CENTER" spacing="2" styleClass="details-section">
-                  <Text fx:id="movieTitleLabel" styleClass="details-movie" text="MOVIE: Star Adventures" />
-                  <HBox alignment="CENTER" spacing="10">
-                     <Text fx:id="dateLabel" styleClass="details-label" text="03-12-2024" />
-                     <Text fx:id="timeLabel" styleClass="details-value" text="7:30PM" />
-                  </HBox>
-                  <Text fx:id="hallLabel" styleClass="details-label" text="SCREEN 5" />
-                  <Text fx:id="seatLabel" styleClass="details-value" text="SEAT B12" />
-               </VBox>
+                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                        <Text fx:id="dateLabel" styleClass="details-value" text="03-12-2024" />
+                        <Text fx:id="timeLabel" styleClass="details-value" text="7:30PM" />
+                     </HBox>
+                     <Text fx:id="hallLabel" styleClass="details-value" text="SCREEN 5" wrappingWidth="223.8125" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                     <Text fx:id="seatLabel" styleClass="details-value" text="SEAT B12" wrappingWidth="215.8125" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                     <!-- Divider Line -->
+                     <Line endX="400.0" startX="0" styleClass="divider-line" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                     <!-- Ticket Header -->
+                     <Text styleClass="ticket-header" text="QTY" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                     <Text styleClass="ticket-header" text="DESCRIPTION" textAlignment="CENTER" wrappingWidth="110.19999999999999" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                     <Text styleClass="ticket-header" text="PRICE" textAlignment="CENTER" wrappingWidth="57.0" GridPane.columnIndex="2" GridPane.rowIndex="9" />
 
-               <!-- Divider Line -->
-               <Line endX="300" styleClass="divider-line" />
+                     <!-- Divider Line -->
+                     <Label alignment="CENTER" prefHeight="16.0" prefWidth="408.0" styleClass="divider-text" text="----------------------------------------------" GridPane.columnSpan="3" GridPane.rowIndex="10" />
 
-               <!-- Ticket Item Section -->
-               <GridPane alignment="CENTER" hgap="10" styleClass="ticket-section" vgap="5">
-                  <!-- כותרות -->
-                  <Text styleClass="ticket-header" text="QTY" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                  <Text styleClass="ticket-header" text="DESCRIPTION" textAlignment="CENTER" wrappingWidth="131.212890625" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                  <Text styleClass="ticket-header" text="PRICE" textAlignment="CENTER" wrappingWidth="127.005859375" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                     <!-- Ticket Item -->
+                     <Text fx:id="qtyLabel" styleClass="ticket-item" text="1" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                     <Text styleClass="ticket-item" text="MOVIE TICKET" textAlignment="CENTER" wrappingWidth="117.80000000000001" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                     <Text fx:id="paidPriceLabel" styleClass="ticket-item" text="60₪" wrappingWidth="174.8046875" GridPane.columnIndex="2" GridPane.rowIndex="11" />
 
-                  <Label alignment="CENTER" prefHeight="15.0" prefWidth="305.0" styleClass="divider-text" text="------------------------------------" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                     <!-- Divider Line -->
+                     <Line endX="400.0" startX="0" styleClass="divider-line" GridPane.columnIndex="0" GridPane.rowIndex="12" />
 
-                  <Text fx:id="qtyLabel" styleClass="ticket-item" text="1" textAlignment="CENTER" wrappingWidth="24.4013671875" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                  <Text styleClass="ticket-item" text="MOVIE TICKET" textAlignment="CENTER" wrappingWidth="133.81640625" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     <!-- Total Amount Section -->
+                     <HBox alignment="CENTER" spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="13">
+                        <Text styleClass="summary-label" text="TOTAL AMOUNT:" />
+                        <Text fx:id="totalAmountLabel" styleClass="summary-label" text="12.00$" />
+                     </HBox>
 
-                  <HBox alignment="CENTER" prefHeight="16.0" prefWidth="131.0" spacing="5.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                     <Text fx:id="oldPriceLabel" strikethrough="true" styleClass="ticket-item" text="30₪" visible="false" wrappingWidth="32.2041015625" />
-                     <Text fx:id="paidPriceLabel" styleClass="ticket-item" text="60₪" />
-                  </HBox>
-                  <columnConstraints>
-                     <ColumnConstraints />
-                     <ColumnConstraints maxWidth="136.0" minWidth="124.0" prefWidth="134.0" />
-                     <ColumnConstraints maxWidth="135.0" minWidth="123.0" prefWidth="125.0" />
-                  </columnConstraints>
-                  <rowConstraints>
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                  </rowConstraints>
-               </GridPane>
+                     <!-- Column Constraints -->
+                     <columnConstraints>
+                        <ColumnConstraints maxWidth="420.0" minWidth="51.0" prefWidth="57.0" />
+                        <ColumnConstraints maxWidth="420.0" minWidth="120.0" prefWidth="145.0" />
+                        <ColumnConstraints maxWidth="420.0" minWidth="148.0" prefWidth="176.0" />
+                     </columnConstraints>
 
+                     <!-- Row Constraints -->
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
 
-               <!-- Divider Line -->
-               <Line endX="300" styleClass="divider-line" />
-
-               <!-- Summary Section -->
-               <VBox alignment="CENTER_LEFT" prefHeight="64.0" prefWidth="911.0" spacing="2" styleClass="summary-section">
-                  <HBox alignment="CENTER" spacing="10">
-                     <Text styleClass="summary-label" text="TOTAL AMOUNT" />
-                     <Text fx:id="totalAmountLabel" styleClass="summary-value" text="12.00$" />
-                  </HBox>
                </VBox>
             </VBox>
-
          </StackPane>
       </ScrollPane>
    </center>

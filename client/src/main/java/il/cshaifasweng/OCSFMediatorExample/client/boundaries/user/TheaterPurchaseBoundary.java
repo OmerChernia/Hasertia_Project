@@ -5,7 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.*;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
@@ -36,8 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.getImage;
+
 public class TheaterPurchaseBoundary {
-    @FXML
+     @FXML
     private StackPane stackPane;
 
     @FXML
@@ -117,7 +119,7 @@ public class TheaterPurchaseBoundary {
     private Label step3Text;
 
     @FXML
-    private Text theaterLabel,dateLabel,timeLabel,hallLabel,seatLabel,movieTitleLabel,oldPriceLabel,paidPriceLabel,totalAmountLabel,qtyLabel;
+    private Text theaterLabel,dateLabel,timeLabel,hallLabel,seatLabel,movieHebrew,movieTitleLabel,movieEnglish,paidPriceLabel,totalAmountLabel,qtyLabel;
 
     @FXML
     private ComboBox<String> expirationMonthCombo;
@@ -221,7 +223,7 @@ public class TheaterPurchaseBoundary {
         movieTime.setText("Time: " + currentMovieInstance.getTime().minusHours(3).format(DateTimeFormatter.ofPattern("HH:mm")));
         movieHall.setText("Hall: " + currentMovieInstance.getHall().getId());
         movieLocation.setText("Theater: " + currentMovieInstance.getHall().getTheater().getLocation());
-        movieImage.setImage(new Image(getClass().getResourceAsStream(ConstantsPath.MOVIE_PACKAGE + currentMovieInstance.getMovie().getImage())));
+        movieImage.setImage(getImage(currentMovieInstance.getMovie()));
     }
 
      private void updateSeats()
@@ -387,6 +389,7 @@ public class TheaterPurchaseBoundary {
     @FXML
     private void goToSeatSelection()
     {
+        isCardPackageOn=false;
         if (stackPane.getChildren().contains(paymentDetailsPane))
         {
             SeatController.cancelSeatReservation(selectedSeats, currentMovieInstance);
@@ -583,22 +586,22 @@ public class TheaterPurchaseBoundary {
         timeLabel.setText(currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));
         hallLabel.setText("HALL: "+ String.valueOf(currentMovieInstance.getHall().getId()));
         seatLabel.setText(String.valueOf(seats_info));
-        movieTitleLabel.setText(currentMovieInstance.getMovie().getHebrewName() + " | " + currentMovieInstance.getMovie().getEnglishName());
+        movieEnglish.setText(currentMovieInstance.getMovie().getEnglishName());
+        movieHebrew.setText(currentMovieInstance.getMovie().getHebrewName());
         theaterLabel.setText(currentMovieInstance.getHall().getTheater().getLocation());
         if (!isCardPackageOn) {
-            oldPriceLabel.setVisible(false);
             paidPriceLabel.setText(currentMovieInstance.getMovie().getTheaterPrice() + "₪");
             totalAmountLabel.setText(currentMovieInstance.getMovie().getTheaterPrice()*selectedSeats.size() + "₪");
         }
         if (isCardPackageOn)
         {
-            oldPriceLabel.setVisible(false);
             paidPriceLabel.setText("Multi Entry Ticket");
             totalAmountLabel.setText("Paid via Multi Entry Ticket");
         }
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);
     }
+
 
 
 

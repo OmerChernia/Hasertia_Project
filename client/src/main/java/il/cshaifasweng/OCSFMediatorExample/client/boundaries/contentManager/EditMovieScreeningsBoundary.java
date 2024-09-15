@@ -3,7 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.contentManager;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.MovieInstanceController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.CustomContextMenu;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;

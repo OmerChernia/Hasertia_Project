@@ -4,7 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintControlle
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.DialogTool;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;

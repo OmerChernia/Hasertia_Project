@@ -3,7 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.companyManager;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PriceRequestController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PriceRequestMessage;
 import il.cshaifasweng.OCSFMediatorExample.server.events.PriceChangeEvent;

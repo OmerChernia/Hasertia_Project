@@ -18,42 +18,42 @@
             <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#addUserWindows" prefHeight="62.0" prefWidth="77.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/tickets.png" />
+                     <Image url="@../../icons/general/tickets.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnComplaints" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#CustomerServiceWindows" prefHeight="61.0" prefWidth="71.0" style="-fx-background-color: transparent;" text="  " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/customer-support.png" />
+                     <Image url="@../../icons/general/customer-support.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnEditScreenings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#EditMovieScreeningsWindows" prefHeight="56.0" prefWidth="73.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/schedule.png" />
+                     <Image url="@../../icons/general/schedule.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnEditMovieList" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#productsWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transparent;" text="  " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/action.png" />
+                     <Image url="@../../icons/general/action.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnPriceChange" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#priceChangeWindows" prefHeight="62.0" prefWidth="69.0" style="-fx-background-color: transparent;" text="  " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/money.png" />
+                     <Image url="@../../icons/general/money.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnReports" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" ellipsisString="" onAction="#statisticsWindows" prefHeight="57.0" prefWidth="72.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/chart.png" />
+                     <Image url="@../../icons/general/chart.png" />
                   </ImageView>
                </graphic>
             </Button>
@@ -66,28 +66,28 @@
             <Button fx:id="btnLog" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#logout" prefHeight="60.0" prefWidth="78.0" style="-fx-background-color: transparent;" text="Log In" textFill="WHITE">
                <graphic>
                   <ImageView fx:id="imgLog" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/login.png" />
+                     <Image url="@../../icons/general/login.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnAbout" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#aboutWindows" prefHeight="60.0" prefWidth="78.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="32.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/monkey.png" />
+                     <Image url="@../../icons/general/monkey.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#settingsWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/more-info.png" />
+                     <Image url="@../../icons/general/more-info.png" />
                   </ImageView>
                </graphic>
             </Button>
             <Button fx:id="btnME" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#MEWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" text=" " textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="31.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/Shopping_Cart.png" />
+                     <Image url="@../../icons/general/Shopping_Cart.png" />
                   </ImageView>
                </graphic>
             </Button>
@@ -95,7 +95,7 @@
             <Button fx:id="btnHome" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" onAction="#homeWindows" prefHeight="60.0" prefWidth="70.0" style="-fx-background-color: transparent;" textAlignment="RIGHT" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="32.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <Image url="@../../media/icons/general/home.png" />
+                     <Image url="@../../icons/general/home.png" />
                   </ImageView>
                </graphic>
             </Button>

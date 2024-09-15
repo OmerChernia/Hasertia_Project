@@ -57,13 +57,13 @@
                   <children>
                      <ImageView fx:id="MonkeyCode" fitHeight="70.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" visible="false">
                         <image>
-                           <Image url="@../../media/icons/general/icon.jpeg" />
+                           <Image url="@../../icons/general/icon.jpeg" />
                         </image>
                      </ImageView>
                      <Separator fx:id="separator" orientation="VERTICAL" prefHeight="60.0" visible="false" />
                      <ImageView id="github" fx:id="github" fitHeight="70.0" fitWidth="80.0" visible="false">
                         <image>
-                           <Image url="@../../media/icons/general/icons-github.png" />
+                           <Image url="@../../icons/general/icons-github.png" />
                         </image>
                      </ImageView>
                   </children>

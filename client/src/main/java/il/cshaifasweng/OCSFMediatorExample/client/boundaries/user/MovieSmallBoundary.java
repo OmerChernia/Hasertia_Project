@@ -35,6 +35,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.getImage;
+
 public class MovieSmallBoundary {
 
     private HomeBoundary homeController;
@@ -241,22 +243,7 @@ public class MovieSmallBoundary {
         info.setText(movie.getInfo());
         title.setText(movie.getEnglishName());
         txtMovieTheater.setText(movie.getEnglishName());
-
-        try {
-            String imagePath = ConstantsPath.MOVIE_PACKAGE + movie.getImage();
-            URL imageUrl = getClass().getResource(imagePath);
-
-            if (imageUrl == null) {
-                throw new FileNotFoundException("Image not found: " + imagePath);
-            }
-
-            Image image = new Image(imageUrl.toExternalForm());
-            this.image.setImage(image);
-
-        } catch (Exception e) {
-            System.out.println("Failed to load image: " + movie.getImage());
-            e.printStackTrace();
-        }
+        image.setImage(getImage(movie));
 
     }
 

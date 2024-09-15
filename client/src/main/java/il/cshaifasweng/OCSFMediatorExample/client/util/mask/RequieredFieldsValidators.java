@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class RequieredFieldsValidators {
 
     private static final String MESSAGE = "Obligatory field";
-    private static final String ICON_PATH = ConstantsPath.MEDIA_PACKAGE+ "warning.png";
+    private static final String ICON_PATH = ConstantsPath.ICON_PACKAGE+ "warning.png";
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
 

@@ -73,6 +73,11 @@ public class Movie implements Serializable {
     @Column(nullable = false)
     private String image;
 
+
+    @Lob
+    @Column(nullable = true)
+    private byte[] imageBytes;
+
     @Column(nullable = false)
     private StreamingType streamingType;
 
@@ -99,7 +104,7 @@ public class Movie implements Serializable {
 
     }
 
-    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability available, boolean notificationSent) {
+    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability available, boolean notificationSent, byte[] imageBytes) {
         this.hebrewName = hebrewName;
         this.info = info;
         this.producer = producer;
@@ -113,6 +118,12 @@ public class Movie implements Serializable {
         this.genre = genre;
         this.available = available;
         this.notificationSent = notificationSent;
+        this.imageBytes = imageBytes;
+    }
+
+
+    public Movie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Availability available, boolean notificationSent) {
+        this(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, available, notificationSent, null);
     }
 
     // Getters and setters
@@ -166,6 +177,15 @@ public class Movie implements Serializable {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
+
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
+
 
     public StreamingType getStreamingType() {
         return streamingType;

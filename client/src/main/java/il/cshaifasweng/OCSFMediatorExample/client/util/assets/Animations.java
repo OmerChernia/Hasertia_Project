@@ -1,4 +1,4 @@
-package il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages;
+package il.cshaifasweng.OCSFMediatorExample.client.util.assets;
 
 import animatefx.animation.FadeIn;
 import animatefx.animation.FadeInUp;

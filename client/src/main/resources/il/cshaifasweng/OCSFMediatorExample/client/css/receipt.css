@@ -1,7 +1,5 @@
 /* Styles for the Receipt Pane */
 .receipt-pane {
-    -fx-background-color:  linear-gradient(to bottom right, #cae8fb, #ffffff);
-    -fx-padding: 12; /* Moderate padding around the receipt content */
     -fx-spacing: 8; /* Moderate spacing between child elements */
     -fx-alignment: top-center; /* Aligns the content to the top center */
     -fx-border-color: black; /* Border color around the receipt */
@@ -18,14 +16,16 @@
     -fx-text-fill: #28a745; /* Green color for the title text */
 }
 
+
+
 /* Header styles */
-.header-section .header-title {
+.header-title {
     -fx-font-size: 20; /* Moderately large font size for the header title */
     -fx-font-weight: bold; /* Bold font weight for the header title */
     -fx-font-family: "Courier New", monospace; /* Ensure monospaced font for consistency */
 }
 
-.header-section .header-subtitle {
+.header-subtitle {
     -fx-font-size: 18; /* Moderate font size for the header subtitle */
     -fx-font-family: "Courier New", monospace; /* Ensure monospaced font for consistency */
 }
@@ -44,25 +44,25 @@
 }
 
 /* Details section styles */
-.details-section .details-label, .details-section .details-value, .details-section .details-movie {
+.details-label, .details-section .details-value, .details-section .details-movie {
     -fx-font-family: "Courier New", monospace; /* Monospaced font for consistent text alignment */
     -fx-font-size: 14; /* Moderate font size for the details */
 }
 
 /* Ticket section styles */
-.ticket-section .ticket-header {
+.ticket-header {
     -fx-font-family: "Courier New", monospace; /* Monospaced font for consistent text alignment */
     -fx-font-size: 14; /* Moderate font size for the ticket headers */
     -fx-font-weight: bold; /* Bold font weight for ticket headers */
 }
 
-.ticket-section .ticket-item, .ticket-section .ticket-price {
+.ticket-item, .ticket-section .ticket-price {
     -fx-font-family: "Courier New", monospace; /* Monospaced font for consistent text alignment */
     -fx-font-size: 14; /* Moderate font size for the ticket items */
 }
 
 /* Summary section styles */
-.summary-section .summary-label, .summary-section .summary-value {
+.summary-label, .summary-section .summary-value {
     -fx-font-family: "Courier New", monospace; /* Monospaced font for consistent text alignment */
     -fx-font-size: 16; /* Moderate font size for the summary */
     -fx-font-weight: bold; /* Bold font weight for summary totals */
@@ -74,4 +74,9 @@
     -fx-font-size: 16; /* Moderately large font size for the header title */
     -fx-font-weight: bold; /* Bold font weight for the header title */
     -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Unique font for the title */
+}
+.grid-receipt {
+    -fx-padding: 30px;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
 }

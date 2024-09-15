@@ -3,7 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
@@ -23,7 +23,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -35,7 +34,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.getImage;
+
 public class HomeViewingPurchaseBoundary {
+
     @FXML
     private StackPane stackPane;
 
@@ -117,7 +119,7 @@ public class HomeViewingPurchaseBoundary {
     private TextField lastNameTF;
 
     @FXML
-    private Text movieText,availableOnText,totalAmountLabel,pricePaidText,validUntilText;
+    private Text movieText,movieEnglish,movieHebrew,availableOnText,totalAmountLabel,pricePaidText,validUntilText;
 
 
     @FXML
@@ -336,10 +338,11 @@ public class HomeViewingPurchaseBoundary {
             LocalDateTime validUntilDateTime = viewingDateTime.plusWeeks(1);
             String validUntilDate = validUntilDateTime.toLocalDate().format(dateFormatter);
             String validUntilTime = validUntilDateTime.toLocalTime().format(timeFormatter);
-            movieText.setText(movieTitle.getText());
-            availableOnText.setText(formattedDate + " AT " + formattedTime);
+            movieEnglish.setText(currentMovie.getEnglishName());
+            movieHebrew.setText(currentMovie.getHebrewName());
+            availableOnText.setText("Available On: "+formattedDate + " AT " + formattedTime);
             pricePaidText.setText("₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice());
-            validUntilText.setText(validUntilDate + " AT " + validUntilTime);
+            validUntilText.setText("Valid Until: "+validUntilDate + " AT " + validUntilTime);
             totalAmountLabel.setText("₪" + homeViewingPackageInstance.getMovie().getHomeViewingPrice());
             stackPane.getChildren().clear();
             stackPane.getChildren().add(ticketConfirmationPane);
@@ -361,7 +364,7 @@ public class HomeViewingPurchaseBoundary {
         this.currentMovie = movie;
         price.setText("Package Price: " + movie.getHomeViewingPrice()+"₪");
         movieTitle.setText(currentMovie.getHebrewName() + " | " + currentMovie.getEnglishName());
-        movieImage.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.MOVIE_PACKAGE + currentMovie.getImage()))));
+        movieImage.setImage(getImage(movie));
     }
     public void setCurrentDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;

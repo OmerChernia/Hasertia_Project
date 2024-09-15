@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ButtonFactory;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images;
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +20,9 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.expandImage;
+import static il.cshaifasweng.OCSFMediatorExample.client.util.assets.Images.getImage;
 
 public class MovieInfoBoundary implements Initializable {
 
@@ -68,7 +72,7 @@ public class MovieInfoBoundary implements Initializable {
         image.setPreserveRatio(true);
         image.setFitWidth(250);
         image.setFitHeight(350);
-        expandImage(movie);
+        expandImage(paneContainer, image, movie, movie.getEnglishName());
 
         // Update genre button with appropriate styling and action
         Button genreButton = ButtonFactory.createButtonGenre(movie);
@@ -82,49 +86,7 @@ public class MovieInfoBoundary implements Initializable {
         homeController.closeDialogAddUser();
     }
 
-    private Image getImage(Movie movie) {
-        if (movie.getImage() == null) {
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true);
-        }
 
-        String imagePath = ConstantsPath.MOVIE_PACKAGE + movie.getImage();
-        URL imageUrl = getClass().getResource(imagePath);
 
-        if (imageUrl == null) {
-            System.out.println("Image not found: " + imagePath);
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true);
-        }
 
-        try {
-            return new Image(imageUrl.toExternalForm(), true);
-        } catch (Exception e) {
-            System.out.println("Failed to load image: " + imagePath);
-            e.printStackTrace();
-            return new Image(ConstantsPath.NO_IMAGE_AVAILABLE, true);
-        }
-    }
-
-    private void expandImage(Movie movie) {
-        paneContainer.setOnMouseClicked(ev -> {
-            Image image = getImage(movie);
-            ImageView imageView = new ImageView(image);
-            imageView.setPreserveRatio(true);
-            imageView.setFitWidth(550);
-
-            BorderPane borderPane = new BorderPane(imageView);
-            borderPane.setStyle("-fx-background-color: white");
-
-            ScrollPane root = new ScrollPane(borderPane);
-            root.setStyle("-fx-background-color: white");
-            root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            root.setFitToHeight(true);
-            root.setFitToWidth(true);
-
-            Stage stage = new Stage();
-            stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
-            stage.setScene(new Scene(root, 550, 550));
-            stage.setTitle(movie.getEnglishName());
-            stage.show();
-        });
-    }
 }

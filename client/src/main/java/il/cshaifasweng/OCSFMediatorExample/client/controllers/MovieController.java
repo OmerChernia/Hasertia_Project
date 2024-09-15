@@ -16,8 +16,9 @@ public class MovieController {
     }
 
 
-    public static void addMovie(String hebrewName, String info, String producer, String englishName,String mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre , Movie.Availability availability) {
-        Movie movie = new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, availability,false);
+    public static void addMovie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, byte[] imageBytes, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Movie.Availability availability) {
+        Movie movie = new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, availability, false);
+        movie.setImageBytes(imageBytes);
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, movie, RequestType.ADD_MOVIE);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
@@ -28,13 +29,14 @@ public class MovieController {
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
-    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, String mainActors, String image, Movie.StreamingType streamingType, int duration, String genre, Movie.Availability availability) {
+    public static void updateMovie(Movie movie, String hebrewName, String info, String producer, String englishName, String mainActors, String image, byte[] imageBytes, Movie.StreamingType streamingType, int duration, String genre, Movie.Availability availability) {
         movie.setHebrewName(hebrewName);
         movie.setInfo(info);
         movie.setProducer(producer);
         movie.setEnglishName(englishName);
         movie.setMainActors(mainActors);
         movie.setImage(image);
+        movie.setImageBytes(imageBytes);
         movie.setStreamingType(streamingType);
         movie.setDuration(duration);
         movie.setGenre(genre);
@@ -43,7 +45,6 @@ public class MovieController {
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, movie, RequestType.UPDATE_MOVIE);
         SimpleClient.getClient().sendRequest(requestMessage);
     }
-
     // id of the movie in mySql
     public static void deleteMovie(int id) {
         MovieMessage requestMessage = new MovieMessage(MessageType.REQUEST, RequestType.DEACTIVATE_MOVIE, id);

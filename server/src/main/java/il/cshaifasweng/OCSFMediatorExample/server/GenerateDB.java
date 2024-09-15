@@ -5,6 +5,11 @@ import net.bytebuddy.implementation.ToStringMethod;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -162,32 +167,32 @@ public class GenerateDB {
         }
     }
 
+
     private void generateMovies() {
         List<Movie> movies = session.createQuery("from Movie", Movie.class).list();
         if (movies.isEmpty()) {
             movies = List.of(
-                    new Movie( "קפטן אמריקה", "Steve Rogers, a rejected military soldier transforms into Captain America after taking a dose of a 'Super-Soldier serum'.", "Marvel Studios", "Captain America", "Chris Evans_Sebastian Stan_Hayley Atwell", "captainamerica.jpg", Movie.StreamingType.THEATER_VIEWING, 124, 50, 60, "action",Movie.Availability.AVAILABLE,true),
-                    new Movie( "צ'לנג'רס", "A drama centered around three friends, their ambitions, and the competitive tennis circuit.", "MGM", "Challengers", "Zendaya_Mike Faist_Josh O'Connor", "challengers.jpg", Movie.StreamingType.THEATER_VIEWING, 120, 50, 60, "drama",Movie.Availability.AVAILABLE,true),
-                    new Movie( "דדפול וולברין", "Deadpool teams up with Wolverine for a new mission that involves time travel.", "Marvel Studios", "Deadpool & Wolverine", "Ryan Reynolds_Hugh Jackman_Morena Baccarin", "deadpool-wolverine.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "action",Movie.Availability.AVAILABLE,true),
-                    new Movie( "גלדיאטור 2", "The story continues with Maximus's son seeking revenge against the Roman Empire.", "Universal Pictures", "Gladiator II", "Russell Crowe_Joaquin Phoenix_Connie Nielsen", "gladiator_ii.jpg", Movie.StreamingType.BOTH, 155, 50, 60, "action",Movie.Availability.AVAILABLE,true),
-                    new Movie( "הקול בראש 2", "The emotions inside Riley's mind return for a new adventure.", "Pixar Animation Studios", "Inside Out 2", "Amy Poehler_Bill Hader_Lewis Black", "inside_out_two.jpg", Movie.StreamingType.BOTH, 95, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
-                    new Movie( "לה לה לנד", "A jazz musician and an aspiring actress fall in love while pursuing their dreams in Los Angeles.", "Lionsgate", "La La Land", "Ryan Gosling_Emma Stone_John Legend", "LaLaLand.jpg", Movie.StreamingType.BOTH, 128, 50, 60, "musical",Movie.Availability.AVAILABLE,true),
-                    new Movie( "מופאסה: מלך האריות", "A prequel to The Lion King focusing on Mufasa's journey to become king.", "Walt Disney Pictures", "Mufasa: The Lion King", "James Earl Jones_Donald Glover_Beyoncé", "mufasa-the-lion-king.jpg", Movie.StreamingType.HOME_VIEWING, 120, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
-                    new Movie( "אין רגשות קשים", "A comedy about a couple trying to balance their careers and relationship.", "Columbia Pictures", "No Hard Feelings", "Jennifer Lawrence_Andrew Barth Feldman_Laura Benanti", "no-hard-feelings.jpg", Movie.StreamingType.BOTH, 103, 50, 60, "comedy",Movie.Availability.AVAILABLE,true),
-                    new Movie( "אופנהיימר", "A drama about J. Robert Oppenheimer, the father of the atomic bomb.", "Universal Pictures", "Oppenheimer", "Cillian Murphy_Emily Blunt_Robert Downey Jr.", "oppenheimer.jpg", Movie.StreamingType.BOTH, 180, 50, 60, "drama",Movie.Availability.AVAILABLE,true),
-                    new Movie( "פינוקיו", "A live-action adaptation of the classic tale of a wooden puppet who wants to become a real boy.", "Walt Disney Pictures", "Pinocchio", "Tom Hanks_Benjamin Evan Ainsworth_Joseph Gordon-Levitt", "pinocchio.jpg", Movie.StreamingType.HOME_VIEWING, 105, 50, 60, "fantasy",Movie.Availability.AVAILABLE,true),
-                    new Movie( "סמייל 2", "A sequel to the horror film 'Smile', where the curse continues to haunt new victims.", "Paramount Pictures", "Smile 2", "Sosie Bacon_Kyle Gallner_Caitlin Stasey", "smile_two.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "horror",Movie.Availability.AVAILABLE,true),
-                    new Movie( "מלחמת הכוכבים: פרק 1 - אימת הפאנטום", "The origin story of Anakin Skywalker and the rise of the Sith.", "Lucasfilm", "Star Wars: Episode I - The Phantom Menace", "Liam Neeson_Ewan McGregor_Natalie Portman", "Star_Wars_Episode_1.jpg", Movie.StreamingType.THEATER_VIEWING, 136, 50, 60, "sci-fi",Movie.Availability.AVAILABLE,true),
-                    new Movie( "רובוטריקים", "The story of the war between Autobots and Decepticons on Earth.", "Paramount Pictures", "Transformers","Shia LaBeouf_Megan Fox_Josh Duhamel", "transformers_one.jpg", Movie.StreamingType.BOTH, 144, 50, 60, "action",Movie.Availability.AVAILABLE,true),
-                    new Movie( "מרושעת", "A prequel to The Wizard of Oz, focusing on the story of the Wicked Witch of the West.", "Universal Pictures", "Wicked", "Idina Menzel_Kristin Chenoweth_Ariana Grande", "wicked.jpg", Movie.StreamingType.BOTH, 130, 50, 60, "fantasy",Movie.Availability.AVAILABLE,true),
-                    new Movie( "מלך האריות", "After the murder of his father, a young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.", "Walt Disney Pictures", "The Lion King", "Donald Glover_Beyoncé_Seth Rogen", "TheLionKing.jpg", Movie.StreamingType.BOTH, 118, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
-                    new Movie( "ברבי", "To live in Barbie Land is to be a perfect being in a perfect place. Unless you have a full-on existential crisis. Or you’re a Ken.", "Warner Bros.", "Barbie", "Margot Robbie_Ryan Gosling_Simu Liu", "Barbie.jpg", Movie.StreamingType.THEATER_VIEWING, 114, 50, 60, "comedy",Movie.Availability.AVAILABLE,true),
-                    new Movie( "סיפור צעצוע 4", "The adventures of Woody, Buzz Lightyear, and the gang as they encounter new toys.", "Pixar Animation Studios", "Toy Story 4", "Tom Hanks_Tim Allen_Annie Potts", "toy_story4.jpg", Movie.StreamingType.BOTH, 100, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
-                    new Movie( "וונדר וומן ", "Diana, princess of the Amazons, discovers her full powers and true destiny as Wonder Woman.", "Warner Bros.", "Wonder Woman", "Gal Gadot_Chris Pine_Robin Wright", "wonder_woman2017.jpg", Movie.StreamingType.BOTH, 141, 50, 60, "action",Movie.Availability.AVAILABLE,true),
-                    new Movie( "המיניונים: עלייתו של גרו", "The untold story of one twelve-year-old's dream to become the world's greatest supervillain.", "Universal Pictures", "Minions: The Rise of Gru", "Steve Carell_Pierre Coffin_Taraji P. Henson", "minions_the_rise_of_gru.jpg", Movie.StreamingType.BOTH, 90, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
-                    new Movie( "הג'וקר 2", "A dark origin story about the Joker's transformation from struggling comedian to a criminal mastermind.", "Warner Bros.", "The Joker 2", "Joaquin Phoenix_Robert De Niro_Lady Gaga", "the_joker2024.jpg", Movie.StreamingType.BOTH, 122, 50, 60, "drama",Movie.Availability.COMING_SOON,false)
+                    createMovie( "קפטן אמריקה", "Steve Rogers, a rejected military soldier transforms into Captain America after taking a dose of a 'Super-Soldier serum'.", "Marvel Studios", "Captain America", "Chris Evans_Sebastian Stan_Hayley Atwell", "captainamerica.jpg", Movie.StreamingType.THEATER_VIEWING, 124, 50, 60, "action",Movie.Availability.AVAILABLE,true),
+                    createMovie( "צ'לנג'רס", "A drama centered around three friends, their ambitions, and the competitive tennis circuit.", "MGM", "Challengers", "Zendaya_Mike Faist_Josh O'Connor", "challengers.jpg", Movie.StreamingType.THEATER_VIEWING, 120, 50, 60, "drama",Movie.Availability.AVAILABLE,true),
+                    createMovie( "דדפול וולברין", "Deadpool teams up with Wolverine for a new mission that involves time travel.", "Marvel Studios", "Deadpool & Wolverine", "Ryan Reynolds_Hugh Jackman_Morena Baccarin", "deadpool-wolverine.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "action",Movie.Availability.AVAILABLE,true),
+                    createMovie( "גלדיאטור 2", "The story continues with Maximus's son seeking revenge against the Roman Empire.", "Universal Pictures", "Gladiator II", "Russell Crowe_Joaquin Phoenix_Connie Nielsen", "gladiator_ii.jpg", Movie.StreamingType.BOTH, 155, 50, 60, "action",Movie.Availability.AVAILABLE,true),
+                    createMovie( "הקול בראש 2", "The emotions inside Riley's mind return for a new adventure.", "Pixar Animation Studios", "Inside Out 2", "Amy Poehler_Bill Hader_Lewis Black", "inside_out_two.jpg", Movie.StreamingType.BOTH, 95, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
+                    createMovie( "לה לה לנד", "A jazz musician and an aspiring actress fall in love while pursuing their dreams in Los Angeles.", "Lionsgate", "La La Land", "Ryan Gosling_Emma Stone_John Legend", "LaLaLand.jpg", Movie.StreamingType.BOTH, 128, 50, 60, "musical",Movie.Availability.AVAILABLE,true),
+                    createMovie( "מופאסה: מלך האריות", "A prequel to The Lion King focusing on Mufasa's journey to become king.", "Walt Disney Pictures", "Mufasa: The Lion King", "James Earl Jones_Donald Glover_Beyoncé", "mufasa-the-lion-king.jpg", Movie.StreamingType.HOME_VIEWING, 120, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
+                    createMovie( "אין רגשות קשים", "A comedy about a couple trying to balance their careers and relationship.", "Columbia Pictures", "No Hard Feelings", "Jennifer Lawrence_Andrew Barth Feldman_Laura Benanti", "no-hard-feelings.jpg", Movie.StreamingType.BOTH, 103, 50, 60, "comedy",Movie.Availability.AVAILABLE,true),
+                    createMovie( "אופנהיימר", "A drama about J. Robert Oppenheimer, the father of the atomic bomb.", "Universal Pictures", "Oppenheimer", "Cillian Murphy_Emily Blunt_Robert Downey Jr.", "oppenheimer.jpg", Movie.StreamingType.BOTH, 180, 50, 60, "drama",Movie.Availability.AVAILABLE,true),
+                    createMovie( "פינוקיו", "A live-action adaptation of the classic tale of a wooden puppet who wants to become a real boy.", "Walt Disney Pictures", "Pinocchio", "Tom Hanks_Benjamin Evan Ainsworth_Joseph Gordon-Levitt", "pinocchio.jpg", Movie.StreamingType.HOME_VIEWING, 105, 50, 60, "fantasy",Movie.Availability.AVAILABLE,true),
+                    createMovie( "סמייל 2", "A sequel to the horror film 'Smile', where the curse continues to haunt new victims.", "Paramount Pictures", "Smile 2", "Sosie Bacon_Kyle Gallner_Caitlin Stasey", "smile_two.jpg", Movie.StreamingType.BOTH, 115, 50, 60, "horror",Movie.Availability.AVAILABLE,true),
+                    createMovie( "מלחמת הכוכבים: פרק 1 - אימת הפאנטום", "The origin story of Anakin Skywalker and the rise of the Sith.", "Lucasfilm", "Star Wars: Episode I - The Phantom Menace", "Liam Neeson_Ewan McGregor_Natalie Portman", "Star_Wars_Episode_1.jpg", Movie.StreamingType.THEATER_VIEWING, 136, 50, 60, "sci-fi",Movie.Availability.AVAILABLE,true),
+                    createMovie( "רובוטריקים", "The story of the war between Autobots and Decepticons on Earth.", "Paramount Pictures", "Transformers","Shia LaBeouf_Megan Fox_Josh Duhamel", "transformers_one.jpg", Movie.StreamingType.BOTH, 144, 50, 60, "action",Movie.Availability.AVAILABLE,true),
+                    createMovie( "מרושעת", "A prequel to The Wizard of Oz, focusing on the story of the Wicked Witch of the West.", "Universal Pictures", "Wicked", "Idina Menzel_Kristin Chenoweth_Ariana Grande", "wicked.jpg", Movie.StreamingType.BOTH, 130, 50, 60, "fantasy",Movie.Availability.AVAILABLE,true),
+                    createMovie( "מלך האריות", "After the murder of his father, a young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.", "Walt Disney Pictures", "The Lion King", "Donald Glover_Beyoncé_Seth Rogen", "TheLionKing.jpg", Movie.StreamingType.BOTH, 118, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
+                    createMovie( "ברבי", "To live in Barbie Land is to be a perfect being in a perfect place. Unless you have a full-on existential crisis. Or you’re a Ken.", "Warner Bros.", "Barbie", "Margot Robbie_Ryan Gosling_Simu Liu", "Barbie.jpg", Movie.StreamingType.THEATER_VIEWING, 114, 50, 60, "comedy",Movie.Availability.AVAILABLE,true),
+                    createMovie( "סיפור צעצוע 4", "The adventures of Woody, Buzz Lightyear, and the gang as they encounter new toys.", "Pixar Animation Studios", "Toy Story 4", "Tom Hanks_Tim Allen_Annie Potts", "toy_story4.jpg", Movie.StreamingType.BOTH, 100, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
+                    createMovie( "וונדר וומן ", "Diana, princess of the Amazons, discovers her full powers and true destiny as Wonder Woman.", "Warner Bros.", "Wonder Woman", "Gal Gadot_Chris Pine_Robin Wright", "wonder_woman2017.jpg", Movie.StreamingType.BOTH, 141, 50, 60, "action",Movie.Availability.AVAILABLE,true),
+                    createMovie( "המיניונים: עלייתו של גרו", "The untold story of one twelve-year-old's dream to become the world's greatest supervillain.", "Universal Pictures", "Minions: The Rise of Gru", "Steve Carell_Pierre Coffin_Taraji P. Henson", "minions_the_rise_of_gru.jpg", Movie.StreamingType.BOTH, 90, 50, 60, "animation",Movie.Availability.AVAILABLE,true),
+                    createMovie( "הג'וקר 2", "A dark origin story about the Joker's transformation from struggling comedian to a criminal mastermind.", "Warner Bros.", "The Joker 2", "Joaquin Phoenix_Robert De Niro_Lady Gaga", "the_joker2024.jpg", Movie.StreamingType.BOTH, 122, 50, 60, "drama",Movie.Availability.COMING_SOON,false)
             );
-
             Transaction transaction = session.beginTransaction();
             for (Movie movie : movies) {
                 session.save(movie);
@@ -199,6 +204,33 @@ public class GenerateDB {
             System.out.println("Movies table is already populated.");
         }
     }
+
+    private Movie createMovie(String hebrewName, String info, String producer, String englishName, String mainActors, String image, Movie.StreamingType streamingType, int duration, int theaterPrice, int homeViewingPrice, String genre, Movie.Availability available, boolean notificationSent) {
+        byte[] imageBytes = loadImageBytes(image);
+        System.out.println(imageBytes);
+        return new Movie(hebrewName, info, producer, englishName, mainActors, image, streamingType, duration, theaterPrice, homeViewingPrice, genre, available, notificationSent, imageBytes);
+    }
+
+    private byte[] loadImageBytes(String imageName) {
+        try {
+            String projectDir = System.getProperty("user.dir");
+
+            Path imagePath = Paths.get(projectDir, "movies", imageName);
+            File imageFile = imagePath.toFile();
+
+            if (imageFile.exists()) {
+                return Files.readAllBytes(imageFile.toPath());
+            } else {
+                System.out.println("Image file does not exist: " + imagePath.toString());
+                return new byte[0];
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error loading image: " + imageName);
+            return new byte[0];
+        }
+    }
+
 
     private void generatePriceRequests() {
         List<PriceRequest> priceRequests = session.createQuery("from PriceRequest", PriceRequest.class).list();
@@ -284,7 +316,7 @@ public class GenerateDB {
             }
 
             // Set the time to include only up to minutes, with seconds and nanoseconds set to 0
-            LocalDateTime startDate = LocalDateTime.of(2024, 9, 4, 12, 0);
+            LocalDateTime startDate = LocalDateTime.of(2024, 9, 15, 12, 0);
             //.plusHours(3)
             movieInstances = List.of(
                     new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0),true),

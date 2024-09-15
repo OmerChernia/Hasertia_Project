@@ -5,10 +5,9 @@ import il.cshaifasweng.OCSFMediatorExample.client.controllers.ComplaintControlle
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.client.util.animationAndImages.Animations;
+import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
-import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
@@ -36,8 +35,6 @@ public class ComplaintBoundary implements Initializable {
     @FXML
     private BorderPane complaintPane;
 
-
-
     @FXML
     private TextField txtCustomerName;
 
@@ -58,7 +55,6 @@ public class ComplaintBoundary implements Initializable {
 
     @FXML
     private Button btnSubmitComplaint;
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
 
     private RegisteredUser user;
@@ -72,10 +68,8 @@ public class ComplaintBoundary implements Initializable {
 
     private void initializeComplaintForm() {
         if(!SimpleClient.user.isEmpty() && MainBoundary.getEmployee()==null) {
-            txtCustomerName.setVisible(false);
-            txtCustomerEmail.setVisible(false);
-            nameHeader.setVisible(false);
-            emailHeader.setVisible(false);
+
+
             RegisteredUserController.getUserByID(SimpleClient.user);
         }
     }
@@ -92,7 +86,7 @@ public class ComplaintBoundary implements Initializable {
         if(!txtCustomerName.isVisible()) {
             if (complaintDetails.isEmpty() ) {
                 Animations.shake(txtComplaintDetails);
-                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.",complaintPane);
+                NotificationsBuilder.create(NotificationType.ERROR, "You must fill all filled.",complaintPane);
                 return;
             }
             LocalDateTime creationDate = LocalDateTime.now();
@@ -109,13 +103,14 @@ public class ComplaintBoundary implements Initializable {
                 if (complaintDetails.isEmpty()) {
                     Animations.shake(txtComplaintDetails);
                 }
-                NotificationsBuilder.create(NotificationType.ERROR, "Please fill in all required fields.",complaintPane);
+                NotificationsBuilder.create(NotificationType.ERROR, "You must fill all filled.",complaintPane);
                 return;
             }
-            Pattern pattern = Pattern.compile(EMAIL_REGEX);
+            Pattern pattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
             if (!pattern.matcher(customerEmail).matches())
             {
-                NotificationsBuilder.create(NotificationType.ERROR,"Email address is invalid.",complaintPane);
+                Animations.shake(txtCustomerEmail);
+                NotificationsBuilder.create(NotificationType.ERROR, "Invalid Email.",complaintPane);
                 return;
             }
 
@@ -137,13 +132,24 @@ public class ComplaintBoundary implements Initializable {
                 );
 
         }
-        txtCustomerEmail.clear();
+        if (!txtCustomerEmail.isDisable()&&!txtCustomerName.isDisable()) {
+            txtCustomerEmail.clear();
+            txtCustomerName.clear();
+
+        }
         txtComplaintDetails.clear();
-        txtCustomerName.clear();
-     }
+
+
+    }
 
     @Subscribe
-    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) { user= message.registeredUser;}
+    public void onRegisteredUserMessageReceived(RegisteredUserMessage message) {
+        user= message.registeredUser;
+        txtCustomerName.setText(user.getName());
+        txtCustomerEmail.setText(user.getEmail());
+        txtCustomerName.setDisable(true);
+        txtCustomerEmail.setDisable(true);
+    }
 
     public void cleanup() {
         EventBus.getDefault().unregister(this);

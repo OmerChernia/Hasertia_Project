@@ -73,14 +73,14 @@
                   </Button>
                </children>
             </AnchorPane>
-            <Button fx:id="btnNewScrenning" layoutX="759.0" layoutY="17.0" onAction="#createNewScreening" prefHeight="39.0" prefWidth="155.0" styleClass="button-green-active" text="New Screening" textFill="WHITE" AnchorPane.rightAnchor="16.0">
+            <Button fx:id="btnNewScrenning" layoutX="759.0" layoutY="17.0" onAction="#createNewScreening" prefHeight="39.0" prefWidth="155.0" styleClass="button-blue-active" text="New Screening" textFill="WHITE" AnchorPane.rightAnchor="16.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../media/icons/general/two-tickets.png" />
+                        <Image url="@../../icons/general/two-tickets.png" />
                      </image>
                   </ImageView>
                </graphic>

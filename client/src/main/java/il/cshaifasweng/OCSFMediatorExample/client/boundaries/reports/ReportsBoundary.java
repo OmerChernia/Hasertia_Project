@@ -1,39 +1,32 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports;
 
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ComplaintReportConfiguration;
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportConfiguration;
-import il.cshaifasweng.OCSFMediatorExample.client.boundaries.reports.generic.ReportFactory;
 import il.cshaifasweng.OCSFMediatorExample.client.boundaries.user.MainBoundary;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
-import il.cshaifasweng.OCSFMediatorExample.client.controllers.ReportsPageController;
+import il.cshaifasweng.OCSFMediatorExample.client.controllers.ReportController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.TheaterController;
-import il.cshaifasweng.OCSFMediatorExample.entities.*;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
-import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.entities.Employee;
+import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ReportMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.TheaterMessage;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.TextStyle;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ResourceBundle;
 
+/**
+ * This class is responsible for handling the user interface of the reports boundary.
+ * It manages the report generation, bar chart displays, and ComboBox selections.
+ * The class uses JavaFX components to handle different types of reports.
+ */
 public class ReportsBoundary implements Initializable {
-    private String theaterLocation;
 
     @FXML
     private AnchorPane rootStatistics;
@@ -48,358 +41,268 @@ public class ReportsBoundary implements Initializable {
     private BarChart<String, Number> ticketSalesBarChart;
 
     @FXML
-    private PieChart ticketSalesPieChart;
-
-    @FXML
     private BarChart<String, Number> packageSalesBarChart;
-
-    @FXML
-    private PieChart packageSalesPieChart;
 
     @FXML
     private BarChart<String, Number> multiEntryTicketSalesBarChart;
 
     @FXML
-    private PieChart multiEntryTicketSalesPieChart;
-
-    @FXML
     private BarChart<String, Number> complaintStatusBarChart;
 
     @FXML
-    private PieChart complaintStatusPieChart;
+    private ComboBox<Integer> ComplaintsyearComboBox, MultiSalesyearComboBox, TicketSalesyearComboBox, PackageSalesyearComboBox;
 
     @FXML
-    private BarChart<String, Number> complaintStatusHistogram;
+    private ComboBox<String> ComplaintsmonthComboBox, MultiSalesmonthComboBox, TicketSalesmonthComboBox, PackageSalesmonthComboBox;
 
-    @FXML
-    private ToggleButton toggleTicketSalesChartType;
+    private String theaterLocation = "";
+    private int theaterId = 0;
 
-    @FXML
-    private ToggleButton togglePackageSalesChartType;
-
-    @FXML
-    private ToggleButton toggleMultiEntryTicketSalesChartType;
-
-    @FXML
-    private ToggleButton toggleComplaintStatusChartType;
-
-    @FXML
-    private ComboBox<Integer> TicketSalesyearComboBox;
-
-    @FXML
-    private ComboBox<String> TicketSalesmonthComboBox;
-
-    @FXML
-    private ComboBox<Integer> PackageSalesyearComboBox;
-
-    @FXML
-    private ComboBox<String> PackageSalesmonthComboBox;
-
-    @FXML
-    private ComboBox<Integer> MultiSalesyearComboBox;
-
-    @FXML
-    private ComboBox<String> MultiSalesmonthComboBox;
-
-    @FXML
-    private ComboBox<Integer> ComplaintsyearComboBox;
-
-    @FXML
-    private ComboBox<String> ComplaintsmonthComboBox;
-
-    private List<Purchase> purchases;
-    private List<Complaint> complaints;
-
+    /**
+     * Initializes the boundary, sets up ComboBox values, event listeners, and event subscriptions.
+     *
+     * @param location   The location of the FXML resource.
+     * @param resources  The resources used to localize the root object.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
-
-        // Retrieve the theater location for the logged-in manager
-        System.out.println("Sending id" + SimpleClient.user);
         TheaterController.getTheaterNameByTheaterManagerID(SimpleClient.user);
 
-        // Initialize ComboBoxes for each tab
-        initializeYearComboBox(TicketSalesyearComboBox);
-        initializeMonthComboBox(TicketSalesmonthComboBox);
-
-        initializeYearComboBox(PackageSalesyearComboBox);
-        initializeMonthComboBox(PackageSalesmonthComboBox);
-
-        initializeYearComboBox(MultiSalesyearComboBox);
-        initializeMonthComboBox(MultiSalesmonthComboBox);
-
-        initializeYearComboBox(ComplaintsyearComboBox);
-        initializeMonthComboBox(ComplaintsmonthComboBox);
-
-        // Add listeners to update the charts when selection changes
-        addComboBoxListeners();
-
-        ReportsPageController.requestAllPurchases();
-        ReportsPageController.requestAllComplaints();
-
+        // Remove tabs if the logged-in user is a theater manager
         if (MainBoundary.loggedInEmployeeId == Employee.EmployeeType.THEATER_MANAGER) {
-            tabPane.getTabs().removeIf(tab -> tab.getText().equals("Package Sales") || tab.getText().equals("Multi-Entry Ticket Sales") || tab.getText().equals("Network Manager Reports"));
+            tabPane.getTabs().removeIf(tab -> tab.getText().equals("Package Sales") ||
+                    tab.getText().equals("Multi-Entry Ticket Sales") ||
+                    tab.getText().equals("Complaint Status") ||
+                    tab.getText().equals("Additional Reports"));
         }
+
+        // Initialize combo boxes for each type of report
+        initializeComboBoxes(ComplaintsyearComboBox, ComplaintsmonthComboBox, "ComplaintStatus");
+        initializeComboBoxes(MultiSalesyearComboBox, MultiSalesmonthComboBox, "MultiEntrySales");
+        initializeComboBoxes(TicketSalesyearComboBox, TicketSalesmonthComboBox, "TicketSales");
+        initializeComboBoxes(PackageSalesyearComboBox, PackageSalesmonthComboBox, "PackageSales");
     }
 
-    private void initializeYearComboBox(ComboBox<Integer> yearComboBox) {
-        int currentYear = LocalDate.now().getYear();
-        for (int i = currentYear; i >= currentYear - 10; i--) {
-            yearComboBox.getItems().add(i);
-        }
-        yearComboBox.setValue(currentYear); // Set default value to current year
-    }
-
-    private void initializeMonthComboBox(ComboBox<String> monthComboBox) {
-        for (Month month : Month.values()) {
-            monthComboBox.getItems().add(month.getDisplayName(TextStyle.FULL, Locale.ENGLISH));
-        }
-        monthComboBox.setValue(LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH)); // Set default value to current month
-    }
-
-    private void addComboBoxListeners() {
-        TicketSalesyearComboBox.setOnAction(e -> updateFilteredData());
-        TicketSalesmonthComboBox.setOnAction(e -> updateFilteredData());
-
-        PackageSalesyearComboBox.setOnAction(e -> updateFilteredData());
-        PackageSalesmonthComboBox.setOnAction(e -> updateFilteredData());
-
-        MultiSalesyearComboBox.setOnAction(e -> updateFilteredData());
-        MultiSalesmonthComboBox.setOnAction(e -> updateFilteredData());
-
-        ComplaintsyearComboBox.setOnAction(e -> updateFilteredData());
-        ComplaintsmonthComboBox.setOnAction(e -> updateFilteredData());
-    }
-
-    private void updateFilteredData() {
-        if (purchases == null || purchases.isEmpty()) {
-            clearCharts();
-            return;
-        }
-
-        // Adjust the purchase time by subtracting 3 hours
-//        List<Purchase> adjustedPurchases = purchases.stream()
-//                .map(purchase -> {
-//                    purchase.setPurchaseDate(purchase.getPurchaseDate().minusHours(3));
-//                    return purchase;
-//                })
-//                .collect(Collectors.toList());
-
-        // Ticket Sales
-        int ticketSalesYear = TicketSalesyearComboBox.getValue();
-        int ticketSalesMonth = TicketSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
-
-        List<Purchase> filteredTicketSales;
-        if (this.theaterLocation == null) {
-            // Company Manager - Show all ticket sales
-            filteredTicketSales = purchases.stream()
-                    .filter(purchase -> purchase.getPurchaseDate().getYear() == ticketSalesYear &&
-                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth &&
-                            purchase instanceof MovieTicket)
-                    .collect(Collectors.toList());
-
-        } else {
-            // Theater Manager - Show only their theater's ticket sales
-            filteredTicketSales = purchases.stream()
-                    .filter(purchase -> purchase.getPurchaseDate().getYear() == ticketSalesYear &&
-                            purchase.getPurchaseDate().getMonthValue() == ticketSalesMonth &&
-                            purchase instanceof MovieTicket &&
-                            ((MovieTicket) purchase).getMovieInstance().getHall().getTheater().getLocation().equals(theaterLocation))
-                    .collect(Collectors.toList());
-        }
-
-        // Package Sales
-        int packageSalesYear = PackageSalesyearComboBox.getValue();
-        int packageSalesMonth = PackageSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
-
-        List<Purchase> filteredPackageSales;
-        if (this.theaterLocation == null) {
-            // Company Manager - Show all package sales
-            filteredPackageSales = purchases.stream()
-                    .filter(purchase -> purchase.getPurchaseDate().getYear() == packageSalesYear &&
-                            purchase.getPurchaseDate().getMonthValue() == packageSalesMonth &&
-                            purchase instanceof HomeViewingPackageInstance)
-                    .collect(Collectors.toList());
-        } else {
-            // Theater Manager - Do not show package sales
-            filteredPackageSales = Collections.emptyList();
-        }
-        // Multi-Entry Ticket Sales
-        int multiEntrySalesYear = MultiSalesyearComboBox.getValue();
-        int multiEntrySalesMonth = MultiSalesmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
-
-        List<Purchase> filteredMultiEntrySales;
-        if (this.theaterLocation == null) {
-            // Company Manager - Show all multi-entry sales
-            filteredMultiEntrySales = purchases.stream()
-                    .filter(purchase -> purchase.getPurchaseDate().getYear() == multiEntrySalesYear &&
-                            purchase.getPurchaseDate().getMonthValue() == multiEntrySalesMonth &&
-                            purchase instanceof MultiEntryTicket)
-                    .collect(Collectors.toList());
-        } else {
-            // Theater Manager - Do not show multi-entry sales
-            filteredMultiEntrySales = Collections.emptyList();
-        }
-
-        // Complaints
-        if (complaints != null) {
-            int complaintsYear = ComplaintsyearComboBox.getValue();
-            int complaintsMonth = ComplaintsmonthComboBox.getSelectionModel().getSelectedIndex() + 1;
-
-            List<Complaint> filteredComplaints;
-            if (this.theaterLocation == null) {
-                // Company Manager - Show all complaints
-                filteredComplaints = complaints.stream()
-                        .filter(complaint -> complaint.getCreationDate().getYear() == complaintsYear &&
-                                complaint.getCreationDate().getMonthValue() == complaintsMonth)
-                        .collect(Collectors.toList());
-            } else {
-                // Theater Manager - Show only complaints related to their theater
-                filteredComplaints = complaints.stream()
-                        .filter(complaint -> complaint.getCreationDate().getYear() == complaintsYear &&
-                                complaint.getCreationDate().getMonthValue() == complaintsMonth &&
-                                complaint.getPurchase() != null && (
-                                (complaint.getPurchase() instanceof MovieTicket &&
-                                        ((MovieTicket) complaint.getPurchase()).getMovieInstance().getHall().getTheater().getLocation().equals(theaterLocation)) ||
-                                        (complaint.getPurchase() instanceof MultiEntryTicket && "Multi-Entry".equals(theaterLocation)) ||
-                                        (complaint.getPurchase() instanceof HomeViewingPackageInstance && "Home Viewing".equals(theaterLocation)))
-                        )
-                        .collect(Collectors.toList());
-            }
-
-            createComplaintReports(filteredComplaints);
-        }
-
-        // Update the reports with the filtered data
-        createSalesReports(filteredTicketSales, filteredPackageSales, filteredMultiEntrySales);
-
-        Platform.runLater(() -> {
-            ticketSalesBarChart.applyCss();
-            ticketSalesBarChart.layout();
-            packageSalesBarChart.applyCss();
-            packageSalesBarChart.layout();
-            multiEntryTicketSalesBarChart.applyCss();
-            multiEntryTicketSalesBarChart.layout();
-            complaintStatusBarChart.applyCss();
-            complaintStatusBarChart.layout();
-        });
-    }
-
-    private void clearCharts() {
-        ticketSalesBarChart.getData().clear();
-        packageSalesBarChart.getData().clear();
-        multiEntryTicketSalesBarChart.getData().clear();
-        complaintStatusBarChart.getData().clear();
-    }
-
-    @Subscribe
-    public void onPurchaseMessageReceived(PurchaseMessage message) {
-        Platform.runLater(() -> {
-            if (message.responseType == PurchaseMessage.ResponseType.PURCHASES_LIST) {
-                this.purchases = message.purchases; // Update the purchases list with the data received
-
-                // Adjust the purchase time by subtracting 3 hours, done only once
-                this.purchases = this.purchases.stream()
-                        .map(purchase -> {
-                            purchase.setPurchaseDate(purchase.getPurchaseDate().minusHours(3));
-                            return purchase;
-                        })
-                        .collect(Collectors.toList());
-
-                // Automatically filter the data based on the currently selected year and month
-                updateFilteredData();
-            }
-        });
-    }
-
+    /**
+     * Handles the receipt of a TheaterMessage, which includes theater location data.
+     * Once the message is received, the tab listeners are initialized.
+     *
+     * @param message The message containing theater data.
+     */
     @Subscribe
     public void onTheaterMessageReceived(TheaterMessage message) {
         Platform.runLater(() -> {
             if (message.responseType == TheaterMessage.ResponseType.RETURN_THEATER) {
-                if (!message.theaterList.isEmpty()) { // Check if the list is not empty
+                if (!message.theaterList.isEmpty()) {
                     this.theaterLocation = message.theaterList.get(0).getLocation();
-                    System.out.println("Theater Location set to: " + this.theaterLocation);
-                    updateFilteredData();
-                } else {
-                    System.out.println("Theater list is empty, cannot set location.");
+                    this.theaterId = message.theaterList.get(0).getId();
+
+                    // Now that we have the theater info, initialize the tab listeners and trigger the first tab
+                    initializeTabListeners();
+                    Platform.runLater(() -> handleTabLeave("Ticket Sales"));
                 }
             }
         });
     }
 
+    /**
+     * Initializes ComboBox values for year and month selection for a given report type.
+     *
+     * @param yearComboBox  The ComboBox for selecting the year.
+     * @param monthComboBox The ComboBox for selecting the month.
+     * @param reportType    The type of report to generate when selections change.
+     */
+    private void initializeComboBoxes(ComboBox<Integer> yearComboBox, ComboBox<String> monthComboBox, String reportType) {
+        int currentYear = java.time.LocalDate.now().getYear();
+        for (int i = currentYear; i >= currentYear - 10; i--) {
+            yearComboBox.getItems().add(i);
+        }
+        yearComboBox.setValue(currentYear);
 
+        for (java.time.Month month : java.time.Month.values()) {
+            monthComboBox.getItems().add(month.name());
+        }
+        monthComboBox.setValue(java.time.LocalDate.now().getMonth().name());
+
+        // Trigger report generation based on the current selection immediately after initialization
+        handleGenerateReport(reportType, yearComboBox.getValue(), monthComboBox.getValue());
+
+        // Add listeners for ComboBox changes
+        yearComboBox.setOnAction(event -> handleGenerateReport(reportType, yearComboBox.getValue(), monthComboBox.getValue()));
+        monthComboBox.setOnAction(event -> handleGenerateReport(reportType, yearComboBox.getValue(), monthComboBox.getValue()));
+    }
+
+    /**
+     * Initializes the tab listeners to handle changes between report types.
+     */
+    private void initializeTabListeners() {
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (oldTab != null) {
+                handleTabLeave(oldTab.getText());
+            }
+
+            String selectedTab = newTab.getText();
+            switch (selectedTab) {
+                case "Ticket Sales":
+                    handleGenerateReport("TicketSales", TicketSalesyearComboBox.getValue(), TicketSalesmonthComboBox.getValue());
+                    break;
+                case "Package Sales":
+                    handleGenerateReport("PackageSales", PackageSalesyearComboBox.getValue(), PackageSalesmonthComboBox.getValue());
+                    break;
+                case "Multi-Entry Ticket Sales":
+                    handleGenerateReport("MultiEntrySales", MultiSalesyearComboBox.getValue(), MultiSalesmonthComboBox.getValue());
+                    break;
+                case "Complaint Status":
+                    handleGenerateReport("ComplaintStatus", ComplaintsyearComboBox.getValue(), ComplaintsmonthComboBox.getValue());
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
+    /**
+     * Handles the logic to clear and update bar charts when leaving a tab.
+     *
+     * @param tabName The name of the tab that is being left.
+     */
+    private void handleTabLeave(String tabName) {
+        switch (tabName) {
+            case "Ticket Sales":
+                clearBarChart(ticketSalesBarChart);
+                handleGenerateReport("TicketSales", getCurrentYear(), getCurrentMonth());
+                break;
+            case "Package Sales":
+                clearBarChart(packageSalesBarChart);
+                handleGenerateReport("PackageSales", getCurrentYear(), getCurrentMonth());
+                break;
+            case "Multi Entry Sales":
+                clearBarChart(multiEntryTicketSalesBarChart);
+                handleGenerateReport("MultiEntrySales", getCurrentYear(), getCurrentMonth());
+                break;
+            case "Complaint Status":
+                clearBarChart(complaintStatusBarChart);
+                handleGenerateReport("ComplaintStatus", getCurrentYear(), getCurrentMonth());
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Clears the given bar chart by removing all data.
+     *
+     * @param barChart The BarChart to be cleared.
+     */
+    private void clearBarChart(BarChart<String, Number> barChart) {
+        barChart.getData().clear();
+    }
+
+    /**
+     * Handles generating a report for the specified type and time range.
+     *
+     * @param reportType The type of report to generate (e.g., Ticket Sales, Package Sales).
+     * @param year       The selected year for the report.
+     * @param month      The selected month for the report.
+     */
+    @FXML
+    private void handleGenerateReport(String reportType, int year, String month) {
+        switch (reportType) {
+            case "TicketSales":
+                if (theaterId != 0) {
+                    ReportController.requestTheaterTicketSalesReport(year, getMonthNumber(month), theaterId);
+                } else {
+                    ReportController.requestTicketSalesReport(year, getMonthNumber(month));
+                }
+                break;
+            case "PackageSales":
+                ReportController.requestPackageSalesReport(year, getMonthNumber(month), theaterId);
+                break;
+            case "MultiEntrySales":
+                ReportController.requestMultiEntrySalesReport(year, getMonthNumber(month), theaterId);
+                break;
+            case "ComplaintStatus":
+                ReportController.requestComplaintStatusReport(year, getMonthNumber(month), theaterId);
+                break;
+        }
+    }
+
+    /**
+     * Converts the given month name to its corresponding integer value.
+     *
+     * @param monthName The name of the month (e.g., "January").
+     * @return The integer value of the month (e.g., 1 for January).
+     */
+    private int getMonthNumber(String monthName) {
+        return java.time.Month.valueOf(monthName.toUpperCase()).getValue();
+    }
+
+    /**
+     * Gets the current year.
+     *
+     * @return The current year.
+     */
+    private int getCurrentYear() {
+        return java.time.LocalDate.now().getYear();
+    }
+
+    /**
+     * Gets the current month name.
+     *
+     * @return The name of the current month.
+     */
+    private String getCurrentMonth() {
+        return java.time.LocalDate.now().getMonth().name();
+    }
+
+    /**
+     * Receives and processes the report message to update the corresponding bar chart.
+     *
+     * @param reportMessage The message containing report data.
+     */
     @Subscribe
-    public void onComplaintMessageReceived(ComplaintMessage message) {
+    public void onReportMessageReceived(ReportMessage reportMessage) {
         Platform.runLater(() -> {
-            if (message.responseType == ComplaintMessage.ResponseType.FILTERED_COMPLAINTS_LIST) {
-                this.complaints = message.compliants; // Store the complaints data
-                updateFilteredData(); // Update the reports based on the currently selected filters
+            switch (reportMessage.getResponseType()) {
+                case TICKET_SALES_DATA:
+                    ReportFactory.updateCombinedBarChart(reportMessage.getPurchases(), reportMessage.getSalesData(), ticketSalesBarChart);
+                    break;
+                case THEATER_TICKET_SALES_DATA:
+                    ReportFactory.updatePurchaseBarChart(reportMessage.getPurchases(), ticketSalesBarChart, theaterLocation);
+                    break;
+                case PACKAGE_SALES_DATA:
+                    ReportFactory.updatePurchaseBarChart(reportMessage.getPurchases(), packageSalesBarChart, "Home Viewing Packages");
+                    break;
+                case MULTI_ENTRY_SALES_DATA:
+                    ReportFactory.updatePurchaseBarChart(reportMessage.getPurchases(), multiEntryTicketSalesBarChart, "Multi Entry Packages");
+                    break;
+                case COMPLAINT_STATUS_DATA:
+                    ReportFactory.updateComplaintBarChart(reportMessage.getComplaints(), complaintStatusBarChart);
+                    break;
+                default:
+                    break;
             }
         });
     }
 
-    private void createSalesReports(List<Purchase> filteredTicketSales, List<Purchase> filteredPackageSales, List<Purchase> filteredMultiEntrySales) {
-        if (filteredTicketSales.isEmpty()) {
-            ticketSalesBarChart.getData().clear();
-        } else {
-            TicketSalesReportConfiguration ticketSalesConfig = new TicketSalesReportConfiguration(filteredTicketSales);
-            ticketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("TicketSales", ticketSalesConfig).generateReport()).getData());
-        }
-
-        if (filteredPackageSales.isEmpty()) {
-            packageSalesBarChart.getData().clear();
-        } else {
-            TicketSalesReportConfiguration packageSalesConfig = new TicketSalesReportConfiguration(filteredPackageSales);
-            packageSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("HomeViewSales", packageSalesConfig).generateReport()).getData());
-        }
-
-        if (filteredMultiEntrySales.isEmpty()) {
-            multiEntryTicketSalesBarChart.getData().clear();
-        } else {
-            TicketSalesReportConfiguration multiEntryTicketSalesConfig = new TicketSalesReportConfiguration(filteredMultiEntrySales);
-            multiEntryTicketSalesBarChart.setData(((BarChart<String, Number>) ReportFactory.createReport("MultiEntrySales", multiEntryTicketSalesConfig).generateReport()).getData());
-        }
+    /**
+     * Cleans up resources and unregisters from the event bus when closing the window.
+     */
+    public void cleanup() {
+        Platform.runLater(() -> {
+            clearAllCharts();
+            EventBus.getDefault().unregister(this);
+        });
     }
 
-    private void createComplaintReports(List<Complaint> filteredComplaints) {
-        if (filteredComplaints.isEmpty()) {
-            System.out.println("No Complaints to display for the selected period.");
-            complaintStatusBarChart.getData().clear();
-            return;
-        }
-
-        Map<String, Integer> complaintsByCinema = new HashMap<>();
-
-        for (Complaint complaint : filteredComplaints) {
-            String category;
-
-            if (complaint.getPurchase() != null) {
-                Purchase purchase = complaint.getPurchase();
-                if (purchase instanceof MovieTicket) {
-                    category = ((MovieTicket) purchase).getMovieInstance().getHall().getTheater().getLocation();
-                } else if (purchase instanceof HomeViewingPackageInstance) {
-                    category = "Home Viewing";
-                } else if (purchase instanceof MultiEntryTicket) {
-                    category = "Multi-Entry";
-                } else {
-                    category = "Other Related Complaints";
-                }
-            } else {
-                category = "No Cinema"; // Complaints not related to any cinema
-            }
-
-            complaintsByCinema.put(category, complaintsByCinema.getOrDefault(category, 0) + 1);
-        }
-
-        // Create the bar chart series for complaints
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Complaints");
-
-        for (Map.Entry<String, Integer> entry : complaintsByCinema.entrySet()) {
-            series.getData().add(new XYChart.Data<>(entry.getKey(), entry.getValue()));
-        }
-
-        complaintStatusBarChart.getData().clear();  // Clear existing data
-        complaintStatusBarChart.getData().add(series);  // Add new data
+    /**
+     * Clears all bar charts in the view.
+     */
+    private void clearAllCharts() {
+        clearBarChart(ticketSalesBarChart);
+        clearBarChart(packageSalesBarChart);
+        clearBarChart(multiEntryTicketSalesBarChart);
+        clearBarChart(complaintStatusBarChart);
     }
 }
