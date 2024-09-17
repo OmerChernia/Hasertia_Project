@@ -31,6 +31,7 @@ import javafx.util.Duration;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -146,7 +147,7 @@ public class DialogTicket {
         lblHour.setVisible(true);
         lblMin.setVisible(true);
         lblTitle.setText(movieTicket.getMovieInstance().getMovie().getEnglishName()+" | "+movieTicket.getMovieInstance().getMovie().getHebrewName());
-        LocalDateTime activeDate = movieTicket.getMovieInstance().getTime();
+        LocalDateTime activeDate = movieTicket.getMovieInstance().getTime().minusHours(3);
 
         lblActiveDay.setText(String.format("%02d",activeDate.getDayOfMonth()));
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
@@ -213,7 +214,7 @@ public class DialogTicket {
         hbxActiveDay.setVisible(true);
         hboxTime.setVisible(true);
 
-        LocalDateTime activeDate = homeViewingPackage.getViewingDate();
+        LocalDateTime activeDate = homeViewingPackage.getViewingDate().minusHours(3);
         lblActiveDay.setText(String.valueOf(activeDate.getDayOfMonth()));
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
@@ -221,7 +222,7 @@ public class DialogTicket {
         lblHour.setText(String.valueOf(activeDate.getHour()));
         lblMin.setText(String.format("%02d", activeDate.getMinute()));
 
-        LocalDateTime expiredDate = homeViewingPackage.getViewingDate().plusWeeks(1);
+        LocalDateTime expiredDate = homeViewingPackage.getViewingDate().plusWeeks(1).minusHours(3);
         hbxExpired.setVisible(true);
         lblExpiredDay.setText(String.valueOf(expiredDate.getDayOfMonth()));
         lblExpiredMonth.setText(expiredDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));

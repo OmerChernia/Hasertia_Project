@@ -270,7 +270,7 @@ public class HomeViewingPurchaseBoundary {
         {
             String purchaseValidation = cardNumberField.getText() + " " + expirationMonthCombo.getValue()+"/"+expirationYearCombo.getValue() + " " + cvvField.getText();
             link ="https://hasertia.com/"+ generateRandomString(10);
-            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime, link);
+            PurchaseController.AddHomeViewing(LocalDateTime.now(), message.registeredUser, purchaseValidation, currentMovie, dateTime.plusHours(3), link);
         }
     }
     public static String generateRandomString(int length) {
@@ -331,7 +331,7 @@ public class HomeViewingPurchaseBoundary {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-            LocalDateTime viewingDateTime = homeViewingPackageInstance.getViewingDate();
+            LocalDateTime viewingDateTime = homeViewingPackageInstance.getViewingDate().minusHours(3);
             String formattedDate = viewingDateTime.toLocalDate().format(dateFormatter);
             String formattedTime = viewingDateTime.toLocalTime().format(timeFormatter);
 

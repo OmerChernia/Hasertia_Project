@@ -583,7 +583,7 @@ public class TheaterPurchaseBoundary {
         }
         qtyLabel.setText(String.valueOf(selectedSeats.size()));
         dateLabel.setText(currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        timeLabel.setText(currentMovieInstance.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        timeLabel.setText(currentMovieInstance.getTime().minusHours(3).format(DateTimeFormatter.ofPattern("HH:mm")));
         hallLabel.setText("HALL: "+ String.valueOf(currentMovieInstance.getHall().getId()));
         seatLabel.setText(String.valueOf(seats_info));
         movieEnglish.setText(currentMovieInstance.getMovie().getEnglishName());
