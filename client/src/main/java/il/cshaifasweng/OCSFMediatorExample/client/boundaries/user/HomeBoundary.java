@@ -58,7 +58,7 @@ public class HomeBoundary implements Initializable {
     private StackPane stckHome;
 
     @FXML
-    private HBox hBoxGenre;
+    private ComboBox<String> cmbGenre;
 
     @FXML
     private GridPane grid;
@@ -86,7 +86,7 @@ public class HomeBoundary implements Initializable {
         // Request the list of movies from the server
         MovieController.getMoviesPresentedInTheater();
         SetTheaterCombo();
-        setDateListeners();
+        setListeners();
         TheaterController.getAllTheaters();
         animateNodes();
 
@@ -119,6 +119,14 @@ public class HomeBoundary implements Initializable {
             try {
                 System.out.println("Movie list recieved");
                 setItems(message.movies);
+                if(cmbGenre.getItems().isEmpty()) {
+                    System.out.println("Filling Genres");
+                    Set<String> genres = message.movies.stream()
+                            .map(Movie::getGenre)
+                            .collect(Collectors.toSet());
+                    // Set genres in ComboBox
+                    cmbGenre.getItems().setAll(new ArrayList<>(genres));
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -135,17 +143,19 @@ public class HomeBoundary implements Initializable {
 
     @Subscribe
     public void onMovieMessageReceived(MovieInstanceMessage message) {
-        if(message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME||message.requestType == MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCES_BETWEEN_DATES) {
-            Platform.runLater(() ->
-            {
+        if (message.requestType == MovieInstanceMessage.RequestType.GET_ALL_MOVIE_INSTANCES_BY_THEATER_NAME ||
+                message.requestType == MovieInstanceMessage.RequestType.GET_MOVIE_INSTANCES_BETWEEN_DATES)
+        {
+            Platform.runLater(() -> {
                 try {
                     GetAndSetMoviesFromInstances(message.movies);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace(); // Log the exception
                 }
             });
         }
     }
+
 
     @Subscribe
     public void onEventReceived(Event event)
@@ -158,12 +168,13 @@ public class HomeBoundary implements Initializable {
             MovieController.getUpcomingMovies();
     }
 
-    public void setDateListeners ()
+    public void setListeners()
     {
         beforeDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
                 beforeDate.setValue(newDate);
-                cmbTheater.setValue("");
+                cmbTheater.setValue(null);
+                cmbGenre.setValue(null);
                 if(beforeDate.getValue()!=null&&beforeDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
                 {
                     AlertsBuilder.create(AlertType.ERROR, stckHome, stckHome, stckHome, "Can't choose a Date that passed");
@@ -181,7 +192,8 @@ public class HomeBoundary implements Initializable {
 
         afterDate.valueProperty().addListener((observable, oldDate, newDate) -> {
             if (newDate != null) {
-                cmbTheater.setValue("");
+                cmbTheater.setValue(null);
+                cmbGenre.setValue(null);
                 afterDate.setValue(newDate);
 
                 if(afterDate.getValue()!=null&&afterDate.getValue().isBefore(ChronoLocalDate.from(LocalDate.now())))
@@ -200,6 +212,28 @@ public class HomeBoundary implements Initializable {
 
             }
         });
+
+        cmbGenre.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                // Do something with the selected genre
+                System.out.println("Selected genre: " + newValue);
+                cmbTheater.setValue(null);
+                beforeDate.setValue(null);
+                afterDate.setValue(null);
+                Genre = newValue;
+                Genre = Genre.toLowerCase();
+                FilterByScreeningTypeAndGenre(null);
+            }
+        });
+
+        cmbGenre.setButtonCell(new ListCell<String>() {
+            @Override
+            protected void updateItem(String location, boolean empty) {
+                super.updateItem(location, empty);
+                setText(empty || location == null ? "Choose Genre" : location);
+            }
+        });
+
     }
 
     public void setItems(List<Movie> movies) throws IOException {
@@ -316,18 +350,31 @@ public class HomeBoundary implements Initializable {
         if (currentScreeningFilter.equals("Theater")) {
             TheaterFilters.setDisable(false);
             TheaterFilters.setVisible(true);
-            hBoxGenre.setVisible(true);
-
-        } else {
+            cmbTheater.setDisable(false);
+            cmbTheater.setVisible(true);
+            afterDate.setDisable(false);
+            afterDate.setVisible(true);
+            beforeDate.setDisable(false);
+            beforeDate.setVisible(true);
+        }
+        else if (currentScreeningFilter.equals("Home Viewing"))
+        {
+            TheaterFilters.setDisable(false);
+            TheaterFilters.setVisible(true);
+            cmbTheater.setDisable(true);
+            cmbTheater.setVisible(false);
+            afterDate.setDisable(true);
+            afterDate.setVisible(false);
+            beforeDate.setDisable(true);
+            beforeDate.setVisible(false);
+        }
+        else
+        {
             TheaterFilters.setDisable(true);
             TheaterFilters.setVisible(false);
-            hBoxGenre.setVisible(true);
-
         }
         if(currentScreeningFilter.equals("View Upcoming Movies"))
-        {      MovieController.getUpcomingMovies();
-        hBoxGenre.setVisible(false);
-        }
+             MovieController.getUpcomingMovies();
         else
              FilterByScreeningTypeAndGenre(event);
     }
@@ -368,7 +415,7 @@ public class HomeBoundary implements Initializable {
             @Override
             protected void updateItem(String location, boolean empty) {
                 super.updateItem(location, empty);
-                setText(empty || location == null ? null : location);
+                setText(empty || location == null ? "Choose Theater" : location);
             }
         });
         cmbTheater.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
@@ -376,6 +423,7 @@ public class HomeBoundary implements Initializable {
                 MovieInstanceController.requestMovieInstancesByTheaterName(newValue);
                 beforeDate.setValue(null);
                 afterDate.setValue(null);
+                cmbGenre.setValue(null);
             }
         });
     }
@@ -384,6 +432,7 @@ public class HomeBoundary implements Initializable {
     void Reset(ActionEvent event) {
         MovieController.getMoviesPresentedInTheater();
          cmbTheater.setValue(null);
+        cmbGenre.setValue(null);
         afterDate.setValue(null);
         beforeDate.setValue(null);
     }

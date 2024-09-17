@@ -71,9 +71,9 @@ public class GenerateDB {
                     new RegisteredUser("938472615","Eva Davis", false, "eva@example.com", 0),
                     new RegisteredUser("451298763","Frank Harris", false, "frank@example.com", 0),
                     new RegisteredUser("895631247","Grace Lee", false, "grace@example.com", 0),
-                    new RegisteredUser("603815927","Henry King", false, "henry@example.com", 1),
-                    new RegisteredUser("748596321","Ivy Martin", false, "ivy@example.com", 8),
-                    new RegisteredUser("106753829","Jack White", false, "jack@example.com", 20)
+                    new RegisteredUser("603815927","Henry King", false, "henry@example.com", 0),
+                    new RegisteredUser("748596321","Ivy Martin", false, "ivy@example.com", 0),
+                    new RegisteredUser("106753829","Jack White", false, "jack@example.com", 0)
             );
 
             Transaction transaction = session.beginTransaction();
@@ -400,6 +400,7 @@ public class GenerateDB {
                             "validation" + i,
                             true
                     );
+                    user.setTicket_counter(user.getTicket_counter()+20);
                     session.save(multiEntryTicket);
                     session.flush();
                 } else {
