@@ -23,7 +23,7 @@
                         <!-- VBox containing two rows of buttons -->
                         <VBox alignment="CENTER_LEFT" prefHeight="88.0" prefWidth="451.0" spacing="20.0">
                             <HBox alignment="CENTER" prefHeight="52.0" prefWidth="930.0" spacing="60.0">
-                                <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" styleClass="home-menu-button" text="Theater" />
+                                <Button fx:id="TheaterButton" onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" styleClass="home-menu-button" text="Theater" />
                                 <Button onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" styleClass="home-menu-button" text="Home Viewing" />
                                 <Button layoutX="10.0" layoutY="10.0" onAction="#FilterByScreeningType" onDragDetected="#FilterByScreeningType" styleClass="home-menu-button" text="View Upcoming Movies" />
                             </HBox>

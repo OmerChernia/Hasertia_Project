@@ -55,6 +55,9 @@ public class HomeBoundary implements Initializable {
 
 
     @FXML
+    private Button TheaterButton;
+
+    @FXML
     private StackPane stckHome;
 
     @FXML
@@ -83,8 +86,7 @@ public class HomeBoundary implements Initializable {
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
 
-        // Request the list of movies from the server
-        MovieController.getMoviesPresentedInTheater();
+        FilterByScreeningType(null);
         SetTheaterCombo();
         setListeners();
         TheaterController.getAllTheaters();
@@ -100,17 +102,13 @@ public class HomeBoundary implements Initializable {
 
 
     private void toggleButtonState(Button clickedButton, Button lastSelectedButton) {
-        if (lastSelectedButton != null) {
+        if (lastSelectedButton != null && lastSelectedButton != clickedButton) {
             lastSelectedButton.getStyleClass().remove("selected");
         }
-        if (lastSelectedButton == clickedButton) {
-            lastSelectedButton = null;
-        } else {
+        if (lastSelectedButton != clickedButton) {
             clickedButton.getStyleClass().add("selected");
         }
     }
-
-
 
     @Subscribe
     public void onMovieMessageReceived(MovieMessage message) {
@@ -359,10 +357,19 @@ public class HomeBoundary implements Initializable {
     @FXML
     void FilterByScreeningType(ActionEvent event)           //THEATER / HOME VIEWING
     {
-        Button clickedButton = (Button) event.getSource();
-        toggleButtonState(clickedButton, lastSelectedScreeningButton);
-        lastSelectedScreeningButton = clickedButton;
-        currentScreeningFilter = clickedButton.getText();
+        if(event==null) {
+            currentScreeningFilter= "Theater";
+            toggleButtonState(TheaterButton, lastSelectedScreeningButton);
+            lastSelectedScreeningButton = TheaterButton;
+        }
+        else {
+            Button clickedButton = (Button) event.getSource();
+            toggleButtonState(clickedButton, lastSelectedScreeningButton);
+            if(lastSelectedScreeningButton.equals(clickedButton))
+                return;
+            lastSelectedScreeningButton = clickedButton;
+            currentScreeningFilter = clickedButton.getText();
+        }
         System.out.println("currentScreeningFilter = " + currentScreeningFilter);
         if (currentScreeningFilter.equals("Theater")) {
             TheaterFilters.setDisable(false);
