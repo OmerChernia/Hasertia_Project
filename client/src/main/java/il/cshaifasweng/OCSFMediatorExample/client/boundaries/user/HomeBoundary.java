@@ -159,24 +159,31 @@ public class HomeBoundary implements Initializable {
 
     @Subscribe
     public void onEventReceived(Event event) {
-        if (event instanceof MovieEvent && currentScreeningFilter.equals("Theater") && ((MovieEvent) event).movie.getAvailability() == Movie.Availability.AVAILABLE) {
-            AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Screening list has been updated!");
-            cmbGenre.setValue(null);
-            cmbTheater.setValue(null);
-            afterDate.setValue(null);
-            beforeDate.setValue(null);
-            Genre ="all";
-            MovieController.getMoviesPresentedInTheater();
-        }
-        else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing") && ((HomeViewingEvent) event).movie.getAvailability() == Movie.Availability.AVAILABLE) {
-            AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Home Viewing package list has been updated!");
-            cmbGenre.setValue(null);
-            Genre ="all";
-            MovieController.getMoviesPresentedInHomeViewing();
-        }
-        else if (currentScreeningFilter.equals("View Upcoming Movies"))
-            MovieController.getUpcomingMovies();
+        Platform.runLater(() -> {
+            if (event instanceof MovieEvent && currentScreeningFilter.equals("Theater")
+                    && ((MovieEvent) event).movie.getAvailability() == Movie.Availability.AVAILABLE) {
+
+                AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Screening list has been updated!");
+                cmbGenre.setValue(null);
+                cmbTheater.setValue(null);
+                afterDate.setValue(null);
+                beforeDate.setValue(null);
+                Genre = "all";
+                MovieController.getMoviesPresentedInTheater();
+
+            } else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing")) {
+
+                AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Home Viewing package list has been updated!");
+                cmbGenre.setValue(null);
+                Genre = "all";
+                MovieController.getMoviesPresentedInHomeViewing();
+
+            } else if (currentScreeningFilter.equals("View Upcoming Movies")) {
+                MovieController.getUpcomingMovies();
+            }
+        });
     }
+
 
     public void setListeners()
     {
@@ -391,9 +398,9 @@ public class HomeBoundary implements Initializable {
             TheaterFilters.setVisible(false);
         }
         if(currentScreeningFilter.equals("View Upcoming Movies"))
-             MovieController.getUpcomingMovies();
+            MovieController.getUpcomingMovies();
         else
-             FilterByScreeningTypeAndGenre(event);
+            FilterByScreeningTypeAndGenre(event);
     }
 
 
@@ -404,7 +411,7 @@ public class HomeBoundary implements Initializable {
     }
 
     public void cleanup() {
-         EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @FXML

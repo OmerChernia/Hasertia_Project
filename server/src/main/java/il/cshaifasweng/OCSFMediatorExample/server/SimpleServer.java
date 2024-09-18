@@ -155,7 +155,9 @@ public class SimpleServer extends AbstractServer
 						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst(),"add"), client);
 					}
 					else if(msg instanceof MovieMessage
-							&& ((MovieMessage) msg).requestType == MovieMessage.RequestType.DEACTIVATE_MOVIE)
+							&& ((MovieMessage) msg).requestType == MovieMessage.RequestType.DEACTIVATE_MOVIE
+							&& (((MovieMessage) msg).movies.getFirst().getStreamingType()==Movie.StreamingType.HOME_VIEWING || ((MovieMessage) msg).movies.getFirst().getStreamingType()==Movie.StreamingType.BOTH))
+
 					{
 						sendToAllClientsExceptMe(new HomeViewingEvent(((MovieMessage) msg).movies.getFirst(), "delete"), client);
 					}

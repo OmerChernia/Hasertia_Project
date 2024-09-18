@@ -337,11 +337,11 @@ public class DialogEditMovie implements Initializable {
         }
 
         // Validate if the Duration contains only numbers
-        if (!(txtDuration.getText().trim().matches("-?\\d+"))) {
-            NotificationsBuilder.create(NotificationType.ERROR, "Duration must be a valid number", containerAddProduct);
-            showErrorAndFocus(txtDuration); // Show error and focus on the field
-            return false;
-        }
+         if (!(txtDuration.getText().trim().matches("\\d+"))) {
+             NotificationsBuilder.create(NotificationType.ERROR, "Duration must be a valid positive number", containerAddProduct);
+             showErrorAndFocus(txtDuration); // Show error and focus on the field
+             return false;
+         }
 
         // Check if the Genre combo box is empty
         if (comboGenre.getValue() == null) {
@@ -382,8 +382,8 @@ public class DialogEditMovie implements Initializable {
         }
 
         // Validate if the home video price contains only numbers
-        if (!(txtHVPrice.getText().trim().matches("-?\\d+"))) { // Matches if the string is a valid integer
-            NotificationsBuilder.create(NotificationType.ERROR, "Home video price must be a valid number", containerAddProduct);
+        if (!(txtHVPrice.getText().trim().matches("\\d+"))) { // Matches if the string is a valid integer
+            NotificationsBuilder.create(NotificationType.ERROR, "Home video price must be a valid positive number", containerAddProduct);
             showErrorAndFocus(txtHVPrice); // Show error and focus on the field
             return false;
         }
@@ -396,8 +396,8 @@ public class DialogEditMovie implements Initializable {
         }
 
         // Validate if the theater price contains only numbers
-        if (!(txtTheaterPrice.getText().trim().matches("-?\\d+"))) { // Matches if the string is a valid integer
-            NotificationsBuilder.create(NotificationType.ERROR, "Theater price must be a valid number", containerAddProduct);
+        if (!(txtTheaterPrice.getText().trim().matches("\\d+"))) { // Matches if the string is a valid integer
+            NotificationsBuilder.create(NotificationType.ERROR, "Theater price must be a valid positive number", containerAddProduct);
             showErrorAndFocus(txtTheaterPrice); // Show error and focus on the field
             return false;
         }
