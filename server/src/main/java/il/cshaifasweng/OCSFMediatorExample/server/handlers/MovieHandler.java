@@ -300,6 +300,8 @@ public class MovieHandler extends MessageHandler
                 persistentMovie.setInfo(message.movies.getFirst().getInfo());
                 String joinedString = String.join("_", message.movies.getFirst().getMainActors());
                 persistentMovie.setMainActors(joinedString);
+                persistentMovie.setActive(message.movies.getFirst().getAvailability());
+
                 if (!Arrays.equals(persistentMovie.getImageBytes(), message.movies.getFirst().getImageBytes())) {
                     persistentMovie.setImage(message.movies.getFirst().getImage());
                     persistentMovie.setImageBytes(message.movies.getFirst().getImageBytes());

@@ -158,12 +158,22 @@ public class HomeBoundary implements Initializable {
 
 
     @Subscribe
-    public void onEventReceived(Event event)
-    {
-        if(event instanceof MovieEvent && currentScreeningFilter.equals("Theater"))
+    public void onEventReceived(Event event) {
+        if (event instanceof MovieEvent && currentScreeningFilter.equals("Theater") && ((MovieEvent) event).movie.getAvailability() == Movie.Availability.AVAILABLE) {
+            AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Screening list has been updated!");
+            cmbGenre.setValue(null);
+            cmbTheater.setValue(null);
+            afterDate.setValue(null);
+            beforeDate.setValue(null);
+            Genre ="all";
             MovieController.getMoviesPresentedInTheater();
-        else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing"))
+        }
+        else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing") && ((HomeViewingEvent) event).movie.getAvailability() == Movie.Availability.AVAILABLE) {
+            AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Home Viewing package list has been updated!");
+            cmbGenre.setValue(null);
+            Genre ="all";
             MovieController.getMoviesPresentedInHomeViewing();
+        }
         else if (currentScreeningFilter.equals("View Upcoming Movies"))
             MovieController.getUpcomingMovies();
     }
@@ -356,6 +366,11 @@ public class HomeBoundary implements Initializable {
             afterDate.setVisible(true);
             beforeDate.setDisable(false);
             beforeDate.setVisible(true);
+            cmbGenre.setValue(null);
+            afterDate.setValue(null);
+            beforeDate.setValue(null);
+            cmbTheater.setValue(null);
+            Genre="all";
         }
         else if (currentScreeningFilter.equals("Home Viewing"))
         {
@@ -367,6 +382,8 @@ public class HomeBoundary implements Initializable {
             afterDate.setVisible(false);
             beforeDate.setDisable(true);
             beforeDate.setVisible(false);
+            cmbGenre.setValue(null);
+            Genre="all";
         }
         else
         {
@@ -379,16 +396,6 @@ public class HomeBoundary implements Initializable {
              FilterByScreeningTypeAndGenre(event);
     }
 
-    @FXML
-    void FilterByGenre(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-        toggleButtonState(clickedButton, lastSelectedGenreButton);
-        lastSelectedGenreButton = clickedButton;
-        Genre = clickedButton.getText();
-        Genre = Genre.toLowerCase();
-        FilterByScreeningTypeAndGenre(event);
-
-    }
 
     @FXML
     void FilterByScreeningTypeAndGenre(ActionEvent event) {
@@ -430,8 +437,11 @@ public class HomeBoundary implements Initializable {
 
     @FXML
     void Reset(ActionEvent event) {
-        MovieController.getMoviesPresentedInTheater();
-         cmbTheater.setValue(null);
+        if(currentScreeningFilter.equals("Theater"))
+            MovieController.getMoviesPresentedInTheater();
+        else
+            MovieController.getMoviesPresentedInHomeViewing();
+        cmbTheater.setValue(null);
         cmbGenre.setValue(null);
         afterDate.setValue(null);
         beforeDate.setValue(null);

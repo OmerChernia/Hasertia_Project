@@ -12,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -125,6 +126,17 @@ public class OrdersBoundary implements Initializable {
         Platform.runLater(() -> {
             ticketCounterT.setText("Multi-Entry-Ticket amount: " + message.registeredUser.getTicket_counter());
         });
+    }
+
+    @Subscribe
+    public void onMovieInstanceCanceledEvent(MovieInstanceCanceledEvent message)
+    {
+        for (Purchase p : listOrders)
+        {
+            if(p instanceof MovieTicket && ((MovieTicket) p).getMovieInstance().getId() == message.movieInstance.getId()) {
+                PurchaseController.GetPurchasesByCustomerID(id);
+            }
+        }
     }
 
     @Subscribe
