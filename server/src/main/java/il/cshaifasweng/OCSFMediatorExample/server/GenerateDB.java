@@ -390,7 +390,7 @@ public class GenerateDB {
 
                 if (i < 40) {
                     // Create a HomeViewingPackageInstance with the activation date
-                    HomeViewingPackageInstance homeViewingPackageInstance = new HomeViewingPackageInstance(purchaseTime, user, "purchaseValidation", movieInstance.getMovie(), activationDate, true, "https://hasertia.com/dhbtdgt" + i);
+                    HomeViewingPackageInstance homeViewingPackageInstance = new HomeViewingPackageInstance(purchaseTime, user, "purchaseValidation", movieInstance.getMovie(), activationDate, true, "https://hasertia.com/dhbtdgt" + i, movieInstance.getMovie().getHomeViewingPrice());
                     session.save(homeViewingPackageInstance);
                     session.flush();
                 } else if (i < 60) {
@@ -398,7 +398,8 @@ public class GenerateDB {
                             purchaseTime,
                             user,
                             "validation" + i,
-                            true
+                            true,
+                            600
                     );
                     user.setTicket_counter(user.getTicket_counter()+20);
                     session.save(multiEntryTicket);
@@ -410,7 +411,8 @@ public class GenerateDB {
                             "validation" + i,
                             movieInstance,
                             seats.get(i % seats.size()),
-                            true
+                            true,
+                            movieInstance.getMovie().getTheaterPrice()
                     );
                     session.save(movieTicket);
 

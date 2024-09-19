@@ -26,12 +26,16 @@ public abstract class Purchase implements Serializable
     @Column
     private boolean isActive;
 
+    @Column
+    private int pricePaid;
 
-    public Purchase(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, boolean isActive) {
+
+    public Purchase(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, boolean isActive, int pricePaid) {
         this.purchaseDate = purchaseDate;
         this.purchaseValidation = purchaseValidation;
         this.owner = owner;
         this.isActive= isActive;
+        this.pricePaid = pricePaid;
     }
 
 
@@ -82,6 +86,13 @@ public abstract class Purchase implements Serializable
 
     protected abstract String getPurchaseType();
 
+    public int getPricePaid() {
+        return pricePaid;
+    }
+
+    public void setPricePaid(int pricePaid) {
+        this.pricePaid = pricePaid;
+    }
 
     @Override
     public String toString() {

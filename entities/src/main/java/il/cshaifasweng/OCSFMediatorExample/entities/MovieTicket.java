@@ -16,8 +16,8 @@ public class MovieTicket extends Purchase{
     public MovieTicket() {
     }
 
-    public MovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat, boolean isActive) {
-        super(purchaseDate, owner, purchaseValidation, isActive);
+    public MovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat, boolean isActive, int pricePaid) {
+        super(purchaseDate, owner, purchaseValidation, isActive, pricePaid);
         this.movieInstance = movieInstance;
         this.seat = seat;
     }

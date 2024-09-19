@@ -55,7 +55,7 @@ public class HomeViewingScheduler {
 
             // Iterate over the packages to either deactivate past ones or schedule future ones
             for (HomeViewingPackageInstance pkg : packages) {
-                LocalDateTime viewingEndTime = pkg.getViewingDate().plusWeeks(1); // Link is active for one week after viewing date
+                LocalDateTime viewingEndTime = pkg.getViewingDate().plusWeeks(1).minusHours(3); // Link is active for one week after viewing date
                 if (LocalDateTime.now().isAfter(viewingEndTime)) {
                     deactivateViewingLink(pkg);
                 } else {

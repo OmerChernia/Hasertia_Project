@@ -400,11 +400,13 @@ public class OrdersBoundary implements Initializable {
     }
 
     private String processRefund(Purchase purchase) {
+
         if (purchase instanceof MovieTicket) {
             MovieTicket movieTicket = (MovieTicket) purchase;
-            refundPrice = movieTicket.getMovieInstance().getMovie().getTheaterPrice();
+            refundPrice = movieTicket.getPricePaid();
             LocalDateTime screeningTime = movieTicket.getMovieInstance().getTime();
-            long hoursUntilScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime);
+            long hoursUntilScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), screeningTime.minusHours(3));
+            System.out.println("hoursUntilScreening = "+ hoursUntilScreening+ "Screening time = " +screeningTime.minusHours(3));
             if (hoursUntilScreening > 3) {
                 return "You will refund Full Price Ticket: " + refundPrice + "₪";
             } else if (hoursUntilScreening > 1) {
@@ -415,9 +417,16 @@ public class OrdersBoundary implements Initializable {
                 return "You won't be refunded!";
             }
         } else {
-            HomeViewingPackageInstance movieTicket = (HomeViewingPackageInstance) purchase;
-            refundPrice =  movieTicket.getMovie().getHomeViewingPrice() * 0.5;
-            return "You will refund 50% of the Price Ticket: " + refundPrice + "₪";
+            HomeViewingPackageInstance homeViewingPackageInstance = (HomeViewingPackageInstance) purchase;
+            long hoursUntilScreening = ChronoUnit.HOURS.between(LocalDateTime.now(), homeViewingPackageInstance.getActivationDate().minusHours(3));
+            if (hoursUntilScreening > 1) {
+                refundPrice = homeViewingPackageInstance.getPricePaid() * 0.5;
+                return "You will refund 50% of the Price Ticket: " + refundPrice + "₪";
+            }
+            else {
+                refundPrice = 0;
+                return "You won't be refunded!";
+            }
         }
     }
 

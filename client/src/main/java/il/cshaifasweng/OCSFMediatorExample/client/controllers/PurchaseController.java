@@ -11,14 +11,14 @@ public class PurchaseController
 {
     public static void AddMovieTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation, MovieInstance movieInstance, Seat seat)
     {
-        MovieTicket newTicket = new MovieTicket(purchaseDate, owner, purchaseValidation, movieInstance, seat,true);
+        MovieTicket newTicket = new MovieTicket(purchaseDate, owner, purchaseValidation, movieInstance, seat,true,movieInstance.getMovie().getTheaterPrice());
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
 
     public static void AddMultiEntryTicket(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation)
     {
-        MultiEntryTicket newTicket = new MultiEntryTicket(purchaseDate, owner, purchaseValidation,true);
+        MultiEntryTicket newTicket = new MultiEntryTicket(purchaseDate, owner, purchaseValidation,true,600);
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }
@@ -26,7 +26,7 @@ public class PurchaseController
     public static void AddHomeViewing(LocalDateTime purchaseDate, RegisteredUser owner, String purchaseValidation,Movie movie, LocalDateTime viewingDate, String link)
     {
         viewingDate.plusHours(3);//time difference
-        HomeViewingPackageInstance newTicket = new HomeViewingPackageInstance(purchaseDate, owner, purchaseValidation, movie, viewingDate,true,link);
+        HomeViewingPackageInstance newTicket = new HomeViewingPackageInstance(purchaseDate, owner, purchaseValidation, movie, viewingDate,true,link, movie.getHomeViewingPrice());
         PurchaseMessage requestMessage = new PurchaseMessage(Message.MessageType.REQUEST, PurchaseMessage.RequestType.ADD_PURCHASE,newTicket,owner.getId());
         SimpleClient.getClient().sendRequest(requestMessage);
     }

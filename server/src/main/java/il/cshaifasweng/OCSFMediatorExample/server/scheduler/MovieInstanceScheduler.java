@@ -55,7 +55,7 @@ public class MovieInstanceScheduler {
             System.out.println(ANSI_PURPLE + CLASS_NAME + "Found " + instances.size() + " movie instances to schedule." + ANSI_RESET);
 
             for (MovieInstance instance : instances) {
-                LocalDateTime endTime = instance.getTime().plusMinutes(instance.getMovie().getDuration());
+                LocalDateTime endTime = instance.getTime().plusMinutes(instance.getMovie().getDuration()).minusHours(3);
                 if (LocalDateTime.now().isAfter(endTime)) {
                      scheduleImmediateDeactivation(instance);
                 } else {

@@ -90,7 +90,6 @@ public class DialogTicket {
     @FXML
     private Label lblTheater;
 
-
     @FXML
     private Label lblTitle;
 
@@ -154,7 +153,7 @@ public class DialogTicket {
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
         lblHour.setText(String.valueOf(activeDate.getHour()));
         lblMin.setText(String.format("%02d", activeDate.getMinute()));
-        lblPrice.setText(String.valueOf(movieTicket.getMovieInstance().getMovie().getTheaterPrice())+"₪");
+        lblPrice.setText(String.valueOf(movieTicket.getPricePaid()+"₪"));
         lblTheater.setText(movieTicket.getSeat().getHall().getTheater().getLocation());
         String seat = "row: " + movieTicket.getSeat().getRow() + ", seat: " + movieTicket.getSeat().getCol();
         lblSeat.setText(seat);
@@ -209,7 +208,7 @@ public class DialogTicket {
 
         });
 
-        lblPrice.setText(String.valueOf(homeViewingPackage.getMovie().getHomeViewingPrice()) + "₪");
+        lblPrice.setText(String.valueOf(homeViewingPackage.getPricePaid()+"₪"));
 
         hbxActiveDay.setVisible(true);
         hboxTime.setVisible(true);
