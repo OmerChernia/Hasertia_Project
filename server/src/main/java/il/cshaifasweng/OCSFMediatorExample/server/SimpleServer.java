@@ -174,6 +174,12 @@ public class SimpleServer extends AbstractServer
                         return;
                     }
 
+					if(msg instanceof PriceRequestMessage && ((PriceRequestMessage) msg).requestType== PriceRequestMessage.RequestType.APPROVE_PRICE_REQUEST)
+					{
+						sendToAllClientsExceptMe(new HomeViewingEvent(((PriceRequestMessage) msg).requests.getFirst().getMovie(), "update"), client);
+						sendToAllClientsExceptMe(new MovieEvent(((PriceRequestMessage) msg).requests.getFirst().getMovie(),"update"),client);
+					}
+
 					client.sendToClient(msg);					//send the message to the client
 					System.out.println("message sent");
 				}

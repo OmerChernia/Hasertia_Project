@@ -85,13 +85,11 @@ public class HomeBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieMessage events
         EventBus.getDefault().register(this);
-
         FilterByScreeningType(null);
         SetTheaterCombo();
         setListeners();
         TheaterController.getAllTheaters();
         animateNodes();
-
     }
 
     private void animateNodes() {
@@ -161,7 +159,7 @@ public class HomeBoundary implements Initializable {
             if (event instanceof MovieEvent && currentScreeningFilter.equals("Theater")
                     && ((MovieEvent) event).movie.getAvailability() == Movie.Availability.AVAILABLE) {
 
-                AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Screening list has been updated!");
+              //  AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Screening list has been updated!");
                 cmbGenre.setValue(null);
                 cmbTheater.setValue(null);
                 afterDate.setValue(null);
@@ -171,7 +169,7 @@ public class HomeBoundary implements Initializable {
 
             } else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing")) {
 
-                AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Home Viewing package list has been updated!");
+               // AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Home Viewing package list has been updated!");
                 cmbGenre.setValue(null);
                 Genre = "all";
                 MovieController.getMoviesPresentedInHomeViewing();

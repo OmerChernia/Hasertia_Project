@@ -74,7 +74,7 @@ public class CustomerServiceBoundary implements Initializable {
         ComplaintController.getOpenComplaints();
 
         animateNodes();
-
+        listComplaints = FXCollections.observableArrayList();
         tblComplaints.setRowFactory(tv -> {
             TableRow<Complaint> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -115,16 +115,17 @@ public class CustomerServiceBoundary implements Initializable {
 
 
     @Subscribe
-    public void onComplaintEventReceived (ComplaintEvent complaintEvent)
-    {
-        AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "New Complaint Added!");
-        listComplaints.add(complaintEvent.complaint);
-        tblComplaints.setItems(listComplaints);
+    public void onComplaintEventReceived(ComplaintEvent complaintEvent) {
+        Platform.runLater(() -> {
+            AlertsBuilder.create(AlertType.SUCCESS, stckCustomerService, rootCustomerService, rootCustomerService, "New Complaint Added!");
+            ComplaintController.getOpenComplaints();
+        });
     }
+
 
     private void loadTableData(List<Complaint> complaints) {
         if (complaints == null || complaints.isEmpty()) {
-            return; // Handle the case where the list is null or empty
+            listComplaints.clear();
         }
 
         complaints.sort((c1, c2) -> {
