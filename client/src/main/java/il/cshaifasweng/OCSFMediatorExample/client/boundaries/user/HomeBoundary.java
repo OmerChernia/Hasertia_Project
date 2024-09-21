@@ -81,6 +81,7 @@ public class HomeBoundary implements Initializable {
     private DatePicker afterDate;
     private Button lastSelectedScreeningButton;
     private Button lastSelectedGenreButton;
+    private Movie movieInfo;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieMessage events
@@ -166,6 +167,11 @@ public class HomeBoundary implements Initializable {
                 beforeDate.setValue(null);
                 Genre = "all";
                 MovieController.getMoviesPresentedInTheater();
+                if(!InfoContainer.getChildren().isEmpty()&& movieInfo.getId()==((MovieEvent) event).movie.getId()) {
+                    AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Movie Info Had Been Updated");
+                    dialogInfo.close();
+                    showInfo(((MovieEvent) event).movie);
+                }
 
             } else if (event instanceof HomeViewingEvent && currentScreeningFilter.equals("Home Viewing")) {
 
@@ -173,6 +179,12 @@ public class HomeBoundary implements Initializable {
                 cmbGenre.setValue(null);
                 Genre = "all";
                 MovieController.getMoviesPresentedInHomeViewing();
+                if(!InfoContainer.getChildren().isEmpty()&& movieInfo.getId()==((HomeViewingEvent) event).movie.getId()) {
+                   AlertsBuilder.create(AlertType.INFO, stckHome, stckHome, stckHome, "Movie Info Had Been Updated");
+                    dialogInfo.close();
+                    showInfo(((HomeViewingEvent) event).movie);
+                }
+
 
             } else if (currentScreeningFilter.equals("View Upcoming Movies")) {
                 MovieController.getUpcomingMovies();
@@ -319,6 +331,7 @@ public class HomeBoundary implements Initializable {
 
     public void showInfo(Movie movie) {
         try {
+            movieInfo = movie;
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.MOVIE_INFO_VIEW));
             Parent pane = loader.load();
 
@@ -336,6 +349,7 @@ public class HomeBoundary implements Initializable {
             dialogInfo.setOnDialogClosed(ev -> {
                 stckHome.setEffect(null);
                 InfoContainer.setVisible(false);
+                InfoContainer.getChildren().clear();
             });
 
             stckHome.setEffect(ConstantsPath.BOX_BLUR_EFFECT);

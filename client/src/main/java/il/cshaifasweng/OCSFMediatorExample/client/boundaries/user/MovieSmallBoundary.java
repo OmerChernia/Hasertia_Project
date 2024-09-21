@@ -238,7 +238,7 @@ public class MovieSmallBoundary {
         }
     }
 
-    public void setMovieShort(Movie  movie) {
+    public void setMovieShort(Movie movie) {
         this.movie = movie;
         info.setText(movie.getInfo());
         title.setText(movie.getEnglishName());
