@@ -267,8 +267,6 @@ public class TheaterPurchaseBoundary {
             Platform.runLater(() -> {
                 SimpleChatClient.mainBoundary.homeWindowsInitialize();
             });
-
-
         }
     }
 

@@ -1,10 +1,13 @@
 package il.cshaifasweng.OCSFMediatorExample.client.boundaries.user;
 
+import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleChatClient;
 import il.cshaifasweng.OCSFMediatorExample.client.connect.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.PurchaseController;
 import il.cshaifasweng.OCSFMediatorExample.client.controllers.RegisteredUserController;
 import il.cshaifasweng.OCSFMediatorExample.client.util.assets.Animations;
 import il.cshaifasweng.OCSFMediatorExample.client.util.ConstantsPath;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertType;
+import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.alerts.AlertsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationType;
 import il.cshaifasweng.OCSFMediatorExample.client.util.popUp.notifications.NotificationsBuilder;
 import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
@@ -12,6 +15,8 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessa
 import il.cshaifasweng.OCSFMediatorExample.entities.Movie;
 import il.cshaifasweng.OCSFMediatorExample.entities.RegisteredUser;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.events.HomeViewingEvent;
+import il.cshaifasweng.OCSFMediatorExample.server.events.MovieEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -294,6 +299,18 @@ public class HomeViewingPurchaseBoundary {
         {
             homeViewingPackageInstance = (HomeViewingPackageInstance)message.purchases.get(0);
             showConfirmation();
+        }
+    }
+
+    @Subscribe
+    public void onHomeMovieEventRecieved(HomeViewingEvent event)
+    {
+        if (event.action.equals("delete")&&event.movie.getId()==currentMovie.getId())
+        {
+            AlertsBuilder.create(AlertType.CANCELLATION, stackPane, stackPane, stackPane, "The selected Movie has been canceled, Please choose a new Movie");
+            Platform.runLater(() -> {
+                SimpleChatClient.mainBoundary.homeWindowsInitialize();
+            });
         }
     }
 
