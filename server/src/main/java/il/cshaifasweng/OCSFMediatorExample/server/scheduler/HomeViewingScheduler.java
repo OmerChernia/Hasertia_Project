@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.server.scheduler;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.HomeViewingPackageInstance;
 import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
+import il.cshaifasweng.OCSFMediatorExample.server.events.HomeViewingEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
 
@@ -24,6 +25,7 @@ public class HomeViewingScheduler {
     private static final String ANSI_GREEN = "\u001B[32m";
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String CLASS_NAME = "HomeViewingScheduler:: ";
+    private static final SimpleServer server = SimpleServer.getServer();
 
     private HomeViewingScheduler() {
         scheduler = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(10);
@@ -58,7 +60,7 @@ public class HomeViewingScheduler {
                 LocalDateTime viewingEndTime = pkg.getViewingDate().plusWeeks(1).minusHours(3); // Link is active for one week after viewing date
                 if (LocalDateTime.now().isAfter(viewingEndTime)) {
                     deactivateViewingLink(pkg);
-                } else {
+                } else if (!pkg.isLinkActive()){
                     scheduleLinkActivation(pkg);
                 }
             }
@@ -75,7 +77,7 @@ public class HomeViewingScheduler {
     public static void scheduleLinkActivation(HomeViewingPackageInstance booking) {
         System.out.println(ANSI_GREEN + CLASS_NAME + "Scheduling link activation for home viewing package ID: " + booking.getId() + ANSI_RESET);
 
-        long linkActivationDelay = Duration.between(LocalDateTime.now(), booking.getViewingDate()).toMillis();
+        long linkActivationDelay = Duration.between(LocalDateTime.now(), booking.getViewingDate().minusHours(4)).toMillis();
         LocalDateTime deactivationTime = booking.getViewingDate().plusWeeks(1); // Deactivate after one week
         long deactivationDelay = Duration.between(LocalDateTime.now(), deactivationTime).toMillis();
 
@@ -86,6 +88,7 @@ public class HomeViewingScheduler {
         }
 
         scheduleEmailNotification(booking);
+        scheduleScreeningAvailible(booking);
         scheduleTask(booking, deactivationDelay, () -> deactivateViewingLink(booking), "deactivation");
 
         System.out.println(ANSI_GREEN + CLASS_NAME + "Scheduled activation, email, and deactivation tasks for home viewing package ID: " +
@@ -99,9 +102,20 @@ public class HomeViewingScheduler {
     }
 
     private static void scheduleEmailNotification(HomeViewingPackageInstance booking) {
-        long emailDelay = Duration.between(LocalDateTime.now(), booking.getViewingDate().minusHours(1)).toMillis();
+        long emailDelay = Duration.between(LocalDateTime.now(), booking.getViewingDate().minusHours(4)).toMillis();
         scheduleTask(booking, emailDelay, () -> sendEmailNotification(booking), "email");
     }
+
+    private static void scheduleScreeningAvailible(HomeViewingPackageInstance booking) {
+        long emailDelay = Duration.between(LocalDateTime.now(), booking.getViewingDate().minusHours(3)).toMillis();
+        scheduleTask(booking, emailDelay, () -> sendAvailableEvent(booking), "event");
+    }
+
+    private static void sendAvailableEvent(HomeViewingPackageInstance booking) {
+        System.out.println("Home Viewing just became available");
+        server.sendToAllClients(new HomeViewingEvent(Integer.parseInt(booking.getOwner().getId_number()), "Home Viewing Available"));
+    }
+
 
     /**
      * Activates the viewing link for a home viewing package.
@@ -136,6 +150,8 @@ public class HomeViewingScheduler {
             session.update(booking);
             session.getTransaction().commit();
             System.out.println(ANSI_GREEN + CLASS_NAME + "Updated booking in database for booking ID " + booking.getId() + ANSI_RESET);
+            System.out.println("link just became available");
+            server.sendToAllClients(new HomeViewingEvent(Integer.parseInt(booking.getOwner().getId_number()), "Home Viewing Available"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,7 +168,9 @@ public class HomeViewingScheduler {
         EmailSender.sendEmail(
                 email,
                 "Your Movie Link from Monkii Movies",
-                "Dear Customer,\n\nYour movie is ready to watch at the scheduled time. \n\nThank you,\nMonkii Movies"
+                "Dear Customer,\n\nYour movie is ready to watch at "+booking.getActivationDate().toLocalDate()+", "+booking.getActivationDate().toLocalTime().minusHours(3)
+                        +"\nYour link is " + booking.getLink()
+                        +". \n\nThank you,\nMonkii Movies"
         );
         System.out.println(ANSI_GREEN + CLASS_NAME + "Sending movie link email to " + email + " at " + LocalDateTime.now() + ANSI_RESET);
     }

@@ -158,9 +158,11 @@ public class DialogEditScreening implements Initializable {
 
         cmbHour.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if(newValue!=null) {
-                if(datePicker.getValue().equals(ChronoLocalDate.from(LocalDate.now()))&&cmbHour.getValue().isBefore(LocalTime.now().minusHours(3))) {
-                    NotificationsBuilder.create(NotificationType.ERROR, "Can't choose an Hour that passed", containerAddProduct);
-                    cmbHour.setValue(null);
+                if(datePicker.getValue().equals(ChronoLocalDate.from(LocalDate.now()))&&cmbHour.getValue().isBefore(LocalTime.now())) {
+                    Platform.runLater(() -> {
+                        NotificationsBuilder.create(NotificationType.ERROR, "Can't choose an Hour that passed", containerAddProduct);
+                        cmbHour.setValue(null);
+                    });
                 }
                 else time = cmbHour.getValue();
             }

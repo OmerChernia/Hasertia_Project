@@ -33,7 +33,7 @@ public class SimpleServer extends AbstractServer
 		super(port);
 		this.password = password;
 		session = getSessionFactory(password).openSession();
-
+		instance=this;
 		// Initialize schedulers as singletons
 		ComplaintFollowUpScheduler complaintScheduler = ComplaintFollowUpScheduler.getInstance();
 		OrderScheduler emailNotificationScheduler = OrderScheduler.getInstance();

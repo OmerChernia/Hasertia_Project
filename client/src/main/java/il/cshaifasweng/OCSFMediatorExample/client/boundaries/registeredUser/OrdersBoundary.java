@@ -12,6 +12,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.ComplaintMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.PurchaseMessage;
 import il.cshaifasweng.OCSFMediatorExample.entities.Messages.RegisteredUserMessage;
+import il.cshaifasweng.OCSFMediatorExample.server.events.HomeViewingEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.events.MovieInstanceCanceledEvent;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -137,6 +138,14 @@ public class OrdersBoundary implements Initializable {
                 PurchaseController.GetPurchasesByCustomerID(id);
             }
         }
+    }
+
+    @Subscribe
+    public void onHomeViewingEvent(HomeViewingEvent homeViewingEvent)
+    {
+        System.out.println("Home Viewing Event received");
+       if(homeViewingEvent.id == id)
+           PurchaseController.GetPurchasesByCustomerID(id);
     }
 
     @Subscribe
