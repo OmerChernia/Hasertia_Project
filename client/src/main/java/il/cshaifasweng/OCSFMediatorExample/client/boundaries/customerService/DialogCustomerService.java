@@ -176,16 +176,34 @@ public class DialogCustomerService implements Initializable {
 
     @FXML
     public void handleSubmitFinalResponse() {
-
         if (btnSend.isDisable()) {
-            NotificationsBuilder.create(NotificationType.ERROR, "You must select an action and a response before sending.",pnEmployeeArea);
+            NotificationsBuilder.create(NotificationType.ERROR, "You must select an action and a response before sending.", pnEmployeeArea);
             return;
+        }
+
+        String selectedAction = actionComboBox.getValue();
+        if (selectedAction != null && selectedAction.equals("Compensate Financially")) {
+            String compensationAmount = refundAmountField.getText().trim();
+            if (compensationAmount.isEmpty()) {
+                NotificationsBuilder.create(NotificationType.ERROR, "Compensation amount cannot be empty.", pnEmployeeArea);
+                return;
+            }
+            try {
+                double amount = Double.parseDouble(compensationAmount);
+                if (amount <= 0) {
+                    NotificationsBuilder.create(NotificationType.ERROR, "Compensation amount must be a positive number.", pnEmployeeArea);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                NotificationsBuilder.create(NotificationType.ERROR, "Invalid compensation amount. Please enter a valid number.", pnEmployeeArea);
+                return;
+            }
         }
 
         String finalResponseText = getFinalResponseText();
 
         customerServiceController.customerServiceAnswer = finalResponseText;
-        myComplaint.setInfo(myComplaint.getInfo() + "\nCustomer Service answer: "+finalResponseText);
+        myComplaint.setInfo(myComplaint.getInfo() + "\nCustomer Service answer: " + finalResponseText);
         customerServiceController.complaintId = (myComplaint.getId());
         customerServiceController.complaint = myComplaint;
         ComplaintController.answerComplaint(myComplaint);
