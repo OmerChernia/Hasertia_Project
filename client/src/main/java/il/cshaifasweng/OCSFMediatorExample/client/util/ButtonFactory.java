@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -113,7 +114,7 @@ public class ButtonFactory {
                 HomeViewingPackageInstance viewingPackage = (HomeViewingPackageInstance) purchase;
                 if (purchase.getIsActive()) {
                     if (viewingPackage.isLinkActive()) {
-                        if(LocalTime.now().isBefore(viewingPackage.getActivationDate().minusHours(3).toLocalTime())) {
+                        if(LocalDateTime.now().isBefore(viewingPackage.getActivationDate().minusHours(3))) {
                             text = "Link Available";
                             styleClass = "button-green";
                             return new SimpleObjectProperty<>(createButton(text, imagePath, styleClass));
