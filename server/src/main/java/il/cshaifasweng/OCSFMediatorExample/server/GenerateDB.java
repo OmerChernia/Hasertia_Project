@@ -316,7 +316,7 @@ public class GenerateDB {
             }
 
             // Set the time to include only up to minutes, with seconds and nanoseconds set to 0
-            LocalDateTime startDate = LocalDateTime.of(2024, 9, 15, 12, 0);
+            LocalDateTime startDate = LocalDateTime.of(2024, 9, 23, 12, 0);
             //.plusHours(3)
             movieInstances = List.of(
                     new MovieInstance(movies.get(0), startDate.plusDays(0).plusHours(0), halls.get(0),true),
