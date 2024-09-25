@@ -146,8 +146,9 @@ public class HomeViewingScheduler {
      */
     private static void updateBookingInDatabase(HomeViewingPackageInstance booking) {
         try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
+            System.out.println("Trying to update");
             session.beginTransaction();
-            session.update(booking);
+            session.merge(booking);
             session.getTransaction().commit();
             System.out.println(ANSI_GREEN + CLASS_NAME + "Updated booking in database for booking ID " + booking.getId() + ANSI_RESET);
             System.out.println("link just became available");
