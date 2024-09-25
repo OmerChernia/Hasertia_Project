@@ -150,7 +150,7 @@ public class HomeViewingScheduler {
             System.out.println("Trying to update");
             session.beginTransaction();
             // Create the SQL update query
-            String hql = "UPDATE HomeViewingPackageInstance h SET h.linkActive = :true WHERE h.id = :id";
+            String hql = "UPDATE HomeViewingPackageInstance h SET h.linkActive = true WHERE h.id = :id";
             Query query = session.createQuery(hql);
             query.setParameter("id", booking.getId());
             int result = query.executeUpdate();
