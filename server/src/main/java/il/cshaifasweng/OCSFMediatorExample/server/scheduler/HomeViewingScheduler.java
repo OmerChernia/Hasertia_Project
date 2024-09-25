@@ -146,16 +146,14 @@ public class HomeViewingScheduler {
      * @param booking The home viewing package instance to update.
      */
     private static void updateBookingInDatabase(HomeViewingPackageInstance booking) {
-        try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
-            System.out.println("Trying to update");
-            session.beginTransaction();
-            // Create the SQL update query
-            String hql = "UPDATE HomeViewingPackageInstance h SET h.linkActive = true WHERE h.id = :id";
-            Query query = session.createQuery(hql);
-            query.setParameter("id", booking.getId());
-            int result = query.executeUpdate();
-
-            session.getTransaction().commit();
+        try {
+            boolean active = true;
+            if(!SimpleServer.session.getTransaction().isActive()) {
+                active = false;
+                SimpleServer.session.beginTransaction();
+            }
+            SimpleServer.session.update(booking);
+            if(!active) SimpleServer.session.getTransaction().commit();
             System.out.println(ANSI_GREEN + CLASS_NAME + "Updated booking in database for booking ID " + booking.getId() + ANSI_RESET);
             System.out.println("link just became available");
             server.sendToAllClients(new HomeViewingEvent(Integer.parseInt(booking.getOwner().getId_number()), "Home Viewing Available"));
