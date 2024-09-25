@@ -8,11 +8,11 @@
 This project was developed as a semester-long assignment for the Software Engineering course, during the Spring 2024 semester.
 
 ## 👥 Team Members
-- **Baruch**
+- **Baruh Riss**
 - **Michelle Rempel**
-- **Baruch**
-- **Omer**
-- **Omer**
+- **Baruh Krugliak**
+- **Omer Chernia**
+- **Omer Garabagi**
 - **Or Ishlach**
 
 ## 🛠️ Key Features
