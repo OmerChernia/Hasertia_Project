@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.SimpleServer;
 import il.cshaifasweng.OCSFMediatorExample.server.events.HomeViewingEvent;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.EmailSender;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -148,7 +149,12 @@ public class HomeViewingScheduler {
         try (Session session = SimpleServer.session.getSession().getSessionFactory().openSession()) {
             System.out.println("Trying to update");
             session.beginTransaction();
-            session.merge(booking);
+            // Create the SQL update query
+            String hql = "UPDATE HomeViewingPackageInstance h SET h.linkActive = :true WHERE h.id = :id";
+            Query query = session.createQuery(hql);
+            query.setParameter("id", booking.getId());
+            int result = query.executeUpdate();
+
             session.getTransaction().commit();
             System.out.println(ANSI_GREEN + CLASS_NAME + "Updated booking in database for booking ID " + booking.getId() + ANSI_RESET);
             System.out.println("link just became available");
