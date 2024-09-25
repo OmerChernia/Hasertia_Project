@@ -85,7 +85,7 @@ public class PriceRequestHandler extends MessageHandler
 
             session.flush();
             message.responseType = PriceRequestMessage.ResponseType.MOVIE_PRICE_CHANGED;
-
+            message.requests.getFirst().setMovie(movie);
             session.clear();
             PriceRequest request = session.get(PriceRequest.class, message.requests.getFirst().getId());
             if (request != null) {
