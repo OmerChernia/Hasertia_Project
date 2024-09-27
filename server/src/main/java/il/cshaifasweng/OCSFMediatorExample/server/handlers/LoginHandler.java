@@ -68,8 +68,6 @@ public class LoginHandler extends MessageHandler {
                 session.update(user);
                 session.flush();
                 message.responseType = LoginMessage.ResponseType.LOGOUT_SUCCESFUL;
-
-
             } else {
                 message.responseType = LoginMessage.ResponseType.LOGOUT_FAILED;
             }

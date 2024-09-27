@@ -62,11 +62,9 @@ public class AboutBoundary implements Initializable {
         scaleTransition.setFromY(1.0);
         scaleTransition.setToX(1.2);
         scaleTransition.setToY(1.2);
-
         FadeTransition fadeTransition = new FadeTransition(Duration.millis(3000), node);
         fadeTransition.setFromValue(2);
         fadeTransition.setToValue(0.5);
-
         PauseTransition pauseTransition = new PauseTransition();
         pauseTransition.setDuration(Duration.seconds(duration));
         pauseTransition.setOnFinished(ev -> {

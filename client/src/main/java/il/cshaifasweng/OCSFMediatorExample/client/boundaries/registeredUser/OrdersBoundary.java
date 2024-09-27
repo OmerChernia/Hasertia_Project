@@ -67,7 +67,6 @@ public class OrdersBoundary implements Initializable {
     @FXML
     private HBox hboxSearch;
 
-
     @FXML
     private AnchorPane rootUsers;
 
@@ -83,17 +82,10 @@ public class OrdersBoundary implements Initializable {
     @FXML
     private Button btnDelete;
 
-
-
     private DialogTool dialogMyOrder;
-
     private DialogTool dialogDelete;
-
     private ObservableList<Purchase> listOrders;
-
-
     private int id;
-
     private double refundPrice;
 
     @Override
@@ -179,9 +171,7 @@ public class OrdersBoundary implements Initializable {
         Platform.runLater(() -> {  if (message.responseType == ComplaintMessage.ResponseType.COMPLIANT_ADDED) {
             AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "Complaint added!");
         }else if (message.responseType == ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED) {
-
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "Complaint message failed!");
-
         }
         });
     }
@@ -195,7 +185,6 @@ public class OrdersBoundary implements Initializable {
             colId.setCellValueFactory(new PropertyValueFactory<>("id"));
             colName.setCellValueFactory(param -> {
                 String s ="";
-
                 if(param.getValue() instanceof MultiEntryTicket)
                 {
                     s = "20 Movie Tickets";
@@ -215,7 +204,6 @@ public class OrdersBoundary implements Initializable {
             colPurchaseDate.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPurchaseDate().toLocalDate().toString()));
             colTypePurchase.setCellValueFactory(new ButtonFactory.ButtonTypePurchaseCellValueFactory());
             colStatus.setCellValueFactory(new ButtonFactory.ButtonStatusTicketCellValueFactory());
-
         });
 
     }
@@ -261,41 +249,30 @@ public class OrdersBoundary implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_TICKET_VIEW));
             AnchorPane ticketPane = loader.load();
-
             DialogTicket dialogTicket = loader.getController();
             dialogTicket.setOrdersController(this);
-
             dialogTicket.setTicketInfo(selectedPurchase);
-
             OrderContainer.getChildren().clear();
             OrderContainer.getChildren().add(ticketPane);
             OrderContainer.setVisible(true);
-
             dialogMyOrder = new DialogTool(OrderContainer, stckUsers);
             dialogMyOrder.show();
-
             dialogMyOrder.setOnDialogClosed(ev -> {
                 tblOrders.setDisable(false);
                 rootUsers.setEffect(null);
                 OrderContainer.setVisible(false);
             });
-
             rootUsers.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-
         } catch (IOException e) {
             e.printStackTrace();
             tblOrders.setDisable(false);
         }
     }
 
-
-
-
     @FXML
     private void showDialogComplain() {
         disableTable();
         Purchase selectedPurchase = tblOrders.getSelectionModel().getSelectedItem();
-
         if (selectedPurchase == null) {
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "No purchase selected");
             tblOrders.setDisable(false);
@@ -305,34 +282,25 @@ public class OrdersBoundary implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ConstantsPath.DIALOG_COMPLAINT_VIEW));
             AnchorPane ticketPane = loader.load();
-
             DialogComplaint dialogComplaint = loader.getController();
             dialogComplaint.setOrdersController(this);
-
             dialogComplaint.setPurchase(selectedPurchase);
-
             OrderContainer.getChildren().clear();
             OrderContainer.getChildren().add(ticketPane);
             OrderContainer.setVisible(true);
-
             dialogMyOrder = new DialogTool(OrderContainer, stckUsers);
             dialogMyOrder.show();
-
             dialogMyOrder.setOnDialogClosed(ev -> {
                 tblOrders.setDisable(false);
                 rootUsers.setEffect(null);
                 OrderContainer.setVisible(false);
             });
-
             rootUsers.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
-
         } catch (IOException e) {
             e.printStackTrace();
             tblOrders.setDisable(false);
         }
     }
-
-
 
     @FXML
     public void closeDialog() {
@@ -348,12 +316,9 @@ public class OrdersBoundary implements Initializable {
         }
     }
 
-
-
     private void disableTable() {
         tblOrders.setDisable(true);
     }
-
 
     @FXML
     private void showDialogCancel() {
@@ -366,30 +331,23 @@ public class OrdersBoundary implements Initializable {
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "You cannot cancel multi-entry tickets!");
             return;
         }
-
         if(!delete.getIsActive())
         {
             AlertsBuilder.create(AlertType.ERROR, stckUsers, rootUsers, tblOrders, "You cannot cancel a purchase that is not active!");
             return;
         }
         txtRefund.setText(processRefund(delete));
-
         Platform.runLater(() -> {
             rootUsers.setEffect(ConstantsPath.BOX_BLUR_EFFECT);
             deleteUserContainer.setVisible(true);
             disableTable();
-
             dialogDelete = new DialogTool(deleteUserContainer, stckUsers);
-
-
             btnDelete.setOnAction(ev -> {
                 handleRefund(delete);
                 PurchaseController.RemovePurchase(delete);
                 dialogDelete.close();
             });
-
             dialogDelete.show();
-
             dialogDelete.setOnDialogClosed(ev -> {
                 tblOrders.setDisable(false);
                 rootUsers.setEffect(null);
@@ -400,7 +358,6 @@ public class OrdersBoundary implements Initializable {
     }
     @FXML
     private void handleRefund(Purchase purchase) {
-
         if(refundPrice==0)
             AlertsBuilder.create(AlertType.SUCCESS, stckUsers, rootUsers, tblOrders, "You have not been refunded.");
         else
@@ -409,7 +366,6 @@ public class OrdersBoundary implements Initializable {
     }
 
     private String processRefund(Purchase purchase) {
-
         if (purchase instanceof MovieTicket) {
             MovieTicket movieTicket = (MovieTicket) purchase;
             refundPrice = movieTicket.getPricePaid();

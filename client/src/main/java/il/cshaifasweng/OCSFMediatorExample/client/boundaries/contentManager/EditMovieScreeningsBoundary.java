@@ -70,7 +70,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Register this controller to listen for MovieInstanceMessage events
         EventBus.getDefault().register(this);
-
         // Request the list of movie instances from the server
         MovieInstanceController.requestAllMovieInstances();
 
@@ -78,7 +77,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
         filterProducts = FXCollections.observableArrayList();
         animateNodes();
         setContextMenu();
-
 
         tblProducts.setRowFactory(tv -> {
             TableRow<MovieInstance> row = new TableRow<>();
@@ -148,14 +146,10 @@ public class EditMovieScreeningsBoundary implements Initializable {
         colHall.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getHall().getId())));
     }
 
-
-
     @FXML
     public void createNewScreening() throws IOException {
         showDialog("add");
     }
-
-
 
     private void setContextMenu() {
         contextMenu = new CustomContextMenu(tblProducts,3);
@@ -170,8 +164,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
         });
         contextMenu.show();
     }
-
-
 
     @FXML
     private void showDialog(String operation) {
@@ -256,7 +248,6 @@ public class EditMovieScreeningsBoundary implements Initializable {
         }
     }
 
-
     @FXML
     private void hideDialogDelete() {
         if (dialogDelete != null) {
@@ -264,14 +255,11 @@ public class EditMovieScreeningsBoundary implements Initializable {
         }
     }
 
-
     private void animateNodes() {
         Animations.fadeInUp(btnNewScrenning);
         Animations.fadeInUp(tblProducts);
         Animations.fadeInUp(hBoxSearch);
     }
-
-
 
     public static void closeStage() {
         if (stage != null) {

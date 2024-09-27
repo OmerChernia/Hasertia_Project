@@ -56,20 +56,16 @@ public class ComplaintBoundary implements Initializable {
     @FXML
     private Button btnSubmitComplaint;
 
-
     private RegisteredUser user;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeComplaintForm();
-
         EventBus.getDefault().register(this);
     }
 
     private void initializeComplaintForm() {
         if(!SimpleClient.user.isEmpty() && MainBoundary.getEmployee()==null) {
-
-
             RegisteredUserController.getUserByID(SimpleClient.user);
         }
     }
@@ -113,8 +109,6 @@ public class ComplaintBoundary implements Initializable {
                 NotificationsBuilder.create(NotificationType.ERROR, "Invalid Email.",complaintPane);
                 return;
             }
-
-
             LocalDateTime creationDate = LocalDateTime.now();
             ComplaintController.addComplaintUnregister(complaintDetails, creationDate, null, false, txtCustomerEmail.getText());
         }
@@ -135,11 +129,8 @@ public class ComplaintBoundary implements Initializable {
         if (!txtCustomerEmail.isDisable()&&!txtCustomerName.isDisable()) {
             txtCustomerEmail.clear();
             txtCustomerName.clear();
-
         }
         txtComplaintDetails.clear();
-
-
     }
 
     @Subscribe

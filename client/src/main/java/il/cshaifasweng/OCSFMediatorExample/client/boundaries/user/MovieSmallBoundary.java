@@ -110,7 +110,6 @@ public class MovieSmallBoundary {
 
     @FXML
     private Text txtMovieTheater;
-    private static MovieSmallBoundary registeredInstance = null; // Static reference to keep track of registered instance
 
     @FXML
     private StackPane stkpanel;
@@ -118,6 +117,7 @@ public class MovieSmallBoundary {
     private String theaterName;
     private LocalDate date;
     private LocalTime time;
+    private static MovieSmallBoundary registeredInstance = null; // Static reference to keep track of registered instance
 
     @FXML
     public void initialize() {
@@ -189,7 +189,6 @@ public class MovieSmallBoundary {
                 theaterName=newValue;
             }
         });
-
 
         cmbDate.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
             if (newValue == null) {
@@ -362,12 +361,9 @@ public class MovieSmallBoundary {
             {
                 AlertsBuilder.create(AlertType.ERROR, stkpanel, imagePanel, imagePanel, "Can't choose Time that passed");
                 cmbHourHv.setValue(null);
-
             }
             else
-            {
                 loadHomeViewingPurchasePage();
-            }
         }
     }
 
@@ -380,9 +376,7 @@ public class MovieSmallBoundary {
             TheaterPurchaseBoundary purchaseController = loader.getController();
             purchaseController.setMovieInstance(movieInstance);
             homeController.setRoot(root);
-
             MainBoundary.setCurrentController(purchaseController); //set the last controller for cleanup
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -398,9 +392,7 @@ public class MovieSmallBoundary {
             purchaseController.setCurrentMovie(movie);
             purchaseController.setCurrentDateTime(dateTime);
             homeController.setRoot(root);
-
             MainBoundary.setCurrentController(purchaseController);  //set the last controller for cleanup
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -413,9 +405,7 @@ public class MovieSmallBoundary {
             Parent root = loader.load();
             TheaterPurchaseBoundary purchaseController = loader.getController();
             purchaseController.setMovieInstance(movieInstance);
-
             homeController.setRoot(root);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -431,7 +421,6 @@ public class MovieSmallBoundary {
 
     private void handleCloseButton() {
         EventBus.getDefault().unregister(this);
-
         imagePanel.setVisible(true);
         if (HomeBoundary.currentScreeningFilter.equals("Theater")){
             selectTheaterPane.setVisible(false);
@@ -446,13 +435,11 @@ public class MovieSmallBoundary {
         if (registeredInstance != null && registeredInstance != this) {
             registeredInstance.cleanup();
         }
-
         // Register the current instance and update the static reference
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
             registeredInstance = this; // Set the current instance as the registered instance
         }
-
         MovieInstanceController.requestMovieInstancesByMovieId(movie.getId());
         if (HomeBoundary.currentScreeningFilter.equals("Theater")) {
             selectTheaterPane.setVisible(true);
@@ -469,7 +456,6 @@ public class MovieSmallBoundary {
     public void cleanup() {
         // Call the method that handles the close button action to return to the main screen
         handleClose();
-
         // Unregister the instance from EventBus and reset the static reference
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
@@ -482,7 +468,6 @@ public class MovieSmallBoundary {
     private void handleClose() {
         // Unregister from EventBus and reset the UI elements to show the main screen
         EventBus.getDefault().unregister(this);
-
         imagePanel.setVisible(true);
         if (HomeBoundary.currentScreeningFilter.equals("Theater")) {
             selectTheaterPane.setVisible(false);
@@ -490,6 +475,4 @@ public class MovieSmallBoundary {
             selectHvPanel.setVisible(false);
         }
     }
-
-
 }

@@ -52,9 +52,6 @@ public class PriceRequestHandler extends MessageHandler
         message.responseType = PriceRequestMessage.ResponseType.NEW_REQUEST;
     }
 
-
-
-
     private void get_all_price_requests()
     {
         message.requests = session.createQuery("FROM PriceRequest", PriceRequest.class).list();

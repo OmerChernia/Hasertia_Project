@@ -96,9 +96,7 @@ public class HomeBoundary implements Initializable {
     private void animateNodes() {
         Animations.fadeInUp(stckHome);
         Animations.fadeInUp(grid);
-
     }
-
 
     private void toggleButtonState(Button clickedButton, Button lastSelectedButton) {
         if (lastSelectedButton != null && lastSelectedButton != clickedButton) {

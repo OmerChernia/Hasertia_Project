@@ -58,15 +58,11 @@ public class StartBoundary {
         try {
             SimpleClient.port = Integer.parseInt(portField.getText());
             SimpleClient.host = ipField.getText();
-
             SimpleChatClient.client = SimpleClient.getClient();
             SimpleChatClient.client.openConnection();
-
             messageField.setText("Client created, host: " + SimpleClient.host + ", port: " + SimpleClient.port);
             NotificationsBuilder.create(NotificationType.SUCCESS, "Welcome to the system!",anchorPane);
-
             SimpleClient.getClient().sendRequest(new ConnectionMessage(Message.MessageType.REQUEST, ConnectionMessage.RequestType.FIRST_CONNECTION));
-
             scene = new Scene(loadFXML("MainView"));
             Stage stage = new Stage(); // Create a new Stage instance
             stage.initStyle(StageStyle.DECORATED);
@@ -74,7 +70,6 @@ public class StartBoundary {
             stage.setMinWidth(ConstantsPath.MIN_WIDTH);
             stage.getIcons().add(new Image(ConstantsPath.STAGE_ICON));
             stage.setTitle(ConstantsPath.TITLE);
-
             stage.setScene(scene);
             stage.show();
 
@@ -88,7 +83,6 @@ public class StartBoundary {
             // Close the current window
             Stage currentStage = (Stage) connectButton.getScene().getWindow();
             currentStage.close();
-
             ipField.clear();
             portField.clear();
         } catch (NumberFormatException e) {
@@ -103,15 +97,10 @@ public class StartBoundary {
         }
     }
 
-
     @FXML
     public void AutoConnect(ActionEvent actionEvent) {
         ipField.setText("localhost");
         portField.setText("3000");
         connect();
-
     }
-
-
-
 }

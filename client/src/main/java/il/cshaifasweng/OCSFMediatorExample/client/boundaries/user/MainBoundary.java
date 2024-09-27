@@ -121,19 +121,14 @@ public class MainBoundary implements Initializable {
     @FXML
     private StackPane stckMain;
 
-
-
     @FXML
     private AnchorPane tooltipComplaints;
 
     @FXML
     private AnchorPane tooltipEditMovieList;
 
-
     @FXML
     private AnchorPane tooltipEditScreening;
-
-
 
     @FXML
     private AnchorPane tooltipOrders;
@@ -144,11 +139,8 @@ public class MainBoundary implements Initializable {
     @FXML
     private AnchorPane tooltipReports;
 
-
-
     @FXML
     private ToggleGroup userTypeToggleGroup;
-
 
     @FXML
     private TextField txtPassword;
@@ -159,14 +151,13 @@ public class MainBoundary implements Initializable {
     @FXML
     private TextField txtEmployee;
 
-
-    private DialogTool dialogLogIn;
     @FXML
     private ImageView image;
 
+    private DialogTool dialogLogIn;
     private static String loggedInUserId;
     public static Employee.EmployeeType loggedInEmployeeId;
-
+    private boolean isPasswordVisible = false;
 
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
@@ -202,10 +193,8 @@ public class MainBoundary implements Initializable {
         txtPassword.clear();
         txtPasswordVisible.clear();
         imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGIN_ICON))));
-
         lblWelcome.setText(setWelcomeMessage() + "Welcome To 'Hasretia'!");
     }
-
 
     public void homeWindowsInitialize() {
         showFXMLWindows(ConstantsPath.HOME_VIEW);
@@ -288,7 +277,6 @@ public class MainBoundary implements Initializable {
          pnLogIn.toFront();
     }
 
-
     @FXML
     private void handleRadioButtonAction() {
         if (customerRadioButton.isSelected()) {
@@ -324,7 +312,6 @@ public class MainBoundary implements Initializable {
         Animations.tooltip(btnPriceChange, tooltipPrice);
         Animations.tooltip(btnComplaints, tooltipComplaints);
         Animations.tooltip(btnReports, tooltipReports);
-
     }
 
     private static Object currentController;
@@ -343,27 +330,17 @@ public class MainBoundary implements Initializable {
     }
 
     private void showFXMLWindows(String FXMLName) {
-
-        executeCleanup();
-
+         executeCleanup();
         rootContainer.getChildren().clear();
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLName));
             Parent root = loader.load();
-
-
             currentController = loader.getController();
-
-
             AnchorPane.setBottomAnchor(root, 0.0);
             AnchorPane.setTopAnchor(root, 0.0);
             AnchorPane.setLeftAnchor(root, 0.0);
             AnchorPane.setRightAnchor(root, 0.0);
-
-
             rootContainer.getChildren().setAll(root);
-
         } catch (IOException ex) {
             Logger.getLogger(MainBoundary.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -373,24 +350,19 @@ public class MainBoundary implements Initializable {
         return btnReports;
     }
 
-
     public Button getBtnAbout() {
         return btnAbout;
     }
-
 
     @FXML
     private void login(ActionEvent event) {
         String UserName = txtUser.getText();
         String EmployeeName = txtEmployee.getText();
-
         String password;
-
         if(isPasswordVisible)
             password = txtPasswordVisible.getText();
         else
             password = txtPassword.getText();
-
         if (customerRadioButton.isSelected()) {
             LoginPageController.requestUserLogin(UserName);
             System.out.println("SEND Login");
@@ -435,7 +407,6 @@ public class MainBoundary implements Initializable {
         }
     }
 
-
     public String setWelcomeMessage() {
         LocalTime now = LocalTime.now();
         String greeting;
@@ -447,18 +418,16 @@ public class MainBoundary implements Initializable {
         } else {
             greeting = "Good Evening ,";
         }
-
         return greeting;
     }
-
 
     public static int getId() {
         return Integer.parseInt(loggedInUserId);
     }
+
     public static Employee.EmployeeType getEmployee() {
         return loggedInEmployeeId;
     }
-
 
     public void handleCustomerLoginResponse(LoginMessage loginMessage) {
         Platform.runLater(() -> {
@@ -487,20 +456,15 @@ public class MainBoundary implements Initializable {
         });
     }
 
-
     public void handleEmployeeLoginResponse(EmployeeLoginMessage loginMessage) {
         Platform.runLater(() -> {
             if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_SUCCESFUL) {
                 SimpleClient.user = loginMessage.id; // Save the logged-in employee ID
-
                 loggedInUserId = loginMessage.id; // Save the logged-in employee ID
                 loggedInEmployeeId = loginMessage.employeeType; // Save the logged-in employee type
-
                 imgLog.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream(ConstantsPath.LOGOUT_ICON))));
-
                 updateEmployeeBasedOnRole(loginMessage.id, loginMessage.employeeType);
                 NotificationsBuilder.create(NotificationType.SUCCESS, "Employee" + loginMessage.employeeType + loginMessage.employeeType.name() + "Logged in!",stckMain);
-
                 closeLoginDialog();
             } else if (loginMessage.responseType == LoginMessage.ResponseType.LOGIN_FAILED) {
 
@@ -512,27 +476,22 @@ public class MainBoundary implements Initializable {
         });
     }
 
-
     private void resetButtons() {
         lblWelcome.setText(setWelcomeMessage() + "Welcome To 'Hasretia'!");
         vboxSide.getChildren().clear();
     }
-
 
     private void updateUserBasedOnRole(String userId) {
         VBox vboxSide = (VBox) rootSideMenu.lookup("#vboxSide");
         vboxSide.getChildren().clear();
         vboxSide.getChildren().add(btnSpace);
         vboxSide.getChildren().add(btnOrders);
-
     }
-
 
     private void updateEmployeeBasedOnRole(String userId, Employee.EmployeeType role) {
         VBox vboxSide = (VBox) rootSideMenu.lookup("#vboxSide");
         vboxSide.getChildren().clear();
         vboxSide.getChildren().add(btnSpace);
-
         switch (role) {
             case CONTENT_MANAGER:
                 vboxSide.getChildren().add(btnEditMovieList);
@@ -549,10 +508,7 @@ public class MainBoundary implements Initializable {
                 vboxSide.getChildren().add(btnPriceChange);
                 break;
         }
-
-
     }
-
 
     @FXML
     private void logout() {
@@ -576,7 +532,6 @@ public class MainBoundary implements Initializable {
         }
     }
 
-
     public static void sendLogoutRequest() {
         if (loggedInUserId != null) {
             SimpleClient.user = ""; // Save the logged-in user ID
@@ -587,7 +542,6 @@ public class MainBoundary implements Initializable {
         }
     }
 
-    private boolean isPasswordVisible = false;
 
     public void togglePasswordVisibility(ActionEvent actionEvent) {
         if (isPasswordVisible) {

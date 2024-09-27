@@ -110,18 +110,7 @@ public class ComplaintHandler extends MessageHandler
 
         Theater theater = query_user.getSingleResult();
 
-        if(theater != null)
-        {
-
-            // Create an HQL query to fetch complaints by Theater ID
-           // Query<Complaint> query_compliants = session.createQuery("FROM Complaint WHERE purchase. = :customerId", Complaint.class);
-           // query_compliants.setParameter("customerId", theater.getId());
-
-            // Execute the query and get the result list
-           // message.compliants = query_compliants.getResultList();
-           // message.responseType = ComplaintMessage.ResponseType.FILLTERD_COMPLIANTS_LIST;
-        }
-        else
+        if(theater == null)
             message.responseType = ComplaintMessage.ResponseType.COMPLIANT_MESSAGE_FAILED;
     }
     private void get_complaints_by_customer_id()

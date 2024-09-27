@@ -90,7 +90,6 @@ public class TheaterPurchaseBoundary {
     @FXML
     private TextField cardNumberField;
 
-
     @FXML
     private TextField cvvField;
 
@@ -127,7 +126,6 @@ public class TheaterPurchaseBoundary {
     @FXML
     private ComboBox<String> expirationYearCombo;
 
-
     //the user details
     @FXML
     private TextField firstNameTF;
@@ -160,15 +158,11 @@ public class TheaterPurchaseBoundary {
     @FXML
     private Button cardPackageBTN;
 
-
     private MovieInstance currentMovieInstance;
-
     private List<Seat> selectedSeats;
-
     private Timeline timer;
     private int timeRemaining;
     private int numberOfTickets;
-
     private RegisteredUser user=null;
     private boolean isCardPackageOn;
     private boolean isReserved;
@@ -179,20 +173,15 @@ public class TheaterPurchaseBoundary {
     {
         if(!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
-
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
-
         isCardPackageOn= false;
         isReserved = false;
-
         if(!SimpleClient.user.isEmpty())
             RegisteredUserController.getUserByID(SimpleClient.user);
-
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
         ticketsSpinner.setValueFactory(valueFactory);
-
         populateExpirationMonths();
         populateExpirationYears();
     }
@@ -214,7 +203,6 @@ public class TheaterPurchaseBoundary {
         selectedSeats = new ArrayList<>();
         updateMovieDetails();
         goToSeatSelectionBtn.setText(String.format("Regular- price per ticket: %d", movieInstance.getMovie().getTheaterPrice()));
-        //updateSeats();
     }
 
     private void updateMovieDetails() {
@@ -236,7 +224,6 @@ public class TheaterPurchaseBoundary {
         hall = hallMessage.halls.get(0);
         Platform.runLater(this::updateSeatsGrid);
     }
-
 
     private void updateSeatsGrid() {
         seatGrid.getChildren().clear();
@@ -303,7 +290,6 @@ public class TheaterPurchaseBoundary {
 
     }
 
-
     @FXML
     private void goToTicketSelection() {
 
@@ -347,12 +333,9 @@ public class TheaterPurchaseBoundary {
             }
 
             if (message.responseType.equals(SeatMessage.ResponseType.SEATS_WAS_RESERVED)) {
-
                 isReserved = true;
-
                 stackPane.getChildren().clear();
                 highlightStep(3);
-
                 if(isCardPackageOn)
                 {
                     String purchaseValidation = "Card Package";
@@ -363,9 +346,7 @@ public class TheaterPurchaseBoundary {
                     showConfirmation();
                 }
                 else {
-
                     startTimer();
-
                     if (user != null)
                         showCreditCardFields();
                     else
@@ -424,7 +405,6 @@ public class TheaterPurchaseBoundary {
     @Subscribe
     public void onPurchaseMessageReceived(PurchaseMessage message) {
         System.out.println(message.responseType);
-
         Platform.runLater(() -> {
             if (message.responseType == PurchaseMessage.ResponseType.PURCHASE_ADDED) {
                 System.out.println("Ticket purchased successfully!");
@@ -599,9 +579,6 @@ public class TheaterPurchaseBoundary {
         stackPane.getChildren().clear();
         stackPane.getChildren().add(ticketConfirmationPane);
     }
-
-
-
 
     public void cleanup()
     {

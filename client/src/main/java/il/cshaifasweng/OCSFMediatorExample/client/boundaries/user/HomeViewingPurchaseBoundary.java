@@ -76,8 +76,6 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private Label movieTime;
 
-
-
     @FXML
     private Label movieDate;
 
@@ -111,9 +109,7 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private Label step3Text;
 
-
-
-     @FXML
+    @FXML
     private Label price;
 
     //the user details
@@ -125,7 +121,6 @@ public class HomeViewingPurchaseBoundary {
 
     @FXML
     private Text movieText,movieEnglish,movieHebrew,availableOnText,totalAmountLabel,pricePaidText,validUntilText;
-
 
     @FXML
     private TextField emailTF;
@@ -139,12 +134,9 @@ public class HomeViewingPurchaseBoundary {
     @FXML
     private TextField confirmIdNumberTF;
 
-     private RegisteredUser user=null;
-
+    private RegisteredUser user=null;
     private String link;
-
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
-
     private LocalDateTime dateTime;
     private double packagePrice;
     private Movie currentMovie;
@@ -160,7 +152,6 @@ public class HomeViewingPurchaseBoundary {
         if(!SimpleClient.user.isEmpty()) {
             RegisteredUserController.getUserByID(SimpleClient.user);
         }
-
         populateExpirationMonths();
         populateExpirationYears();
     }
@@ -178,8 +169,6 @@ public class HomeViewingPurchaseBoundary {
         }
     }
 
-
-
     private void highlightStep(int step) {
 
         step2Label.setStyle("-fx-text-fill: white;");
@@ -188,7 +177,6 @@ public class HomeViewingPurchaseBoundary {
         step3Text.setStyle("-fx-text-fill: white;");
         step2Label.setStyle("-fx-background-color: #1d1d48");
         step3Label.setStyle("-fx-background-color: #1d1d48");
-
         switch (step) {
             case 1:
                 step2Label.setStyle("-fx-text-fill: #ffc500;");
@@ -206,8 +194,6 @@ public class HomeViewingPurchaseBoundary {
         Animations.hover(step2Label, 200, 1.2);
         Animations.hover(step3Label, 200, 1.2);
     }
-
-
 
     @FXML
     private void showIdPhoneFields() {
@@ -239,7 +225,6 @@ public class HomeViewingPurchaseBoundary {
         stackPane.getChildren().add(ticketSelectionPane);
         highlightStep(1);
     }
-
 
     @FXML
     private void showCreditCardFields()
@@ -347,11 +332,9 @@ public class HomeViewingPurchaseBoundary {
             System.out.println("Package purchased successfully.");
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
             LocalDateTime viewingDateTime = homeViewingPackageInstance.getViewingDate().minusHours(3);
             String formattedDate = viewingDateTime.toLocalDate().format(dateFormatter);
             String formattedTime = viewingDateTime.toLocalTime().format(timeFormatter);
-
             LocalDateTime validUntilDateTime = viewingDateTime.plusWeeks(1);
             String validUntilDate = validUntilDateTime.toLocalDate().format(dateFormatter);
             String validUntilTime = validUntilDateTime.toLocalTime().format(timeFormatter);
@@ -366,16 +349,10 @@ public class HomeViewingPurchaseBoundary {
         });
     }
 
-
-
-
     public void cleanup() {
         System.out.println("cleanup");
         EventBus.getDefault().unregister(this);
     }
-
-
-
 
     public void setCurrentMovie(Movie movie) {
         this.currentMovie = movie;
@@ -383,13 +360,13 @@ public class HomeViewingPurchaseBoundary {
         movieTitle.setText(currentMovie.getHebrewName() + " | " + currentMovie.getEnglishName());
         movieImage.setImage(getImage(movie));
     }
+
     public void setCurrentDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
         movieTime.setText("Time: " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm")));
         movieDate.setText("Date: " + dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
     }
-
 
     // a method that checks if the details that the user given is valid , returns true if the details are valid
     private boolean checkDetails()

@@ -42,10 +42,9 @@ public class DialogTicket {
 
     @FXML
     private HBox hboxTime;
+
     @FXML
-
     private HBox hbxActiveDay;
-
 
     @FXML
     private HBox hbxTheater;
@@ -83,7 +82,6 @@ public class DialogTicket {
     @FXML
     private Label lblPurchaseDay,lblPurchaseMonth,lblPurchaseYear;
 
-
     @FXML
     private Label lblSeat;
 
@@ -103,7 +101,6 @@ public class DialogTicket {
     @FXML
     private VBox vbxHVP;
 
-
     private MovieTicket movieTicket;
     private MultiEntryTicket multiEntryTicket;
     private HomeViewingPackageInstance homeViewingPackage;
@@ -115,7 +112,6 @@ public class DialogTicket {
     public void setTicketInfo(Purchase purchase) {
         if (purchase != null) {
             setPurchase(purchase);
-
             if (purchase instanceof MovieTicket) {
                 movieTicket = (MovieTicket) purchase;
                 setMovieTicket();
@@ -138,8 +134,6 @@ public class DialogTicket {
             lblCustomer.setText(purchase.getOwner().getName());
             lblId.setText(String.valueOf(purchase.getId()));
         }
-
-
     }
 
     public void setMovieTicket() {
@@ -147,7 +141,6 @@ public class DialogTicket {
         lblMin.setVisible(true);
         lblTitle.setText(movieTicket.getMovieInstance().getMovie().getEnglishName()+" | "+movieTicket.getMovieInstance().getMovie().getHebrewName());
         LocalDateTime activeDate = movieTicket.getMovieInstance().getTime().minusHours(3);
-
         lblActiveDay.setText(String.format("%02d",activeDate.getDayOfMonth()));
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
@@ -157,7 +150,6 @@ public class DialogTicket {
         lblTheater.setText(movieTicket.getSeat().getHall().getTheater().getLocation());
         String seat = "row: " + movieTicket.getSeat().getRow() + ", seat: " + movieTicket.getSeat().getCol();
         lblSeat.setText(seat);
-
         hboxTime.setVisible(true);
         hbxTheater.setVisible(true);
         vbxHVP.setVisible(false);
@@ -178,12 +170,10 @@ public class DialogTicket {
         hboxTime.setVisible(false);
         lblActive.setVisible(false);
         hbxExpired.setVisible(false);
-
     }
 
     public void setHomeViewingPackage() {
         lblTitle.setText(homeViewingPackage.getMovie().getEnglishName()+" | " + homeViewingPackage.getMovie().getHebrewName());
-
         if (homeViewingPackage.isLinkActive()) {
             lblLink.setDisable(false);
             lblLink.setText(homeViewingPackage.getLink());
@@ -191,7 +181,6 @@ public class DialogTicket {
             lblLink.setDisable(true);
             lblLink.setText("Unavailable");
         }
-
         lblLink.setOnAction(event -> {
             closeDialogAddUser();
             AlertsBuilder.create(
@@ -205,22 +194,17 @@ public class DialogTicket {
                     null,
                     null
             );
-
         });
 
         lblPrice.setText(String.valueOf(homeViewingPackage.getPricePaid()+"₪"));
-
         hbxActiveDay.setVisible(true);
         hboxTime.setVisible(true);
-
         LocalDateTime activeDate = homeViewingPackage.getViewingDate().minusHours(3);
         lblActiveDay.setText(String.valueOf(activeDate.getDayOfMonth()));
         lblActiveMonth.setText(activeDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH));
         lblActiveYear.setText(String.valueOf(activeDate.getYear()));
-
         lblHour.setText(String.valueOf(activeDate.getHour()));
         lblMin.setText(String.format("%02d", activeDate.getMinute()));
-
         LocalDateTime expiredDate = homeViewingPackage.getViewingDate().plusWeeks(1).minusHours(3);
         hbxExpired.setVisible(true);
         lblExpiredDay.setText(String.valueOf(expiredDate.getDayOfMonth()));
@@ -228,13 +212,11 @@ public class DialogTicket {
         lblExpiredYear.setText(String.valueOf(expiredDate.getYear()));
         lblHourExpired.setText(String.valueOf(expiredDate.getHour()));
         lblMinExpired.setText(String.format("%02d", expiredDate.getMinute()));
-
         hbxTheater.setVisible(false);
         vbxHVP.setVisible(true);
         hboxPurchaseDay.setVisible(true);
         lblActive.setVisible(true);
     }
-
 
     @FXML
     private void closeDialogAddUser() {

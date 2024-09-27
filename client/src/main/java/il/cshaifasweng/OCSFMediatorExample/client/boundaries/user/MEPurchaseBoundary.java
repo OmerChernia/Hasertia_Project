@@ -118,12 +118,10 @@ public class MEPurchaseBoundary {
 
     @FXML
     private ComboBox<Integer>quantityCB;
-    private int quantity;
 
+    private int quantity;
     private RegisteredUser user=null;
     private MultiEntryTicket ticket;
-
-
     // Regular expression for validating an email address
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
@@ -155,19 +153,13 @@ public class MEPurchaseBoundary {
         }
     }
 
-
-
-
     private void highlightStep(int step) {
         step1Label.setStyle("-fx-text-fill: white;");
         step1Text.setStyle("-fx-text-fill: white;");
         step2Label.setStyle("-fx-text-fill: white;");
         step2Text.setStyle("-fx-text-fill: white;");
-
         step1Label.setStyle("-fx-background-color: #2e2e85");
         step2Label.setStyle("-fx-background-color: #2e2e85");
-
-
         switch (step) {
             case 1:
                 step1Label.setStyle("-fx-text-fill: #ffc500;");
@@ -183,12 +175,9 @@ public class MEPurchaseBoundary {
                 break;
 
         }
-
         Animations.hover(step1Label, 200, 1.2);
         Animations.hover(step2Label, 200, 1.2);
      }
-
-
 
     @FXML
     private void goToPaymentDetails() {
@@ -196,7 +185,6 @@ public class MEPurchaseBoundary {
         stackPane.getChildren().clear();
         initializePaymentDetails();
         highlightStep(2);
-
         if(user == null)
             stackPane.getChildren().add(paymentDetailsPane);
         else
@@ -204,7 +192,6 @@ public class MEPurchaseBoundary {
             stackPane.getChildren().add(creditCardPane);
             creditCardPane.setVisible(true);
         }
-
     }
 
     @FXML
@@ -231,13 +218,11 @@ public class MEPurchaseBoundary {
 
     @FXML
     private void submitPayment() {
-
         // check if card info is in the right format
         if(isValidCreditCardInfo())
         {
             System.out.println("Payment submitted with card number: " + cardNumberField.getText());
             creditCardPane.setVisible(false);
-
             if (user == null)
                 RegisteredUserController.addNewUser(idNumberTF.getText(), firstNameTF.getText(), lastNameTF.getText(), emailTF.getText());
             else {
@@ -251,7 +236,6 @@ public class MEPurchaseBoundary {
     {
         cardNumberField.clear();
         cvvField.clear();
-
         if(user == null) {
             // Hide the credit card fields
             creditCardPane.setVisible(false);
@@ -276,23 +260,15 @@ public class MEPurchaseBoundary {
 
     private void showConfirmation() {
         Platform.runLater(() -> {
-
             stackPane.getChildren().clear();
             stackPane.getChildren().add(packageConfirmationPane);
-
         });
     }
 
-    @FXML
-    private void closeApplication()
-    {
-        //EventBus.getDefault().unregister(this);
-    }
     public void cleanup() {
         System.out.println("cleanup");
         EventBus.getDefault().unregister(this);
     }
-
 
     @Subscribe
     public void onRegisteredUserReceivedMessage(RegisteredUserMessage message)
@@ -317,11 +293,9 @@ public class MEPurchaseBoundary {
         }
     }
 
-
     // a method that checks if the details that the user given is valid , returns true if the details are valid
     private boolean checkDetails()
     {
-
         if(firstNameTF.getText().isEmpty() || lastNameTF.getText().isEmpty() || emailTF.getText().isEmpty()
                 || confirmEmailTF.getText().isEmpty() || idNumberTF.getText().isEmpty() || confirmIdNumberTF.getText().isEmpty())
         {
@@ -397,7 +371,6 @@ public class MEPurchaseBoundary {
         confirmEmailTF.clear();
         idNumberTF.clear();
         confirmIdNumberTF.clear();
-
         cardNumberField.clear();
         cvvField.clear();
         creditCardPane.setVisible(false);

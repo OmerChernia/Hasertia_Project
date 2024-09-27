@@ -37,11 +37,7 @@ public class DialogComplaint implements Initializable  {
     private OrdersBoundary ordersBoundary;
 
     public void initialize(URL location, ResourceBundle resources){
-
-
     }
-
-
 
     @FXML
     public void handleSubmitComplaint() {
@@ -58,7 +54,6 @@ public class DialogComplaint implements Initializable  {
         else showErrorAndFocus(additionalCommentsArea);
 
     }
-
 
     public void closeCustomerArea(ActionEvent actionEvent) {
         closeDialog();
@@ -77,30 +72,16 @@ public class DialogComplaint implements Initializable  {
 
     public void setOrdersController(OrdersBoundary ordersBoundary) {
         this.ordersBoundary = ordersBoundary;
-
     }
 
     public void setPurchase(Purchase selectedPurchase) {
 
         myPurchase = selectedPurchase;
         if (myPurchase instanceof MovieTicket)
-        {
             purchaseTypeField.setText(((MovieTicket) myPurchase).getMovieInstance().getMovie().getEnglishName());
-
-        }
         else if (myPurchase instanceof HomeViewingPackageInstance)
-        {
             purchaseTypeField.setText(((HomeViewingPackageInstance) myPurchase).getMovie().getEnglishName());
-        }
         else if (myPurchase instanceof MultiEntryTicket)
-        {
             purchaseTypeField.setText("Multi Entry");
-        }
-
     }
-
-
-
-
-
 }

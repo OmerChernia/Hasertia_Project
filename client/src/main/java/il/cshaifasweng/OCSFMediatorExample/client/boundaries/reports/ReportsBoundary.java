@@ -68,7 +68,6 @@ public class ReportsBoundary implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);
         TheaterController.getTheaterNameByTheaterManagerID(SimpleClient.user);
-
         // Remove tabs if the logged-in user is a theater manager
         if (MainBoundary.loggedInEmployeeId == Employee.EmployeeType.THEATER_MANAGER) {
             tabPane.getTabs().removeIf(tab -> tab.getText().equals("Package Sales") ||
@@ -76,7 +75,6 @@ public class ReportsBoundary implements Initializable {
                     tab.getText().equals("Complaint Status") ||
                     tab.getText().equals("Additional Reports"));
         }
-
         // Initialize combo boxes for each type of report
         initializeComboBoxes(ComplaintsyearComboBox, ComplaintsmonthComboBox, "ComplaintStatus");
         initializeComboBoxes(MultiSalesyearComboBox, MultiSalesmonthComboBox, "MultiEntrySales");
@@ -119,15 +117,12 @@ public class ReportsBoundary implements Initializable {
             yearComboBox.getItems().add(i);
         }
         yearComboBox.setValue(currentYear);
-
         for (java.time.Month month : java.time.Month.values()) {
             monthComboBox.getItems().add(month.name());
         }
         monthComboBox.setValue(java.time.LocalDate.now().getMonth().name());
-
         // Trigger report generation based on the current selection immediately after initialization
         handleGenerateReport(reportType, yearComboBox.getValue(), monthComboBox.getValue());
-
         // Add listeners for ComboBox changes
         yearComboBox.setOnAction(event -> handleGenerateReport(reportType, yearComboBox.getValue(), monthComboBox.getValue()));
         monthComboBox.setOnAction(event -> handleGenerateReport(reportType, yearComboBox.getValue(), monthComboBox.getValue()));
@@ -141,7 +136,6 @@ public class ReportsBoundary implements Initializable {
             if (oldTab != null) {
                 handleTabLeave(oldTab.getText());
             }
-
             String selectedTab = newTab.getText();
             switch (selectedTab) {
                 case "Ticket Sales":
@@ -195,6 +189,7 @@ public class ReportsBoundary implements Initializable {
      *
      * @param barChart The BarChart to be cleared.
      */
+
     private void clearBarChart(BarChart<String, Number> barChart) {
         barChart.getData().clear();
     }

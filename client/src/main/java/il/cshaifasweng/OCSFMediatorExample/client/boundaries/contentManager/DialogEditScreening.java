@@ -86,8 +86,6 @@ public class DialogEditScreening implements Initializable {
 
     private LocalTime time;
 
-    //private static final DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EventBus.getDefault().register(this);

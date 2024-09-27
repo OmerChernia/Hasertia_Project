@@ -17,7 +17,6 @@ public class EmployeeLoginHandler extends LoginHandler {
         this.message = message;
     }
 
-
     protected void login()
     {
         try {

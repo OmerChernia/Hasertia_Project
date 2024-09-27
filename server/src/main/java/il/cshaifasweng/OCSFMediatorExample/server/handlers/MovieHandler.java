@@ -51,7 +51,6 @@ public class MovieHandler extends MessageHandler
         }
     }
 
-
     private void getUpcomingMovies() {
         try {
             // Create an HQL query to fetch movies with streamingType THEATER_VIEWING or BOTH
@@ -76,7 +75,6 @@ public class MovieHandler extends MessageHandler
         }
     }
 
-
     private void getMoviesPresentedInTheaterContentManager() {
         try {
             // Create an HQL query to fetch movies with streamingType HOME_VIEWING or BOTH
@@ -87,7 +85,6 @@ public class MovieHandler extends MessageHandler
             query.setParameter("theater", Movie.StreamingType.THEATER_VIEWING);
             query.setParameter("both", Movie.StreamingType.BOTH);
             query.setParameter("available", Movie.Availability.AVAILABLE);
-
 
             // Execute the query and get the result list
             message.movies = query.getResultList();
@@ -210,15 +207,11 @@ public class MovieHandler extends MessageHandler
         }
     }
 
-
     @Override
     public void setMessageTypeToResponse()
     {
         message.messageType= Message.MessageType.RESPONSE;
     }
-
-
-
 
     private void add_movie()
     {
@@ -243,7 +236,6 @@ public class MovieHandler extends MessageHandler
         else // if we don't have any movie to add
             message.responseType = MovieMessage.ResponseType.MOVIE_NOT_ADDED;
     }
-
 
     private void deactivate_movie() {
         Query<Movie> query = session.createQuery("FROM Movie WHERE id = :_id", Movie.class);
@@ -321,7 +313,4 @@ public class MovieHandler extends MessageHandler
             }
         }
     }
-
-
-
 }

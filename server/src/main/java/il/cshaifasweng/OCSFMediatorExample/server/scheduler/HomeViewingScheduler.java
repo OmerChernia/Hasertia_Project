@@ -117,7 +117,6 @@ public class HomeViewingScheduler {
         server.sendToAllClients(new HomeViewingEvent(Integer.parseInt(booking.getOwner().getId_number()), "Home Viewing Available"));
     }
 
-
     /**
      * Activates the viewing link for a home viewing package.
      *

@@ -176,6 +176,4 @@ public class ReportHandler extends MessageHandler {
             message.responseType = ReportMessage.ResponseType.ERROR;
         }
     }
-
-
 }

@@ -122,7 +122,6 @@ public class CustomerServiceBoundary implements Initializable {
         });
     }
 
-
     private void loadTableData(List<Complaint> complaints) {
         if (complaints == null || complaints.isEmpty()) {
             listComplaints.clear();

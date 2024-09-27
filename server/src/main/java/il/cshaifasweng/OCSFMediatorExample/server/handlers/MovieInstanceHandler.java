@@ -109,8 +109,6 @@ public class MovieInstanceHandler extends MessageHandler
         message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE;
     }
 
-
-
     private void get_all_movie_instances_by_movie_id_and_theater_name()
     {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and hall.theater.location= :theater and  isActive=true", MovieInstance.class);
@@ -169,7 +167,6 @@ public class MovieInstanceHandler extends MessageHandler
         return query.getResultList();
     }
 
-
     private void get_movie_instance_by_id()
     {
         try
@@ -188,8 +185,6 @@ public class MovieInstanceHandler extends MessageHandler
         }
     }
 
-
-
     private void delete_movie_instance() {
         // Load the movie instance
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where id = :id", MovieInstance.class);
@@ -207,7 +202,6 @@ public class MovieInstanceHandler extends MessageHandler
 
         List<MovieTicket> movieTickets = queryMovieTickets.list();
 
-
         for (MovieTicket movieTicket : movieTickets) {
             // Setting movie ticket to not be active anymore
             movieTicket.setisActive(false);
@@ -222,15 +216,12 @@ public class MovieInstanceHandler extends MessageHandler
         // Flush all updates at once
         session.flush();
 
-
         // Schedule emails for canceled screening
         OrderScheduler.getInstance().scheduleEmailsForCanceledScreening(movieTickets, movieInstance);
         OrderScheduler.getInstance().cancelScheduledNotifyNewMovie(movieInstance.getMovie());
         // Cancel all scheduled tasks related to the movie instance and its tickets
         MovieInstanceScheduler.getInstance().cancelMovieInstanceTasks(movieInstance);        message.responseType = MovieInstanceMessage.ResponseType.MOVIE_INSTANCE_REMOVED;
     }
-
-
 
     private void update_movie_instance() {
         try {
@@ -256,20 +247,16 @@ public class MovieInstanceHandler extends MessageHandler
                 Object[].class
         );
         emailQuery.setParameter("movieInstanceId", movieInstance.getId());
-
         List<Object[]> customerData = emailQuery.list();
 
         // Pass the customer data and movie instance info to the scheduler
         OrderScheduler.getInstance().scheduleEmailsForUpdatedScreening(customerData, movieInstance);
     }
 
-
-
     private void get_all_movie_instances_by_movie_id()
     {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.id = :movie and isActive=true", MovieInstance.class);
         query.setParameter("movie",message.id);
-
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
@@ -277,7 +264,6 @@ public class MovieInstanceHandler extends MessageHandler
     {
         Query<MovieInstance> query = session.createQuery("FROM MovieInstance where movie.genre = :genre", MovieInstance.class);
         query.setParameter("genre",message.key);
-
         message.movies = query.list();
         message.responseType = MovieInstanceMessage.ResponseType.FILLTERD_LIST;
     }
@@ -325,7 +311,6 @@ public class MovieInstanceHandler extends MessageHandler
             }
         }
     }
-
 
     private void get_all_movie_instances_by_name()
     {

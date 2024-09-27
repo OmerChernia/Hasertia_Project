@@ -160,8 +160,6 @@ public class PurchaseHandler extends MessageHandler
         }
     }
 
-
-
     private void get_all_movie_packages_and_multi_entry_tickets_purchases_this_month() {
         try {
             YearMonth currentMonth = YearMonth.now();

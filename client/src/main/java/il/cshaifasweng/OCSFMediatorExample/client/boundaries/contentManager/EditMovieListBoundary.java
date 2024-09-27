@@ -49,12 +49,6 @@ public class EditMovieListBoundary implements Initializable {
     private HBox hBoxSearch;
 
     @FXML
-    private TextField txtSearchProduct;
-
-    @FXML
-    private TextField txtSearchBarCode;
-
-    @FXML
     private Button btnNewProduct;
 
     @FXML
@@ -85,8 +79,6 @@ public class EditMovieListBoundary implements Initializable {
 
     @FXML
     private TableColumn<Movie, Button> colGenre;
-
-
 
     @FXML
     private AnchorPane containerAddProduct;
@@ -250,10 +242,6 @@ public class EditMovieListBoundary implements Initializable {
         });
     }
 
-
-
-
-
     @FXML
     public void closeDialogAddProduct() {
         if (dialogAddProduct != null) {
@@ -265,16 +253,10 @@ public class EditMovieListBoundary implements Initializable {
         }
     }
 
-
-
-
-
     public void handleNewMovie(ActionEvent actionEvent) {
 
         showDialog("add",null);
     }
-
-
 
     @FXML
     private void showDialogDeleteProduct() {
@@ -309,9 +291,6 @@ public class EditMovieListBoundary implements Initializable {
         });
     }
 
-
-
-
     @FXML
     private void hideDialogDeleteProduct() {
         if (dialogDeleteProduct != null) {
@@ -344,11 +323,8 @@ public class EditMovieListBoundary implements Initializable {
         tblProducts.setDisable(true) ;
     }
 
-
-
     public void cleanup() {
         Platform.runLater(() -> EventBus.getDefault().unregister(this));
     }
-
 
 }
